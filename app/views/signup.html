@@ -1,0 +1,89 @@
+
+
+
+<div class="signup-form-container row">
+  <div class="column   small-12 medium-6 large-5 medium-centered">
+  <div class="form">
+    <header>
+      <div class="logo">
+      </div>
+      <h4>Welcome, create your account to get started.</h4>
+    </header>
+
+
+    <form *ngIf="active" (ngSubmit)="submit($event)" #signUp="ngForm" [formGroup]="signUpForm">
+      <div class="row">
+        <div class="small-12 medium-6 columns">
+          <input type="text" formControlName="firstName" placeholder="First Name*">
+          <div class="error text-center" [hidden]="signUpForm.controls.firstName.untouched || signUpForm.controls.firstName.valid"><small>First Name is required.</small></div>
+        </div>
+        <div class="small-12 medium-6 columns">
+          <input type="text" formControlName="lastName" placeholder="Last Name*" >
+          <div class="small error text-center" [hidden]="signUpForm.controls.lastName.untouched || signUpForm.controls.lastName.valid"><small>Last Name is required.</small></div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-12  columns">
+          <input type="text" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" formControlName="email" placeholder="Email *" [disabled]="emailExits">
+          <div class="error text-center" [hidden]="signUpForm.controls.email.untouched || signUpForm.controls.email.valid"><small>Email not valid.</small></div>
+        </div>
+        <div class="small-12  columns">
+          <input type="password" formControlName="password" placeholder="Password *">
+          <div class="error text-center" [hidden]="signUpForm.controls.password.untouched || signUpForm.controls.password.valid"><small>Password required.</small></div>
+        </div>
+        <div class="small-12  columns">
+          <input type="password" formControlName="passwordConfirmation" placeholder="Confirm Password *">
+          <div class="error text-center" [hidden]="signUpForm.controls.passwordConfirmation.untouched || checkPasswordsMatch()"><small>Passwords should match.</small></div>
+        </div>
+        <div class="small-12  columns">
+          <input type="text" formControlName="phoneNumber" placeholder="Mobile *">
+          <div class="error text-center" [hidden]="signUpForm.controls.phoneNumber.untouched || signUpForm.controls.phoneNumber.valid"><small>Phone Number not valid.</small></div>
+        </div>
+      </div>
+      <div class="row">
+
+        <!--<div class="small-12  columns">
+          <div class="input-group">
+            <span class="input-group-label"><i class="icon ion-ios-locked"></i></span>
+            <input class="input-group-field" [ngClass] = "{'passError' : !checkPasswordsMatch()}" type="password" ngControl="passwordConfirmation" placeholder="Confirm Password *">
+            <div class="error" [hidden]="signUp.form.controls.passwordConfirmation.untouched || checkPasswordsMatch()"><smal>Passwords should match.</smal></div>
+          </div>
+        </div>-->
+      </div>
+      <div class="row">
+        <div class="small-4 column" style="padding-bottom: 20px; ">
+          <div class="switch small" style="display: inline;">
+            <input class="switch-input" id="asCompany" type="checkbox" (change)="asCompany = !asCompany;" name="exampleSwitch">
+            <label class="switch-paddle" for="asCompany">
+              <span class="show-for-sr">Firm SignUp</span>
+            </label>
+          </div>
+          <label for="asCompany" style="display: inline;position:relative;top:-8px;">Firm
+          </label>
+        </div>
+        <div class="small-8 columns" [hidden]="!asCompany">
+          <input type="text" formControlName="firm" placeholder="Company*">
+          <div class="error text-center" [hidden]="signUpForm.controls.firm.untouched || signUpForm.controls.firm.valid"><small>Company Name is required.</small></div>
+        </div>
+
+      </div>
+      <div class="row align-middle">
+        <div class="small-6 columns">
+          <button class="hollow button-style button create small" [disabled]="!checkValidity()"
+                  [ngClass]="{'disabled' : !checkValidity()}" type="submit" (click)="submit($event)">Create Account</button>
+
+        </div>
+        <div class="small-6 columns">
+          <div class="footer" style="margin-top: 20px">Click here for
+            <a  [routerLink]="['/Login']" >Login!</a>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div *ngIf="status" class="formstatus">
+      <span [ngClass]="{'success': status.success, 'error': status.error}">{{message}}</span>
+    </div>
+  </div>
+  </div>
+</div>

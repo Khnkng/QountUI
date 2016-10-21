@@ -1,0 +1,83 @@
+/**
+ * Created by yvadugu on 10-05-2016.
+ */
+
+// standard colors are defined as variables below, please only use below variables where ever needed
+// ---------
+
+
+//  Brand colors
+// -------------
+
+$qount-brand-green: #0FB45A;
+$qount-brand-blue: #00B0F0;
+$qount-brand-red: #FF3219;
+$qount-brand-yellow: #F5C319;
+
+
+// Text default color
+$qount-text: #696E73;
+
+// Button colors
+// -------------
+
+$qount-btn-primary: #4B96FA;
+$qount-btn-hover: #77AFFA;
+
+// Table colors
+// ------------
+
+$qount-table-thead-bg: #E8F2FC;
+$qount-table-tr-hover: #F0F4FD;
+$qount-table-border: #DCDEDD;
+
+table{
+  border: 1px solid $qount-table-border;
+  thead{
+    background: $qount-table-thead-bg;
+      th{
+        font-size: .8em;
+        border: 1px solid $qount-table-border !important;
+      }
+  }
+  tbody{
+    tr{
+      border: 1px solid $qount-table-border;
+      td{
+        color: $qount-text;
+        border: 1px solid $qount-table-border;
+      }
+      &:hover{
+        background: $qount-table-tr-hover;
+      }
+    }
+  }
+}
+
+
+// Tab colors
+// ----------
+
+$qount-tab-bg: #36404A;
+
+// Links
+// -----
+
+$qount-anchor-blue: #219AE1;
+
+// Forms
+// -----
+
+$qount-form-border: #CACACA;
+$qount-form-border-hover: #B9B9B9;
+$qount-form-ele-border:$qount-form-border;
+$qount-form-ele-border-focus:$qount-form-border-hover;
+$qount-form-ele-border-error: $qount-brand-red;
+
+
+
+
+
+
+
+

@@ -1,0 +1,10 @@
+# Created by .ignore support plugin (hsz.mobi)
+
+/npm-debug.log
+node_modules/
+build/
+app/bower_components/
+typings
+.idea/
+.DS_Store
+

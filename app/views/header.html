@@ -1,0 +1,73 @@
+<!--<div class="top-bar-left show-for-large">
+  <ul class="menu">
+    <li><a ripple id="menu-toggle" (click)="toggleSideMenuStatus()"><i class="icon ion-navicon"></i></a></li>
+  </ul>
+</div>-->
+
+<div class="top-bar-right">
+  <ul class="menu">
+    <li>
+      <div [hidden]="!showSearch" class="search">
+        <i class="icon ion-search"></i>
+        <input [(ngModel)]="searchText" (keyup)="getTextValue($event,searchText)"
+               type="search" placeholder="Search" [focus]="showSearch" (blur)="toggleSearch()"/>
+        <i class="icon ion-ios-close-outline"  [hidden]="!searchText.length>0" (click)="removeSearch()"></i>
+      </div>
+    </li>
+    <li>
+      <a ripple [hidden]="showSearch" (click)="toggleSearch()"><i class="icon ion-search"></i></a>
+    </li>
+    <li><a ripple data-toggle="opt-notification" class="icon-notification">
+      <i class="icon ion-speakerphone"></i>
+      <span style="top:1px;left:25px;" class="badge" [hidden]="unreadNotifications.length == 0">{{unreadNotificationCount}}</span>
+    </a></li>
+    <li><a ripple (click)="showFullScreen()"><i class="icon" [ngClass]="fullScreenIcon"></i></a></li>
+    <li><a ripple (click)="viewUserProfilePage()"><i class="icon ion-person"></i></a></li>
+  </ul>
+</div>
+
+<div id="opt-notification" class="notification-menu dropdown-pane" data-dropdown data-close-on-click="true">
+  <ul>
+    <li class="notification-title">
+      Notifications
+      <span class="notification-label notification-label-default">New {{unreadNotificationCount}}</span>
+    </li>
+    <li [hidden]="unreadNotifications.length > 0" style="padding: 10px; font-size: 0.85rem; text-align: center;">
+      There are no new notifications
+    </li>
+    <li [hidden]="unreadNotifications.length == 0">
+
+       <!-- <div *ngFor="let notification of unreadNotifications;let index=index">
+          <a href="">
+            <span class="notification-menu-icon">
+              <i class="icon ion-document" ></i>
+            </span>
+            <span class="notification-body">
+              <p>{{notification.notification_text}}</p>
+            </span>
+          </a>
+        </div>-->
+
+
+      <a class="notification-main" (click)="showBill(notification)" *ngFor="let notification of unreadNotifications;let index=index" data-close>
+        <div>
+          <span *ngIf="notification.notification_type=='BillPay'" class="notification-menu-icon billNotif">
+            <i class="icon ion-document" ></i>
+          </span>
+          <span *ngIf="notification.notification_type=='Comments'" class="notification-menu-icon commentNotif">
+            <i class="icon ion-ios-chatbubble-outline" ></i>
+          </span>
+          <span class="notification-body">
+          {{notification.notification_text}}
+          </span>
+        </div>
+      </a>
+
+    </li>
+
+    <!--<li class="notification-footer">
+      <a (click)="viewAll($event)" data-close>View all notifications</a>
+    </li>-->
+  </ul>
+  <button class="button small float-right" style="margin-right:10px;margin-top:5px;" (click)="viewAll()" data-close>view all</button>
+</div>

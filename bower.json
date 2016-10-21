@@ -1,0 +1,31 @@
+{
+  "name": "bower",
+  "description": "bower",
+  "main": "bower",
+  "authors": [
+    "seshu"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "bower"
+  ],
+  "moduleType": [
+    "amd",
+    "es6"
+  ],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Ionicons": "ionicons#^2.0.1",
+    "foundation-sites": "^6.2.3",
+    "jquery-ui": "^1.12.1",
+    "motion-ui": "^1.2.2",
+    "lodash": "^4.16.4"
+  }
+}

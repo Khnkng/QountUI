@@ -1,0 +1,9 @@
+{
+  "globalDevDependencies": {
+    "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/lodash.d.ts"
+  },
+  "globalDependencies": {
+    "core-js": "registry:dt/core-js#0.0.0+20160317120654",
+    "node": "registry:dt/node#4.0.0+20160509154515"
+  }
+}
