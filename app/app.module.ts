@@ -32,31 +32,39 @@ import {LoginForm} from "./forms/Login.form";
 import {SignUpForm} from "./forms/SignUp.form";
 import {ForgotPassword} from "./forms/ForgotPassword.form";
 import {DashBoardActivator} from "./share/services/DashBoardActivator";
+import {CompaniesService} from "./share/services/Companies.service";
+import {VendorComponent} from "./components/Vendors.component";
+import {ComboBox} from "./share/directives/comboBox.directive";
+import {VendorForm} from "./forms/Vendor.form";
+import {ShareModule} from "./share/share.module";
+import {FTable} from "./share/directives/footable.directive";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, HttpModule, RouterModule.forRoot([
         {
-            name: 'Dashboard',
             path: '',
             component: CanvasComponent,
             canActivate: [LoggedInActivator]
         },
         {
-            name: 'Login',
             path: 'login',
             component: LogInComponent,
             canActivate: [DashBoardActivator]
         },
         {
-            name: 'SignUp',
             path: 'signUp',
             component: SignUpComponent,
             canActivate: [DashBoardActivator]
+        },
+        {
+            path: 'vendors',
+            component: VendorComponent,
+            canActivate: [LoggedInActivator]
         }
     ])],
-    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, Focus, Ripple, FoundationInit, LogInComponent, SignUpComponent],
-    bootstrap:    [ AppComponent ],
-    providers: [ LoggedInActivator, DashBoardActivator, FullScreenService, SwitchBoard, NotificationService, ToastService, WindowService, PrintEventService, LoginService, SignUpService, LoginForm, SignUpForm, ForgotPassword ]
+    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, Focus, Ripple, FoundationInit, LogInComponent, SignUpComponent, ComboBox, VendorComponent, FTable],
+    bootstrap: [ AppComponent ],
+    providers: [ LoggedInActivator, DashBoardActivator, FullScreenService, SwitchBoard, NotificationService, ToastService, WindowService, PrintEventService, LoginService, SignUpService, LoginForm, SignUpForm, ForgotPassword, CompaniesService, VendorForm ]
 })
 export class AppModule {
 

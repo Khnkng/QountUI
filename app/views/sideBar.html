@@ -1,30 +1,44 @@
   <!--<div class="heading">
     <span>Navigation</span>
   </div>-->
-  <ul class="side-nav" data-accordion-menu>
+  <ul class="side-nav" data-accordion-menu foundation>
     <li>
-      <a ripple (click)="toggleMenu()"><i class="icon ion-navicon-round"></i><span class="name">Menu</span></a>
+      <a ripple (click)="toggleMenu()">
+        <i class="icon ion-navicon-round"></i>
+        <div class="name">{{currentCompanyName}}
+          <i class="icon ion-ios-arrow-down" [hidden]="!isExpanded" (click)="showCompaniesDropdown($event)" data-toggle="switchCompany"></i>
+        </div>
+      </a>
     </li>
     <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isDashboard}" (click)="showPage('dashboard')"><i class="icon ion-ios-keypad"></i><span class="name">Dashboard</span></a>
+      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isDashboard}" (click)="showPage('dashboard')"><i class="icon ion-ios-keypad"></i><div class="name">Dashboard</div></a>
     </li>
     <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isCompanies}" (click)="showPage('companies')"><i class="icon ion-android-people"></i><span class="name">Companies</span></a>
+      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isCompanies}" (click)="showPage('companies')"><i class="icon ion-android-people"></i><div class="name">Companies</div></a>
     </li>
     <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isWorkflow}" (click)="showPage('workflow')"><i class="icon ion-fork-repo"></i><span class="name">Work Flow</span></a>
+      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isVendors}" (click)="showPage('vendors')"><i class="icon ion-android-contacts"></i><div class="name">Vendors</div></a>
     </li>
     <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isReports}" (click)="showPage('reports')"><i class="icon ion-ios-pulse"></i><span class="name">Reports</span></a>
+      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isWorkflow}" (click)="showPage('workflow')"><i class="icon ion-fork-repo"></i><div class="name">Work Flow</div></a>
     </li>
     <li>
-      <a ripple [ngClass]="{'collapsed': !expanded}" (click)="showPage('1099')"><i class="icon ion-ios-more"></i><span class="name">1099</span></a>
+      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isReports}" (click)="showPage('reports')"><i class="icon ion-ios-pulse"></i><div class="name">Reports</div></a>
     </li>
     <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isNotifications}" (click)="showPage('notifications', $event)"><i class="icon ion-speakerphone"></i><span class="name">Notifications</span></a>
+      <a ripple [ngClass]="{'collapsed': !expanded}" (click)="showPage('1099')"><i class="icon ion-ios-more"></i><div class="name">1099</div></a>
     </li>
     <li>
-      <a ripple [ngClass]="{'collapsed': !expanded}" (click)="logout()"><i class="icon ion-power"></i><span class="name">Log Out</span></a>
+      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isNotifications}" (click)="showPage('notifications', $event)"><i class="icon ion-speakerphone"></i><div class="name">Notifications</div></a>
+    </li>
+    <li>
+      <a ripple [ngClass]="{'collapsed': !expanded}" (click)="logout()"><i class="icon ion-power"></i><div class="name">Log Out</div></a>
     </li>
   </ul>
 
+  <div class="dropdown-pane bottom float-left" id="switchCompany" data-dropdown>
+    <span>Switch to:</span>
+    <ul>
+      <li *ngFor="let company of companies" (click)="changeCompany(company.id)" [hidden]="company.id == currentCompanyId">{{company.name}}</li>
+    </ul>
+  </div>
