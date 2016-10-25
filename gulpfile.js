@@ -141,7 +141,7 @@ gulp.task('dependencies', function () {
     'node_modules/systemjs/dist/system.src.js',
     //'node_modules/socket.io-client/socket.io.js',
     'app/assets/**/*.js',
-    //'app/bower_components/footable/compiled/footable.min.js',
+    'app/bower_components/footable/compiled/footable.min.js'
     //'app/bower_components/tag-it/js/tag-it.js'
   ]).pipe(gulp.dest('build/lib'));
 

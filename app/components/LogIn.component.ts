@@ -14,6 +14,7 @@ import {ForgotPassword} from "../forms/ForgotPassword.form";
 import {LoginModel} from "../models/Login.model";
 import {Session} from "../share/services/Session";
 import {PATH, TOAST_TYPE} from "../share/constants/Qount.constants";
+import {CompaniesService} from "../share/services/Companies.service";
 
 
 declare var jQuery:any;
@@ -39,9 +40,7 @@ export class LogInComponent implements OnInit {
   routeSub:any;
 
   constructor(fb: FormBuilder, private _router: Router,  private switchBoard: SwitchBoard, private loginService: LoginService, private _loginForm: LoginForm,
-              private _forgotPasswordForm: ForgotPassword, private _route:ActivatedRoute, private _toastService:ToastService) {
-
-
+              private _forgotPasswordForm: ForgotPassword, private _route:ActivatedRoute, private _toastService:ToastService, private companyService: CompaniesService) {
     this.routeSub = this._route.params.subscribe(params => {
       this.resetPasswordToken = params['resetPasswordToken'];
     });
@@ -66,12 +65,28 @@ export class LogInComponent implements OnInit {
       Session.create(obj.user, obj.token);
       this.message = "logged in successfully.";
       this.newLogin();
-      this.gotoDefaultPage();
+      this.fetchCompanies(obj.user);
     } else {
       this.status = {};
       this.status['error'] = true;
       this.message = obj;
     }
+  }
+
+  handleError(error){
+
+  }
+
+  setComapnies(companies){
+    Session.setCompanies(companies);
+    if(companies.length > 0){
+      Session.setCurrentCompany(companies[0].id);
+    }
+    this.gotoDefaultPage();
+  }
+
+  fetchCompanies(user){
+    this.companyService.companies().subscribe(companies => this.setComapnies(companies), error => this.handleError(error))
   }
 
   // Reset the form with a new hero AND restore 'pristine' class state

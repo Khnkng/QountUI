@@ -20,9 +20,9 @@ export const PATH = {
   USER_SERVICE: '/HalfService/user',
   USERS_SERVICE: '/users?q=:prefix',
   USERS: '/users/',
+
   ACTIVATION_LINK:"https://dev-payments.qount.io",
   COMPANIES_SERVICE: '/HalfService/user/:id/companies'
-
 };
 
 export const TOAST_TYPE = {
@@ -45,6 +45,7 @@ export const SOURCE_TYPE = {
 export enum PAGES {
   DASHBOARD = <any>'dashboard',
   COMPANIES = <any>'companies',
+  VENDORS = <any>'vendors',
   WORKFLOW = <any>'workflow',
   CARD_REPOSITORY = <any>'cardRepository',
   NOTIFICATIONS = <any>'notifications',

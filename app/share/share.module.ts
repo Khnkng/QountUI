@@ -4,20 +4,19 @@
 
 
 import {NgModule} from "@angular/core";
-import {LoggedInActivator} from "./services/CheckSessionActivator";
 import {Focus} from "./directives/focus.directive";
 import {FoundationInit} from "./directives/foundation.directive";
 import {Ripple} from "./directives/rippler.directive";
-import {PrintEventService} from "./services/PrintEvent.service";
-import {WindowService} from "./services/Window.service";
-import {ToastService} from "./services/Toast.service";
-import {NotificationService} from "./services/Notification.service";
-import {SwitchBoard} from "./services/SwitchBoard";
-import {FullScreenService} from "./services/fullscreen.service";
+import {CompaniesComponent} from "./components/Companies.component";
+import {FTable} from "./directives/footable.directive";
+import {ComboBox} from "./directives/comboBox.directive";
+import {RouterModule} from "@angular/router";
+import {CommonModule} from "@angular/common";
 
 @NgModule({
-    declarations: [ Focus, Ripple, FoundationInit],
-    exports: [LoggedInActivator, Focus, Ripple, FoundationInit, PrintEventService, WindowService, ToastService, NotificationService, SwitchBoard, FullScreenService]
+    imports: [RouterModule, CommonModule],
+    declarations: [ Focus, Ripple, FoundationInit, CompaniesComponent, FTable, ComboBox],
+    exports: [Focus, Ripple, FoundationInit, CompaniesComponent, FTable, ComboBox]
 })
 export class ShareModule {
 

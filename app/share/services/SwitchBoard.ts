@@ -22,6 +22,7 @@ export class SwitchBoard {
   onFetchCompanies: Subject<any>;
   onPrintWindowClose: Subject<any>;
   onNotificationMarkRead: Subject<any>;
+  onCompanyChange: Subject<any>;
 
   constructor() {
     this.onLogin = new Subject<UserModel>();
@@ -38,5 +39,6 @@ export class SwitchBoard {
     this.onFetchCompanies=new Subject<any>();
     this.onPrintWindowClose=new Subject<any>();
     this.onNotificationMarkRead = new Subject<any>();
+    this.onCompanyChange = new Subject<any>();
   }
 }
