@@ -20,6 +20,22 @@ export class Session {
     return false;
   }
 
+  static setCurrentCompany(companyId){
+    localStorage.setItem('currentCompany', companyId);
+  }
+
+  static getCurrentCompany(){
+    return localStorage.getItem('currentCompany');
+  }
+  
+  static setCompanies(value){
+    this.put('companies', value);
+  }
+
+  static getCompanies(){
+    return this.get('companies');
+  }
+
   static getUser(): UserModel {
     return this.get('user');
   }
@@ -31,6 +47,7 @@ export class Session {
   static put(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
   }
+  
   static getKey(key): any {
     return localStorage.getItem(key)?localStorage.getItem(key).replace(/"/g, ""):null;
   }
@@ -38,7 +55,7 @@ export class Session {
     return localStorage.removeItem(key);
   }
 
-  static get(key): UserModel {
+  static get(key) {
     return JSON.parse(localStorage.getItem(key));
   }
   

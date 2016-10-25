@@ -2,9 +2,9 @@
  * Created by seshu on 06-03-2016.
  */
 
-import {Validators} from "@angular/common";
 import {Injectable} from "@angular/core";
 import {abstractForm} from "./abstractForm";
+import {Validators} from "@angular/forms";
 
 @Injectable()
 export class SignUpForm extends abstractForm{

@@ -580,20 +580,21 @@ form {
   -ms-transform:     scale(1); /* IE 9 */
 }
 
-.sidebar ul.side-nav li a span.name {
+.sidebar ul.side-nav li a div.name {
   display: block;
   position: absolute;
   overflow: hidden;
   top: 12px;
   left: 60px;
   animation: fadein 2s;
+  width: 100%;
   -moz-animation: fadein 2s; /* Firefox */
   -webkit-animation: fadein 2s; /* Safari and Chrome */
   -o-animation: fadein 2s; /* Opera */
 }
 
-.sidebar ul.side-nav li a.collapsed span.name {
-  display: none;
+.sidebar ul.side-nav li a.collapsed div.name {
+  /*display: none;*/
 }
 
 .sidebar ul.side-nav li a:hover {
@@ -631,6 +632,18 @@ ul.side-nav a{
 
 .red{
   color:red;
+}
+
+#switchCompany{
+  width: 250px;
+  top: 100px !important;
+  left: 45px !important;
+
+  ul li{
+    list-style: none;
+    cursor: pointer;
+    margin-top: 10px;
+  }
 }
 
 .report-wrapper{
