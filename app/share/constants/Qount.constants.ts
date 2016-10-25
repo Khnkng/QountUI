@@ -20,7 +20,8 @@ export const PATH = {
   USER_SERVICE: '/HalfService/user',
   USERS_SERVICE: '/users?q=:prefix',
   USERS: '/users/',
-  ACTIVATION_LINK:"https://dev-payments.qount.io"
+  ACTIVATION_LINK:"https://dev-payments.qount.io",
+  COMPANIES_SERVICE: '/HalfService/user/:id/companies'
 
 };
 
