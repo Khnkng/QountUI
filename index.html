@@ -40,9 +40,11 @@
   <script src="/systemjs.config.js"></script>
   <!-- /build -->
 
+  <!-- build:js /js/app.min.js -->
   <script>
-    System.import('app/main').catch(function(err){ console.error(err); });
+    System.import('app').catch(function(err){ console.error(err); });
   </script>
+  <!-- /build -->
 </head>
 <base href="/" />
 <!-- 3. Display the application -->
