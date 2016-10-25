@@ -12,6 +12,8 @@
   <script src="//localhost:35729/livereload.js"></script>
   <!-- /build -->
 
+  <!-- build:js /js/qount.js -->
+  
   <!-- bower:js -->
   <script src="/app/bower_components/jquery/dist/jquery.js"></script>
   <script src="/app/bower_components/what-input/what-input.js"></script>
@@ -31,8 +33,13 @@
   <script src="/lib/zone.js"></script>
   <script src="/lib/Reflect.js"></script>
   <script src="/lib/system.src.js"></script>
+  <!-- /build -->
+
+  <!-- build:remove -->
   <!-- 2. Configure SystemJS -->
   <script src="/systemjs.config.js"></script>
+  <!-- /build -->
+
   <script>
     System.import('app/main').catch(function(err){ console.error(err); });
   </script>

@@ -221,6 +221,7 @@ gulp.task('prod-html', ['process-html'], function () {
   var fileList = []
   try {
     fileList = require('fs').readFileSync('build/replacementlist.txt', 'utf8');
+    console.log("list", fileList);
     del([
       'build/replacementlist.txt'
     ])
