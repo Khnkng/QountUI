@@ -24,37 +24,6 @@ $qount-text: #696E73;
 $qount-btn-primary: #4B96FA;
 $qount-btn-hover: #77AFFA;
 
-// Table colors
-// ------------
-
-$qount-table-thead-bg: #E8F2FC;
-$qount-table-tr-hover: #F0F4FD;
-$qount-table-border: #DCDEDD;
-
-table{
-  border: 1px solid $qount-table-border;
-  thead{
-    background: $qount-table-thead-bg;
-      th{
-        font-size: .8em;
-        border: 1px solid $qount-table-border !important;
-      }
-  }
-  tbody{
-    tr{
-      border: 1px solid $qount-table-border;
-      td{
-        color: $qount-text;
-        border: 1px solid $qount-table-border;
-      }
-      &:hover{
-        background: $qount-table-tr-hover;
-      }
-    }
-  }
-}
-
-
 // Tab colors
 // ----------
 
@@ -70,9 +39,99 @@ $qount-anchor-blue: #219AE1;
 
 $qount-form-border: #CACACA;
 $qount-form-border-hover: #B9B9B9;
-$qount-form-ele-border:$qount-form-border;
+$qount-form-ele-border:$qount-btn-primary;
 $qount-form-ele-border-focus:$qount-form-border-hover;
 $qount-form-ele-border-error: $qount-brand-red;
+
+
+// Table colors
+// ------------
+
+$qount-table-thead-bg: #E8F2FC;
+$qount-table-tr-hover: #F0F4FD;
+$qount-table-border: #DCDEDD;
+
+table{
+  //border: 1px solid $qount-table-border;
+  thead{
+    background: $qount-table-thead-bg;
+    tr{
+      border: 1px solid $qount-table-border !important;
+      th{
+        font-size: .8em;
+        border: none !important;
+      }
+    }
+
+  }
+  tbody{
+    tr{
+      border: 1px solid $qount-table-border;
+      td{
+        color: $qount-text;
+        //border: 1px solid $qount-table-border;
+      }
+      &:hover{
+        background: $qount-table-tr-hover;
+      }
+    }
+  }
+  tfoot{
+    background: #ffffff !important;
+    border: none !important;
+    tr{
+      &.footable-paging{
+        position: relative;
+        td{
+          span{
+            &.label{
+              display: none !important;
+            }
+          }
+          ul{
+            color: $qount-text;
+            &.pagination{
+              li{
+                &.active{
+                  a{
+                    color: $qount-text;
+                    background: $qount-table-thead-bg;
+                    border: 1px solid $qount-table-border;
+                    &:focus{
+                      background: $qount-table-tr-hover;
+                      border-color: $qount-table-border;
+                      color: $qount-text;
+                    }
+                    &:hover{
+                      background: $qount-table-tr-hover;
+                      border-color: $qount-table-border;
+                      color: $qount-text;
+                    }
+                  }
+                }
+                a{
+                  color: $qount-text;
+                  font-size: .8em;
+                }
+                &:last-child{
+                  a{
+                    border-radius: 3px;
+                  }
+
+                }
+              }
+
+            }
+
+          }
+        }
+      }
+    }
+  }
+
+}
+
+
 
 
 
