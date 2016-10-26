@@ -53,17 +53,14 @@ export class VendorComponent {
 
   refreshCompany(currentCompany){
     let companies = Session.getCompanies();
-    let currentCompany = _.find(companies, {id: currentCompany});
+    let currentCompany = _.find(companies, {id: currentCompany.companyId});
     this.companyId = currentCompany.id;
     this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
   }
 
-  changeCompany(companyId){
-    this.companyId = companyId;
-  }
-
   getCompanyName(companyId){
-    let company = _.find(this.allCompanies, {id: companyId});
+    let companies = Session.getCompanies();
+    let company = _.find(companies, {id: companyId});
     if(company){
       return company.name;
     }
@@ -71,6 +68,7 @@ export class VendorComponent {
 
   buildTableData(vendors) {
     this.vendors = vendors;
+    this.hasVendorsList = false;
     this.tableData.rows = [];
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
@@ -104,7 +102,9 @@ export class VendorComponent {
       }
       base.tableData.rows.push(row);
     });
-    this.hasVendorsList = true;
+    setTimeout(function(){
+      base.hasVendorsList = true;
+    }, 0)
   }
 
   showCreateVendor() {
@@ -127,7 +127,7 @@ export class VendorComponent {
 
   showVendorProvince(country:any) {
     let countryControl:any = this.vendorForm.controls['country'];
-    countryControl.updateValue(country.name);
+    countryControl.patchValue(country.name);
   }
 
   removeVendor(row:any) {
@@ -170,6 +170,7 @@ export class VendorComponent {
   submit($event) {
     $event && $event.preventDefault();
     var data = this._vendorForm.getData(this.vendorForm);
+    this.companyId = Session.getCurrentCompany();
     if(this.editMode) {
       data.id = this.row.id;
       this.companyService.updateVendor(<VendorModel>data, this.companyId)

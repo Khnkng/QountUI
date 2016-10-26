@@ -1982,3 +1982,7 @@ table.footable-editing-right tr.footable-editing td {
     font-size: 2em;
   }
 }
+
+.row .row{
+  max-width: none;
+}

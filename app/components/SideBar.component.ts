@@ -36,7 +36,11 @@ export class SideBarComponent {
   constructor(private switchBoard:SwitchBoard, private _router:Router) {
     console.info('QountApp sidebar Component Mounted Successfully7');
     this.companies = Session.getCompanies() || [];
-    if(this.companies.length > 0){
+    if(Session.getCurrentCompany()){
+      let currentCompany = _.find(this.companies, {id: Session.getCurrentCompany()});
+      this.currentCompanyId = currentCompany.id;
+      this.currentCompanyName = currentCompany.name;
+    } else if(this.companies.length > 0){
       this.currentCompanyId = this.companies[0].id;
       this.currentCompanyName = this.companies[0].name;
     }

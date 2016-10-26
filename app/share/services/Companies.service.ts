@@ -47,6 +47,11 @@ export class CompaniesService extends  QountServices{
         .catch(this.handleError)
   }
 
+  removeCompany(companyID:string): Observable<any> {
+    var url = this.interpolateUrl(PATH.COMPANIES_SERVICE,null,{id: Session.getUser().id});
+    return this.delete(url+"/"+companyID, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+        .catch(this.handleError)
+  }
   /*company(companyName:string): Observable<any> {
     var url = this.interpolateUrl(PATH.COMPANIES_SERVICE,null,{id: Session.getUser().id});
     return this.query(url+"/"+companyName, SOURCE_TYPE.JAVA).map(res => <any> res.json())
@@ -80,12 +85,6 @@ export class CompaniesService extends  QountServices{
   payments(companyId:string): Observable<any> {
     var url = this.interpolateUrl(PATH.COMPANIES_PAYMENT_SERVICE,null,{id: Session.getUser().id,companyId:companyId});
     return this.query(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
-      .catch(this.handleError)
-  }
-
-  removeCompany(companyID:string): Observable<any> {
-    var url = this.interpolateUrl(PATH.COMPANIES_SERVICE,null,{id: Session.getUser().id});
-    return this.delete(url+"/"+companyID, SOURCE_TYPE.JAVA).map(res => <any> res.json())
       .catch(this.handleError)
   }*/
 

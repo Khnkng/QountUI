@@ -12,6 +12,7 @@ import {FTable} from "./directives/footable.directive";
 import {ComboBox} from "./directives/comboBox.directive";
 import {RouterModule} from "@angular/router";
 import {CommonModule} from "@angular/common";
+import {REACTIVE_FORM_DIRECTIVES} from "@angular/forms/src/directives";
 
 @NgModule({
     imports: [RouterModule, CommonModule],

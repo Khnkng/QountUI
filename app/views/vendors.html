@@ -9,7 +9,7 @@
 </div>
 <div class="row" foundation>
   <div class="column large-12 medium-12 small-12">
-    <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasVendorsList" attr.data="tableData" attr.options="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasVendorsList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
   </div>
   <div>
     <div class="small reveal" #createVendor id="createVendor" data-reveal data-close-on-click="false">
@@ -17,19 +17,6 @@
         {{editMode ? "Update Vendor" : "Create Vendor"}}
       </h6>
       <form *ngIf="active1" (ngSubmit)="submit($event)" [formGroup]="vendorForm">
-        <div class="row" *ngIf="!editMode">
-          <div class="small-12 medium-6 columns">
-            <label>Company
-              <div class="input-group">
-                <select id="company" (change)="changeCompany($event.target.value)">
-                  <option value="">Select company</option>
-                  <option value="{{company.id}}" *ngFor="let company of allCompanies">{{company.name}}</option>
-                </select>
-                <div class="error" [hidden]="vendorForm.controls.name.untouched || vendorForm.controls.name.valid">Vendor Name is required.</div>
-              </div>
-            </label>
-          </div>
-        </div>
         <div class="row">
           <div class="small-12 medium-6 columns">
             <label>Name
