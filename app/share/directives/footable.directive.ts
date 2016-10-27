@@ -2,7 +2,7 @@
  * Created by seshu on 21-07-2016.
  */
 
-import {Directive, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChange, EventEmitter} from "@angular/core";
+import {Directive, ElementRef, OnChanges, OnDestroy, OnInit, SimpleChange, EventEmitter, Output} from "@angular/core";
 
 declare var FooTable:any;
 declare var jQuery:any;
@@ -17,7 +17,7 @@ let eventNames:Array<string> = ['onRowClick', 'onAddRow', 'onDeleteRow', 'onEdit
   properties: [
 
   ],
-  events: eventNames
+  outputs: eventNames
 })
 
 export class FTable implements OnInit, OnDestroy, OnChanges {

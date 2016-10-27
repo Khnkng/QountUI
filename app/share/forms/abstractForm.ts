@@ -23,18 +23,18 @@ export class abstractForm implements form {
     if(obj) {
       for(let key in obj) {
         let control:any = _form.controls[key];
-        if(control && control.updateValue) {
+        if(control && control.patchValue) {
          if(!(obj[key] instanceof  Array)) {
-           control.updateValue(obj[key]);
+           control.patchValue(obj[key]);
          }
         }
       }
     } else {
       for(let key in _form.controls) {
         let control:any = _form.controls[key];
-        if(control && control.updateValue) {
+        if(control && control.patchValue) {
           if(!(obj[key] instanceof  Array)) {
-            control.updateValue(null);
+            control.patchValue(null);
           }
         }
       }
