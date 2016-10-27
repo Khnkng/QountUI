@@ -109,7 +109,7 @@
                       <div class="small-12 medium-12 columns">
 
                         <label>Add User
-                          <custom-tag formControlName="invitedUserEmails" [inputType]="'email'"
+                          <custom-tag [controlName]="'invitedUserEmails'" [group]="companyForm" [_list]="company?.invitedUserEmails" [inputType]="'email'"
                                       [height]="'155px'" [placeholder]="'Email Address'">loading</custom-tag>
                         </label>
                       </div>
@@ -128,7 +128,7 @@
                     <div class="row collapsed">
                       <div class="column small-12">
                         <label>Add Item Code
-                          <custom-tag formControlName="itemCodes" [inputType]="'text'" [placeholder]="'Item code'">loading</custom-tag>
+                          <custom-tag [controlName]="'itemCodes'" [_list]="company.itemCodes" [group]="companyForm" [inputType]="'text'" [placeholder]="'Item code'">loading</custom-tag>
                         </label>
                       </div>
                     </div>
@@ -137,7 +137,7 @@
                     <div class="row collapsed">
                       <div class="column small-12">
                         <label>Add Account Code
-                          <custom-tag formControlName="expenseCodes" [inputType]="'text'" [placeholder]="'Account code'">loading</custom-tag>
+                          <custom-tag [controlName]="'expenseCodes'" [_list]="company.expenseCodes" [group]="companyForm" [inputType]="'text'" [placeholder]="'Account code'">loading</custom-tag>
                         </label>
                       </div>
                     </div>
@@ -250,7 +250,7 @@
 
                     <div class="row" *ngIf="paymentType=='creditCard' || paymentType=='bank'">
                       <div class="small-12 medium-12 columns">
-                        <button class="button create small float-right" (click)="goToDashboard()">Add Payment Info</button>
+                        <button class="button create small float-right">Add Payment Info</button>
                       </div>
                     </div>
                   </div>

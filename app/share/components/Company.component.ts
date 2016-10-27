@@ -79,7 +79,7 @@ export class CompanyComponent {
           this._companyForm.updateForm(this.companyForm, this.company);
 
           let invitedUserEmailsControl:any = this.companyForm.controls['invitedUserEmails'];
-          invitedUserEmailsControl.updateValue(this.company.invitedUserEmails);
+          invitedUserEmailsControl.patchValue(this.company.invitedUserEmails);
           let countryName = this.company.country;
           let country = _.find(PROVINCES.COUNTRIES, function(_country) {
             return _country.name == countryName;
@@ -93,9 +93,9 @@ export class CompanyComponent {
           this.bankInfo=_.filter(company.paymentInfo, ['paymentType', 'bank']);
           this.creditCardInfo=_.filter(company.paymentInfo, ['paymentType', 'creditCard']);
           let itemCodesControl:any = this.companyForm.controls['itemCodes'];
-          itemCodesControl.updateValue(company.itemCodes?company.itemCodes:[]);
+          itemCodesControl.patchValue(company.itemCodes?company.itemCodes:[]);
           let expenseCodesControl:any = this.companyForm.controls['expenseCodes'];
-          expenseCodesControl.updateValue(company.expenseCodes?company.expenseCodes:[]);
+          expenseCodesControl.patchValue(company.expenseCodes?company.expenseCodes:[]);
         }, error =>  this.handleError(error));
       this.companyService.vendors(this.companyId)
         .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
@@ -134,7 +134,7 @@ export class CompanyComponent {
       return province.country == country.code;
     });
     let countryControl:any = this.companyForm.controls['country'];
-    countryControl.updateValue(country.name);
+    countryControl.patchValue(country.name);
     /*let stateControl:any = this.companyForm.controls['state'];
     stateControl.updateValue('');
     this.stateComboBox.clearValue();*/
@@ -142,7 +142,7 @@ export class CompanyComponent {
 
   selectState(state:any) {
     let stateControl:any = this.companyForm.controls['state'];
-    stateControl.updateValue(state.name);
+    stateControl.patchValue(state.name);
   }
 
   showVendorProvince(country:any) {
@@ -150,7 +150,7 @@ export class CompanyComponent {
       return province.country == country.code;
     });
     let countryControl:any = this.vendorForm.controls['country'];
-    countryControl.updateValue(country.name);
+    countryControl.patchValue(country.name);
     /*let stateControl:any = this.vendorForm.controls['state'];
     stateControl.updateValue('');
     this.vendorStateComboBox.clearValue();*/
@@ -158,7 +158,7 @@ export class CompanyComponent {
 
   selectVendorState(state:any) {
     let stateControl:any = this.vendorForm.controls['state'];
-    stateControl.updateValue(state.name);
+    stateControl.patchValue(state.name);
   }
 
   showCompanyMessage(status, obj) {

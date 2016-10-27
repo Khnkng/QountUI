@@ -72,7 +72,7 @@ export class SideBarComponent {
     this.isNotifications = false;
     switch (page) {
       case PAGES.DASHBOARD: {
-        let link = ['/dashboard'];
+        let link = [''];
         this._router.navigate(link);
         this.isDashboard = true;
       }
