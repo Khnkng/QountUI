@@ -8,11 +8,13 @@
 @import "../../app/bower_components/Ionicons/scss/ionicons-font";
 @import "../../app/bower_components/Ionicons/scss/ionicons-icons";
 @import "../../app/bower_components/Ionicons/scss/ionicons-variables";
+@import "../../app/bower_components/font-awesome/scss/font-awesome";
 @import "jquery-ui";
 @import "login-signup";
 @import "footable.standalone";
 @import "line-item-flyout";
 @import "toaster";
+@import "top-notifications";
 
 
 @include foundation-global-styles;
