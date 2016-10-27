@@ -3,7 +3,7 @@
  */
 
 import {Injectable} from "@angular/core";
-import {abstractForm} from "./abstractForm";
+import {abstractForm} from "../share/forms/abstractForm";
 import {Validators} from "@angular/forms";
 
 @Injectable()

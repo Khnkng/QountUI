@@ -22,7 +22,9 @@ export const PATH = {
   USERS: '/users/',
 
   ACTIVATION_LINK:"https://dev-payments.qount.io",
-  COMPANIES_SERVICE: '/HalfService/user/:id/companies'
+  COMPANIES_SERVICE: '/HalfService/user/:id/companies',
+  VENDOR_SERVICE: '/HalfService/user/:id/vendors',
+  COMPANIES_PAYMENT_SERVICE: '/HalfService/user/:id/companies/:companyId/paymentInfo'
 };
 
 export const TOAST_TYPE = {

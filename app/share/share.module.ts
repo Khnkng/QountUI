@@ -12,12 +12,17 @@ import {FTable} from "./directives/footable.directive";
 import {ComboBox} from "./directives/comboBox.directive";
 import {RouterModule} from "@angular/router";
 import {CommonModule} from "@angular/common";
-import {REACTIVE_FORM_DIRECTIVES} from "@angular/forms/src/directives";
+import {AddCompanyComponent} from "./components/AddCompany.component";
+import {CompanyComponent} from "./components/Company.component";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {CustomTags} from "./directives/customTags";
+import {FilterByValuePipe} from "./pipes/filter-by-value";
+import {CustomTagComponent} from "./components/CustomTag.component";
 
 @NgModule({
-    imports: [RouterModule, CommonModule],
-    declarations: [ Focus, Ripple, FoundationInit, CompaniesComponent, FTable, ComboBox],
-    exports: [Focus, Ripple, FoundationInit, CompaniesComponent, FTable, ComboBox]
+    imports: [RouterModule, CommonModule, FormsModule, ReactiveFormsModule],
+    declarations: [ Focus, Ripple, FoundationInit, CompaniesComponent, FTable, ComboBox, AddCompanyComponent, CompanyComponent, CustomTags, FilterByValuePipe, CustomTagComponent],
+    exports: [Focus, Ripple, FoundationInit, CompaniesComponent, FTable, ComboBox, AddCompanyComponent, CompanyComponent, CustomTags, FilterByValuePipe, CustomTagComponent]
 })
 export class ShareModule {
 
