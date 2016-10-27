@@ -93,7 +93,7 @@ export class CompaniesComponent {
     let company = _.find(this.companies, function(comp:CompanyModel) {
       return comp.name == _company.name;
     });
-    let link = ['Company', {"id": company.id}];
+    let link = ['/company', company.id];
     this._router.navigate(link);
   }
 

@@ -33,6 +33,10 @@ import {VendorComponent} from "./components/Vendors.component";
 import {VendorForm} from "./forms/Vendor.form";
 import {ShareModule} from "./share/share.module";
 import {CompaniesComponent} from "./share/components/Companies.component";
+import {CompanyComponent} from "./share/components/Company.component";
+import {AddCompanyComponent} from "./share/components/AddCompany.component";
+import {CompanyForm} from "./share/forms/Company.Form";
+import {FilterByValuePipe} from "./share/pipes/filter-by-value";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -51,6 +55,16 @@ import {CompaniesComponent} from "./share/components/Companies.component";
             component: SignUpComponent,
             canActivate: [DashBoardActivator]
         },
+        {   path: 'addCompany',
+            name: 'AddCompany',
+            component: AddCompanyComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {   path: 'company/:id',
+            name: 'Company',
+            component: CompanyComponent,
+            canActivate: [LoggedInActivator]
+        },
         {
             path: 'companies',
             component: CompaniesComponent,
@@ -64,7 +78,7 @@ import {CompaniesComponent} from "./share/components/Companies.component";
     ])],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, LogInComponent, SignUpComponent, VendorComponent],
     bootstrap: [ AppComponent ],
-    providers: [ LoggedInActivator, DashBoardActivator, FullScreenService, SwitchBoard, NotificationService, ToastService, WindowService, PrintEventService, LoginService, SignUpService, LoginForm, SignUpForm, ForgotPassword, CompaniesService, VendorForm, CurrencyPipe]
+    providers: [ LoggedInActivator, DashBoardActivator, FullScreenService, SwitchBoard, NotificationService, ToastService, WindowService, PrintEventService, LoginService, SignUpService, LoginForm, SignUpForm, ForgotPassword, CompaniesService, VendorForm, CurrencyPipe, FilterByValuePipe, CompanyForm]
 })
 export class AppModule {
 

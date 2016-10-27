@@ -8,6 +8,7 @@ import {Observable} from "rxjs/Rx";
 import {PATH, SOURCE_TYPE} from "../constants/Qount.constants";
 import {Session} from "./Session";
 import {VendorModel} from "../../models/Vendor.model";
+import {CompanyModel} from "../../models/Company.model";
 
 
 @Injectable()
@@ -52,7 +53,7 @@ export class CompaniesService extends  QountServices{
     return this.delete(url+"/"+companyID, SOURCE_TYPE.JAVA).map(res => <any> res.json())
         .catch(this.handleError)
   }
-  /*company(companyName:string): Observable<any> {
+  company(companyName:string): Observable<any> {
     var url = this.interpolateUrl(PATH.COMPANIES_SERVICE,null,{id: Session.getUser().id});
     return this.query(url+"/"+companyName, SOURCE_TYPE.JAVA).map(res => <any> res.json())
       .catch(this.handleError)
@@ -86,7 +87,7 @@ export class CompaniesService extends  QountServices{
     var url = this.interpolateUrl(PATH.COMPANIES_PAYMENT_SERVICE,null,{id: Session.getUser().id,companyId:companyId});
     return this.query(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
       .catch(this.handleError)
-  }*/
+  }
 
   private handleError (error: Response) {
     return Observable.throw(error.text());
