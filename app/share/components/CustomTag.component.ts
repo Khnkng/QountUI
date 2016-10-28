@@ -68,14 +68,17 @@ export class CustomTagComponent {
     event.stopPropagation();
     if((this.inputType !='email')||(this.inputType =='email' && this.validateEmail(event.target.value))){
       /*this will help Pipe on this array to be immutable*/
-      if(this._list && this._list.length > 0) {
-       this._list = [event.target.value, ...this._list];
-      } else {
-        this._list = [event.target.value];
+      let _tempList = _.map(this._list, function(item){return item.toLowerCase()});
+      if(_tempList.indexOf(event.target.value.toLowerCase()) == -1){
+        if(this._list && this._list.length > 0) {
+          this._list = [event.target.value, ...this._list];
+        } else {
+          this._list = [event.target.value];
+        }
+        //this.propagateChange(this._list);
+        event.target.value = "";
+        this.group.controls[this.controlName].patchValue(this._list);
       }
-      //this.propagateChange(this._list);
-      event.target.value = "";
-      this.group.controls[this.controlName].patchValue(this._list);
     }
     else{
       console.log("Please check Email format");

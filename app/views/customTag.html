@@ -1,5 +1,5 @@
 <div class="row collapsed qount-custom-tag" >
-  <div class="small-12" [formGroup]="group">
+  <div class="small-12 custom-tag-div" [formGroup]="group">
       <input class="new-item-input" name="newItem" type="{{inputType}}"
              (keydown.enter)="addItem($event)" placeholder="{{placeholder}}">
       <input class="new-item-input" name="{{controlName}}" [formControlName]="controlName" type="hidden">
