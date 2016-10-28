@@ -24,6 +24,7 @@ export class SideBarComponent {
   isWorkflow:boolean = false;
   isNotifications:boolean = false;
   isReports:boolean = false;
+  isCOA:boolean = false;
   allBoards:any;
   currentBoardName = null;
   companies:Array<any>;
@@ -70,6 +71,7 @@ export class SideBarComponent {
     this.isVendors = false;
     this.isWorkflow = false;
     this.isNotifications = false;
+    this.isCOA = false;
     switch (page) {
       case PAGES.DASHBOARD: {
         let link = [''];
@@ -77,6 +79,12 @@ export class SideBarComponent {
         this.isDashboard = true;
       }
       break;
+      case PAGES.COA: {
+        let link = ['/chartOfAccounts'];
+        this._router.navigate(link);
+        this.isCOA = true;
+      }
+        break;
       case PAGES.COMPANIES: {
         let link=['/companies'];
         this._router.navigate(link);

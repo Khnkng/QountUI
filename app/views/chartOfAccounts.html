@@ -1,0 +1,77 @@
+
+<div class="row" foundation>
+  <div class="column small-12 medium-6">
+    <h6>Chart of Accounts</h6>
+  </div>
+  <div class="columns small-6 small-offset-6 right">
+    <button class="button small float-right" (click)="showAddCOA()">Add COA</button>
+  </div>
+</div>
+<div class="row chart-of-accounts" foundation>
+  <div class="column large-12 medium-12 small-12">
+    <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCOAList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+  </div>
+  <div>
+    <div class="small reveal" id="addCOA" #addCOA data-reveal data-close-on-click="false" style="min-height: 90%;">
+      <h6>
+        {{editMode ? "Update COA" : "Add COA"}}
+      </h6>
+      <form *ngIf="newFormActive" [formGroup]="coaForm">
+        <div class="row">
+          <div class="small-12 medium-6 columns">
+            <label>Category type
+              <select formControlName="categoryType" placeholder="Category type" (change)="populateSubtypes($event)">
+                <option *ngFor="let category of categoryTypes" [value]="category.value">{{category.name}}</option>
+              </select>
+              <div class="error" [hidden]="coaForm.controls.categoryType.untouched || coaForm.controls.categoryType.valid">Category type is required.</div>
+            </label>
+          </div>
+          <div class="small-12 medium-6 columns">
+            <label>Name
+              <input type="text" formControlName="name" placeholder="Name*"/>
+              <div class="error" [hidden]="coaForm.controls.name.untouched || coaForm.controls.name.valid">Name is required.</div>
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 medium-6 columns">
+            <label>Sub type
+              <select formControlName="subType" placeholder="Sub type" (change)="selectSubtype($event)">
+                <option value="{{subtype.value}}" *ngFor="let subtype of displaySubtypes">{{subtype.name}}</option>
+              </select>
+              <div class="error" [hidden]="coaForm.controls.subType.untouched || coaForm.controls.subType.valid">Sub type is required.</div>
+            </label>
+          </div>
+          <div class="small-12 medium-6 columns">
+            <label>Description
+              <input type="text" formControlName="description" placeholder="Description"/>
+              <div class="error" [hidden]="coaForm.controls.description.untouched || coaForm.controls.description.valid">Description is required.</div>
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 medium-6 columns description" [innerHTML]="description">
+          </div>
+          <div class="small-12 medium-6 columns">
+            <div>
+              <input type="checkbox" formControlName="isSubAccount" [(ngModel)]="isSubAccount"/>Is sub-account?
+            </div>
+            <div *ngIf="isSubAccount">
+              <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentAccount" [listObject]="parentAccounts">
+                <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount">{{parentAccount}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="row save-btn float-right">
+          <div class="columns">
+            <button class="button small float-right" [disabled]="!coaForm.valid" (click)="saveCOA($event)">Save</button>
+          </div>
+        </div>
+      </form>
+      <button class="close-button" data-close aria-label="Close reveal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+</div>

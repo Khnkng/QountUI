@@ -37,6 +37,8 @@ import {CompanyComponent} from "./share/components/Company.component";
 import {AddCompanyComponent} from "./share/components/AddCompany.component";
 import {CompanyForm} from "./share/forms/Company.Form";
 import {FilterByValuePipe} from "./share/pipes/filter-by-value";
+import {ChartOfAccountsComponent} from "./components/ChartOfAccounts.component";
+import {COAForm} from "./forms/COA.form";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -74,11 +76,16 @@ import {FilterByValuePipe} from "./share/pipes/filter-by-value";
             path: 'vendors',
             component: VendorComponent,
             canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'chartOfAccounts',
+            component: ChartOfAccountsComponent,
+            canActivate: [LoggedInActivator]
         }
     ])],
-    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, LogInComponent, SignUpComponent, VendorComponent],
+    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent],
     bootstrap: [ AppComponent ],
-    providers: [ LoggedInActivator, DashBoardActivator, FullScreenService, SwitchBoard, NotificationService, ToastService, WindowService, PrintEventService, LoginService, SignUpService, LoginForm, SignUpForm, ForgotPassword, CompaniesService, VendorForm, CurrencyPipe, FilterByValuePipe, CompanyForm]
+    providers: [ LoggedInActivator, DashBoardActivator, FullScreenService, SwitchBoard, NotificationService, ToastService, WindowService, PrintEventService, LoginService, SignUpService, LoginForm, SignUpForm, ForgotPassword, CompaniesService, VendorForm, CurrencyPipe, FilterByValuePipe, CompanyForm, COAForm]
 })
 export class AppModule {
 

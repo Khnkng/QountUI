@@ -1882,6 +1882,14 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
+#addCOA{
+  .save-btn{
+    position: absolute;
+    bottom: 10%;
+    right: 5%;
+  }
+}
+
 /* Loading CSS*/
 .fond{position:absolute;padding-top:85px;top:0;left:0; right:0;bottom:0;}
 

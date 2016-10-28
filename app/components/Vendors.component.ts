@@ -25,7 +25,6 @@ declare var _:any;
 })
 
 export class VendorComponent {
-  type:string = "component";
   tableData:any = {};
   tableOptions:any = {};
   status:any;
