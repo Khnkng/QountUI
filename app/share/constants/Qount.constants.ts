@@ -74,14 +74,14 @@ export const GROUPS = {
 };
 
 export const COA_CATEGORY_TYPES = [
-  {"value": "accountsReceivable", "name": "Accounts receivable (A/R)"},{"value": "bank", "name": "Bank"},
+  {"value": "accountsReceivable", "name": "Accounts Receivable (A/R)"},{"value": "bank", "name": "Bank"},
   {"value": "otherCurrentAssets", "name": "Other Current Assets"},{"value": "fixedAssets", "name": "Fixed Assets"},
   {"value": "otherAssets", "name": "Other Assets"},{"value": "accountsPayable", "name": "Accounts Payable(A/P)"},
   {"value": "creditCard", "name": "Credit Card"},{"value": "otherCurrentLiabilities", "name": "Other Current Liabilities"},
   {"value": "longTermLiabilities", "name": "Long Term Liabilities"},{"value": "equity", "name": "Equity"},
   {"value": "income", "name": "Income"},{"value": "otherIncome", "name": "Other Income"},
   {"value": "costOfGoodsSold", "name": "Cost of Goods Sold"},{"value": "expenses", "name": "Expenses"},
-  {"value": "otherExpense", "name": "Other Expense"}
+  {"value": "otherExpense", "name": "Other Expense"},{"value": "costOfServices", "name": "Cost of Services"}
 ];
 
 export const COA_SUBTYPES = {
@@ -122,6 +122,8 @@ export const COA_SUBTYPES = {
   costOfGoodsSold: [{'value': 'costOfLaborCOS', 'name': 'Cost of labor - COS'},{'value': 'equipmentRental', 'name': 'Equipment Rental - COS'},{'value': 'otherCostsOfServices', 'name': 'Other Costs of Services - COS'},
     {'value': 'shippingFreightAndDelivery', 'name': 'Shipping, Freight & Delivery - COS'},{'value': 'suppliesAndMaterials', 'name': 'Supplies & Materials - COGS'}],
 
+  costOfServices: [{'value': 'costOfLaborCOS', 'name': 'Cost of labor - COS'},{'value': 'otherCostOfServices', 'name': 'Other cost of services - COS'}],
+
   expenses: [{'value': 'advertisingOrPromotional', 'name': 'Advertising/Promotional'},{'value': 'auto', 'name': 'Auto'},{'value': 'badDebts', 'name': 'Bad Debts'},
     {'value': 'bankCharges', 'name': 'Bank Charges'},{'value': 'charitableContributions', 'name': 'Charitable Contributions'},{'value': 'costOfLabor', 'name': 'Cost of Labor'},
     {'value': 'duesAndSubsriptions', 'name': 'Dues & subscriptions'},{'value': 'entertainment', 'name': 'Entertainment'}],
@@ -131,7 +133,7 @@ export const COA_SUBTYPES = {
 
 export const SUBTYPE_DESCRIPTIONS = {
   accountsPayable:"<p><b>Accounts Payable</b>(also called A/P) tracks amounts you owe to your vendors and suppliers.</p><p>Qount Plus automatically creates one Accounts Payable account for you. Most businesses need only one.</p>",
-  accountsReceivable:"<p><b>Accounts receivable</b> (also called A/R, Debtors, or Trade and other receivables) tracks money that customers owe you for products or services, and payments customers make.</p><p>Qount plus automatically creates one Accounts receivable account for you. Most buinesses need only one.</p><p>Each customer has a register, which functions like an Accounts receivable account for each customer.</p>",
+  accountsReceivable:"<p><b>Accounts Receivable</b> (also called A/R, Debtors, or Trade and other receivables) tracks money that customers owe you for products or services, and payments customers make.</p><p>Qount plus automatically creates one Accounts receivable account for you. Most buinesses need only one.</p><p>Each customer has a register, which functions like an Accounts receivable account for each customer.</p>",
   accumulatedAdjustment:"<p>S coporations use this account to track adjustments to owner's equity that are not attributable to net income.</p>",
   accumulatedAmortization:"<p>Use <b>Accumulated amortization</b> to track how much you amortize intangible assets.</p>",
   accumulatedAmortizationOfOtherAssets:"<p>Use <b>Accumulated amortization of other assets</b> to track how much you've amortized asset whose type is <b>Other Asset</b></p>",
