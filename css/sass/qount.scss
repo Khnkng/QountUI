@@ -8,12 +8,14 @@
 @import "../../app/bower_components/Ionicons/scss/ionicons-font";
 @import "../../app/bower_components/Ionicons/scss/ionicons-icons";
 @import "../../app/bower_components/Ionicons/scss/ionicons-variables";
+@import "../../app/bower_components/font-awesome/scss/font-awesome";
 @import "jquery-ui";
 @import "login-signup";
 @import "footable.standalone";
 @import "line-item-flyout";
 @import "toaster";
 @import "userprofile";
+@import "top-notifications";
 
 
 @include foundation-global-styles;
@@ -1881,6 +1883,14 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
+#addCOA{
+  .save-btn{
+    position: absolute;
+    bottom: 10%;
+    right: 5%;
+  }
+}
+
 /* Loading CSS*/
 .fond{position:absolute;padding-top:85px;top:0;left:0; right:0;bottom:0;}
 
@@ -1990,4 +2000,8 @@ table.footable-editing-right tr.footable-editing td {
 
 .row .row{
   max-width: none;
+}
+
+.custom-tag-div{
+  border: none !important;
 }

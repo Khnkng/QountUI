@@ -39,6 +39,9 @@ import {CompanyForm} from "./share/forms/Company.Form";
 import {FilterByValuePipe} from "./share/pipes/filter-by-value";
 import {UserProfileComponent} from "./components/UserProfile.component";
 import {UserProfileService} from "./services/UserProfile.service";
+import {ChartOfAccountsComponent} from "./components/ChartOfAccounts.component";
+import {COAForm} from "./forms/COA.form";
+import {SocketService} from "./share/services/Socket.service";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -78,15 +81,21 @@ import {UserProfileService} from "./services/UserProfile.service";
             canActivate: [LoggedInActivator]
         },
         {
+
             path: 'user-profile',
             name: 'UserProfile',
             component: UserProfileComponent,
             canActivate: [LoggedInActivator]
         },
+        {
+            path: 'chartOfAccounts',
+            component: ChartOfAccountsComponent,
+            canActivate: [LoggedInActivator]
+        }
     ])],
-    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, LogInComponent, SignUpComponent, VendorComponent],
+    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent],
     bootstrap: [ AppComponent ],
-    providers: [ LoggedInActivator, DashBoardActivator, FullScreenService, SwitchBoard, NotificationService, ToastService, WindowService, PrintEventService, LoginService, SignUpService, LoginForm, SignUpForm, ForgotPassword, CompaniesService, VendorForm, CurrencyPipe, FilterByValuePipe, CompanyForm, UserProfileService]
+    providers: [ LoggedInActivator, DashBoardActivator, FullScreenService, SwitchBoard, NotificationService, ToastService, WindowService, PrintEventService, LoginService, SignUpService, LoginForm, SignUpForm, ForgotPassword, CompaniesService, VendorForm, CurrencyPipe, FilterByValuePipe, CompanyForm, UserProfileService, COAForm, SocketService]
 })
 export class AppModule {
 

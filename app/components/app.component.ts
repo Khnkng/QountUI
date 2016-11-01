@@ -11,6 +11,7 @@ import {ToastService} from "../share/services/Toast.service";
 import {Session} from "../share/services/Session";
 import {TOAST_TYPE} from "../share/constants/Qount.constants";
 import "rxjs/add/operator/filter";
+import {SocketService} from "../share/services/Socket.service";
 
 
 
@@ -46,7 +47,7 @@ export class AppComponent  implements OnInit{
         'shrink' : true
     }
 
-    constructor(private switchBoard:SwitchBoard, private _router:Router, private toastService: ToastService) {
+    constructor(private switchBoard:SwitchBoard, private _router:Router, private toastService: ToastService, private socketService: SocketService) {
         if(Session.hasSession()) {
             this.hasLoggedIn = true;
         }

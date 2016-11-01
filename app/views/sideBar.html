@@ -14,6 +14,9 @@
       <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isDashboard}" (click)="showPage('dashboard')"><i class="icon ion-ios-keypad"></i><div class="name">Dashboard</div></a>
     </li>
     <li>
+      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isCOA}" (click)="showPage('coa')"><i class="icon ion-ios-list"></i><div class="name">Chart of Accounts</div></a>
+    </li>
+    <li>
         <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isBooks}" (click)="showPage('books')"><i class="icon ion-ios-book"></i><div class="name">Books</div></a>
     </li>
     <li>
@@ -34,9 +37,9 @@
     <li>
       <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isVendors}" (click)="showPage('vendors')"><i class="icon ion-android-contacts"></i><div class="name">Vendors</div></a>
     </li>
-    <li>
+    <!--<li>
       <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isNotifications}" (click)="showPage('notifications', $event)"><i class="icon ion-speakerphone"></i><div class="name">Notifications</div></a>
-    </li>
+    </li>-->
     <li>
       <a ripple [ngClass]="{'collapsed': !expanded}" (click)="logout()"><i class="icon ion-power"></i><div class="name">Log Out</div></a>
     </li>

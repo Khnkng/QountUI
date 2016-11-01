@@ -59,12 +59,13 @@ export class LogInComponent implements OnInit {
 
   showMessage(status, obj) {
     if(status) {
-      this.status = {};
+      /*this.status = {};
       this.status['success'] = true;
+      this.message = "logged in successfully.";
+      this.newLogin();*/
+
       //reading user object
       Session.create(obj.user, obj.token);
-      this.message = "logged in successfully.";
-      this.newLogin();
       this.fetchCompanies(obj.user);
     } else {
       this.status = {};

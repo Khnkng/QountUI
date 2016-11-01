@@ -17,6 +17,7 @@ export class VendorForm extends abstractForm{
       "name": ['', Validators.required],
       "ein": ['', Validators.required],
       "accountNumber": [''],
+      "accountNumbers": [['']],
       "email": ['', Validators.compose(numberValidator)],
       "address": ['', Validators.required],
       "routingNumber": [''],
