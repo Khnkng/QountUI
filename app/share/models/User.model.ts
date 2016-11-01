@@ -7,7 +7,7 @@ export interface UserModel {
   firstName: string
   lastName: string
   name: string
-  phoneNumber: string
+  phone_number: string
   active: boolean
   groups: [string]
   group_invitations: [string]

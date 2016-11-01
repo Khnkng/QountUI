@@ -18,11 +18,12 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CustomTags} from "./directives/customTags";
 import {FilterByValuePipe} from "./pipes/filter-by-value";
 import {CustomTagComponent} from "./components/CustomTag.component";
+import {UserProfileComponent} from "../components/UserProfile.component";
 
 @NgModule({
     imports: [RouterModule, CommonModule, FormsModule, ReactiveFormsModule],
-    declarations: [ Focus, Ripple, FoundationInit, CompaniesComponent, FTable, ComboBox, AddCompanyComponent, CompanyComponent, CustomTags, FilterByValuePipe, CustomTagComponent],
-    exports: [Focus, Ripple, FoundationInit, CompaniesComponent, FTable, ComboBox, AddCompanyComponent, CompanyComponent, CustomTags, FilterByValuePipe, CustomTagComponent]
+    declarations: [ Focus, Ripple, FoundationInit, CompaniesComponent, FTable, ComboBox, AddCompanyComponent, CompanyComponent, CustomTags, FilterByValuePipe, CustomTagComponent, UserProfileComponent],
+    exports: [Focus, Ripple, FoundationInit, CompaniesComponent, FTable, ComboBox, AddCompanyComponent, CompanyComponent, CustomTags, FilterByValuePipe, CustomTagComponent, UserProfileComponent]
 })
 export class ShareModule {
 

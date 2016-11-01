@@ -166,7 +166,7 @@ export class HeaderComponent implements  OnInit{
   }
 
   viewUserProfilePage($event){
-    let link = ["/UserProfile"];
+    let link = ["/user-profile"];
     this.redirect.emit(link);
   }
 }
