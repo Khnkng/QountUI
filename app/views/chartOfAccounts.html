@@ -19,6 +19,20 @@
       <form *ngIf="newFormActive" [formGroup]="coaForm">
         <div class="row">
           <div class="small-12 medium-6 columns">
+            <label>Name
+              <input type="text" formControlName="name" placeholder="Name*"/>
+              <div class="error" [hidden]="coaForm.controls.name.untouched || coaForm.controls.name.valid">Name is required.</div>
+            </label>
+          </div>
+          <div class="small-12 medium-6 columns">
+            <label>Description
+              <textarea formControlName="description" placeholder="Description"></textarea>
+              <div class="error" [hidden]="coaForm.controls.description.untouched || coaForm.controls.description.valid">Description is required.</div>
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 medium-6 columns">
             <label>Category type
               <select formControlName="categoryType" placeholder="Category type" (change)="populateSubtypes($event)">
                 <option *ngFor="let category of categoryTypes" [value]="category.value">{{category.name}}</option>
@@ -27,25 +41,11 @@
             </label>
           </div>
           <div class="small-12 medium-6 columns">
-            <label>Name
-              <input type="text" formControlName="name" placeholder="Name*"/>
-              <div class="error" [hidden]="coaForm.controls.name.untouched || coaForm.controls.name.valid">Name is required.</div>
-            </label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="small-12 medium-6 columns">
             <label>Sub type
               <select formControlName="subType" placeholder="Sub type" (change)="selectSubtype($event)">
                 <option value="{{subtype.value}}" *ngFor="let subtype of displaySubtypes">{{subtype.name}}</option>
               </select>
               <div class="error" [hidden]="coaForm.controls.subType.untouched || coaForm.controls.subType.valid">Sub type is required.</div>
-            </label>
-          </div>
-          <div class="small-12 medium-6 columns">
-            <label>Description
-              <input type="text" formControlName="description" placeholder="Description"/>
-              <div class="error" [hidden]="coaForm.controls.description.untouched || coaForm.controls.description.valid">Description is required.</div>
             </label>
           </div>
         </div>
@@ -58,7 +58,7 @@
             </div>
             <div *ngIf="isSubAccount">
               <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentAccount" [listObject]="parentAccounts">
-                <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount">{{parentAccount}}</option>
+                <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.coaID">{{parentAccount.name}}</option>
               </select>
             </div>
           </div>

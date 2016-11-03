@@ -25,7 +25,7 @@ export class ChartOfAccountsComponent{
   descriptions = SUBTYPE_DESCRIPTIONS;
   displaySubtypes: any = [];
   description:string = '';
-  parentAccounts = ["Parent 1", "Parent 2", "Parent 3"];
+  parentAccounts = [];
   @ViewChild('addCOA') addCOA;
   @ViewChild('parentAccountComboBoxDir') parentAccountComboBox: ComboBox;
   isSubAccount:boolean = false;
@@ -66,8 +66,11 @@ export class ChartOfAccountsComponent{
   showAddCOA() {
     this.editMode = false;
     this.coaForm = this._fb.group(this._coaForm.getForm());
-    this.newForm();
+    this.parentAccounts = _.cloneDeep(this.chartOfAccounts);
+    this.displaySubtypes = [];
     this.description = "";
+    this.isSubAccount = false;
+    this.newForm();
     jQuery(this.addCOA.nativeElement).foundation('open');
   }
 
