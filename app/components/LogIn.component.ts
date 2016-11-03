@@ -4,17 +4,17 @@
 
 
 import {Component, OnInit} from "@angular/core";
-import {ToastService} from "../share/services/Toast.service";
+import {ToastService} from "qCommon/app/services/Toast.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router, ActivatedRoute} from "@angular/router";
-import {SwitchBoard} from "../share/services/SwitchBoard";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {LoginService} from "../services/Login.service";
 import {LoginForm} from "../forms/Login.form";
 import {ForgotPassword} from "../forms/ForgotPassword.form";
 import {LoginModel} from "../models/Login.model";
-import {Session} from "../share/services/Session";
-import {PATH, TOAST_TYPE} from "../share/constants/Qount.constants";
-import {CompaniesService} from "../share/services/Companies.service";
+import {Session} from "qCommon/app/services/Session";
+import {PATH, TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
 
 
 declare var jQuery:any;

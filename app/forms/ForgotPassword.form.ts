@@ -2,7 +2,7 @@
  * Created by seshu on 10-03-2016.
  */
 
-import {abstractForm} from "../share/forms/abstractForm";
+import {abstractForm} from "qCommon/app/forms/abstractForm";
 import {Injectable} from "@angular/core";
 import {Validators} from "@angular/forms";
 

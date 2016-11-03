@@ -24,7 +24,8 @@
     "socket.io-client": "^1.5.1",
     "systemjs": "0.19.39",
     "systemjs-builder": "^0.15.25",
-    "zone.js": "^0.6.25"
+    "zone.js": "^0.6.25",
+    "qCommon" : "git+https://github.com/Qount/qCommon.git"
   },
   "devDependencies": {
     "bower": "^1.7.9",

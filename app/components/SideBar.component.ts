@@ -4,9 +4,9 @@
 
 import {Component, Input, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
-import {SwitchBoard} from "../share/services/SwitchBoard";
-import {Session} from "../share/services/Session";
-import {PAGES} from "../share/constants/Qount.constants";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {Session} from "qCommon/app/services/Session";
+import {PAGES} from "qCommon/app/constants/Qount.constants";
 
 declare var jQuery:any;
 declare var _:any;

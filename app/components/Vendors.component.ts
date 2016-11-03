@@ -4,17 +4,17 @@
 
 import {Component, ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
-import {CompaniesService} from "../share/services/Companies.service";
-import {PROVINCES} from "../share/constants/Provinces.constants";
-import {ComboBox} from "../share/directives/comboBox.directive";
-import {FTable} from "../share/directives/footable.directive";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
+import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
+import {ComboBox} from "qCommon/app/directives/comboBox.directive";
+import {FTable} from "qCommon/app/directives/footable.directive";
 import {VendorForm} from "../forms/Vendor.form";
 import {Router} from "@angular/router";
 import {VendorModel} from "../models/Vendor.model";
-import {TOAST_TYPE} from "../share/constants/Qount.constants";
-import {ToastService} from "../share/services/Toast.service";
-import {SwitchBoard} from "../share/services/SwitchBoard";
-import {Session} from "../share/services/Session";
+import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {ToastService} from "qCommon/app/services/Toast.service";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {Session} from "qCommon/app/services/Session";
 
 declare var jQuery:any;
 declare var _:any;

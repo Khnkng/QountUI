@@ -4,10 +4,10 @@
 
 import {Component, Output, EventEmitter, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
-import {NotificationModel} from "../share/models/Notification.model";
-import {SwitchBoard} from "../share/services/SwitchBoard";
-import {FullScreenService} from "../share/services/fullscreen.service";
-import {NotificationService} from "../share/services/Notification.service";
+import {NotificationModel} from "qCommon/app//models/Notification.model";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {FullScreenService} from "qCommon/app/services/fullscreen.service";
+import {NotificationService} from "qCommon/app/services/Notification.service";
 
 
 declare var jQuery:any;

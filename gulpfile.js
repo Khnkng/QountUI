@@ -35,6 +35,10 @@ var tsProject = ts.createProject('tsconfig.json', {
   typescript: require('typescript')
 });
 
+var tsProject1 = ts.createProject('node_modules/qCommon/tsconfig.json', {
+  typescript: require('typescript')
+});
+
 var tsProjectProd = ts.createProject('tsconfig.json', {
   typescript: require('typescript')
 });
@@ -112,7 +116,9 @@ gulp.task('serve', ['build'], function () {
 gulp.task('typescript-compile', function () {
   var tsResult = tsProject.src() // instead of gulp.src(...)
       .pipe(ts(tsProject));
-  return tsResult.js.pipe(gulp.dest('build/app/')).pipe(livereload());
+  var tsResult1 = tsProject1.src() // instead of gulp.src(...)
+      .pipe(ts(tsProject1));
+  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon'))).pipe(livereload());
   /*return gulp.src(['app/!**!/!*.ts', '!app/bower_components/!**!/!*.ts', '!node_modules/!**!/!*.ts'])
    .pipe(ts(tsProject))
    .pipe(gulp.dest('build/app/'));*/
@@ -148,6 +154,7 @@ gulp.task('dependencies', function () {
   var angular = gulp.src(['node_modules/@angular/**/*.*']).pipe(gulp.dest('build/lib/@angular'));
   var angularInMemory = gulp.src(['node_modules/angular2-in-memory-web-api/**/*.*']).pipe(gulp.dest('build/lib/angular2-in-memory-web-api'));
   var rxjs = gulp.src(['node_modules/rxjs/**/*.*']).pipe(gulp.dest('build/lib/rxjs'));
+  var qCommons = gulp.src(['node_modules/qCommon/**/*.*']).pipe(gulp.dest('build/lib/qCommon'));
   /*var angular2uuid = gulp.src(['node_modules/angular2-uuid/!**!/!*.*']).pipe(gulp.dest('build/lib/angular2-uuid'));
   var immutable = gulp.src(['node_modules/immutable/!**!/!*.*']).pipe(gulp.dest('build/lib/immutable'));*/
   //var qCommon = gulp.src(['node_modules/qCommon/**/*.*']).pipe(gulp.dest('build/lib/qCommon'));

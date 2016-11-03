@@ -4,6 +4,23 @@
 
 
 import {NgModule} from "@angular/core";
+//noinspection TypeScriptCheckImport
+import {ShareModule} from "qCommon/app/share.module";
+import {LoggedInActivator} from "qCommon/app/services/CheckSessionActivator";
+import {DashBoardActivator} from "qCommon/app/services/DashBoardActivator";
+import {AddCompanyComponent} from "qCommon/app/components/AddCompany.component";
+import {CompaniesComponent} from "qCommon/app/components/Companies.component";
+import {CompanyComponent} from "qCommon/app/components/Company.component";
+import {FullScreenService} from "qCommon/app/services/fullScreen.service";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {NotificationService} from "qCommon/app/services/Notification.service";
+import {ToastService} from "qCommon/app/services/Toast.service";
+import {WindowService} from "qCommon/app/services/Window.service";
+import {PrintEventService} from "qCommon/app/services/PrintEvent.service";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
+import {FilterByValuePipe} from "qCommon/app/pipes/filter-by-value";
+import {CompanyForm} from "qCommon/app/forms/Company.Form";
+import {SocketService} from "qCommon/app/services/Socket.service";
 import {BrowserModule} from "@angular/platform-browser";
 import {AppComponent} from "./components/app.component";
 import {RouterModule} from "@angular/router";
@@ -12,13 +29,6 @@ import {SideBarComponent} from "./components/SideBar.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {CanvasComponent} from "./components/canvas.component";
 import {HttpModule} from "@angular/http";
-import {LoggedInActivator} from "./share/services/CheckSessionActivator";
-import {FullScreenService} from "./share/services/fullscreen.service";
-import {SwitchBoard} from "./share/services/SwitchBoard";
-import {NotificationService} from "./share/services/Notification.service";
-import {ToastService} from "./share/services/Toast.service";
-import {WindowService} from "./share/services/Window.service";
-import {PrintEventService} from "./share/services/PrintEvent.service";
 import {LogInComponent} from "./components/LogIn.component";
 import {SignUpComponent} from "./components/SignUp.component";
 import {CommonModule, CurrencyPipe} from "@angular/common";
@@ -27,21 +37,14 @@ import {SignUpService} from "./services/SignUp.service";
 import {LoginForm} from "./forms/Login.form";
 import {SignUpForm} from "./forms/SignUp.form";
 import {ForgotPassword} from "./forms/ForgotPassword.form";
-import {DashBoardActivator} from "./share/services/DashBoardActivator";
-import {CompaniesService} from "./share/services/Companies.service";
+
 import {VendorComponent} from "./components/Vendors.component";
 import {VendorForm} from "./forms/Vendor.form";
-import {ShareModule} from "./share/share.module";
-import {CompaniesComponent} from "./share/components/Companies.component";
-import {CompanyComponent} from "./share/components/Company.component";
-import {AddCompanyComponent} from "./share/components/AddCompany.component";
-import {CompanyForm} from "./share/forms/Company.Form";
-import {FilterByValuePipe} from "./share/pipes/filter-by-value";
-import {UserProfileComponent} from "./components/UserProfile.component";
-import {UserProfileService} from "./services/UserProfile.service";
+
+import {UserProfileComponent} from "qCommon/app/components/UserProfile.component";
+import {UserProfileService} from "qCommon/app/services/UserProfile.service";
 import {ChartOfAccountsComponent} from "./components/ChartOfAccounts.component";
 import {COAForm} from "./forms/COA.form";
-import {SocketService} from "./share/services/Socket.service";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -95,7 +98,7 @@ import {SocketService} from "./share/services/Socket.service";
     ])],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent],
     bootstrap: [ AppComponent ],
-    providers: [ LoggedInActivator, DashBoardActivator, FullScreenService, SwitchBoard, NotificationService, ToastService, WindowService, PrintEventService, LoginService, SignUpService, LoginForm, SignUpForm, ForgotPassword, CompaniesService, VendorForm, CurrencyPipe, FilterByValuePipe, CompanyForm, UserProfileService, COAForm, SocketService]
+    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword]
 })
 export class AppModule {
 

@@ -7,8 +7,8 @@ import {Response, Http} from "@angular/http";
 
 import {Injectable} from "@angular/core";
 import {LoginModel} from "../models/Login.model";
-import {QountServices} from "../share/services/QountServices";
-import {PATH, SOURCE_TYPE} from "../share/constants/Qount.constants";
+import {QountServices} from "qCommon/app/services/QountServices";
+import {PATH, SOURCE_TYPE} from "qCommon/app/constants/Qount.constants";
 
 @Injectable()
 export class LoginService extends QountServices{

@@ -4,8 +4,8 @@
 
 import {Component,ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
-import {ComboBox} from "../share/directives/comboBox.directive";
-import {COA_CATEGORY_TYPES, COA_SUBTYPES, SUBTYPE_DESCRIPTIONS} from "../share/constants/Qount.constants";
+import {ComboBox} from "qCommon/app/directives/comboBox.directive";
+import {COA_CATEGORY_TYPES, COA_SUBTYPES, SUBTYPE_DESCRIPTIONS} from "qCommon/app/constants/Qount.constants";
 import {COAForm} from "../forms/COA.form";
 
 declare var jQuery:any;

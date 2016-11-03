@@ -5,10 +5,10 @@
 import {Component, OnInit} from "@angular/core";
 import {SignUpService} from "../services/SignUp.service";
 import {SignUpForm} from "../forms/SignUp.form";
-import {ToastService} from "../share/services/Toast.service";
+import {ToastService} from "qCommon/app/services/Toast.service";
 import {FormGroup, FormBuilder} from "@angular/forms";
 import {Router, ActivatedRoute} from "@angular/router";
-import {PATH, TOAST_TYPE} from "../share/constants/Qount.constants";
+import {PATH, TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {SignUpModel} from "../models/SignUp.model";
 
 
