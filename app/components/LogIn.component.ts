@@ -8,7 +8,7 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router, ActivatedRoute} from "@angular/router";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
-import {LoginService} from "../services/Login.service";
+import {LoginService} from "qCommon/app/services/Login.service";
 import {LoginForm} from "../forms/Login.form";
 import {ForgotPassword} from "../forms/ForgotPassword.form";
 import {LoginModel} from "../models/Login.model";
