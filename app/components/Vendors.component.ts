@@ -8,7 +8,7 @@ import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {FTable} from "qCommon/app/directives/footable.directive";
-import {VendorForm} from "../forms/Vendor.form";
+import {VendorForm} from "qCommon/app/forms/Vendor.form";
 import {Router} from "@angular/router";
 import {VendorModel} from "../models/Vendor.model";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
