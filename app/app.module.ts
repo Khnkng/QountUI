@@ -28,7 +28,7 @@ import {VendorComponent} from "./components/Vendors.component";
 import {UserProfileComponent} from "qCommon/app/components/UserProfile.component";
 import {ChartOfAccountsComponent} from "./components/ChartOfAccounts.component";
 import {COAForm} from "./forms/COA.form";
-import {DashBoardActivator} from "../build/lib/qCommon/app/services/DashBoardActivator";
+import {DashBoardActivator} from "qCommon/app/services/DashBoardActivator";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
