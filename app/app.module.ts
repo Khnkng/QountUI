@@ -6,7 +6,6 @@
 import {NgModule} from "@angular/core";
 import {ShareModule} from "qCommon/app/share.module";
 import {LoggedInActivator} from "qCommon/app/services/CheckSessionActivator";
-import {DashBoardActivator} from "qCommon/app/services/DashBoardActivator";
 import {AddCompanyComponent} from "qCommon/app/components/AddCompany.component";
 import {CompaniesComponent} from "qCommon/app/components/Companies.component";
 import {CompanyComponent} from "qCommon/app/components/Company.component";
@@ -29,6 +28,7 @@ import {VendorComponent} from "./components/Vendors.component";
 import {UserProfileComponent} from "qCommon/app/components/UserProfile.component";
 import {ChartOfAccountsComponent} from "./components/ChartOfAccounts.component";
 import {COAForm} from "./forms/COA.form";
+import {DashBoardActivator} from "../build/lib/qCommon/app/services/DashBoardActivator";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
