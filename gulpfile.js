@@ -78,7 +78,7 @@ gulp.task('dev', ['watch']);
 
 // run production task
 gulp.task('prod', function () {
-  runSequence('clean', 'typescript-compile', 'bundle');
+  runSequence('clean', 'prod-typescript-compile', 'bundle');
 });
 
 // serve the build dir
@@ -123,6 +123,14 @@ gulp.task('typescript-compile', function () {
   /*return gulp.src(['app/!**!/!*.ts', '!app/bower_components/!**!/!*.ts', '!node_modules/!**!/!*.ts'])
    .pipe(ts(tsProject))
    .pipe(gulp.dest('build/app/'));*/
+});
+
+gulp.task('prod-typescript-compile', function () {
+  var tsResult = tsProject.src() // instead of gulp.src(...)
+      .pipe(ts(tsProject));
+  var tsResult1 = tsProject1.src() // instead of gulp.src(...)
+   .pipe(ts(tsProject1));
+  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon'))).pipe(livereload());
 });
 
 // watch for changes and run the relevant task
