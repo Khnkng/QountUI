@@ -33,12 +33,12 @@
                   </label>
                 </div>
                 <div class="small-12 medium-4 columns">
-                  <label>Currency
+                  <label>Company Type
                     <div class="">
-                      <select formControlName="defaultCurrency" placeholder="currency">
-                        <option *ngFor="let currency of currencies" value="{{currency}}">{{currency}}</option>
+                      <select formControlName="companyType" placeholder="Company type">
+                        <option *ngFor="let companyType of companyTypes" value="{{companyType.value}}">{{companyType.name}}</option>
                       </select>
-                      <div class="error" [hidden]="companyForm.controls.defaultCurrency.untouched || companyForm.controls.defaultCurrency.valid"><small>Select Currency</small></div>
+                      <div class="error" [hidden]="companyForm.controls.companyType.untouched || companyForm.controls.companyType.valid"><small>Select Company type</small></div>
                     </div>
                   </label>
                 </div>
@@ -94,14 +94,21 @@
                     </div>
                   </label>
                 </div>
-
-
+                <div class="small-12 medium-4 columns">
+                  <label>Currency
+                    <div class="">
+                      <select formControlName="defaultCurrency" placeholder="currency">
+                        <option *ngFor="let currency of currencies" value="{{currency}}">{{currency}}</option>
+                      </select>
+                      <div class="error" [hidden]="companyForm.controls.defaultCurrency.untouched || companyForm.controls.defaultCurrency.valid"><small>Select Currency</small></div>
+                    </div>
+                  </label>
+                </div>
               </div>
             </div>
             <div class="small-12 medium-4 columns">
               <div class="row">
                 <div class="small-12 medium-12 columns">
-
                   <label>Add User
                     <custom-tag [controlName]="'invitedUserEmails'" [group]="companyForm" [inputType]="'email'"
                                 [height]="'155px'" [placeholder]="'Email Address'">loading</custom-tag>
@@ -109,7 +116,6 @@
                 </div>
               </div>
             </div>
-
           </div>
         </section>
 

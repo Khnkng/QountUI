@@ -57,6 +57,7 @@
     "run-sequence": "^1.2.2",
     "typescript": "^2.0.3",
     "typings": "^1.4.0",
-    "wiredep": "^4.0.0"
+    "wiredep": "^4.0.0",
+    "gulp-umd": "0.2.0"
   }
 }

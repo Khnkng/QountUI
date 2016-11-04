@@ -5,8 +5,11 @@
 import {Component,ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {Session} from "qCommon/app/services/Session";
 import {COA_CATEGORY_TYPES, COA_SUBTYPES, SUBTYPE_DESCRIPTIONS} from "qCommon/app/constants/Qount.constants";
 import {COAForm} from "../forms/COA.form";
+import {CompanyModel} from "../models/Company.model";
 
 declare var jQuery:any;
 declare var _:any;
@@ -33,10 +36,26 @@ export class ChartOfAccountsComponent{
   tableData:any = {};
   tableOptions:any = {};
   editMode:boolean = false;
+  companySwitchSubscription: any;
+  currentCompany:any;
+  allCompanies:Array<any>;
 
-  constructor(private _fb: FormBuilder, private _coaForm: COAForm){
+  constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard){
     this.coaForm = this._fb.group(_coaForm.getForm());
+    this.companySwitchSubscription = this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshCompany(currentCompany));
+    let companyId = Session.getCurrentCompany();
+    this.allCompanies = Session.getCompanies();
+    if(companyId){
+      this.currentCompany = _.find(this.allCompanies, {id: companyId});
+    } else if(this.allCompanies.length> 0){
+      this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].companyId});
+    }
     this.buildTableData();
+  }
+
+  refreshCompany(currentCompany){
+    let companies = Session.getCompanies();
+    this.currentCompany = _.find(companies, {id: currentCompany.companyId});
   }
 
   getCategoryName(value){

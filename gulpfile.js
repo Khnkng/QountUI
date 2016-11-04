@@ -22,7 +22,8 @@ var gulp = require('gulp'),
     gulpif = require('gulp-if'),
     autoprefix = require('gulp-autoprefixer'),
     merge = require('merge-stream'),
-    gzip = require('gulp-gzip');
+    gzip = require('gulp-gzip'),
+    umd = require("gulp-umd");
 
 var processhtml_options = {
   list: "build/replacementlist.txt"
@@ -116,9 +117,9 @@ gulp.task('serve', ['build'], function () {
 gulp.task('typescript-compile', function () {
   var tsResult = tsProject.src() // instead of gulp.src(...)
       .pipe(ts(tsProject));
-  var tsResult1 = tsProject1.src() // instead of gulp.src(...)
-      .pipe(ts(tsProject1));
-  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon'))).pipe(livereload());
+  /*var tsResult1 = tsProject1.src() // instead of gulp.src(...)
+      .pipe(ts(tsProject1));*/
+  return tsResult.js.pipe(gulp.dest('build/app/')).pipe(livereload());
   /*return gulp.src(['app/!**!/!*.ts', '!app/bower_components/!**!/!*.ts', '!node_modules/!**!/!*.ts'])
    .pipe(ts(tsProject))
    .pipe(gulp.dest('build/app/'));*/
@@ -133,7 +134,14 @@ gulp.task('watch', ['serve'], function () {
   gulp.watch('app/**/*.css', ['css']);
   gulp.watch('images/**/*.*', ['images']);
   gulp.watch('css/**/*.scss', ['sass']);
+  gulp.watch('node_modules/qCommon/**/*.*', ['generate-umd']);
   //gulp.watch(['build/**']).on('change', livereload.changed);
+});
+
+gulp.task('generate-umd', ['typescript-compile'], function(){
+  return gulp.src('node_modules/qCommon/**/*.js')
+      .pipe(umd())
+      .pipe(gulp.dest('node_modules/qCommon/bundles'));
 });
 
 gulp.task('copy-to-build', ['dependencies', 'js', 'html', 'fonts', 'images']);
@@ -158,7 +166,7 @@ gulp.task('dependencies', function () {
   /*var angular2uuid = gulp.src(['node_modules/angular2-uuid/!**!/!*.*']).pipe(gulp.dest('build/lib/angular2-uuid'));
   var immutable = gulp.src(['node_modules/immutable/!**!/!*.*']).pipe(gulp.dest('build/lib/immutable'));*/
   //var qCommon = gulp.src(['node_modules/qCommon/**/*.*']).pipe(gulp.dest('build/lib/qCommon'));
-  return merge(libs, angular, angularInMemory, rxjs);
+  return merge(libs, angular, angularInMemory, rxjs, qCommons);
 });
 
 gulp.task('sass', function () {

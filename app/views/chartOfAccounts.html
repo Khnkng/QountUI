@@ -50,7 +50,61 @@
           </div>
         </div>
         <div class="row">
-          <div class="small-12 medium-6 columns description" [innerHTML]="description">
+          <div class="small-12 medium-6 columns">
+            <div *ngIf="currentCompany">
+              <div *ngIf="currentCompany.companyType == 'S_CORP'">
+                <label>S Corp Mapping
+                  <select placeholder="S Corp mapping">
+                    <option>Select mapping</option>
+                    <option>Part II Line 8 Advertising</option>
+                    <option>Part II Line 11 Contract Labor</option>
+                    <option>Non C Schedule Expense</option>
+                    <option>Part II Line 15 Insurance</option>
+                    <option>Part V Other Expenses</option>
+                    <option>Part I Line 1 Gross Income</option>
+                  </select>
+                </label>
+              </div>
+              <div *ngIf="currentCompany.companyType == 'C_CORP'">
+                <label>C Corp Mapping
+                  <select placeholder="C Corp mapping">
+                    <option>Select mapping</option>
+                    <option>Part II Line 8 Advertising</option>
+                    <option>Part II Line 11 Contract Labor</option>
+                    <option>Non C Schedule Expense</option>
+                    <option>Part II Line 15 Insurance</option>
+                    <option>Part V Other Expenses</option>
+                    <option>Part I Line 1 Gross Income</option>
+                  </select>
+                </label>
+              </div>
+              <div *ngIf="currentCompany.companyType == 'C_SCHEDULE'">
+                <label>C Schedule Mapping
+                  <select placeholder="C Schedule mapping">
+                    <option>Select mapping</option>
+                    <option>Part II Line 8 Advertising</option>
+                    <option>Part II Line 11 Contract Labor</option>
+                    <option>Non C Schedule Expense</option>
+                    <option>Part II Line 15 Insurance</option>
+                    <option>Part V Other Expenses</option>
+                    <option>Part I Line 1 Gross Income</option>
+                  </select>
+                </label>
+              </div>
+              <div *ngIf="currentCompany.companyType == 'PARTNERSHIP'">
+                <label>Partnership Mapping
+                  <select placeholder="Partnership mapping">
+                    <option>Select mapping</option>
+                    <option>Part II Line 8 Advertising</option>
+                    <option>Part II Line 11 Contract Labor</option>
+                    <option>Non C Schedule Expense</option>
+                    <option>Part II Line 15 Insurance</option>
+                    <option>Part V Other Expenses</option>
+                    <option>Part I Line 1 Gross Income</option>
+                  </select>
+                </label>
+              </div>
+            </div>
           </div>
           <div class="small-12 medium-6 columns">
             <div>
@@ -61,6 +115,10 @@
                 <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.coaID">{{parentAccount.name}}</option>
               </select>
             </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 medium-6 columns description" [innerHTML]="description">
           </div>
         </div>
         <div class="row save-btn float-right">
