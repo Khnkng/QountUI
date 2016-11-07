@@ -56,12 +56,7 @@
                 <label>S Corp Mapping
                   <select placeholder="S Corp mapping">
                     <option>Select mapping</option>
-                    <option>Part II Line 8 Advertising</option>
-                    <option>Part II Line 11 Contract Labor</option>
-                    <option>Non C Schedule Expense</option>
-                    <option>Part II Line 15 Insurance</option>
-                    <option>Part V Other Expenses</option>
-                    <option>Part I Line 1 Gross Income</option>
+                    <option *ngFor="let mapping of mappings['1120 S']" value="{{mapping.value}}">{{mapping.name}}</option>
                   </select>
                 </label>
               </div>
@@ -69,12 +64,7 @@
                 <label>C Corp Mapping
                   <select placeholder="C Corp mapping">
                     <option>Select mapping</option>
-                    <option>Part II Line 8 Advertising</option>
-                    <option>Part II Line 11 Contract Labor</option>
-                    <option>Non C Schedule Expense</option>
-                    <option>Part II Line 15 Insurance</option>
-                    <option>Part V Other Expenses</option>
-                    <option>Part I Line 1 Gross Income</option>
+                    <option *ngFor="let mapping of mappings['1120 C']" value="{{mapping.value}}">{{mapping.name}}</option>
                   </select>
                 </label>
               </div>
@@ -95,12 +85,7 @@
                 <label>Partnership Mapping
                   <select placeholder="Partnership mapping">
                     <option>Select mapping</option>
-                    <option>Part II Line 8 Advertising</option>
-                    <option>Part II Line 11 Contract Labor</option>
-                    <option>Non C Schedule Expense</option>
-                    <option>Part II Line 15 Insurance</option>
-                    <option>Part V Other Expenses</option>
-                    <option>Part I Line 1 Gross Income</option>
+                    <option *ngFor="let mapping of mappings['1165']" value="{{mapping.value}}">{{mapping.name}}</option>
                   </select>
                 </label>
               </div>

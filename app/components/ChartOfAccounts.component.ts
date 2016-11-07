@@ -40,23 +40,33 @@ export class ChartOfAccountsComponent{
   companySwitchSubscription: any;
   currentCompany:any;
   allCompanies:Array<any>;
+  mappings:Array<any>;
 
   constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService){
     this.coaForm = this._fb.group(_coaForm.getForm());
     this.companySwitchSubscription = this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshCompany(currentCompany));
     let companyId = Session.getCurrentCompany();
     this.allCompanies = Session.getCompanies();
+
+    this.coaService.mappings().subscribe(mappings => {
+      this.mappings = mappings;
+    }, error => this.handleError(error));
     if(companyId){
       this.currentCompany = _.find(this.allCompanies, {id: companyId});
     } else if(this.allCompanies.length> 0){
-      this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].companyId});
+      this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
     }
-    this.buildTableData();
+    this.coaService.chartOfAccounts(this.currentCompany.id)
+        .subscribe(chartOfAccounts => this.buildTableData(chartOfAccounts), error=> this.handleError(error));
+  }
+
+  handleError(error){
+
   }
 
   refreshCompany(currentCompany){
     let companies = Session.getCompanies();
-    this.currentCompany = _.find(companies, {id: currentCompany.companyId});
+    this.currentCompany = _.find(companies, {id: currentCompany.id});
   }
 
   getCategoryName(value){
@@ -133,14 +143,16 @@ export class ChartOfAccountsComponent{
       this.chartOfAccounts[data.coaID] = data;
     } else{
       data.coaID = this.chartOfAccounts.length;
-      this.chartOfAccounts.push(data);
+      //this.chartOfAccounts.push(data);
+      this.coaService.addChartOfAccount(data, this.currentCompany.id)
+          .subscribe(coaList => this.buildTableData(coaList), error => this.handleError(error));
     }
-    this.buildTableData();
+    this.buildTableData(this.chartOfAccounts);
     jQuery(this.addCOA.nativeElement).foundation('close');
   }
 
-  buildTableData() {
-    //this.chartOfAccounts = coaList;
+  buildTableData(coaList) {
+    this.chartOfAccounts = coaList;
     this.hasCOAList = false;
     this.tableData.rows = [];
     this.tableData.columns = [
