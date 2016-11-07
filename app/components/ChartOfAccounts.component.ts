@@ -10,6 +10,7 @@ import {Session} from "qCommon/app/services/Session";
 import {COA_CATEGORY_TYPES, COA_SUBTYPES, SUBTYPE_DESCRIPTIONS} from "qCommon/app/constants/Qount.constants";
 import {COAForm} from "../forms/COA.form";
 import {CompanyModel} from "../models/Company.model";
+import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -40,7 +41,7 @@ export class ChartOfAccountsComponent{
   currentCompany:any;
   allCompanies:Array<any>;
 
-  constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard){
+  constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService){
     this.coaForm = this._fb.group(_coaForm.getForm());
     this.companySwitchSubscription = this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshCompany(currentCompany));
     let companyId = Session.getCurrentCompany();
