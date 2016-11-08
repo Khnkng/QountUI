@@ -28,6 +28,7 @@
     "jquery-ui": "^1.12.1",
     "motion-ui": "^1.2.2",
     "lodash": "^4.16.4",
-    "footable": "^3.0.10"
+    "footable": "^3.0.10",
+    "glyphicons": "^0.0.2"
   }
 }

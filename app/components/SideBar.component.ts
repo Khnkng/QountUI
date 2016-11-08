@@ -55,7 +55,7 @@ export class SideBarComponent {
     jQuery("#switchCompany").foundation('close');
     this.showSwitchCompany = !this.showSwitchCompany;
     this.toggleMenu();
-    this.switchBoard.onCompanyChange.next({'companyId': companyId});
+    this.switchBoard.onCompanyChange.next({'id': companyId});
   }
 
   logout() {

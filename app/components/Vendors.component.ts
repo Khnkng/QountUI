@@ -54,9 +54,9 @@ export class VendorComponent {
     this.companySwitchSubscription.unsubscribe();
   }
 
-  refreshCompany(currentCompany){
+  refreshCompany(curCompany){
     let companies = Session.getCompanies();
-    let currentCompany = _.find(companies, {id: currentCompany.companyId});
+    let currentCompany = _.find(companies, {id: curCompany.companyId});
     this.companyId = currentCompany.id;
     this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
   }

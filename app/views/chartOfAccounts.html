@@ -26,18 +26,18 @@
           </div>
           <div class="small-12 medium-6 columns">
             <label>Description
-              <textarea formControlName="description" placeholder="Description"></textarea>
-              <div class="error" [hidden]="coaForm.controls.description.untouched || coaForm.controls.description.valid">Description is required.</div>
+              <textarea formControlName="desc" placeholder="Description"></textarea>
+              <div class="error" [hidden]="coaForm.controls.desc.untouched || coaForm.controls.desc.valid">Description is required.</div>
             </label>
           </div>
         </div>
         <div class="row">
           <div class="small-12 medium-6 columns">
-            <label>Category type
-              <select formControlName="categoryType" placeholder="Category type" (change)="populateSubtypes($event)">
+            <label>Type
+              <select formControlName="type" placeholder="Category type" (change)="populateSubtypes($event)">
                 <option *ngFor="let category of categoryTypes" [value]="category.value">{{category.name}}</option>
               </select>
-              <div class="error" [hidden]="coaForm.controls.categoryType.untouched || coaForm.controls.categoryType.valid">Category type is required.</div>
+              <div class="error" [hidden]="coaForm.controls.type.untouched || coaForm.controls.type.valid">Category type is required.</div>
             </label>
           </div>
           <div class="small-12 medium-6 columns">
@@ -51,27 +51,27 @@
         </div>
         <div class="row">
           <div class="small-12 medium-6 columns">
-            <div *ngIf="currentCompany">
+            <div *ngIf="currentCompany && mappings">
               <div *ngIf="currentCompany.companyType == 'S_CORP'">
                 <label>S Corp Mapping
-                  <select placeholder="S Corp mapping">
-                    <option>Select mapping</option>
+                  <select formControlName="mapping" placeholder="S Corp mapping">
+                    <option value="">Select mapping</option>
                     <option *ngFor="let mapping of mappings['1120 S']" value="{{mapping.value}}">{{mapping.name}}</option>
                   </select>
                 </label>
               </div>
               <div *ngIf="currentCompany.companyType == 'C_CORP'">
                 <label>C Corp Mapping
-                  <select placeholder="C Corp mapping">
-                    <option>Select mapping</option>
+                  <select formControlName="mapping" placeholder="C Corp mapping">
+                    <option value="">Select mapping</option>
                     <option *ngFor="let mapping of mappings['1120 C']" value="{{mapping.value}}">{{mapping.name}}</option>
                   </select>
                 </label>
               </div>
               <div *ngIf="currentCompany.companyType == 'C_SCHEDULE'">
                 <label>C Schedule Mapping
-                  <select placeholder="C Schedule mapping">
-                    <option>Select mapping</option>
+                  <select formControlName="mapping" placeholder="C Schedule mapping">
+                    <option value="">Select mapping</option>
                     <option>Part II Line 8 Advertising</option>
                     <option>Part II Line 11 Contract Labor</option>
                     <option>Non C Schedule Expense</option>
@@ -83,8 +83,8 @@
               </div>
               <div *ngIf="currentCompany.companyType == 'PARTNERSHIP'">
                 <label>Partnership Mapping
-                  <select placeholder="Partnership mapping">
-                    <option>Select mapping</option>
+                  <select formControlName="mapping" placeholder="Partnership mapping">
+                    <option value="">Select mapping</option>
                     <option *ngFor="let mapping of mappings['1165']" value="{{mapping.value}}">{{mapping.name}}</option>
                   </select>
                 </label>
@@ -93,11 +93,11 @@
           </div>
           <div class="small-12 medium-6 columns">
             <div>
-              <input type="checkbox" formControlName="isSubAccount" [(ngModel)]="isSubAccount"/>Is sub-account?
+              <input type="checkbox" formControlName="subAccount" (change)="changeStatus()"/>Sub Account
             </div>
-            <div *ngIf="isSubAccount">
-              <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentAccount" [listObject]="parentAccounts">
-                <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.coaID">{{parentAccount.name}}</option>
+            <div *ngIf="subAccount">
+              <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentID" [listObject]="parentAccounts" (valueChanged)="updateParent($event)">
+                <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.id">{{parentAccount.name}}</option>
               </select>
             </div>
           </div>

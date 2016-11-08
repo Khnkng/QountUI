@@ -11,6 +11,8 @@ import {COA_CATEGORY_TYPES, COA_SUBTYPES, SUBTYPE_DESCRIPTIONS} from "qCommon/ap
 import {COAForm} from "../forms/COA.form";
 import {CompanyModel} from "../models/Company.model";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
+import {ToastService} from "qCommon/app/services/Toast.service";
+import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 
 declare var jQuery:any;
 declare var _:any;
@@ -32,7 +34,7 @@ export class ChartOfAccountsComponent{
   parentAccounts = [];
   @ViewChild('addCOA') addCOA;
   @ViewChild('parentAccountComboBoxDir') parentAccountComboBox: ComboBox;
-  isSubAccount:boolean = false;
+  subAccount:boolean = false;
   hasCOAList: boolean = false;
   tableData:any = {};
   tableOptions:any = {};
@@ -41,8 +43,9 @@ export class ChartOfAccountsComponent{
   currentCompany:any;
   allCompanies:Array<any>;
   mappings:Array<any>;
+  row:any;
 
-  constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService){
+  constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService, private toastService: ToastService){
     this.coaForm = this._fb.group(_coaForm.getForm());
     this.companySwitchSubscription = this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshCompany(currentCompany));
     let companyId = Session.getCurrentCompany();
@@ -61,12 +64,14 @@ export class ChartOfAccountsComponent{
   }
 
   handleError(error){
-
+    this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
   }
 
   refreshCompany(currentCompany){
     let companies = Session.getCompanies();
     this.currentCompany = _.find(companies, {id: currentCompany.id});
+    this.coaService.chartOfAccounts(this.currentCompany.id)
+        .subscribe(chartOfAccounts => this.buildTableData(chartOfAccounts), error=> this.handleError(error));
   }
 
   getCategoryName(value){
@@ -99,21 +104,46 @@ export class ChartOfAccountsComponent{
     this.parentAccounts = _.cloneDeep(this.chartOfAccounts);
     this.displaySubtypes = [];
     this.description = "";
-    this.isSubAccount = false;
+    this.subAccount = false;
     this.newForm();
     jQuery(this.addCOA.nativeElement).foundation('open');
   }
 
+  changeStatus(){
+    this.subAccount = !this.subAccount;
+  }
+
   showEditCOA(row: any){
+    let base = this;
     this.editMode = true;
-    jQuery(this.addCOA.nativeElement).foundation('open');
-    row.categoryType = row.type;
+    this.newForm();
+    this.row = row;
+    row.type = row.categoryType;
     row.subType = row.subTypeCode;
+    this.subAccount = row.subAccount;
+    row.subAccount = row.subAccount == "true";
+    this.displaySubtypes = this.allSubTypes[row.type];
+    let parentID = row.parentID;
+    let parentIndex = _.findIndex(this.chartOfAccounts, {id: parentID});
+    let currentCOAIndex = _.findIndex(this.chartOfAccounts, {id: row.id});
+    this.parentAccounts = _.cloneDeep(this.chartOfAccounts);
+    _.remove(this.parentAccounts, {id: row.id});
+    if(parentIndex !== -1){
+      setTimeout(function () {
+        base.parentAccountComboBox.setValue(base.chartOfAccounts[parentIndex], 'name');
+      },100);
+    }
     this._coaForm.updateForm(this.coaForm, row);
+    jQuery(this.addCOA.nativeElement).foundation('open');
   }
 
   removeCOA(row: any){
-
+    let coaId = row.id;
+    this.coaService.removeCOA(coaId, this.currentCompany.id)
+        .subscribe(coa => {
+          this.toastService.pop(TOAST_TYPE.success, "Deleted Chart of Account successfully");
+          this.chartOfAccounts.splice(_.findIndex(this.chartOfAccounts, {id: coaId}, 1));
+        }, error => this.handleError(error));
   }
 
   newForm(){
@@ -136,19 +166,41 @@ export class ChartOfAccountsComponent{
     }
   }
 
+  updateParent(parent){
+    let parentControl:any = this.coaForm.controls['parentID'];
+    parentControl.patchValue(parent.id);
+  }
+
   saveCOA($event){
     $event && $event.preventDefault();
     var data = this._coaForm.getData(this.coaForm);
     if(this.editMode){
-      this.chartOfAccounts[data.coaID] = data;
+      data.id = this.row.id;
+      this.coaService.updateCOA(data.id, data, this.currentCompany.id)
+          .subscribe(coa => {
+            console.log(coa);
+          }, error => this.handleError(error));
     } else{
-      data.coaID = this.chartOfAccounts.length;
-      //this.chartOfAccounts.push(data);
       this.coaService.addChartOfAccount(data, this.currentCompany.id)
-          .subscribe(coaList => this.buildTableData(coaList), error => this.handleError(error));
+          .subscribe(newCOA => this.handleCOA(newCOA), error => this.handleError(error));
     }
     this.buildTableData(this.chartOfAccounts);
     jQuery(this.addCOA.nativeElement).foundation('close');
+  }
+
+  handleCOA(newCOA){
+    this.toastService.pop(TOAST_TYPE.success, "Chart of account created successfully");
+    this.chartOfAccounts.push(newCOA);
+    this.buildTableData(this.chartOfAccounts);
+  }
+
+  getMappingName(mappingValue){
+    let allMappings = [];
+    _.each(this.mappings, function(mapping){
+      return allMappings.push(mapping);
+    });
+    let mapping = _.find(_.flatten(allMappings), {value: mappingValue});
+    return mapping.name;
   }
 
   buildTableData(coaList) {
@@ -157,26 +209,36 @@ export class ChartOfAccountsComponent{
     this.tableData.rows = [];
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
-      {"name": "categoryType", "title": "Type"},
-      {"name": "type", "title": "Type", "visible": false},
-      {"name": "subType", "title": "Sub type"},
+      {"name": "type", "title": "Type"},
+      {"name": "mappingName", "title": "Mapping"},
+      {"name": "parentName", "title": "Parent"},
+      {"name": "subType", "title": "Sub type", "visible": false},
+      {"name": "desc", "title": "Description", "visible": false},
+      {"name": "mapping", "title": "Mapping", "visible": false},
+      {"name": "categoryType", "title": "Type", "visible": false},
       {"name": "subTypeCode", "title": "Sub Type Code", "visible": false},
-      {"name": "description", "title": "Description"},
-      {"name": "coaID", "title": "COA ID","visible": false},
-      {"name": "parentAccount", "title": "Parent Account", "visible": false},
-      {"name": "isSubAccount", "title": "Sub account","visible": false},
+      {"name": "id", "title": "COA ID","visible": false},
+      {"name": "parentID", "title": "Parent", "visible": false},
+      {"name": "subAccount", "title": "Sub account","visible": false},
       {"name": "actions", "title": ""}
     ];
     let base = this;
     this.chartOfAccounts.forEach(function(coa) {
       let row:any = {};
+      coa.subAccount = coa.subAccount? coa.subAccount : false;
       for(let key in base.chartOfAccounts[0]) {
-        if(key == 'categoryType'){
+        if(key == 'type'){
           row[key] = base.getCategoryName(coa[key]);
-          row['type'] = coa[key];
+          row['categoryType'] = coa[key];
         } else if(key == 'subType'){
-          row[key] = base.getSubTypeName(coa.categoryType, coa[key]);
+          row[key] = base.getSubTypeName(coa.type, coa[key]);
           row['subTypeCode'] = coa[key];
+        } else if(key == 'mapping'){
+          row[key] = coa[key];
+          row['mappingName'] = base.getMappingName(coa[key]);
+        } else if(key == 'parentID'){
+          row[key] = coa[key];
+          row['parentName'] = coa[key]? _.find(base.chartOfAccounts, {id: coa[key]}).name : "";
         }else{
           row[key] = coa[key];
         }

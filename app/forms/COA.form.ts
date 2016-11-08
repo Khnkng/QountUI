@@ -15,12 +15,12 @@ export class COAForm extends abstractForm{
     numberValidator.push(Validators.required);
     return {
       "name": ['', Validators.required],
-      "categoryType": [''],
+      "type": [''],
       "subType": ['', Validators.required],
-      "description": [''],
-      "isSubAccount": [false],
-      "parentAccount": [''],
-      "coaID": ['']
+      "desc": [''],
+      "subAccount": [false],
+      "parentID": [''],
+      "mapping": ['']
     }
   }
 

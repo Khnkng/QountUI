@@ -8,6 +8,7 @@
 @import "../../app/bower_components/Ionicons/scss/ionicons-font";
 @import "../../app/bower_components/Ionicons/scss/ionicons-icons";
 @import "../../app/bower_components/Ionicons/scss/ionicons-variables";
+@import "../../app/bower_components/glyphicons/styles/glyphicons";
 @import "../../app/bower_components/font-awesome/scss/font-awesome";
 @import "jquery-ui";
 @import "login-signup";
@@ -572,6 +573,10 @@ form {
   transition: 0.2s ease-in-out;
 }
 
+.sidebar ul.side-nav li a .glyphicon {
+  font-size: 1.1em;
+}
+
 .sidebar ul.side-nav li a.collapsed {
   text-align: left;
   padding: 1em 0.3em;
@@ -585,6 +590,10 @@ form {
   -webkit-transform: scale(1); /* Webkit */
   -o-transform:      scale(1); /* Opera */
   -ms-transform:     scale(1); /* IE 9 */
+}
+
+.sidebar ul.side-nav li a.collapsed .glyphicon {
+  font-size: 1.3em;
 }
 
 .sidebar ul.side-nav li a div.name {
