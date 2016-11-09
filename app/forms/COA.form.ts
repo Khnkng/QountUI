@@ -20,8 +20,7 @@ export class COAForm extends abstractForm{
       "subType": ['', Validators.required],
       "desc": [''],
       "subAccount": [false],
-      "parentID": [''],
-      "mapping": ['']
+      "parentID": ['']
     }
   }
 

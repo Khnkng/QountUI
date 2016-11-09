@@ -44,7 +44,8 @@ export class ChartOfAccountsComponent{
   allCompanies:Array<any>;
   mappings:Array<any>;
   row:any;
-  coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'mapping', 'type', 'subType', 'desc', 'number'];
+  coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'type', 'subType', 'desc', 'number'];
+  combo:boolean = true;
 
   constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService, private toastService: ToastService){
     this.coaForm = this._fb.group(_coaForm.getForm());
@@ -52,9 +53,9 @@ export class ChartOfAccountsComponent{
     let companyId = Session.getCurrentCompany();
     this.allCompanies = Session.getCompanies();
 
-    this.coaService.mappings().subscribe(mappings => {
+    /*this.coaService.mappings().subscribe(mappings => {
       this.mappings = mappings;
-    }, error => this.handleError(error));
+    }, error => this.handleError(error));*/
     if(companyId){
       this.currentCompany = _.find(this.allCompanies, {id: companyId});
     } else if(this.allCompanies.length> 0){
@@ -93,6 +94,17 @@ export class ChartOfAccountsComponent{
     let categoryType = $event.target.value;
     this.displaySubtypes = this.allSubTypes[categoryType];
     this.description = "";
+    this.setParents(categoryType);
+  }
+
+  setParents(categoryType, coaId?){
+    if(categoryType){
+      this.parentAccounts = _.filter(this.chartOfAccounts, {type: categoryType});
+      if(coaId){
+        _.remove(this.parentAccounts, {id: coaId});
+      }
+      this.refreshComboBox();
+    }
   }
 
   selectSubtype($event){
@@ -102,7 +114,6 @@ export class ChartOfAccountsComponent{
   showAddCOA() {
     this.editMode = false;
     this.coaForm = this._fb.group(this._coaForm.getForm());
-    this.parentAccounts = _.cloneDeep(this.chartOfAccounts);
     this.displaySubtypes = [];
     this.description = "";
     this.subAccount = false;
@@ -119,17 +130,14 @@ export class ChartOfAccountsComponent{
     this.editMode = true;
     this.newForm();
     this.row = row;
+    this.setParents(row.type, row.id);
     row.type = row.categoryType;
     row.subType = row.subTypeCode;
-    this.subAccount = row.subAccount;
     row.subAccount = row.subAccount == "true";
+    this.subAccount = row.subAccount;
     this.displaySubtypes = this.allSubTypes[row.type];
-    let parentID = row.parentID;
-    let parentIndex = _.findIndex(this.chartOfAccounts, {id: parentID});
-    let currentCOAIndex = _.findIndex(this.chartOfAccounts, {id: row.id});
-    this.parentAccounts = _.cloneDeep(this.chartOfAccounts);
-    _.remove(this.parentAccounts, {id: row.id});
-    if(parentIndex !== -1){
+    let parentIndex = _.findIndex(this.chartOfAccounts, {id: row.parentID});
+    if(parentIndex != -1){
       setTimeout(function () {
         base.parentAccountComboBox.setValue(base.chartOfAccounts[parentIndex], 'name');
       },100);
@@ -150,6 +158,12 @@ export class ChartOfAccountsComponent{
   newForm(){
     this.newFormActive = false;
     setTimeout(()=> this.newFormActive=true, 0);
+  }
+
+  refreshComboBox(){
+    let base = this;
+    this.combo = false;
+    setTimeout(()=> base.combo=true, 0);
   }
 
   ngOnInit(){
@@ -212,14 +226,13 @@ export class ChartOfAccountsComponent{
     this.hasCOAList = false;
     this.tableData.rows = [];
     this.tableData.columns = [
-      {"name": "name", "title": "Name"},
+      {"name": "nameHTML", "title": "Name"},
       {"name": "type", "title": "Type"},
-      {"name": "mappingName", "title": "Mapping"},
+      {"name": "subType", "title": "Sub type"},
       {"name": "parentName", "title": "Parent"},
+      {"name": "name", "title": "Name", "visible": false},
       {"name": "number", "title": "Number", "visible": false},
-      {"name": "subType", "title": "Sub type", "visible": false},
       {"name": "desc", "title": "Description", "visible": false},
-      {"name": "mapping", "title": "Mapping", "visible": false},
       {"name": "categoryType", "title": "Type", "visible": false},
       {"name": "subTypeCode", "title": "Sub Type Code", "visible": false},
       {"name": "id", "title": "COA ID","visible": false},
@@ -238,17 +251,15 @@ export class ChartOfAccountsComponent{
         } else if(key == 'subType'){
           row[key] = base.getSubTypeName(coa.type, coa[key]);
           row['subTypeCode'] = coa[key];
-        } else if(key == 'mapping'){
-          row[key] = coa[key];
-          row['mappingName'] = base.getMappingName(coa[key]);
         } else if(key == 'parentID'){
           row[key] = coa[key];
           row['parentName'] = coa[key]? _.find(base.chartOfAccounts, {id: coa[key]}).name : "";
         } else if(key == 'name'){
+          row[key] = coa[key];
           if(coa['subAccount']){
-            row[key] = '<span style="margin-left: 10px;">'+coa[key]+'</span>';
+            row['nameHTML'] = '<span style="margin-left: 10px;">'+coa[key]+'</span>';
           } else{
-            row[key] = coa[key];
+            row['nameHTML'] = coa[key];
           }
         } else{
           row[key] = coa[key];
