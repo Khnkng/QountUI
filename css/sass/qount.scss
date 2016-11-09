@@ -583,8 +583,9 @@ form {
 }
 
 .sidebar ul.side-nav li a.collapsed .icon {
-  font-size: 1.5em;
+  font-size: 1.3em;
   margin-right: 0px;
+  width: 30px;
   transform:         scale(1); /* CSS3 */
   -moz-transform:    scale(1); /* Firefox */
   -webkit-transform: scale(1); /* Webkit */
@@ -626,6 +627,7 @@ form {
 
 .sidebar ul.side-nav li a:hover .icon {
   color: #50AEE2;
+  font-size: 1.3em;
 }
 
 .sidebar ul.side-nav li {
