@@ -187,13 +187,17 @@ export class ChartOfAccountsComponent{
   }
 
   saveCOA($event){
+    let base = this;
     $event && $event.preventDefault();
     var data = this._coaForm.getData(this.coaForm);
     if(this.editMode){
       data.id = this.row.id;
       this.coaService.updateCOA(data.id, data, this.currentCompany.id)
           .subscribe(coa => {
-            console.log(coa);
+            base.toastService.pop(TOAST_TYPE.success, "Chart of Account updated successfully");
+            let index = _.findIndex(base.chartOfAccounts, {id: data.id});
+            base.chartOfAccounts[index] = coa;
+            base.buildTableData(base.chartOfAccounts);
           }, error => this.handleError(error));
     } else{
       this.coaService.addChartOfAccount(data, this.currentCompany.id)
@@ -226,12 +230,12 @@ export class ChartOfAccountsComponent{
     this.hasCOAList = false;
     this.tableData.rows = [];
     this.tableData.columns = [
+      {"name": "number", "title": "Number"},
       {"name": "nameHTML", "title": "Name"},
       {"name": "type", "title": "Type"},
       {"name": "subType", "title": "Sub type"},
       {"name": "parentName", "title": "Parent"},
       {"name": "name", "title": "Name", "visible": false},
-      {"name": "number", "title": "Number", "visible": false},
       {"name": "desc", "title": "Description", "visible": false},
       {"name": "categoryType", "title": "Type", "visible": false},
       {"name": "subTypeCode", "title": "Sub Type Code", "visible": false},
@@ -256,7 +260,7 @@ export class ChartOfAccountsComponent{
           row['parentName'] = coa[key]? _.find(base.chartOfAccounts, {id: coa[key]}).name : "";
         } else if(key == 'name'){
           row[key] = coa[key];
-          if(coa['subAccount']){
+          if(coa['parentID']){
             row['nameHTML'] = '<span style="margin-left: 10px;">'+coa[key]+'</span>';
           } else{
             row['nameHTML'] = coa[key];
