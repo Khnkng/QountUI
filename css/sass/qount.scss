@@ -583,8 +583,9 @@ form {
 }
 
 .sidebar ul.side-nav li a.collapsed .icon {
-  font-size: 1.5em;
+  font-size: 1.3em !important;
   margin-right: 0px;
+  width: 30px;
   transform:         scale(1); /* CSS3 */
   -moz-transform:    scale(1); /* Firefox */
   -webkit-transform: scale(1); /* Webkit */
@@ -633,7 +634,7 @@ form {
   min-height: 55px;
 }
 
-ul.side-nav a{
+ul.side-nav a {
   outline: none;
 }
 
@@ -642,50 +643,50 @@ ul.side-nav a{
   z-index: 10000;
 }
 
-.bold{
+.bold {
   font-weight: bold;
 }
 
-.red{
-  color:red;
+.red {
+  color: red;
 }
 
-#switchCompany{
+#switchCompany {
   width: 250px;
   top: 100px !important;
   left: 45px !important;
 
-  ul li{
+  ul li {
     list-style: none;
     cursor: pointer;
     margin-top: 10px;
   }
 }
 
-.report-wrapper{
+.report-wrapper {
   margin-top: 50px;
   @media #{$medium-up} {
     margin-top: 0px;
   }
-  .reporting-form{
+  .reporting-form {
     border-bottom: 1px solid $qount-form-border;
 
-    .no-padding{
+    .no-padding {
       padding: 0;
     }
 
-    .report-buttons{
-        position: fixed;
-        right:10px;
-        top:25px;
-        padding-top: 15px;
-        z-index: 5;
+    .report-buttons {
+      position: fixed;
+      right: 10px;
+      top: 25px;
+      padding-top: 15px;
+      z-index: 5;
     }
 
   }
-  .hide-reporting-form{
+  .hide-reporting-form {
     position: absolute;
-    i{
+    i {
       font-size: .8em;
       position: fixed;
       border: 1px solid $qount-form-border;
@@ -695,67 +696,67 @@ ul.side-nav a{
       color: $qount-text;
     }
   }
-  label{
-      margin-left: 5px;
+  label {
+    margin-left: 5px;
   }
 
-  .printable-area{
-    width:75%;
-    margin:2.5rem auto;
+  .printable-area {
+    width: 75%;
+    margin: 2.5rem auto;
     background-color: #00a379;
   }
 
-  .report-icon-header{
+  .report-icon-header {
     border: 1px solid #e3e5e5;
     background-color: aliceblue;
 
-    div.icon-wrapper{
+    div.icon-wrapper {
       padding: 10px 0 10px;
     }
 
-    .report-name{
+    .report-name {
       font-size: 1rem;
     }
 
-    .icons{
+    .icons {
       font-size: 1.5rem;
     }
   }
 
-  .display-report{
+  .display-report {
     border: 1px solid #e3e5e5;
     text-align: center;
     padding-top: 10px;
 
-    img{
-      width:40px;
+    img {
+      width: 40px;
     }
   }
 
-  .print-report{
+  .print-report {
     border: 1px solid #e3e5e5;
   }
 
-  .report-failure{
+  .report-failure {
     border: 1px solid #e3e5e5;
 
-    .failure-text{
+    .failure-text {
       margin-top: 2rem;
       margin-bottom: 4rem;
       color: red;
     }
   }
 
-  button{
+  button {
     margin-top: 23px;
     margin-left: 10px;
   }
 
-  .close-icon{
+  .close-icon {
     right: 25px;
     position: absolute;
 
-    i{
+    i {
       color: #000;
       font-size: 2.5rem;
     }
@@ -767,155 +768,151 @@ ul.side-nav a{
     height: 100%;
 
     position: fixed;
-    -webkit-transition : all 0.5s;
-    -moz-transition : all 0.5s;
-    -o-transition : all 0.5s;
-    transition : all 0.5s;
-    top:0px;
+    -webkit-transition: all 0.5s;
+    -moz-transition: all 0.5s;
+    -o-transition: all 0.5s;
+    transition: all 0.5s;
+    top: 0px;
     z-index: 100;
     right: -100%;
     overflow-x: hidden;
     padding: 60px 5px;
   }
 
-
-
-  .custom-fields{
+  .custom-fields {
     margin-top: 50px;
   }
 
-  .sidenav li{
+  .sidenav li {
     list-style: none;
   }
 
-  .expanded{
+  .expanded {
     right: 0px;
     width: 100%;
   }
 
-  .collapsed{
+  .collapsed {
     right: -100%;
   }
 
-
-
-  .filters{
+  .filters {
     margin-top: 30px;
 
-    ul{
+    ul {
       margin: 10px 0px 10px 20px;
     }
 
-    li a{
+    li a {
       color: $qount-text;
       font-weight: 600;
-      i{
+      i {
         width: .75rem;
       }
     }
 
-    li a::after{
+    li a::after {
       display: none;
     }
   }
 
-  .filter-heading{
+  .filter-heading {
     font-weight: 500;
   }
 
-  .filter-row{
+  .filter-row {
     padding: 5px 0px;
   }
 
-  a, a:hover, a:focus{
+  a, a:hover, a:focus {
     outline: none;
   }
 
-  footer{
-    span{
+  footer {
+    span {
       font-size: 12px;
       font-weight: bold;
     }
   }
 
-  div.left, footer.left{
+  div.left, footer.left {
     text-align: left;
   }
 
-  div.right, footer.right{
+  div.right, footer.right {
     text-align: right;
   }
 }
 
-.email-report{
+.email-report {
   width: 900px;
   height: 700px;
 
-  .heading{
+  .heading {
     font-size: larger;
     font-weight: 800
   }
 
-  .to-address-label{
+  .to-address-label {
     font-weight: 700;
     margin-top: 20px;
   }
 
-  footer{
-    span{
+  footer {
+    span {
       font-size: 12px;
       font-weight: bold;
     }
   }
 }
 
-.print-modal{
-  .print-wrapper{
-    margin-top:30px !important;
+.print-modal {
+  .print-wrapper {
+    margin-top: 30px !important;
     margin-bottom: 10px;
 
-    .report-print{
+    .report-print {
       border: 1px solid #e3e5e5;
-      margin-left:20px;
-      width:900px;
+      margin-left: 20px;
+      width: 900px;
       height: 800px;
 
-      img{
-        width:40px;
+      img {
+        width: 40px;
       }
 
-      div.left, footer.left{
+      div.left, footer.left {
         text-align: left;
       }
 
-      div.right, footer.right{
+      div.right, footer.right {
         text-align: right;
       }
     }
   }
 
-  footer{
-    span{
+  footer {
+    span {
       font-size: 12px;
       font-weight: bold;
     }
   }
 
-  footer.left{
+  footer.left {
     text-align: left;
   }
 
-  footer.right{
+  footer.right {
     text-align: right;
   }
 }
 
-.customization-panel{
-  .inline-block{
+.customization-panel {
+  .inline-block {
     display: inline-block;
   }
 
-  .custom-cell{
+  .custom-cell {
     width: 49%;
   }
 }
@@ -960,8 +957,7 @@ ul.side-nav a{
   background-image: linear-gradient(to bottom, #45da7d, #3dc36f);
 }
 
-
-.tab-container{
+.tab-container {
   margin: 0 15px;
 }
 .tabber {
@@ -975,7 +971,7 @@ ul.side-nav a{
   .tab {
     position: relative;
     border-right: 1px solid #ccc;
-    &:last-child{
+    &:last-child {
       border-right: none;
     }
     cursor: pointer;
@@ -991,13 +987,13 @@ ul.side-nav a{
     }
     .badge {
       position: absolute;
-      top:5px;
-      right:5px;
+      top: 5px;
+      right: 5px;
       background: #fdfdfd;
       font-size: 0.7rem;
       color: #36404a;
     }
-    background:#36404a;
+    background: #36404a;
   }
 
   .selected {
@@ -1009,7 +1005,7 @@ ul.side-nav a{
     background-image: -o-linear-gradient(top, #3498db, #2980b9);
     background-image: linear-gradient(to bottom, #3498db, #2980b9);
     .badge {
-      color:#3498db;
+      color: #3498db;
       background: #fdfdfd;
 
     }
@@ -1073,10 +1069,6 @@ ul.side-nav a{
     //top: -5px;
   }
 
-
-
-
-
   /*.red-tab{
     .badge {
       color:#fdfdfd;
@@ -1102,8 +1094,6 @@ ul.side-nav a{
     }
   }*/
 
-
-
   /*.orange-tab.selected, .orange-tab:hover {
     border: 1pt solid #d47e47;
   }
@@ -1127,7 +1117,7 @@ ul.side-nav a{
   min-height: 500px;
   background: #ffffff;
   padding-top: 30px;
-  .woo-woo{
+  .woo-woo {
     color: #d47e47;
     font-weight: 600;
     font-size: 1.2em;
@@ -1136,20 +1126,20 @@ ul.side-nav a{
 /*end tabber*/
 
 /*Box*/
-dashboard{
-  .header{
+dashboard {
+  .header {
     margin-bottom: 10px;
-    h6{
+    h6 {
       display: inline-block;
     }
-    i{
+    i {
       font-size: 1.2em;
       cursor: pointer;
       vertical-align: sub;
       color: #6f7f8f;
       margin-left: 0.25em;
       margin-right: 0;
-      &:hover{
+      &:hover {
         color: #505458;
       }
     }
@@ -1157,7 +1147,7 @@ dashboard{
 }
 .box-container {
 
-  &.disabled{
+  &.disabled {
     display: none;
     -webkit-transition: display 2s; /* Safari */
     transition: display 2s;
@@ -1199,43 +1189,41 @@ dashboard{
           border-radius: 50px;
           border: 1pt solid #34d3eb;
           background-color: rgba(52, 211, 235, 0.2);
-          margin-top:5px;
+          margin-top: 5px;
           .icon {
             font-size: 2rem;
             color: #34d3eb;
           }
-         &.due{
-           border: 1pt solid #fb6d9d;
-           background-color: rgba(251, 109, 157, 0.2);
-           .icon{
-             color: #fb6d9d;
-           }
-         }
-          &.ytd{
+          &.due {
+            border: 1pt solid #fb6d9d;
+            background-color: rgba(251, 109, 157, 0.2);
+            .icon {
+              color: #fb6d9d;
+            }
+          }
+          &.ytd {
             border: 1pt solid #7266ba;
             background-color: rgba(114, 102, 186, 0.2);
-            .icon{
+            .icon {
               color: #7266ba;
             }
           }
-          &.month{
+          &.month {
             border: 1pt solid #81c868;
             background-color: rgba(129, 200, 104, 0.2);
-            .icon{
+            .icon {
               color: #81c868;
             }
           }
         }
       }
 
-
-
     }
   }
 }
 
 /*end box*/
-i{
+i {
   font-size: 1.2em;
   cursor: pointer;
 }
@@ -1246,26 +1234,26 @@ i{
   height: 250px;
   overflow: auto;
 
-  .add-line-item{
-    input{
+  .add-line-item {
+    input {
       margin: 0 !important;
       height: 2.5em;
     }
-    select{
+    select {
       margin: 0 !important;
       height: 2.5em;
     }
   }
-  tbody{
-    tr{
-      &:hover{
+  tbody {
+    tr {
+      &:hover {
         background-color: #f4faff;
       }
-      input{
+      input {
         margin: 0 !important;
         height: 2.5em;
       }
-      select{
+      select {
         margin: 0 !important;
         height: 2.5em;
       }
@@ -1291,13 +1279,12 @@ i{
   }
 }
 
-
 .footable .input-group-btn > .btn {
   height: 2.1rem;
 }
 
 table.footable-editing-right tr.footable-editing td {
- text-align: right;
+  text-align: right;
 }
 
 //combobox
@@ -1312,10 +1299,10 @@ table.footable-editing-right tr.footable-editing td {
     vertical-align: middle;
     height: 2.4375rem;
     background: #fefefe;
-    padding-left:10px;
+    padding-left: 10px;
     border-radius: 3px;
-    width:100%;
-    &:focus{
+    width: 100%;
+    &:focus {
 
     }
   }
@@ -1332,7 +1319,6 @@ table.footable-editing-right tr.footable-editing td {
   z-index: 10000;
 }
 
-
 //workflow
 
 .workflow-cont {
@@ -1346,13 +1332,13 @@ table.footable-editing-right tr.footable-editing td {
 
     .red-tab {
       .accordion-title:hover {
-       background: #e6604a;
+        background: #e6604a;
       }
     }
 
     .orange-tab {
       .accordion-title:hover {
-       background: #ef8e4f;
+        background: #ef8e4f;
       }
     }
 
@@ -1362,22 +1348,20 @@ table.footable-editing-right tr.footable-editing td {
       }
     }
 
-
-
     table {
       .userListItem {
         border-radius: 5px;
-        padding:5px;
+        padding: 5px;
         margin-right: 2px;
         background: #d47e47;
-        color:#ffffff;
+        color: #ffffff;
       }
       .checkListItem {
         border-radius: 5px;
-        padding:5px;
+        padding: 5px;
         margin-right: 2px;
         background: #3dc36f;
-        color:#ffffff;
+        color: #ffffff;
       }
 
       .icon {
@@ -1391,8 +1375,6 @@ table.footable-editing-right tr.footable-editing td {
       }
     }
 
-
-
   }
 }
 
@@ -1400,7 +1382,7 @@ table.footable-editing-right tr.footable-editing td {
 
 .accordion {
   .accordion-content {
-    color:#36404a;
+    color: #36404a;
     font-size: 1rem;
   }
   .accordion-item {
@@ -1410,83 +1392,80 @@ table.footable-editing-right tr.footable-editing td {
     }
   }
 }
-.bighalf-tags{
-  li{
-    &.tagit-choice-editable{
+.bighalf-tags {
+  li {
+    &.tagit-choice-editable {
       margin: 10px 5px;
       background-color: #83B5F9;
-      color:#ffffff !important;
+      color: #ffffff !important;
     }
-    &.tagit-choice{
+    &.tagit-choice {
       border-color: #78AFFA;
     }
   }
 }
-.bill{
-  input + div.error{
+.bill {
+  input + div.error {
     margin: 0;
   }
-  .bill-form-data{
+  .bill-form-data {
 
   }
-  .bill-form-tabs{
-    &.tabs{
-      border:none;
+  .bill-form-tabs {
+    &.tabs {
+      border: none;
     }
-    .tabs-title{
-      a{
+    .tabs-title {
+      a {
         padding: .5em;
         margin-right: 1em;
-        &[aria-selected="true"]{
+        &[aria-selected="true"] {
           border-bottom: 3px solid $qount-btn-primary;
           background-color: #fff;
         }
       }
     }
   }
-  .bill-form-tabs-content{
-    &.tabs-content{
+  .bill-form-tabs-content {
+    &.tabs-content {
       border: none;
     }
-    .tabs-panel{
+    .tabs-panel {
       padding: 1em 0;
     }
   }
 
-
-  .bill-preview-icons{
+  .bill-preview-icons {
     position: relative;
-    top:-5px;
+    top: -5px;
     margin-right: 1em;
-    i{
+    i {
       font-size: 1.5rem;
-      color:#6f7f8f;
+      color: #6f7f8f;
       margin-right: .5em;
     }
 
   }
 
-  .bill-modal-container{
+  .bill-modal-container {
 
   }
-  .bill-container{
+  .bill-container {
 
     margin-bottom: 15px;
-    .bill-preview-container{
+    .bill-preview-container {
       overflow-y: auto;
     }
   }
 }
 
-
-
-.bighalf-footable{
-  &.bigpay-dashboard{
+.bighalf-footable {
+  &.bigpay-dashboard {
     /*thead{
       border: 0px;
     }*/
   }
-  tbody,thead{
+  tbody, thead {
     //background: #fff;
 
     /*tr{
@@ -1508,25 +1487,25 @@ table.footable-editing-right tr.footable-editing td {
     }
   }*/
 
-  tbody{
-    tr{
+  tbody {
+    tr {
       color: #36404a;
-      &:hover{
+      &:hover {
         background-color: #f4faff;
-        a{
-          &.action{
+        a {
+          &.action {
             visibility: visible;
           }
         }
       }
-      a{
-        &.action{
+      a {
+        &.action {
           font-size: 1rem;
           color: #6f7f8f;
           visibility: hidden;
           margin-right: 0.25em;
           margin-left: 0;
-          &:hover{
+          &:hover {
             color: #36404a;
           }
         }
@@ -1535,16 +1514,14 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
-
-.bill{
+.bill {
   position: relative;
 }
 
-
-.bill .comments-box{
-  position:fixed;
-  bottom:100px;
-  right:70px;
+.bill .comments-box {
+  position: fixed;
+  bottom: 100px;
+  right: 70px;
   width: 350px;
   height: 450px;
   background: #fff;
@@ -1557,9 +1534,9 @@ table.footable-editing-right tr.footable-editing td {
 }
 
 .bill .overlay {
-  position:absolute;
-  top:0px;
-  left:0px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
   width: 100%;
   height: 100%;
   opacity: 0.8;
@@ -1568,7 +1545,6 @@ table.footable-editing-right tr.footable-editing td {
   animation: boxFadeIn 1s;
   z-index: 200;
 }
-
 
 .comments-box .comments-footer {
   position: absolute;
@@ -1581,8 +1557,8 @@ table.footable-editing-right tr.footable-editing td {
 
 .close-cont {
   position: absolute;
-  top:0px;
-  right:5px;
+  top: 0px;
+  right: 5px;
   a {
     color: #6f7f8f;
     font-size: 0.9em;
@@ -1599,8 +1575,8 @@ table.footable-editing-right tr.footable-editing td {
 .comment-link {
   position: fixed;
   bottom: 30px;
-  right:30px;
-  width:50px;
+  right: 30px;
+  width: 50px;
   z-index: 1500;
   a {
     border: 1pt solid #dddddd;
@@ -1634,8 +1610,8 @@ table.footable-editing-right tr.footable-editing td {
 .comments-box .comments-body .comment {
   .comment-content {
     .recipient {
-      color:#50AEE2;
-      margin-right:10px;
+      color: #50AEE2;
+      margin-right: 10px;
       font-weight: bold;
     }
     color: #36404a;
@@ -1643,7 +1619,7 @@ table.footable-editing-right tr.footable-editing td {
     font-size: 0.9em;
   }
   .commented-by {
-    color:#717F8C;
+    color: #717F8C;
     padding: 0px 10px;
     font-size: 0.8em;
   }
@@ -1663,16 +1639,15 @@ table.footable-editing-right tr.footable-editing td {
   }
 
   .alert-message {
-    position:relative;
+    position: relative;
   }
 }
 
 .comments-box .comments-header {
   padding: 5px 0px 0px 0px;
   text-align: center;
-  width:100%;
+  width: 100%;
 }
-
 
 .comments-box .comments-header .comments-title {
   color: #36404a;
@@ -1683,9 +1658,8 @@ table.footable-editing-right tr.footable-editing td {
 
 .recipient-box input {
   width: 280px;
-  margin-top:5px;
+  margin-top: 5px;
 }
-
 
 .ui-autocomplete.ui-widget {
   font-family: inherit;
@@ -1703,32 +1677,32 @@ table.footable-editing-right tr.footable-editing td {
   border: 1px solid #f96f00;
   background: #ff7404;
   border: 1px solid #cd5715;
-  background: -moz-linear-gradient(top, #ff8d05,#ff5c03);
-  background: -webkit-linear-gradient(top, #ff8d05,#ff5c03);
-  background: linear-gradient(to bottom, #ff8d05,#ff5c03);
+  background: -moz-linear-gradient(top, #ff8d05, #ff5c03);
+  background: -webkit-linear-gradient(top, #ff8d05, #ff5c03);
+  background: linear-gradient(to bottom, #ff8d05, #ff5c03);
   text-shadow: 0 -1px 0 #9d4600;
 }
 
-.reports{
-    &.tabs-content{
-      border: none;
-    }
-    .tabs-panel{
-      padding: 1em 0;
-    }
-    &.tabs{
-      border:none;
-    }
-    .tabs-title{
-      a{
-        padding: .5em;
-        margin-right: 1em;
-        &[aria-selected="true"]{
-          border-bottom: 3px solid $qount-btn-primary;
-          background-color: #fff;
-        }
+.reports {
+  &.tabs-content {
+    border: none;
+  }
+  .tabs-panel {
+    padding: 1em 0;
+  }
+  &.tabs {
+    border: none;
+  }
+  .tabs-title {
+    a {
+      padding: .5em;
+      margin-right: 1em;
+      &[aria-selected="true"] {
+        border-bottom: 3px solid $qount-btn-primary;
+        background-color: #fff;
       }
     }
+  }
 }
 
 .report-body {
@@ -1750,15 +1724,15 @@ table.footable-editing-right tr.footable-editing td {
   font-size: 16px;
 }
 
-.report-heading{
+.report-heading {
   color: #282895;
   font-weight: 700;
 }
 
-.aging-report-table{
-  tr{
-    &:last-child{
-      td{
+.aging-report-table {
+  tr {
+    &:last-child {
+      td {
         border-top: 1px solid #0a4b3e;
         border-bottom: 1px solid #0a4b3e;
         /*&:last-child {
@@ -1769,7 +1743,7 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
-.report-table{
+.report-table {
   /*tr{
     &:last-child{
       td{
@@ -1789,91 +1763,90 @@ table.footable-editing-right tr.footable-editing td {
 }
 
 /*Company page styles*/
-.company-details{
+.company-details {
   /*Block level element exists on its own*/
 
-    form.company-form{
-      padding: 50px 0 50px 0;
-      @media #{$medium-up} {
-        padding: 0 0 50px 0;
-      }
-      section{
-        &.item-expense-info{
-          padding-bottom: 15px;
-          .import-link{
-            font-size: 14px;
-          }
-        }
-        header{
-          font-weight: 600;
-          font-size: 1rem;
+  form.company-form {
+    padding: 50px 0 50px 0;
+    @media #{$medium-up} {
+      padding: 0 0 50px 0;
+    }
+    section {
+      &.item-expense-info {
+        padding-bottom: 15px;
+        .import-link {
+          font-size: 14px;
         }
       }
+      header {
+        font-weight: 600;
+        font-size: 1rem;
+      }
     }
-    hr{
-      margin: .8rem 0;
-    }
+  }
+  hr {
+    margin: .8rem 0;
+  }
 }
 
-.existing-company-wrapper{
+.existing-company-wrapper {
   border: 1px solid #cacaca;
   padding: 5px;
 }
 
-.existing-company-row{
+.existing-company-row {
   margin-top: 5px;
   margin-bottom: 5px;
-  span{
+  span {
     margin-left: 5px;
   }
 }
 
-.import-button{
+.import-button {
   margin-top: 10px;
 }
 
-.company-button-header{
+.company-button-header {
 
-
-  button{
+  button {
     position: fixed;
-    right:10px;
-    top:60px;
+    right: 10px;
+    top: 60px;
     z-index: 5;
   }
 
 }
-#report-tabs{
-  .tabs-title{
+#report-tabs {
+  .tabs-title {
     z-index: 5;
   }
 }
 
 /*qount custom list tagger*/
-.qount-custom-tag{
+.qount-custom-tag {
   border: 1px solid #cacaca;
   border-radius: 3px;
-  .new-item-input{
+  .new-item-input {
     border-top: none;
-    border-right:none;
-    border-left:none;
+    border-right: none;
+    border-left: none;
     margin-bottom: 1px;
   }
-  ul{
+  ul {
 
     list-style: none;
     margin: 0;
     overflow-y: auto;
-    li{
-      &.item{
-        &:hover{
+    li {
+      &.item {
+        &:hover {
           background-color: #f4faff;
           border-bottom: 1px solid #ccc;
           border-top: 1px solid #ccc;
         }
         padding: .5em .25em;
 
-        .desc-item{
+        .desc-item {
           color: $qount-text;
           display: inline-block;
           width: 80%;
@@ -1882,7 +1855,7 @@ table.footable-editing-right tr.footable-editing td {
           text-overflow: ellipsis;
           vertical-align: text-bottom;
         }
-        .remove-item{
+        .remove-item {
           margin: 0 .3em;
           cursor: pointer;
           color: #cacaca;
@@ -1892,150 +1865,208 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
-#addCOA{
-  .save-btn{
+#addCOA {
+  .save-btn {
     position: absolute;
     bottom: 5%;
     right: 5%;
   }
 
-  .description p{
+  .description p {
     font-size: 12px;
   }
 
-  .subaccount-wrapper{
+  .subaccount-wrapper {
     margin-top: 5px;
 
-    span{
+    span {
       margin-left: 3px;
     }
   }
 }
 
 /* Loading CSS*/
-.fond{position:absolute;padding-top:85px;top:0;left:0; right:0;bottom:0;}
+.fond {
+  position: absolute;
+  padding-top: 85px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 
-.contener_general
-{
-  -webkit-animation:animball_two 5s infinite;
-  -moz-animation:animball_two 2s infinite;
-  -ms-animation:animball_two 5s infinite;
-  animation:animball_two 2s infinite;
-  width:44px; height:44px;
+.contener_general {
+  -webkit-animation: animball_two 5s infinite;
+  -moz-animation: animball_two 2s infinite;
+  -ms-animation: animball_two 5s infinite;
+  animation: animball_two 2s infinite;
+  width: 44px;
+  height: 44px;
 }
-.contener_mixte
-{
-  width:44px; height:44px; position:absolute;
+.contener_mixte {
+  width: 44px;
+  height: 44px;
+  position: absolute;
 }
-.ballcolor
-{
+.ballcolor {
   width: 20px;
   height: 20px;
   border-radius: 50%;
 }
-.ball_1, .ball_2, .ball_3, .ball_4
-{
+.ball_1, .ball_2, .ball_3, .ball_4 {
   position: absolute;
-  -webkit-animation:animball_one 5s infinite ease;
-  -moz-animation:animball_one 2s infinite ease;
-  -ms-animation:animball_one 5s infinite ease;
-  animation:animball_one 2s infinite ease;
+  -webkit-animation: animball_one 5s infinite ease;
+  -moz-animation: animball_one 2s infinite ease;
+  -ms-animation: animball_one 5s infinite ease;
+  animation: animball_one 2s infinite ease;
 }
-.ball_1
-{
-  background-color:#4582fd;
-  top:0; left:0;
+.ball_1 {
+  background-color: #4582fd;
+  top: 0;
+  left: 0;
 }
-.ball_2
-{
-  background-color:#00B050;
-  top:0; left:44px;
+.ball_2 {
+  background-color: #00B050;
+  top: 0;
+  left: 44px;
 }
-.ball_3
-{
-  background-color:#FFC000;
-  top:44px; left:0;
+.ball_3 {
+  background-color: #FFC000;
+  top: 44px;
+  left: 0;
 }
-.ball_4
-{
-  background-color:#EB4334;
-  top:44px; left:44px;
-}
-
-@-webkit-keyframes animball_one
-{
-  0%{ position: absolute;}
-  50%{top:12px; left:12px; position: absolute;opacity:1;}
-  100%{ position: absolute;}
-}
-@-moz-keyframes animball_one
-{
-  0%{ position: absolute;}
-  50%{top:12px; left:12px; position: absolute;opacity:1;}
-  100%{ position: absolute;}
-}
-@-ms-keyframes animball_one
-{
-  0%{ position: absolute;}
-  50%{top:12px; left:12px; position: absolute;opacity:1;}
-  100%{ position: absolute;}
-}
-@keyframes animball_one
-{
-  0%{ position: absolute;}
-  50%{top:12px; left:12px; position: absolute;opacity:1;}
-  100%{ position: absolute;}
+.ball_4 {
+  background-color: #EB4334;
+  top: 44px;
+  left: 44px;
 }
 
-@-webkit-keyframes animball_two
-{
-  0%{-webkit-transform:rotate(0deg) scale(1);}
-  50%{-webkit-transform:rotate(360deg) scale(1);}
-  100%{-webkit-transform:rotate(720deg) scale(1);}
+@-webkit-keyframes animball_one {
+  0% {
+    position: absolute;
+  }
+  50% {
+    top: 12px;
+    left: 12px;
+    position: absolute;
+    opacity: 1;
+  }
+  100% {
+    position: absolute;
+  }
 }
-@-moz-keyframes animball_two
-{
-  0%{-moz-transform:rotate(0deg) scale(1);}
-  50%{-moz-transform:rotate(360deg) scale(1);}
-  100%{-moz-transform:rotate(720deg) scale(1);}
+@-moz-keyframes animball_one {
+  0% {
+    position: absolute;
+  }
+  50% {
+    top: 12px;
+    left: 12px;
+    position: absolute;
+    opacity: 1;
+  }
+  100% {
+    position: absolute;
+  }
 }
-@-ms-keyframes animball_two
-{
-  0%{-ms-transform:rotate(0deg) scale(1);}
-  50%{-ms-transform:rotate(360deg) scale(1);}
-  100%{-ms-transform:rotate(720deg) scale(1);}
+@-ms-keyframes animball_one {
+  0% {
+    position: absolute;
+  }
+  50% {
+    top: 12px;
+    left: 12px;
+    position: absolute;
+    opacity: 1;
+  }
+  100% {
+    position: absolute;
+  }
 }
-@keyframes animball_two
-{
-  0%{transform:rotate(0deg) scale(1);}
-  50%{transform:rotate(360deg) scale(1);}
-  100%{transform:rotate(720deg) scale(1);}
+@keyframes animball_one {
+  0% {
+    position: absolute;
+  }
+  50% {
+    top: 12px;
+    left: 12px;
+    position: absolute;
+    opacity: 1;
+  }
+  100% {
+    position: absolute;
+  }
+}
+
+@-webkit-keyframes animball_two {
+  0% {
+    -webkit-transform: rotate(0deg) scale(1);
+  }
+  50% {
+    -webkit-transform: rotate(360deg) scale(1);
+  }
+  100% {
+    -webkit-transform: rotate(720deg) scale(1);
+  }
+}
+@-moz-keyframes animball_two {
+  0% {
+    -moz-transform: rotate(0deg) scale(1);
+  }
+  50% {
+    -moz-transform: rotate(360deg) scale(1);
+  }
+  100% {
+    -moz-transform: rotate(720deg) scale(1);
+  }
+}
+@-ms-keyframes animball_two {
+  0% {
+    -ms-transform: rotate(0deg) scale(1);
+  }
+  50% {
+    -ms-transform: rotate(360deg) scale(1);
+  }
+  100% {
+    -ms-transform: rotate(720deg) scale(1);
+  }
+}
+@keyframes animball_two {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(360deg) scale(1);
+  }
+  100% {
+    transform: rotate(720deg) scale(1);
+  }
 }
 /*end*/
 
-#importExpenseModal{
-  .close-button{
+#importExpenseModal {
+  .close-button {
     font-size: 2em;
   }
 }
 
-.row .row{
+.row .row {
   max-width: none;
 }
 
-.custom-tag-div{
+.custom-tag-div {
   border: none !important;
 }
 
 /* This parent can be any width and height */
 .box-notifier {
-  $qount-box-icon-width:198px;
-  $qount-box-icon-height:138px;
+  $qount-box-icon-width: 198px;
+  $qount-box-icon-height: 138px;
   text-align: center;
   margin-bottom: 10px;
   /* May want to do this if there is risk the container may be narrower than the element inside */
   white-space: nowrap;
-  &:before{
+  &:before {
     /* The ghost, nudged to maintain perfect centering */
     content: '';
     display: inline-block;
@@ -2049,78 +2080,78 @@ table.footable-editing-right tr.footable-editing td {
     vertical-align: middle;
     width: 100%;
   }
-  .box-border{
+  .box-border {
     width: 60%;
     height: 150px;
     border: 2px solid #f2f3f4;
     border-radius: 5px;
     margin-bottom: 10px;
-    .box-icon{
+    .box-icon {
       display: block;
       text-indent: -9999px;
       width: $qount-box-icon-width;
       height: $qount-box-icon-height;
       margin: 10px auto 0;
-      &.companies{
+      &.companies {
         background: url("../images/SVG/company.svg") no-repeat;
         background-size: 36px 48px;
         background-position: center center;
       }
-      &.vendors{
+      &.vendors {
         background: url("../images/SVG/vendor.svg") no-repeat;
         background-size: 36px 48px;
         background-position: center center;
       }
-      &.customers{
+      &.customers {
         background: url("../images/SVG/customer.svg") no-repeat;
         background-size: 36px 48px;
         background-position: center center;
       }
-      &.employees{
+      &.employees {
         background: url("../images/SVG/customer.svg") no-repeat;
         background-size: 36px 48px;
         background-position: center center;
       }
 
     }
-    &:hover{
-      &.blue{
+    &:hover {
+      &.blue {
         background-color: $qount-brand-blue;
         border-color: $qount-brand-blue;
-        .box-icon{
-          &.companies{
+        .box-icon {
+          &.companies {
             background: url("../images/SVG/company.svg") no-repeat;
             background-size: 36px 48px;
             background-position: center center;
           }
-          &.vendors{
+          &.vendors {
             background: url("../images/SVG/vendor.svg") no-repeat;
             background-size: 36px 48px;
             background-position: center center;
           }
-          &.customers{
+          &.customers {
             background: url("../images/SVG/customer.svg") no-repeat;
             background-size: 36px 48px;
             background-position: center center;
           }
-          &.employees{
+          &.employees {
             background: url("../images/SVG/customer.svg") no-repeat;
             background-size: 36px 48px;
             background-position: center center;
           }
         }
-        &+.box-label{
+        & + .box-label {
           color: $qount-text;
         }
       }
       cursor: pointer;
       background-color: $qount-brand-grey-light;
-      &+.box-label{
+      & + .box-label {
         color: $qount-brand-blue;
       }
     }
   }
-  .box-notification-circle{
+  .box-notification-circle {
     width: 22px;
     height: 22px;
     border-radius: 11px;
@@ -2131,20 +2162,20 @@ table.footable-editing-right tr.footable-editing td {
     margin-right: 15px;
     margin-top: -10px;
   }
-  .box-label{
+  .box-label {
     color: $qount-text;
     cursor: pointer;
   }
 }
 
-.tools-grids{
+.tools-grids {
   margin: 20px 0px;
-  .tool-grid{
+  .tool-grid {
     width: 198px;
     height: 180px;
     border-radius: 5px;
     border: 2px solid #f2f3f4;
-    color :#f2f3f4;
+    color: #f2f3f4;
     padding-left: 0px;
     padding-right: 0px;
     margin: 0px 20px;
@@ -2152,55 +2183,55 @@ table.footable-editing-right tr.footable-editing td {
     text-align: center;
     position: relative;
   }
-  .grid-icon{
+  .grid-icon {
     height: 70%;
-    &.companies{
+    &.companies {
       background: url("../images/SVG/company.svg") no-repeat;
       background-size: 36px 48px;
       background-position: center center;
     }
-    &.vendors{
+    &.vendors {
       background: url("../images/SVG/vendor.svg") no-repeat;
       background-size: 36px 48px;
       background-position: center center;
     }
-    &.customers{
+    &.customers {
       background: url("../images/SVG/customer.svg") no-repeat;
       background-size: 36px 48px;
       background-position: center center;
     }
-    &.employees{
+    &.employees {
       background: url("../images/SVG/customer.svg") no-repeat;
       background-size: 36px 48px;
       background-position: center center;
     }
-    &.items{
+    &.items {
       background: url("../images/SVG/items.svg") no-repeat;
       background-size: 36px 48px;
       background-position: center center;
     }
-    &.chart-of-accounts{
+    &.chart-of-accounts {
       background: url("../images/SVG/chartofaccounts.svg") no-repeat;
       background-size: 36px 48px;
       background-position: center center;
     }
-    &.expense-codes{
+    &.expense-codes {
       background: url("../images/SVG/expensecode.svg") no-repeat;
       background-size: 36px 48px;
       background-position: center center;
     }
-    &.reports{
+    &.reports {
       background: url("../images/SVG/reports.svg") no-repeat;
       background-size: 36px 48px;
       background-position: center center;
     }
-    &.billing{
+    &.billing {
       background: url("../images/SVG/billing.svg") no-repeat;
       background-size: 36px 48px;
       background-position: center center;
     }
   }
-  .thumb-label{
+  .thumb-label {
     width: 100%;
     height: 55px;
     font-weight: 500;
@@ -2213,16 +2244,16 @@ table.footable-editing-right tr.footable-editing td {
     color: #f2f3f4;
     color: #36404a;
   }
-  &:hover{
+  &:hover {
     color: #00b0f0;
     color: #ffffff;
   }
 
-  .clear{
+  .clear {
     clear: both;
   }
 
-  .grid-qount{
+  .grid-qount {
     width: 20px;
     height: 20px;
     font-size: 0.8rem;
@@ -2237,7 +2268,7 @@ table.footable-editing-right tr.footable-editing td {
     margin-top: -10px;
   }
 
-  .tool-grid:hover .thumb-label{
+  .tool-grid:hover .thumb-label {
     background-color: $qount-brand-blue;
     color: #fff;
   }
