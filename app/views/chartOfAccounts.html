@@ -23,10 +23,14 @@
               <input type="text" formControlName="name" placeholder="Name*"/>
               <div class="error" [hidden]="coaForm.controls.name.untouched || coaForm.controls.name.valid">Name is required.</div>
             </label>
+            <label>Number
+              <input type="text" formControlName="number" placeholder="Number"/>
+              <div class="error" [hidden]="coaForm.controls.number.untouched || coaForm.controls.number.valid">Number is required.</div>
+            </label>
           </div>
           <div class="small-12 medium-6 columns">
             <label>Description
-              <textarea formControlName="desc" placeholder="Description"></textarea>
+              <textarea formControlName="desc" style="height: 110px;" placeholder="Description"></textarea>
               <div class="error" [hidden]="coaForm.controls.desc.untouched || coaForm.controls.desc.valid">Description is required.</div>
             </label>
           </div>
@@ -85,15 +89,16 @@
                 <label>Partnership Mapping
                   <select formControlName="mapping" placeholder="Partnership mapping">
                     <option value="">Select mapping</option>
-                    <option *ngFor="let mapping of mappings['1165']" value="{{mapping.value}}">{{mapping.name}}</option>
+                    <option *ngFor="let mapping of mappings['1065']" value="{{mapping.value}}">{{mapping.name}}</option>
                   </select>
                 </label>
               </div>
             </div>
           </div>
           <div class="small-12 medium-6 columns">
-            <div>
-              <input type="checkbox" formControlName="subAccount" (change)="changeStatus()"/>Sub Account
+            <div class="subaccount-wrapper">
+              <input type="checkbox" formControlName="subAccount" (change)="changeStatus()"/>
+              <span>Sub Account</span>
             </div>
             <div *ngIf="subAccount">
               <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentID" [listObject]="parentAccounts" (valueChanged)="updateParent($event)">

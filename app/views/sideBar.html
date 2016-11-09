@@ -1,53 +1,44 @@
-  <!--<div class="heading">
-    <span>Navigation</span>
-  </div>-->
-  <ul class="side-nav" data-accordion-menu foundation>
-    <li>
-      <a ripple (click)="toggleMenu()">
-        <i class="icon ion-navicon-round"></i>
-        <div class="name">{{currentCompanyName}}
-          <i class="icon ion-ios-arrow-down" [hidden]="!isExpanded || !currentCompanyId" (click)="showCompaniesDropdown($event)" data-toggle="switchCompany"></i>
-        </div>
-      </a>
-    </li>
-    <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isDashboard}" (click)="showPage('dashboard')"><i class="icon ion-grid"></i><div class="name">Dashboard</div></a>
-    </li>
-    <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isCOA}" (click)="showPage('coa')"><i class="icon ion-ios-list"></i><div class="name">Chart of Accounts</div></a>
-    </li>
-    <li>
-        <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isBooks}" (click)="showPage('books')"><i class="icon glyphicon glyphicon-book"></i><div class="name">Books</div></a>
-    </li>
-    <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isPayments}" (click)="showPage('payments')"><i class="icon fa fa-credit-card"></i><div class="name">Payments</div></a>
-    </li>
-    <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isInvoice}" (click)="showPage('invoice')"><i class="icon fa fa-file-text"></i><div class="name">Invoice</div></a>
-    </li>
-    <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isPayrol}" (click)="showPage('payrol')"><i class="icon glyphicon glyphicon-list-alt"></i><div class="name">Expenses</div></a>
-    </li>
-    <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isTaxes}" (click)="showPage('taxes')"><i class="icon fa fa-calendar"></i><div class="name">Taxes</div></a>
-    </li>
-    <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isCompanies}" (click)="showPage('companies')"><i class="icon ion-android-people"></i><div class="name">Companies</div></a>
-    </li>
-    <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isVendors}" (click)="showPage('vendors')"><i class="icon ion-android-contacts"></i><div class="name">Vendors</div></a>
-    </li>
-    <!--<li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isNotifications}" (click)="showPage('notifications', $event)"><i class="icon ion-speakerphone"></i><div class="name">Notifications</div></a>
-    </li>-->
-    <li>
-      <a ripple [ngClass]="{'collapsed': !expanded}" (click)="logout()"><i class="icon glyphicon glyphicon-off"></i><div class="name">Log Out</div></a>
-    </li>
-  </ul>
+<ul class="side-nav" data-accordion-menu foundation>
+  <li>
+    <a ripple (click)="toggleMenu()">
+      <i class="icon ion-navicon-round"></i>
+      <div class="name">{{currentCompanyName}}
+        <i class="icon ion-ios-arrow-down" [hidden]="!isExpanded || !currentCompanyId" (click)="showCompaniesDropdown($event)" data-toggle="switchCompany"></i>
+      </div>
+    </a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isDashboard}" (click)="showPage('dashboard')"><i class="icon ion-grid"></i><div class="name">Dashboard</div></a>
+  </li>
+  <li>
+      <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isBooks}" (click)="showPage('books')"><i class="icon glyphicon glyphicon-book"></i><div class="name">Books</div></a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isInvoice}" (click)="showPage('invoice')"><i class="icon fa fa-file-text"></i><div class="name">Invoices</div></a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isPayments}" (click)="showPage('payments')"><i class="icon fa fa-credit-card"></i><div class="name">Payments</div></a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isExpenses}" (click)="showPage('expenses')"><i class="icon fa fa-money"></i><div class="name">Expenses</div></a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isPayrol}" (click)="showPage('payrol')"><i class="icon glyphicon glyphicon-list-alt"></i><div class="name">Payroll</div></a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isTaxes}" (click)="showPage('taxes')"><i class="icon fa fa-calendar"></i><div class="name">Tax</div></a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selected': isTools}" (click)="showPage('tools')"><i class="icon glyphicon glyphicon-cog"></i><div class="name">Tools</div></a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded}" (click)="logout()"><i class="icon glyphicon glyphicon-off"></i><div class="name">Log Out</div></a>
+  </li>
+</ul>
 
-  <div class="dropdown-pane bottom float-left" id="switchCompany" data-dropdown>
-    <span>Switch to:</span>
-    <ul>
-      <li *ngFor="let company of companies" (click)="changeCompany(company.id)" [hidden]="company.id == currentCompanyId">{{company.name}}</li>
-    </ul>
-  </div>
+<div class="dropdown-pane bottom float-left" id="switchCompany" data-dropdown>
+  <span>Switch to:</span>
+  <ul>
+    <li *ngFor="let company of companies" (click)="changeCompany(company.id)" [hidden]="company.id == currentCompanyId">{{company.name}}</li>
+  </ul>
+</div>

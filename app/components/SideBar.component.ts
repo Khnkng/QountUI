@@ -17,14 +17,15 @@ declare var _:any;
 })
 
 export class SideBarComponent {
-
   isDashboard:boolean = false;
-  isCompanies:boolean = false;
-  isVendors:boolean = false;
-  isWorkflow:boolean = false;
-  isNotifications:boolean = false;
-  isReports:boolean = false;
-  isCOA:boolean = false;
+  isBooks:boolean = false;
+  isInvoice:boolean = false;
+  isPayments:boolean = false;
+  isExpenses:boolean = false;
+  isPayrol:boolean = false;
+  isTaxes:boolean = false;
+  isTools:boolean = false;
+
   allBoards:any;
   currentBoardName = null;
   companies:Array<any>;
@@ -67,11 +68,12 @@ export class SideBarComponent {
   showPage(page:PAGES, $event) {
     $event && $event.stopImmediatePropagation();
     this.isDashboard = false;
-    this.isCompanies = false;
-    this.isVendors = false;
-    this.isWorkflow = false;
-    this.isNotifications = false;
-    this.isCOA = false;
+    this.isBooks = false;
+    this.isPayments = false;
+    this.isExpenses = false;
+    this.isPayrol = false;
+    this.isTaxes = false;
+    this.isTools = false;
     switch (page) {
       case PAGES.DASHBOARD: {
         let link = [''];
@@ -79,40 +81,40 @@ export class SideBarComponent {
         this.isDashboard = true;
       }
       break;
-      case PAGES.COA: {
-        let link = ['/chartOfAccounts'];
+      case PAGES.BOOKS: {
+        let link = ['books'];
         this._router.navigate(link);
-        this.isCOA = true;
-      }
-        break;
-      case PAGES.COMPANIES: {
-        let link=['/companies'];
-        this._router.navigate(link);
-        this.isCompanies = true;
+        this.isBooks = true;
       }
       break;
-      case PAGES.VENDORS: {
-        let link=['/vendors'];
+      case PAGES.PAYMENTS: {
+        let link = ['payments'];
         this._router.navigate(link);
-        this.isVendors = true;
-      }
-        break;
-      case PAGES.WORKFLOW: {
-        let link=['/Workflow'];
-        this._router.navigate(link);
-        this.isWorkflow = true;
+        this.isPayments = true;
       }
       break;
-      case PAGES.NOTIFICATIONS: {
-        let link=['/notification'];
+      case PAGES.EXPENSES: {
+        let link = ['expenses'];
         this._router.navigate(link);
-        this.isNotifications = true;
+        this.isExpenses = true;
       }
       break;
-      case PAGES.REPORTS: {
-        let link=['/Reports'];
+      case PAGES.PAYROL: {
+        let link = ['payrol'];
         this._router.navigate(link);
-        this.isReports = true;
+        this.isPayrol = true;
+      }
+      break;
+      case PAGES.TAX: {
+        let link = ['tax'];
+        this._router.navigate(link);
+        this.isTaxes = true;
+      }
+      break;
+      case PAGES.TOOLS: {
+        let link = ['tools'];
+        this._router.navigate(link);
+        this.isTools = true;
       }
       break;
     }

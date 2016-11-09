@@ -29,6 +29,7 @@ import {UserProfileComponent} from "qCommon/app/components/UserProfile.component
 import {ChartOfAccountsComponent} from "./components/ChartOfAccounts.component";
 import {COAForm} from "./forms/COA.form";
 import {DashBoardActivator} from "qCommon/app/services/DashBoardActivator";
+import {ToolsComponent} from "./components/Tools.component";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
@@ -36,7 +37,8 @@ import {DashBoardActivator} from "qCommon/app/services/DashBoardActivator";
         {
             path: '',
             component: CanvasComponent,
-            canActivate: [LoggedInActivator]
+            canActivate: [LoggedInActivator],
+            useAsDefault: true
         },
         {
             path: 'login',
@@ -48,7 +50,8 @@ import {DashBoardActivator} from "qCommon/app/services/DashBoardActivator";
             component: SignUpComponent,
             canActivate: [DashBoardActivator]
         },
-        {   path: 'addCompany',
+        {
+            path: 'addCompany',
             name: 'AddCompany',
             component: AddCompanyComponent,
             canActivate: [LoggedInActivator]
@@ -69,7 +72,6 @@ import {DashBoardActivator} from "qCommon/app/services/DashBoardActivator";
             canActivate: [LoggedInActivator]
         },
         {
-
             path: 'user-profile',
             name: 'UserProfile',
             component: UserProfileComponent,
@@ -79,9 +81,14 @@ import {DashBoardActivator} from "qCommon/app/services/DashBoardActivator";
             path: 'chartOfAccounts',
             component: ChartOfAccountsComponent,
             canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'tools',
+            component: ToolsComponent,
+            canActivate: [LoggedInActivator]
         }
     ])],
-    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent],
+    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword]
 })

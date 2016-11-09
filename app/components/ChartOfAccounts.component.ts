@@ -44,6 +44,7 @@ export class ChartOfAccountsComponent{
   allCompanies:Array<any>;
   mappings:Array<any>;
   row:any;
+  coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'mapping', 'type', 'subType', 'desc', 'number'];
 
   constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService, private toastService: ToastService){
     this.coaForm = this._fb.group(_coaForm.getForm());
@@ -200,7 +201,10 @@ export class ChartOfAccountsComponent{
       return allMappings.push(mapping);
     });
     let mapping = _.find(_.flatten(allMappings), {value: mappingValue});
-    return mapping.name;
+    if(mapping){
+      return mapping.name;
+    }
+    return "";
   }
 
   buildTableData(coaList) {
@@ -212,6 +216,7 @@ export class ChartOfAccountsComponent{
       {"name": "type", "title": "Type"},
       {"name": "mappingName", "title": "Mapping"},
       {"name": "parentName", "title": "Parent"},
+      {"name": "number", "title": "Number", "visible": false},
       {"name": "subType", "title": "Sub type", "visible": false},
       {"name": "desc", "title": "Description", "visible": false},
       {"name": "mapping", "title": "Mapping", "visible": false},
@@ -226,7 +231,7 @@ export class ChartOfAccountsComponent{
     this.chartOfAccounts.forEach(function(coa) {
       let row:any = {};
       coa.subAccount = coa.subAccount? coa.subAccount : false;
-      for(let key in base.chartOfAccounts[0]) {
+      _.each(base.coaColumns, function(key) {
         if(key == 'type'){
           row[key] = base.getCategoryName(coa[key]);
           row['categoryType'] = coa[key];
@@ -239,11 +244,17 @@ export class ChartOfAccountsComponent{
         } else if(key == 'parentID'){
           row[key] = coa[key];
           row['parentName'] = coa[key]? _.find(base.chartOfAccounts, {id: coa[key]}).name : "";
-        }else{
+        } else if(key == 'name'){
+          if(coa['subAccount']){
+            row[key] = '<span style="margin-left: 10px;">'+coa[key]+'</span>';
+          } else{
+            row[key] = coa[key];
+          }
+        } else{
           row[key] = coa[key];
         }
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
-      }
+      });
       base.tableData.rows.push(row);
     });
     setTimeout(function(){

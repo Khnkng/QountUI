@@ -573,7 +573,7 @@ form {
   transition: 0.2s ease-in-out;
 }
 
-.sidebar ul.side-nav li a .glyphicon {
+.sidebar ul.side-nav li a .glyphicon, .sidebar ul.side-nav li a .fa{
   font-size: 1.1em;
 }
 
@@ -592,7 +592,7 @@ form {
   -ms-transform:     scale(1); /* IE 9 */
 }
 
-.sidebar ul.side-nav li a.collapsed .glyphicon {
+.sidebar ul.side-nav li a.collapsed .glyphicon, .sidebar ul.side-nav li a.collapsed .fa {
   font-size: 1.3em;
 }
 
@@ -1895,12 +1895,20 @@ table.footable-editing-right tr.footable-editing td {
 #addCOA{
   .save-btn{
     position: absolute;
-    bottom: 10%;
+    bottom: 5%;
     right: 5%;
   }
 
   .description p{
     font-size: 12px;
+  }
+
+  .subaccount-wrapper{
+    margin-top: 5px;
+
+    span{
+      margin-left: 3px;
+    }
   }
 }
 
@@ -2017,4 +2025,220 @@ table.footable-editing-right tr.footable-editing td {
 
 .custom-tag-div{
   border: none !important;
+}
+
+/* This parent can be any width and height */
+.box-notifier {
+  $qount-box-icon-width:198px;
+  $qount-box-icon-height:138px;
+  text-align: center;
+  margin-bottom: 10px;
+  /* May want to do this if there is risk the container may be narrower than the element inside */
+  white-space: nowrap;
+  &:before{
+    /* The ghost, nudged to maintain perfect centering */
+    content: '';
+    display: inline-block;
+    height: auto;
+    vertical-align: middle;
+    margin-right: -0.25em; /* Adjusts for spacing */
+  }
+  .centered {
+    /* The element to be centered, can also be of any width and height */
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+  }
+  .box-border{
+    width: 60%;
+    height: 150px;
+    border: 2px solid #f2f3f4;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    .box-icon{
+      display: block;
+      text-indent: -9999px;
+      width: $qount-box-icon-width;
+      height: $qount-box-icon-height;
+      margin: 10px auto 0;
+      &.companies{
+        background: url("../images/SVG/company.svg") no-repeat;
+        background-size: 36px 48px;
+        background-position: center center;
+      }
+      &.vendors{
+        background: url("../images/SVG/vendor.svg") no-repeat;
+        background-size: 36px 48px;
+        background-position: center center;
+      }
+      &.customers{
+        background: url("../images/SVG/customer.svg") no-repeat;
+        background-size: 36px 48px;
+        background-position: center center;
+      }
+      &.employees{
+        background: url("../images/SVG/customer.svg") no-repeat;
+        background-size: 36px 48px;
+        background-position: center center;
+      }
+
+    }
+    &:hover{
+      &.blue{
+        background-color: $qount-brand-blue;
+        border-color: $qount-brand-blue;
+        .box-icon{
+          &.companies{
+            background: url("../images/SVG/company.svg") no-repeat;
+            background-size: 36px 48px;
+            background-position: center center;
+          }
+          &.vendors{
+            background: url("../images/SVG/vendor.svg") no-repeat;
+            background-size: 36px 48px;
+            background-position: center center;
+          }
+          &.customers{
+            background: url("../images/SVG/customer.svg") no-repeat;
+            background-size: 36px 48px;
+            background-position: center center;
+          }
+          &.employees{
+            background: url("../images/SVG/customer.svg") no-repeat;
+            background-size: 36px 48px;
+            background-position: center center;
+          }
+        }
+        &+.box-label{
+          color: $qount-text;
+        }
+      }
+      cursor: pointer;
+      background-color: $qount-brand-grey-light;
+      &+.box-label{
+        color: $qount-brand-blue;
+      }
+    }
+  }
+  .box-notification-circle{
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background-color: $qount-brand-red-pastel;
+    color: #ffffff;
+    font-size: 0.9rem;
+    float: right;
+    margin-right: 15px;
+    margin-top: -10px;
+  }
+  .box-label{
+    color: $qount-text;
+    cursor: pointer;
+  }
+}
+
+.tools-grids{
+  margin: 20px 0px;
+  .tool-grid{
+    width: 198px;
+    height: 180px;
+    border-radius: 5px;
+    border: 2px solid #f2f3f4;
+    color :#f2f3f4;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin: 0px 20px;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+  }
+  .grid-icon{
+    height: 70%;
+    &.companies{
+      background: url("../images/SVG/company.svg") no-repeat;
+      background-size: 36px 48px;
+      background-position: center center;
+    }
+    &.vendors{
+      background: url("../images/SVG/vendor.svg") no-repeat;
+      background-size: 36px 48px;
+      background-position: center center;
+    }
+    &.customers{
+      background: url("../images/SVG/customer.svg") no-repeat;
+      background-size: 36px 48px;
+      background-position: center center;
+    }
+    &.employees{
+      background: url("../images/SVG/customer.svg") no-repeat;
+      background-size: 36px 48px;
+      background-position: center center;
+    }
+    &.items{
+      background: url("../images/SVG/items.svg") no-repeat;
+      background-size: 36px 48px;
+      background-position: center center;
+    }
+    &.chart-of-accounts{
+      background: url("../images/SVG/chartofaccounts.svg") no-repeat;
+      background-size: 36px 48px;
+      background-position: center center;
+    }
+    &.expense-codes{
+      background: url("../images/SVG/expensecode.svg") no-repeat;
+      background-size: 36px 48px;
+      background-position: center center;
+    }
+    &.reports{
+      background: url("../images/SVG/reports.svg") no-repeat;
+      background-size: 36px 48px;
+      background-position: center center;
+    }
+    &.billing{
+      background: url("../images/SVG/billing.svg") no-repeat;
+      background-size: 36px 48px;
+      background-position: center center;
+    }
+  }
+  .thumb-label{
+    width: 100%;
+    height: 55px;
+    font-weight: 500;
+    font-size: 15px;
+    border-top: 2px solid #f2f3f4;
+    padding: 15px 0px;
+    border-radius: 0px 0px 5px 5px;
+    font-family: sans-serif;
+    text-transform: uppercase;
+    color: #f2f3f4;
+    color: #36404a;
+  }
+  &:hover{
+    color: #00b0f0;
+    color: #ffffff;
+  }
+
+  .clear{
+    clear: both;
+  }
+
+  .grid-qount{
+    width: 20px;
+    height: 20px;
+    font-size: 0.8rem;
+    background-color: $qount-brand-red-pastel;
+    font-weight: 500;
+    line-height: 1;
+    border-radius: 10px;
+    color: #ffffff;
+    padding-top: 3px;
+    position: absolute;
+    right: 15px;
+    margin-top: -10px;
+  }
+
+  .tool-grid:hover .thumb-label{
+    background-color: $qount-brand-blue;
+    color: #fff;
+  }
 }
