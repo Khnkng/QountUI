@@ -15,7 +15,7 @@ export class COAForm extends abstractForm{
     numberValidator.push(Validators.required);
     return {
       "name": ['', Validators.required],
-      "number": [''],
+      "number": ['', Validators.required],
       "type": [''],
       "subType": ['', Validators.required],
       "desc": [''],

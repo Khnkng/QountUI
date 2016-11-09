@@ -2184,7 +2184,7 @@ table.footable-editing-right tr.footable-editing td {
     position: relative;
   }
   .grid-icon {
-    height: 70%;
+    height: 130px;
     &.companies {
       background: url("../images/SVG/company.svg") no-repeat;
       background-size: 36px 48px;
@@ -2233,19 +2233,17 @@ table.footable-editing-right tr.footable-editing td {
   }
   .thumb-label {
     width: 100%;
-    height: 55px;
+    height: 50px;
     font-weight: 500;
     font-size: 15px;
     border-top: 2px solid #f2f3f4;
-    padding: 15px 0px;
+    padding: 12px 0px;
     border-radius: 0px 0px 5px 5px;
     font-family: sans-serif;
     text-transform: uppercase;
-    color: #f2f3f4;
     color: #36404a;
   }
   &:hover {
-    color: #00b0f0;
     color: #ffffff;
   }
 
