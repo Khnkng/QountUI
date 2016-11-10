@@ -128,6 +128,7 @@ export class SideBarComponent {
   showCompaniesDropdown($event){
     $event && $event.preventDefault();
     $event && $event.stopImmediatePropagation();
+    this.companies = Session.getCompanies() || [];
     if(!this.showSwitchCompany){
       jQuery("#switchCompany").foundation('open');
     } else{
