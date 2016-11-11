@@ -38,7 +38,11 @@
         <div class="row">
           <div class="small-12 medium-6 columns">
             <label>Type
-              <select formControlName="type" placeholder="Category type" (change)="populateSubtypes($event)">
+              <i class="icon ion-ios-information-outline type-info" data-tooltip aria-haspopup="true" data-click-open="false" data-disable-hover="false" title="You can't change the type and subtype untill it has a parent."></i>
+              <select formControlName="type" placeholder="Category type" *ngIf="!hasParentOrChild" (change)="populateSubtypes($event)">
+                <option *ngFor="let category of categoryTypes" [value]="category.value">{{category.name}}</option>
+              </select>
+              <select formControlName="type" disabled *ngIf="hasParentOrChild">
                 <option *ngFor="let category of categoryTypes" [value]="category.value">{{category.name}}</option>
               </select>
               <div class="error" [hidden]="coaForm.controls.type.untouched || coaForm.controls.type.valid">Category type is required.</div>
@@ -46,7 +50,10 @@
           </div>
           <div class="small-12 medium-6 columns">
             <label>Sub type
-              <select formControlName="subType" placeholder="Sub type" (change)="selectSubtype($event)">
+              <select formControlName="subType" placeholder="Sub type" *ngIf="!hasParentOrChild" (change)="selectSubtype($event)">
+                <option value="{{subtype.value}}" *ngFor="let subtype of displaySubtypes">{{subtype.name}}</option>
+              </select>
+              <select formControlName="subType" disabled *ngIf="hasParentOrChild">
                 <option value="{{subtype.value}}" *ngFor="let subtype of displaySubtypes">{{subtype.name}}</option>
               </select>
               <div class="error" [hidden]="coaForm.controls.subType.untouched || coaForm.controls.subType.valid">Sub type is required.</div>
@@ -54,7 +61,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="small-12 medium-6 columns">
+          <div class="small-12 medium-6 columns description" [innerHTML]="description">
           </div>
           <div class="small-12 medium-6 columns">
             <div class="subaccount-wrapper">
@@ -66,10 +73,6 @@
                 <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.id">{{parentAccount.name}}</option>
               </select>
             </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="small-12 medium-6 columns description" [innerHTML]="description">
           </div>
         </div>
         <div class="row save-btn float-right">
