@@ -125,142 +125,142 @@
                 </div>
               </section>
 
-              <section class="item-expense-info">
-                <header>Items and Account codes</header>
-                <hr/>
-                <div class="row medium-collapse">
-                  <div class="columns small-12 medium-4">
-                    <div class="row collapsed">
-                      <div class="column small-12">
-                        <label>Add Item Code
-                          <custom-tag [controlName]="'itemCodes'" [_list]="company.itemCodes" [group]="companyForm" [inputType]="'text'" [placeholder]="'Item code'">loading</custom-tag>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="columns small-12 medium-4">
-                    <div class="row collapsed">
-                      <div class="column small-12">
-                        <label>Add Account Code
-                          <custom-tag [controlName]="'expenseCodes'" [_list]="company.expenseCodes" [group]="companyForm" [inputType]="'text'" [placeholder]="'Account code'">loading</custom-tag>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
+              <!--<section class="item-expense-info">-->
+                <!--<header>Items and Account codes</header>-->
+                <!--<hr/>-->
+                <!--<div class="row medium-collapse">-->
+                  <!--<div class="columns small-12 medium-4">-->
+                    <!--<div class="row collapsed">-->
+                      <!--<div class="column small-12">-->
+                        <!--<label>Add Item Code-->
+                          <!--<custom-tag [controlName]="'itemCodes'" [_list]="company.itemCodes" [group]="companyForm" [inputType]="'text'" [placeholder]="'Item code'">loading</custom-tag>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                    <!--</div>-->
+                  <!--</div>-->
+                  <!--<div class="columns small-12 medium-4">-->
+                    <!--<div class="row collapsed">-->
+                      <!--<div class="column small-12">-->
+                        <!--<label>Add Account Code-->
+                          <!--<custom-tag [controlName]="'expenseCodes'" [_list]="company.expenseCodes" [group]="companyForm" [inputType]="'text'" [placeholder]="'Account code'">loading</custom-tag>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                    <!--</div>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</section>-->
 
-              <section class="payment-info">
-                <header>Payment Info</header>
-                <hr/>
-                <div class="row medium-collapse">
-                  <div class="small-12 medium-12 columns">
-                    <div class="row">
-                      <div class="small-12 medium-3 columns">
-                        <label>Select payment type
-                          <select (change)="setPaymentType($event)">
-                            <option></option>
-                            <option value="bank">Bank</option>
-                            <option value="cheque">Check</option>
-                            <option value="creditCard">Card</option>
-                          </select>
-                        </label>
-                      </div>
-                      <div class="small-12 medium-4 columns" *ngIf="paymentType=='creditCard'">
-                        <label>Name on Credit Card
-                          <div class="input-group">
-                            <input class="input-group-field" type="text" placeholder="Account Holder Name*">
-                          </div>
-                        </label>
-                      </div>
-                      <div class="small-12 medium-4 columns" *ngIf="paymentType=='creditCard'">
-                        <label>Nick Name
-                          <div class="input-group">
-                            <input class="input-group-field" type="text" placeholder="Nick Name*">
-                          </div>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="row" *ngIf="paymentType=='bank'">
-                      <div class="small-12 medium-3 columns">
-                        <label>Account Holder Name
-                          <div class="input-group">
-                            <input class="input-group-field" type="text" placeholder="Account Holder Name*">
-                          </div>
-                        </label>
-                      </div>
-                      <div class="small-12 medium-3 columns">
-                        <label>Bank Name
-                          <div class="input-group">
-                            <input class="input-group-field" type="text" placeholder="Bank Name*">
-                          </div>
-                        </label>
-                      </div>
-                      <div class="small-12 medium-3 columns">
-                        <label>Account Number
-                          <div class="input-group">
-                            <input class="input-group-field" type="text" name="accountNumber" placeholder="Account Number*">
-                          </div>
-                        </label>
-                      </div>
-                      <div class="small-12 medium-3 columns">
-                        <label>Routing Number
-                          <div class="input-group">
-                            <input class="input-group-field" type="text" placeholder="Routing Number*">
-                          </div>
-                        </label>
-                      </div>
-                    </div>
-                    <div class="row" *ngIf="paymentType=='creditCard'">
-                      <div class="small-12 medium-4 columns">
-                        <label>Card Number
-                          <div class="input-group">
-                            <input class="input-group-field" type="text" placeholder="Card Number*">
-                          </div>
-                        </label>
-                      </div>
-                      <div class="small-12 medium-2 columns">
-                        <label>CVV Number
-                          <div class="input-group">
-                            <input class="input-group-field" type="text" placeholder="CVV Number*">
-                          </div>
-                        </label>
-                      </div>
-                      <div class="small-12 medium-6 columns">
-                        <div class="row collapsed">
-                          <div class="small-6 medium-6 columns">
-                            <label>Expiry Date (Month)
-                              <select>
-                                <option value="{{day}}" *ngFor="let day of days">{{day}}</option>
-                              </select>
-                            </label>
-                          </div>
-                          <div class="small-6 medium-6 columns">
-                            <label>Year
-                              <select>
-                                <option value="{{year}}" *ngFor="let year of years">{{year}}</option>
-                              </select>
-                            </label>
-                          </div>
-                        </div>
+              <!--<section class="payment-info">-->
+                <!--<header>Payment Info</header>-->
+                <!--<hr/>-->
+                <!--<div class="row medium-collapse">-->
+                  <!--<div class="small-12 medium-12 columns">-->
+                    <!--<div class="row">-->
+                      <!--<div class="small-12 medium-3 columns">-->
+                        <!--<label>Select payment type-->
+                          <!--<select (change)="setPaymentType($event)">-->
+                            <!--<option></option>-->
+                            <!--<option value="bank">Bank</option>-->
+                            <!--<option value="cheque">Check</option>-->
+                            <!--<option value="creditCard">Card</option>-->
+                          <!--</select>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                      <!--<div class="small-12 medium-4 columns" *ngIf="paymentType=='creditCard'">-->
+                        <!--<label>Name on Credit Card-->
+                          <!--<div class="input-group">-->
+                            <!--<input class="input-group-field" type="text" placeholder="Account Holder Name*">-->
+                          <!--</div>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                      <!--<div class="small-12 medium-4 columns" *ngIf="paymentType=='creditCard'">-->
+                        <!--<label>Nick Name-->
+                          <!--<div class="input-group">-->
+                            <!--<input class="input-group-field" type="text" placeholder="Nick Name*">-->
+                          <!--</div>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="row" *ngIf="paymentType=='bank'">-->
+                      <!--<div class="small-12 medium-3 columns">-->
+                        <!--<label>Account Holder Name-->
+                          <!--<div class="input-group">-->
+                            <!--<input class="input-group-field" type="text" placeholder="Account Holder Name*">-->
+                          <!--</div>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                      <!--<div class="small-12 medium-3 columns">-->
+                        <!--<label>Bank Name-->
+                          <!--<div class="input-group">-->
+                            <!--<input class="input-group-field" type="text" placeholder="Bank Name*">-->
+                          <!--</div>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                      <!--<div class="small-12 medium-3 columns">-->
+                        <!--<label>Account Number-->
+                          <!--<div class="input-group">-->
+                            <!--<input class="input-group-field" type="text" name="accountNumber" placeholder="Account Number*">-->
+                          <!--</div>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                      <!--<div class="small-12 medium-3 columns">-->
+                        <!--<label>Routing Number-->
+                          <!--<div class="input-group">-->
+                            <!--<input class="input-group-field" type="text" placeholder="Routing Number*">-->
+                          <!--</div>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="row" *ngIf="paymentType=='creditCard'">-->
+                      <!--<div class="small-12 medium-4 columns">-->
+                        <!--<label>Card Number-->
+                          <!--<div class="input-group">-->
+                            <!--<input class="input-group-field" type="text" placeholder="Card Number*">-->
+                          <!--</div>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                      <!--<div class="small-12 medium-2 columns">-->
+                        <!--<label>CVV Number-->
+                          <!--<div class="input-group">-->
+                            <!--<input class="input-group-field" type="text" placeholder="CVV Number*">-->
+                          <!--</div>-->
+                        <!--</label>-->
+                      <!--</div>-->
+                      <!--<div class="small-12 medium-6 columns">-->
+                        <!--<div class="row collapsed">-->
+                          <!--<div class="small-6 medium-6 columns">-->
+                            <!--<label>Expiry Date (Month)-->
+                              <!--<select>-->
+                                <!--<option value="{{day}}" *ngFor="let day of days">{{day}}</option>-->
+                              <!--</select>-->
+                            <!--</label>-->
+                          <!--</div>-->
+                          <!--<div class="small-6 medium-6 columns">-->
+                            <!--<label>Year-->
+                              <!--<select>-->
+                                <!--<option value="{{year}}" *ngFor="let year of years">{{year}}</option>-->
+                              <!--</select>-->
+                            <!--</label>-->
+                          <!--</div>-->
+                        <!--</div>-->
 
-                      </div>
-                    </div>
-                    <div class="row" *ngIf="paymentType=='creditCard'">
+                      <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="row" *ngIf="paymentType=='creditCard'">-->
 
-                    </div>
-                    <div class="row" *ngIf="(paymentType=='creditCard')&&(!isValidCreditCard)" style="color: red;margin-left: 20px;font-weight: 600;">
-                      Invalid credit card number or cvv
-                    </div>
+                    <!--</div>-->
+                    <!--<div class="row" *ngIf="(paymentType=='creditCard')&&(!isValidCreditCard)" style="color: red;margin-left: 20px;font-weight: 600;">-->
+                      <!--Invalid credit card number or cvv-->
+                    <!--</div>-->
 
-                    <div class="row" *ngIf="paymentType=='creditCard' || paymentType=='bank'">
-                      <div class="small-12 medium-12 columns">
-                        <button class="button create small float-right">Add Payment Info</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </section>
+                    <!--<div class="row" *ngIf="paymentType=='creditCard' || paymentType=='bank'">-->
+                      <!--<div class="small-12 medium-12 columns">-->
+                        <!--<button class="button create small float-right">Add Payment Info</button>-->
+                      <!--</div>-->
+                    <!--</div>-->
+                  <!--</div>-->
+                <!--</div>-->
+              <!--</section>-->
             </form>
           </div>
         </div>
