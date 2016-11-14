@@ -2275,3 +2275,17 @@ table.footable-editing-right tr.footable-editing td {
     color: #fff;
   }
 }
+
+.chart-of-accounts{
+  table{
+    tr:nth-child(even) {
+      background-color: #BAECFC;
+    }
+    tr:nth-child(odd) {
+      background-color: $qount-table-tr-hover;
+    }
+    td{
+      color: #000;
+    }
+  }
+}
