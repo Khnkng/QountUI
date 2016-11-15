@@ -2188,6 +2188,7 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
+
 .box-notifier {
   $qount-box-icon-width:36px;
   $qount-box-icon-height:48px;
@@ -2542,4 +2543,38 @@ tbody{
 
   }
 }
+.tab-view{
+   // background: $qount-brand-blue;
+   .tab-view-container{
+     text-align: center;
+     margin: 5px 0;
+     line-height: 2em;
+     .icon-action{
+       color: $qount-text;
+       -moz-user-select: none;
+       -khtml-user-select: none;
+       -webkit-user-select: none;
+
+       /*
+         Introduced in IE 10.
+         See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+       */
+       -ms-user-select: none;
+       user-select: none;
+       font-size: 1.5em;
+       margin: 0 .5em;
+       &:hover{
+         color: $qount-brand-blue;
+       }
+     }
+     .tab-view-name{
+       vertical-align: text-bottom;
+       min-width: 33%;
+       display: none;
+       &.active{
+         display: inline-block;
+       }
+     }
+   }
+ }
 

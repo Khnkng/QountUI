@@ -31,7 +31,6 @@ import {CommentsService} from "../services/Comments.service";
 import {CURRENCY} from "qCommon/app/constants/Currency.constants";
 import {WorkflowService} from "../services/Workflow.service";
 import {CustomTags} from "qCommon/app/directives/customTags";
-/*import {UUID} from "angular2-uuid/index";*/
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {UUID} from "angular2-uuid/index";
 
@@ -51,6 +50,7 @@ export class BillComponent implements  OnInit {
 
   type:string = "component";
   billForm:FormGroup;
+  billID:string;
   companyID:string;
   bill:BillModel;
   billImageLink:any;
