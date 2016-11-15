@@ -263,11 +263,12 @@ export class ChartOfAccountsComponent{
     this.hasCOAList = false;
     this.tableData.rows = [];
     this.tableData.columns = [
-      {"name": "number", "title": "Number"},
+      {"name": "numberHTML", "title": "Number"},
       {"name": "nameHTML", "title": "Name"},
       {"name": "type", "title": "Type"},
       {"name": "subType", "title": "Sub type"},
       {"name": "parentName", "title": "Parent"},
+      {"name": "number", "title": "Number", "visible": false},
       {"name": "name", "title": "Name", "visible": false},
       {"name": "desc", "title": "Description", "visible": false},
       {"name": "categoryType", "title": "Type", "visible": false},
@@ -294,9 +295,16 @@ export class ChartOfAccountsComponent{
         } else if(key == 'name'){
           row[key] = coa[key];
           if(coa['parentID']){
-            row['nameHTML'] = '<span style="margin-left: 15px;">'+coa[key]+'</span>';
+            row['nameHTML'] = '<span style="margin-left: 10px;">'+coa[key]+'</span>';
           } else{
             row['nameHTML'] = coa[key];
+          }
+        } else if(key == 'number'){
+          row[key] = coa[key];
+          if(coa['parentID']){
+            row['numberHTML'] = '<span style="margin-left: 10px;">'+coa[key]+'</span>';
+          } else{
+            row['numberHTML'] = coa[key];
           }
         } else{
           row[key] = coa[key];
