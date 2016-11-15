@@ -1,0 +1,659 @@
+<div class="bill row" foundation>
+  <div class="column small-12 medium-6 large-6 qount-form-backgorund">
+
+
+
+    <form *ngIf="active" (ngSubmit)="submit($event)" novalidate [formGroup]="billForm">
+      <span class="label float-right" [hidden]="!bill || newBill" [ngClass]="getStatusClass(bill?.subState)">{{bill?.subState}}</span>
+
+      <ul class="tabs bill-form-tabs" data-tabs id="bill-form-tabs">
+        <li class="tabs-title is-active"><a href="#billDetails" aria-selected="true"><h6>Bill Details</h6></a></li>
+        <li class="tabs-title"><a href="#lineDetails"><h6>Line Details</h6></a></li>
+      </ul>
+
+      <div class="tabs-content bill-form-tabs-content" data-tabs-content="bill-form-tabs" [hidden]="isBillLoading()">
+        <div class="tabs-panel is-active" id="billDetails">
+          <div class="bill-form-data">
+            <div class="row collapse" *ngIf="newBill">
+              <div class="small-12 medium-6 columns">
+                <div class="row">
+                  <div class="small-12 medium-9 columns">
+                    <label>Company
+                      <div>
+                        <select placeholder="Company*" (change)="selectCompany($event.target.value)">
+                          <option value="">Select company</option>
+                          <option value="{{company.id}}" *ngFor="let company of companies">{{company.name}}</option>
+                        </select>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div class="small-12 medium-6 columns">
+                <label>Bill name
+                  <div>
+                    <input type="text" formControlName="name" placeholder="Bill Name*">
+                    <div class="error" [hidden]="billForm.controls.name.untouched || billForm.controls.name.valid"><small>Bill Name is required.</small></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="bill-form-data" [ngStyle]="{'height':formHeight}" [hidden]="!companyID">
+            <div class="row collapse">
+              <div class="small-12 medium-6 columns">
+                <div class="row">
+                  <div class="small-12 medium-12 columns">
+                    <label>Bill Number
+                      <div>
+                        <input type="text" formControlName="billID" placeholder="Bill Number*">
+                        <div class="error" [hidden]="billForm.controls.billID.untouched || billForm.controls.billID.valid"><small>Bill Name is required.</small></div>
+                      </div>
+                    </label>
+                  </div>
+                  <!--<div class="small-12 medium-6 columns">
+                    <label>Name
+                      <div>
+                        <input type="text" formControlName="name" placeholder="Name*">
+                        <div class="error" [hidden]="billForm.controls.name.untouched || billForm.controls.name.valid"><small>Bill Name is required.</small></div>
+                      </div>
+                    </label>
+                  </div>-->
+                </div>
+              </div>
+              <div class="small-12 medium-6 columns">
+                <label>Vendor
+                  <div >
+                    <select formControlName="vendorName" placeholder="Vendor *" (change)="onVendorSelect($event.target.value)">
+                      <option selected="selected" *ngFor="let vendor of vendors" value="{{vendor}}">{{vendor}}</option>
+                    </select>
+                    <div class="error" [hidden]="billForm.controls.vendorName.untouched || billForm.controls.vendorName.valid"><small>Enter vendor .</small></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="columns small-12 medium-3 large-3">
+                <label>PO Number
+                  <div>
+                    <input type="text" formControlName="poNumber" placeholder="PO Number*">
+                    <div class="error" [hidden]="billForm.controls.poNumber.untouched || billForm.controls.poNumber.valid"><small>Bill PO Number is required.</small></div>
+                  </div>
+                </label>
+              </div>
+              <div class="columns small-12 medium-3 large-3">
+                <label>Account Number
+                  <div>
+                    <select formControlName="accountNumber" placeholder="Account Number">
+                      <option *ngFor="let accountNumber of accountNumbers" value="{{accountNumber}}">{{accountNumber}}</option>
+                    </select>
+                    <div class="error" [hidden]="billForm.controls.accountNumber.untouched || billForm.controls.accountNumber.valid"><small>Account Number is required.</small></div>
+                  </div>
+                </label>
+              </div>
+              <div class="columns small-12 medium-3 large-3">
+                <label>Currency
+                  <div>
+                    <select formControlName="currency" placeholder="currency" (change)="onCurrencySelect($event.target.value)">
+                      <option *ngFor="let currency of currencies" value="{{currency}}">{{currency}}</option>
+                    </select>
+                    <div class="error" [hidden]="billForm.controls.currency.untouched || billForm.controls.currency.valid"><small>Select one</small></div>
+                  </div>
+                </label>
+              </div>
+              <div class="columns small-12 medium-3 large-3">
+                <label>Bill Date
+                  <div>
+                    <input type="text" custom-datepicker [format]="MM/DD/YYYY" [mindate]="'past'" (valueChanged)="setBillDate($event)" formControlName="billDate" placeholder="Bill Date*">
+                    <div class="error" [hidden]="billForm.controls.billDate.untouched || billForm.controls.billDate.valid"><small>Enter Bill date.</small></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div class="row collapse">
+              <div class="columns small-12 medium-6 large-6">
+                <div class="row ">
+                  <div class="columns small-12 medium-6 large-6">
+                    <label>Terms
+                      <div>
+                        <select formControlName="term" placeholder="Terms" (change)="selectTerm($event.target.value)">
+                          <option [value]="'net30'">Net 30</option>
+                          <option [value]="'net45'">Net 45</option>
+                          <option [value]="'net60'">Net 60</option>
+                          <option [value]="'net30'">Net 90</option>
+                          <option [value]="'custom'">Custom</option>
+                        </select>
+                        <div class="error" [hidden]="billForm.controls.term.untouched || billForm.controls.term.valid"><small>Select Term</small></div>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="columns small-12 medium-6 large-6">
+                    <label>Due Date
+                      <div>
+                        <input type="text" [disabled]="billForm.controls.term.value != 'custom'" *ngIf="billForm.controls.term.value != 'custom'"  formControlName="dueDate" placeholder="Due Date*">
+                        <input type="text" *ngIf="billForm.controls.term.value == 'custom'" [mindate]="billForm.controls.billDate.value" custom-datepicker [format]="MM/DD/YYYY" (valueChanged)="setDueDate($event)" formControlName="dueDate" placeholder="Due Date*">
+                        <div class="error" [hidden]="billForm.controls.dueDate.untouched || billForm.controls.dueDate.valid"><small>Enter due date.</small></div>
+                      </div>
+                    </label>
+
+                  </div>
+                </div>
+              </div>
+              <div class="small-12 medium-6 columns">
+                <div class="row">
+                  <div class="columns small-12 medium-6 large-6">
+                    <label>Recurring
+                      <div >
+                        <select formControlName="recurring" placeholder="Recurring*">
+                          <option selected value="onlyonce">Once</option>
+                          <option value="weekly">Weekly</option>
+                          <option value="monthly">Monthly</option>
+                          <option value="quarterly">Quarterly</option>
+                        </select>
+                        <div class="error" [hidden]="billForm.controls.recurring.untouched || billForm.controls.recurring.valid"><small>Select one</small></div>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="small-12 medium-6 columns"  *ngIf="billForm.controls.recurring.value != 'onlyonce' && billForm.controls.recurring.value != null">
+                    <label>End Date
+                      <div>
+                        <input type="text" custom-datepicker [format]="MM/DD/YYYY" (valueChanged)="setEndDate($event)" formControlName="endDate" placeholder="End Date*">
+                        <div class="error" [hidden]="billForm.controls.endDate.untouched || billForm.controls.endDate.valid"><small>Enter end date.</small></div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row  collapse">
+
+              <div class="columns small-12 medium-12 ">
+                <div class="row">
+                  <div class="columns small-12 medium-6 " >
+                    <label *ngIf="tabId==0"><input type="checkbox" formControlName="hasPaidApplied"> Mark Paid
+                    </label>
+                  </div>
+                  <div class="columns small-12 medium-6  text-right">
+                    <label>Bill Amount: {{billForm.controls.amount.value| currency:displayCurrency:true:'1.2-2'}}
+                    </label>
+                    <label *ngIf="show1099">1099 Amount: {{billForm.controls._1099Amount.value| currency:displayCurrency:true:'1.2-2'}}
+                    </label>
+                    <label *ngIf="showConvertedCurrency">Bill Amount (Company Currency): {{companyCurrencyAmount| currency:companyCurrency:true:'1.2-2'}}
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <!--<div class="row  collapse">
+                <div class="columns small-12 medium-12 large-12">
+                  <label style="margin-top: 2rem;text-align:right;">Bill Status: <span style="font-weight:bold;">{{bill?.subState}}</span>
+                  </label>
+                </div>
+            </div>-->
+
+            <div class="row collapse">
+              <div class="small-12 columns medium-12 large-12">
+                <label *ngIf="isCurrentUser()&&havingChecklist">Check List
+                  <div class="row" formArrayName="checkList">
+                    <div class="column small-12 medium-12 large-12" *ngFor="let checkListItem of billForm.controls.checkList.controls;let index=index;">
+                      <div [formGroupName]="index">
+                        <label attr.for="checklistid-{{index}}"><input id="checklistid-{{index}}" [formControl]="checkListItem.controls.acknowledged" type="checkbox" required> {{checkListItem.controls.item.value}}</label>
+
+                      </div>
+                      <div class="error" [hidden]="billForm.controls.checkList.controls[index].controls.acknowledged.untouched || billForm.controls.checkList.controls[index].controls.acknowledged.value">
+                        <small>{{checkListItem.controls.item.value}} is required.</small>
+                      </div>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tabs-panel" id="lineDetails" [hidden]="isBillLoading()" foundation>
+
+          <div class="bill-form-data" [ngStyle]="{'height':formHeight}">
+            <div class="row collapse">
+              <div class="small-12 columns">
+                <div class="row">
+                  <div class="small-12 medium-12 columns">
+                    <label>Lines &nbsp;
+                      <i (click)="addLineItemMode = !addLineItemMode" class="ion-ios-plus-outline"></i> &nbsp;
+                      <i class="icon ion-edit" (click)="edit1099Bill()"></i>
+                    </label>
+
+                      <div class="flyout line-item-create" [ngClass]="{'expanded': addLineItemMode}">
+
+                        <h6>Add New line item</h6>
+                        <div class="add-line-item row" *ngIf="addLineItemMode">
+                          <div class="column small-12 medium-12 large-6">
+                            <label>
+                              Description
+                              <textarea rows="4" formControlName="lineDescription" placeholder="Description">
+
+                              </textarea>
+                            </label>
+                          </div>
+                          <div class="column small-12 medium-12 large-6">
+                            <div class="row">
+                              <div class="small-12 medium-12">
+                                <label>
+                                  Unit Price
+                                  <input type="text" formControlName="unitPrice" placeholder="Unit Price" (keyup)="calcAmount($event)" (change)="calcAmount($event)">
+                                </label>
+                              </div>
+                              <div class="small-12 medium-12">
+                                <label>
+                                  Quantity
+                                  <input type="text" formControlName="quantity" placeholder="Quantity" (keyup)="calcAmount($event)" (change)="calcAmount($event)">
+                                </label>
+                              </div>
+                            </div>
+
+                          </div>
+
+                          <div class="column small-12 medium-6 large-6">
+                            <label>
+                              Amount
+                              <input type="text" formControlName="lineAmount" placeholder="Amount" [disabled]="allowEditAmount"  (keyup)="calcAmount($event)">
+                            </label>
+                          </div>
+                          <div class="column small-12 medium-6 large-6">
+                            <label>
+                              Item Code
+                              <select formControlName="itemCode" placeholder="Item Code">
+                                <option *ngFor="let itemCode of itemCodes" value="{{itemCode}}">{{itemCode}}</option>
+                              </select>
+                            </label>
+                          </div>
+                          <div class="column small-12 medium-6 large-6">
+                            <label>
+                              Account Code
+                              <select formControlName="expenseCode" placeholder="Account Code">
+                                <option *ngFor="let expenseCode of expenseCodes" value="{{expenseCode}}">{{expenseCode}}</option>
+                              </select>
+                            </label>
+                          </div>
+                          <div class="row buttons-section">
+                            <div class="column small-12 text-right">
+
+                              <button class="button create small "
+                                      type="submit" (click)="addLine($event)">Add</button>
+                            </div>
+                          </div>
+
+                        </div>
+                        <button class="close-flyout"  type="button" (click)="addLineItemMode = !addLineItemMode">
+                          <span aria-hidden="true">
+                            <i class="ion-ios-close-empty"></i>
+                          </span>
+                        </button>
+                      </div>
+
+                      <div class="dropdown-values" style="overflow: auto;">
+                        <table class="stack">
+                          <thead>
+                          <tr>
+                            <th width="16%">Description</th>
+                            <th width="16%">Unit Price</th>
+                            <th width="16%">Quantity</th>
+                            <th width="16%">Amount</th>
+                            <th width="16%">Item Code</th>
+                            <th width="16%">Account Code</th>
+                            <th></th>
+                          </tr>
+
+                          </thead>
+                          <tbody formArrayName="lines">
+                            <tr *ngFor="let lineListItem of billForm.controls.lines.controls;let index=index;" (dblclick)="lineListItem.editable = true">
+                              <td class="truncate" [hidden]="lineListItem.editable"
+                                  data-tooltip aria-haspopup="true" [title]="lineListItem.controls.description.value">
+                                {{lineListItem.controls.description.value}}
+                              </td>
+                              <td [hidden]="!lineListItem.editable"><input id="linelistDesc-{{index}}" [formControl]="lineListItem.controls.description"
+                                                                           type="text" ></td>
+                              <td [hidden]="lineListItem.editable">{{lineListItem.controls.unitPrice.value?(lineListItem.controls.unitPrice.value|number : '1.2-2'):null}}</td>
+                              <td [hidden]="!lineListItem.editable">
+                                <input id="linelistUnitPrice-{{index}}" [formControl]="lineListItem.controls.unitPrice" type="number" (keyup)="calcAmount($event, index)" (change)="calcAmount($event, index)"/>
+                              </td>
+                              <td [hidden]="lineListItem.editable">{{lineListItem.controls.quantity.value?lineListItem.controls.quantity.value:null}}</td>
+                              <td [hidden]="!lineListItem.editable">
+                                <input id="linelistQuantity-{{index}}" [formControl]="lineListItem.controls.quantity" type="text" (keyup)="calcAmount($event, index)" (change)="calcAmount($event, index)"/>
+                              </td>
+                              <td [hidden]="lineListItem.editable">{{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):(0|number : '1.2-2')}}</td>
+                              <td [hidden]="!lineListItem.editable">
+                                <input id="linelistAmount-{{index}}" [disabled]="lineListItem.controls.unitPrice.value&&lineListItem.controls.quantity.value" [formControl]="lineListItem.controls.amount" type="number" (keyup)="calcAmount($event, index)" (change)="calcAmount($event, index)"/>
+                              </td>
+                              <td [hidden]="lineListItem.editable">{{lineListItem.controls.itemCode.value}}</td>
+                              <td [hidden]="!lineListItem.editable">
+                                <select id="linelistItemCode-{{index}}" [formControl]="lineListItem.controls.itemCode" placeholder="Account Code">
+                                  <option *ngFor="let itemCode of itemCodes" value="{{itemCode}}">{{itemCode}}</option>
+                                </select>
+                              <td class="truncate" [hidden]="lineListItem.editable"  data-tooltip aria-haspopup="true" [title]="lineListItem.controls.expenseCode.value">{{lineListItem.controls.expenseCode.value}}</td>
+                              <td [hidden]="!lineListItem.editable">
+                                <select id="linelistExpenseCode-{{index}}" [formControl]="lineListItem.controls.expenseCode" placeholder="Account Code">
+                                  <option *ngFor="let expenseCode of expenseCodes" value="{{expenseCode}}">{{expenseCode}}</option>
+                                </select>
+                              <td>
+                                <i [hidden]="!lineListItem.editable" (click)="updateLineToatal(lineListItem.controls.number.value, index)" class="ion-ios-checkmark-outline save-row-icon"></i>
+                                <i (click)="removeLine($event, index)" class="ion-ios-trash-outline"></i>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <div class="text-right">
+                        <label>Bill Amount :
+                            <input type="hidden" formControlName="amount" placeholder="Total Amount">
+                          {{billForm.controls.amount.value|currency:displayCurrency:true:'1.2-2'}}
+                        </label>
+                      </div>
+                      <div class="text-right" *ngIf="show1099">
+                        <label>1099 Amount :
+                          <input type="hidden" formControlName="amount" placeholder="1099 Amount">
+                          {{billForm.controls._1099Amount.value|currency:displayCurrency:true:'1.2-2'}}
+                        </label>
+                      </div>
+
+                  </div>
+                  <!--<div class="columns small-12 medium-4 large-6">
+                    <label>Eligible For 1099
+                      <div class="switch small">
+                        <input class="switch-input" id="eligible1099" type="checkbox" formControlName="elibleFor1099">
+                        <label class="switch-paddle" for="eligible1099">
+                          <span class="show-for-sr">Eligible For 1099</span>
+                        </label>
+                      </div>
+                    </label>
+                  </div>-->
+                </div>
+                <!--<div class="row">
+                  <div class="small-12 columns">
+                    <a data-open="10099Modal">Enable 1009 for line amounts ?</a>
+                  </div>
+                </div>-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" [hidden]="isBillLoading()">
+        <div class="small-12 medium-12 columns" *ngIf="!newBill">
+          <button class="button create small warning" [disabled]="!isCurrentUser() || bill.currentState == 'entry'"
+                  type="submit" (click)="submit($event, 'reject')">Reject</button>
+          <button *ngIf="currentState=='payee'" class="button create small success"
+                  [disabled]="!billForm.valid || !hasCheckedAll() || !isCurrentUser()"
+                  (click)="submitPay($event)">Submit</button>
+          <button *ngIf="!(currentState=='payee')" class="button create small success"
+                  [disabled]="!billForm.valid || !hasCheckedAll() || !isCurrentUser()"
+                  type="submit" (click)="submit($event, 'submit')">Submit</button>
+          <button class="button create small" [disabled]="!isCurrentUser()" style="margin-right:10px;" type="submit"
+                  (click)="submit($event)">Save</button>
+        </div>
+        <div class="small-12 medium-12 columns"  *ngIf="newBill">
+          <button *ngIf="newBill" class="button create small" [disabled]="!billForm.valid || !hasCheckedAll()"
+                  type="submit" (click)="submit($event, 'newBill')">Submit</button>
+        </div>
+      </div>
+    </form>
+
+
+    <div class="reveal tiny bill-modal-container" id="TagsModal" data-reveal>
+      <div class="row collapse">
+        <div class="small-12 columns">
+          <label>Notes
+            <div>
+              <textarea rows="4" type="text" [(ngModel)]="notes" placeholder="Bill Notes"></textarea>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <div class="reveal tiny bill-modal-container" id="NotesModal" data-reveal>
+
+      <div class="row collapse">
+        <div class="small-12 columns">
+          <label>Tags
+            <div *ngIf="loaded || newBill">
+              <ul class="bighalf-tags" id="mainTags" type="text" [tagsList]="billTags" custom-tags></ul>
+            </div>
+          </label>
+        </div>
+      </div>
+      <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+  </div>
+  <div class="column small-12 medium-6 large-6">
+    <!--{{addLineItemMode |json}}-->
+    <div class="bill-container">
+      <!--<h6 style="margin-top:10px;">{{bill?.name}}
+        <span class="float-right">
+          <i data-open="TagsModal" data-tooltip aria-haspopup="true" class="" data-disable-hover="false"  title="Notes"  class="icon ion-document-text top"></i>
+          <i data-open="NotesModal" data-tooltip aria-haspopup="true" class="" data-disable-hover="false"  title="Tags"  class="icon ion-ios-pricetags  top"></i>
+          <i data-tooltip (click)="showComments = !showComments; showOverlay = !showOverlay;"  title="Comments"  class="icon ion-android-chat top"></i>
+          <a title="download" target="_blank" href="{{downloadLink}}"><i  data-tooltip aria-haspopup="true" class="" data-disable-hover="false"  title="Download" class="icon ion-ios-cloud-download top"></i></a>
+        </span></h6>
+      <div class="bill-preview-container">
+        <img *ngIf="!isPdf" [src]="billImageLink" width="100%"/>
+      </div>-->
+
+    <div class="row collapse">
+      <div class="column small-12 medium-12 large-12">
+        <ul foundation class="accordion" data-accordion data-allow-all-closed="true" *ngIf="!newBill">
+          <li data-accordion-item class="accordion-item">
+            <a class="accordion-title" style="height: 55px;">
+              <div>
+                <strong class="float-left" [hidden]="editingName">
+                  {{bill?.name}}
+                  <i class="icon ion-edit" (click)="editName($event)"></i>
+                </strong>
+                <input type="text" [focus]="editingName" [(ngModel)]="newName" [hidden]="!editingName" style="height: 25px; width: 150px; float: left;"/>
+                <i class="ion-ios-checkmark-outline save-row-icon float-left" style="font-size: 21px; margin-left: 5px;" [hidden]="!editingName" (click)="updateName($event)"></i>
+              </div>
+              <span class="bill-preview-icons float-right">
+                  <i data-open="TagsModal" data-tooltip aria-haspopup="true" class="" data-disable-hover="false"  title="Notes"  class="icon ion-compose top"></i>
+                  <i data-open="NotesModal" data-tooltip aria-haspopup="true" class="" data-disable-hover="false"  title="Tags"  class="icon ion-ios-pricetags  top"></i>
+                  <a title="download" *ngIf="billFileExist" target="_blank" href="{{downloadLink}}" (click)="stopPropagation($event)"><i  data-tooltip aria-haspopup="true" class="" data-disable-hover="false"  title="Download" class="icon ion-ios-cloud-download top"></i></a>
+              </span>
+            </a>
+            <div class="accordion-content" data-tab-content [hidden]="!billFileExist">
+              <div *ngIf="bill && billFileExist" class="bill-container">
+                <div class="bill-preview-container" [ngStyle]="{'max-height':tabHeight}" >
+                  <img *ngIf="!isPdf" [src]="billImageLink" width="100%" />
+                </div>
+
+                <!--<embed *ngIf="isPdf" [src]="billLink" width="100%" height="400px;" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">-->
+                <div *ngIf="isPdf">
+                  <iframe [src]="billPdfLink" [ngStyle]="{'width':'100%', 'height':tabHeight}" frameborder="0"></iframe>
+                </div>
+              </div>
+              <div *ngIf="!bill">
+                <h5 style="margin-top:10px;">Loading the bill..</h5>
+              </div>
+            </div>
+          </li>
+          <li data-accordion-item class="accordion-item">
+            <a class="accordion-title">Bill History - {{bill ? (bill.history ? bill.history[0] : "" ) : ""}}</a>
+            <div class="accordion-content" data-tab-content>
+              <div class="dropdown-values">
+                <div class="dropdown-value-item" *ngFor="let historyItem of bill?.history;let index=index">
+                  {{historyItem}}
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <ul foundation class="accordion" data-accordion data-allow-all-closed="true" *ngIf="newBill">
+          <li data-accordion-item class="accordion-item">
+            <a class="accordion-title" style="height: 55px;">
+              <span class="bill-preview-icons float-right">
+                  <i data-open="TagsModal" data-tooltip aria-haspopup="true" class="" data-disable-hover="false"  title="Notes"  class="icon ion-compose top"></i>
+                  <i data-open="NotesModal" data-tooltip aria-haspopup="true" class="" data-disable-hover="false"  title="Tags"  class="icon ion-ios-pricetags  top"></i>
+                  <i data-tooltip (click)="showComments = !showComments;"  title="Comments"  class="icon ion-android-chat top"></i>
+              </span>
+            </a>
+            <div class="accordion-content" data-tab-content>
+
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="comments-box" [hidden]="!showComments">
+    <div class="comments-header">
+      <span class="comments-title">Comments</span>
+    </div>
+    <div class="comments-body">
+      <div class="comment" *ngFor="let comment of billComments">
+        <div>
+           <span class="comment-content">
+             <span class="recipient" *ngFor="let name of comment.mentions_name">@{{name}}</span>
+             {{comment.comment}}
+           </span>
+        </div>
+        <div class="commented-by-cont">
+          <span class="commented-by">{{comment.user}} | {{ comment.dateTime | date:'medium'}}</span>
+        </div>
+      </div>
+    </div>
+    <div class="comments-footer">
+      <recipient-input (entered)="onEnter($event)"></recipient-input>
+    </div>
+  </div>
+  <div class="overlay" [hidden]="!showOverlay">
+  </div>
+
+</div>
+
+  <div *ngIf="active" #edit1099 class="reveal full bill-modal-container qount-flyout line-items-table" id="_10099Modal"
+       data-close-on-esc="false" data-reveal>
+    <div class="row">
+      <div class="column small-12 text-center">
+        <h4>Line Details</h4>
+      </div>
+      <div class="column small-12 text-center">
+        <p>Add/Edit line details of bills including allocation and mapping of 1099 and classification of asset.</p>
+      </div>
+      <form *ngIf="active" novalidate style="width: 98%" id="_1009Form" [formGroup]="billForm">
+          <table class="stack" width="100%">
+            <thead>
+            <tr>
+              <th width="13%">Description</th>
+              <th width="13%">Unit Price</th>
+              <th width="13%">Quantity</th>
+              <th width="13%">Amount</th>
+              <th width="13%">Item Code</th>
+              <th width="13%">Account Code</th>
+              <th width="5%">1099</th>
+              <th width="12%">1099 Mapping</th>
+              <th width="5%">Asset</th>
+              <th width="24%">Tags</th>
+              <th></th>
+            </tr>
+            <!--<tr class="add-line-item" *ngIf="addLineItemMode">
+              <td>
+                <input type="text" formControlName="lineDescription" placeholder="Description">
+              </td>
+              <td>
+                <input type="text" formControlName="lineAmount" placeholder="Amount" (keydown)="roundOffAmount($event)"/>
+              </td>
+              <td>
+                <select formControlName="itemCode" placeholder="Item Code">
+                  <option *ngFor="let itemCode of itemCodes" value="{{itemCode}}">{{itemCode}}</option>
+                </select>
+              </td>
+              <td>
+                <select formControlName="expenseCode" placeholder="Account Code">
+                  <option *ngFor="let expenseCode of expenseCodes" value="{{expenseCode}}">{{expenseCode}}</option>
+                </select>
+              </td>
+              <td></td>
+              <td></td>
+              <td>
+                <i (click)="addLine($event)"
+                   class="ion-ios-plus-outline"></i>
+              </td>
+            </tr>-->
+            </thead>
+            <tbody formArrayName="lines">
+            <tr *ngFor="let lineListItem of billForm.controls.lines.controls;let index=index;" (dblclick)="lineListItem.editable = true">
+              <td [hidden]="lineListItem.editable">{{lineListItem.controls.description.value}}</td>
+              <td [hidden]="!lineListItem.editable"><input id="linelistDesc1-{{index}}" [formControl]="lineListItem.controls.description"
+                                                           type="text" ></td>
+              <td [hidden]="lineListItem.editable">{{lineListItem.controls.unitPrice.value?(lineListItem.controls.unitPrice.value|number : '1.2-2'):null}}</td>
+              <td [hidden]="!lineListItem.editable">
+                <input id="linelistUnitPrice1-{{index}}" [formControl]="lineListItem.controls.unitPrice" type="number" (keyup)="calcAmount($event, index)" (change)="calcAmount($event, index)"/>
+              </td>
+              <td [hidden]="lineListItem.editable">{{lineListItem.controls.quantity.value?lineListItem.controls.quantity.value:null}}</td>
+              <td [hidden]="!lineListItem.editable">
+                <input id="linelistQuantity1-{{index}}" [formControl]="lineListItem.controls.quantity" type="text" (keyup)="calcAmount($event, index)" (change)="calcAmount($event, index)"/>
+              </td>
+              <td [hidden]="lineListItem.editable">{{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):(0|number : '1.2-2')}}</td>
+              <td [hidden]="!lineListItem.editable">
+                <input id="linelistAmount1-{{index}}" [disabled]="lineListItem.controls.unitPrice.value&&lineListItem.controls.quantity.value" [formControl]="lineListItem.controls.amount"
+                       (keyup)="calcAmount($event, index)" (change)="calcAmount($event, index)" type="number" ></td>
+              <td [hidden]="lineListItem.editable">{{lineListItem.controls.itemCode.value}}</td>
+              <td [hidden]="!lineListItem.editable">
+                <select id="linelistItemCode1-{{index}}" [formControl]="lineListItem.controls.itemCode" placeholder="Account Code">
+                  <option *ngFor="let itemCode of itemCodes" value="{{itemCode}}">{{itemCode}}</option>
+                </select>
+              </td>
+              <td [hidden]="lineListItem.editable">{{lineListItem.controls.expenseCode.value}}</td>
+              <td [hidden]="!lineListItem.editable">
+                <select id="linelistExpenseCode1-{{index}}" [formControl]="lineListItem.controls.expenseCode" placeholder="Account Code">
+                  <option *ngFor="let expenseCode of expenseCodes" value="{{expenseCode}}">{{expenseCode}}</option>
+                </select>
+              </td>
+              <td>
+                <input  id="has1099-{{index}}" [disabled]="!lineListItem.editable"  [formControl]="lineListItem.controls.has1099" type="checkbox">
+              </td>
+              <td [hidden]="lineListItem.editable">{{lineListItem.controls._1099Mapping.value}}</td>
+              <td [hidden]="!lineListItem.editable">
+                <select id="linelist1099Mapping-{{index}}" [formControl]="lineListItem.controls._1099Mapping" placeholder="1099 Mapping">
+                  <option value="MISC">Misc</option>
+                </select>
+              </td>
+              <td >
+                <input  id="hasAsset-{{index}}" [disabled]="!lineListItem.editable" [formControl]="lineListItem.controls.hasAsset" type="checkbox">
+              </td>
+              <td [hidden]="lineListItem.editable">{{lineListItem.controls.tags.value}}</td>
+              <td [hidden]="!lineListItem.editable">
+                <ul class="bighalf-tags" id="lineTags-{{index}}"  type="text" [tagsList]="lineListItem.controls.tags.value" custom-tags></ul>
+              </td>
+
+              <td>
+                <i [hidden]="!lineListItem.editable" (click)="lineListItem.editable = false; updateLineToatal(lineListItem.controls.number.value,index)" class="ion-ios-checkmark-outline save-row-icon"></i>
+                <i (click)="removeLine($event, index)" class="ion-ios-trash-outline"></i>
+              </td>
+
+            </tr>
+            </tbody>
+          </table>
+        </form>
+    </div>
+
+    <button class="close-button " data-close aria-label="Close modal" type="button">
+      <span aria-hidden="true">
+        <i class="ion-ios-close-empty"></i>
+      </span>
+    </button>
+  </div>
+
+   <div class="comment-link">
+     <a data-tooltip (click)="showComments = !showComments;"  title="Comments">
+       <i class="icon" [ngClass]="{'ion-chatbubble-working':!showComments, 'ion-ios-close-empty':showComments}"></i></a>
+   </div>
+
+</div>

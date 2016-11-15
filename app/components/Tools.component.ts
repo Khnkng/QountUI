@@ -75,6 +75,11 @@ export class ToolsComponent {
         this._router.navigate(link);
       }
       break;
+      case 'reports': {
+        let link = ['reports'];
+        this._router.navigate(link);
+      }
+        break;
     }
   }
 }

@@ -1,0 +1,128 @@
+<div class="row"><h6>Payment</h6></div>
+
+
+          <!--<table>
+            <thead>
+            <th>Card</th>
+            <th>Name</th>
+            <th>Expiry Date</th>
+            </thead>
+            <tbody>
+            <tr *ngFor="let bank of creditCardInfo;let index=index">
+              <td *ngIf="bank.type=='Visa'"><img src="/images/visa.png" alt="{{bank.type}}" height="50" width="50"> <input type="radio" name="payment" (click)="valueChanged(bank)"></td>
+              <td *ngIf="bank.type=='Master'"><img src="/images/master.png" alt="{{bank.type}}" height="50" width="50"> <input type="radio" name="payment" (click)="valueChanged(bank)"></td>
+              <td *ngIf="bank.type=='Discover'"><img src="/images/discover.png" alt="{{bank.type}}" height="50" width="50"><input type="radio" name="payment" (click)="valueChanged(bank)"></td>
+              <td *ngIf="bank.type=='American Express'"><img src="/images/american_express.png" alt="{{bank.type}}" height="50" width="50"><input type="radio" name="payment" (click)="valueChanged(bank)"></td>
+              <td *ngIf="bank.bankName">{{bank.bankName}} <input type="radio" name="payment" (click)="valueChanged(bank)"></td>
+              <td>{{bank.name}}</td>
+              <td *ngIf="bank.expiryDate">{{bank.expiryDate.split("/")[0]}}/{{bank.expiryDate.split("/")[1]}}</td>
+              <td *ngIf="!bank.expiryDate"></td>
+            </tr>
+            </tbody>
+          </table>-->
+<label style="margin-top:10px;">Please select a payment mode</label>
+          <div class="row">
+            <div class="column columns-4">
+                <label for="pay-ach">
+                  <input id="pay-ach" type="radio" name="paymentMode" [(ngModel)]="paymentMode" [value]="'ach'"/>
+                  ACH
+                </label>
+                <label for="pay-digital">
+                  <input id="pay-digital" type="radio" name="paymentMode" [(ngModel)]="paymentMode" [value]="'digitalCheque'"/>
+                  Digital Check
+                </label>
+                <label for="pay-mail">
+                  <input id="pay-mail" type="radio" name="paymentMode" [(ngModel)]="paymentMode" [value]="'mailCheque'"/>
+                  Mail Check
+                </label>
+            </div>
+            <div class="column columns-8"></div>
+
+          <!--<label>Cheque
+          <input type="checkbox" [(ngModel)]="manualCheque"/>
+          </label>
+          <table [hidden]="manualCheque">
+            <thead>
+            <th>Bank Name</th>
+            <th>Created On</th>
+            </thead>
+            <tbody>
+            <tr *ngFor="let source of fundingSources;let index=index">
+              <td><input type="radio" name="payment" (click)="valueChanged(source)">&nbsp;{{source.name}}</td>
+              <td>{{source.created}}</td>
+            </tr>
+            </tbody>
+          </table>-->
+        </div>
+
+
+
+
+<label style="margin-top:10px;">Payment Details </label>
+          <div class="row">
+           <div class="columns small-12 medium-3 large-3">
+
+             <label>Bill ID :
+               <b>{{bill?.billID}}</b>
+             </label>
+           </div>
+            <div class="columns small-12 medium-4 large-4">
+              <label>Due Date :
+                <b>{{dueDate}}</b>
+              </label>
+
+            </div>
+           </div>
+          <div class="row" style="margin-top:10px;">
+            <div class="columns small-12 medium-3 large-3">
+              <label>Vendor :
+                <b>{{vendor?.name}}</b>
+              </label>
+            </div>
+            <div class="columns small-12 medium-4 large-4">
+              <label>Vendor Email :
+                <b>{{paymentMode != 'mailCheque' ? vendor?.email : 'support@qount.io'}}</b>
+              </label>
+              </div>
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <div class="columns small-12 medium-3 large-3">
+              <label>Original Bill Amount :
+                <b>{{billAmount | currency:billCurrency:true:'1.2-2'}}</b>
+              </label>
+            </div>
+            <div class="columns small-12 medium-4 large-4">
+              <label>Paid Amount :
+                <b>{{amountPaid | currency:companyCurrency:true:'1.2-2' }}</b>
+              </label>
+            </div>
+          </div>
+          <div class="row" style="margin-top:10px;" foundation>
+            <div class="columns small-12 medium-3 large-3">
+              <label>Unpaid Amount :
+                <b>{{unpaidAmount | currency:companyCurrency:true:'1.2-2'}}</b>
+              </label>
+            </div>
+            <div class="columns small-12 medium-4 large-4">
+              <label>Pay :
+                <input type="text" style="display:inline; width:215px;" [(ngModel)]="payAmount"/>
+              </label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="column small-12 medium-12" foundation>
+              <button class="button create small" [disabled]="!paymentMode" (click)="payBill()"> Pay</button>
+              <button class="button create small" data-toggle="pay-later-dropdown" [disabled]="!paymentMode"> Pay Later</button>
+              <div class="dropdown-pane" id="pay-later-dropdown" data-dropdown>
+                <label>Select a future date
+                  <input type="text" [(ngModel)]="futureDate"  [customDatepicker1]="'MM-DD-YYYY'" (valueChanged)="setFutureDate($event)" placeholder="Future Date*">
+                </label>
+
+                <div class="text-right">
+                  <button class="button small" [disabled]="!futureDate" (click)="makeFuturePayment()">Confirm</button>
+                  <button class="button small" data-close>Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+

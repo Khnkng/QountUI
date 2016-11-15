@@ -25,6 +25,7 @@ export class SideBarComponent {
   isPayrol:boolean = false;
   isTaxes:boolean = false;
   isTools:boolean = false;
+  isReports:boolean=false;
 
   allBoards:any;
   currentBoardName = null;
@@ -74,49 +75,50 @@ export class SideBarComponent {
     this.isPayrol = false;
     this.isTaxes = false;
     this.isTools = false;
+    this.isReports=false;
     switch (page) {
       case PAGES.DASHBOARD: {
         let link = [''];
         this._router.navigate(link);
         this.isDashboard = true;
       }
-      break;
+        break;
       case PAGES.BOOKS: {
         let link = ['books'];
         this._router.navigate(link);
         this.isBooks = true;
       }
-      break;
-      case PAGES.PAYMENTS: {
-        let link = ['payments'];
-        this._router.navigate(link);
-        this.isPayments = true;
-      }
-      break;
+        break;
       case PAGES.EXPENSES: {
         let link = ['expenses'];
         this._router.navigate(link);
         this.isExpenses = true;
       }
-      break;
+        break;
       case PAGES.PAYROL: {
         let link = ['payrol'];
         this._router.navigate(link);
         this.isPayrol = true;
       }
-      break;
+        break;
       case PAGES.TAX: {
         let link = ['tax'];
         this._router.navigate(link);
         this.isTaxes = true;
       }
-      break;
+        break;
       case PAGES.TOOLS: {
         let link = ['tools'];
         this._router.navigate(link);
         this.isTools = true;
       }
-      break;
+        break;
+      case PAGES.PAYMENTS: {
+        let link = ['/dashboard', 0];
+        this._router.navigate(link);
+        this.isReports = true;
+      }
+        break;
     }
   }
 

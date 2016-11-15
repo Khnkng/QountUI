@@ -164,18 +164,16 @@ gulp.task('dependencies', function () {
     'node_modules/systemjs/dist/system.src.js',
     'node_modules/socket.io-client/socket.io.js',
     'app/assets/**/*.js',
-    'app/bower_components/footable/compiled/footable.min.js'
-    //'app/bower_components/tag-it/js/tag-it.js'
+    'app/bower_components/footable/compiled/footable.min.js',
+    'app/bower_components/tag-it/js/tag-it.js'
   ]).pipe(gulp.dest('build/lib'));
 
   var angular = gulp.src(['node_modules/@angular/**/*.*']).pipe(gulp.dest('build/lib/@angular'));
   var angularInMemory = gulp.src(['node_modules/angular2-in-memory-web-api/**/*.*']).pipe(gulp.dest('build/lib/angular2-in-memory-web-api'));
   var rxjs = gulp.src(['node_modules/rxjs/**/*.*']).pipe(gulp.dest('build/lib/rxjs'));
-  var qCommons = gulp.src(['node_modules/qCommon/**/*.*']).pipe(gulp.dest('build/lib/qCommon'));
-  /*var angular2uuid = gulp.src(['node_modules/angular2-uuid/!**!/!*.*']).pipe(gulp.dest('build/lib/angular2-uuid'));
-  var immutable = gulp.src(['node_modules/immutable/!**!/!*.*']).pipe(gulp.dest('build/lib/immutable'));*/
-  //var qCommon = gulp.src(['node_modules/qCommon/**/*.*']).pipe(gulp.dest('build/lib/qCommon'));
-  return merge(libs, angular, angularInMemory, rxjs, qCommons);
+  var angular2uuid = gulp.src(['node_modules/angular2-uuid/**/*.*']).pipe(gulp.dest('build/lib/angular2-uuid'));
+  var immutable = gulp.src(['node_modules/immutable/**/*.*']).pipe(gulp.dest('build/lib/immutable'));
+  return merge(libs, angular, angularInMemory, rxjs, angular2uuid, immutable);
 });
 
 gulp.task('sass', function () {

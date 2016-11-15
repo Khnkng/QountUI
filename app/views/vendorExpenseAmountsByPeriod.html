@@ -1,0 +1,325 @@
+<div>
+  <section class="reportheader">
+    <header>
+      <div class="columns small-12 right" [hidden]="!hideReportForm" >
+        <button class="button small text-button" (click)="backToSearch()">
+          <i class="ion-ios-close-empty"></i>
+        </button>
+      </div>
+    </header>
+  </section>
+  <div class="report-wrapper" foundation>
+
+    <report-search-criteria [reportName]="'Bills and Payments Summary'" [reportDesc]="'Provides summary of bills, credits payments types with vendor and period level information.'"
+                            [hideReportForm]="hideReportForm" [setReportType]="'vendorSummary'" id="WrappedDetails"></report-search-criteria>
+
+    <div [hidden]="!hideReportForm" class="printable-area" style="width:95%;" *ngIf="isDisplay" id="printableArea">
+      <div class="columns report-icon-header">
+        <div class="icon-wrapper" [hidden]="printmode">
+          <span class="report-name">Bills and Payments Summary</span>
+          <span class="float-right icons">
+            <i class="icon ion-ios-email-outline" (click)="openemail()"></i>
+            <i class="icon ion-ios-cloud-download-outline" data-toggle="example-dropdown"></i>
+            <div class="dropdown-pane" id="example-dropdown" data-dropdown data-auto-focus="true" foundation>
+              <ul>
+                <li (click)="exportToExcel()" [hidden]="printmode"><a>Export To Excel</a></li>
+                <li (click)="exportToPDF()" ><a id="pdf">Export To PDF</a></li>
+              </ul>
+            </div>
+            <i class="icon ion-ios-printer-outline" data-open="printModal"></i>
+          </span>
+        </div>
+      </div>
+
+      <div class="columns report-failure" *ngIf="isFailure">
+        <div style="text-align: center;padding-top: 10px;">
+          <h4 class="report-heading">{{companyName}}</h4>
+          <h5 class="report-heading">A/P Aging Summary</h5>
+          <h6 class="report-heading">As of {{displayDate}}</h6>
+          <div class="failure-text">This report does not contain any data.</div>
+        </div>
+      </div>
+    </div>
+    <div class="large full reveal" #drillDown id="drillDownModal" data-reveal>
+      <h4>Bills Details</h4>
+      <table>
+        <thead>
+        <tr>
+          <th>Bill Number</th>
+          <th>Company</th>
+          <th>Vendor</th>
+          <th>Bill Amount</th>
+          <th>Due Date</th>
+          <th>State</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let bill of billsList;let i=index" style="cursor:pointer;" (click)="goTOBillDetailsPage(bill)">
+          <td>{{bill.billID}}</td>
+          <td>{{bill.companyName}}</td>
+          <td>{{bill.vendorName}}</td>
+          <td>{{bill.amount|currency:bill.currency:true:'1.2-2'}}</td>
+          <td>{{bill.dueDate}}</td>
+          <td>{{bill.currentState}}</td>
+        </tr>
+        </tbody>
+      </table>
+      <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="columns display-report" *ngIf="isSuccess" id="displayReport1">
+      <div style="text-align: center;padding-top: 10px;">
+        <div [ngClass]="customObj.customizations.headerAlignment">
+          <template [ngIf]="customObj.customizations.includeCompanyName">
+              <span>
+                <img src="./images/logo.png" [hidden]="!printmodes"/>
+              </span>
+            <span>
+                <h4 class="report-heading">{{companyName}}</h4>
+              </span>
+          </template>
+          <h5 class="report-heading" *ngIf="customObj.customizations.includeReportTitle">{{reportName}}</h5>
+          <h6 class="report-heading" *ngIf="customObj.customizations.includeReportPeriod">As of {{displayDate}}</h6>
+        </div>
+        <table class="report-table">
+          <thead>
+          <tr>
+            <th></th>
+            <th></th>
+            <th *ngFor="let column of columns">{{column}}</th>
+          </tr>
+          </thead>
+          <tbody>
+          <template ngFor [ngForOf]="results" let-res="$implicit">
+            <tr>
+              <td >{{res.payments.vendorID}}</td>
+              <td>Payments</td>
+              <td *ngFor="let column of columns;let j=index" [ngClass]="{red: isNegativeValue(res.payments[column])}">
+                <a *ngIf="res.payments[column]!=0" style="color: #000000;text-decoration: underline;" (click)="showReportDetails(column,res.payments,false,'payments')">{{res.payments[column]}}</a>
+                <a *ngIf="res.payments[column]==0" style="color: #000000">{{res.payments[column]}}</a>
+              </td>
+            </tr>
+            <tr>
+              <td>{{res.payables.vendorID}}</td>
+              <td>payables</td>
+              <td *ngFor="let column of columns;let j=index" [ngClass]="{red: isNegativeValue(res.payables[column])}">
+                <a *ngIf="res.payables[column]!=0" style="color: #000000;text-decoration: underline;" (click)="showReportDetails(column,res.payables,false,'payables')">{{res.payables[column]}}</a>
+                <a *ngIf="res.payables[column]==0" style="color: #000000">{{res.payables[column]}}</a>
+              </td>
+            </tr>
+          </template>
+          <tr *ngFor="let res1 of totals;let i=index">
+            <td ><b>{{res1.VendorID}}</b></td>
+            <td></td>
+            <td *ngFor="let column of columns;let j=index" [ngClass]="{red: isNegativeValue(res1[column])}">
+              <a *ngIf="res1[column]!=0" style="color: #000000;text-decoration: underline;" (click)="showReportDetails(column,res1,true,'all')"><b>{{res1[column]}}</b></a>
+              <a *ngIf="res1[column]==0" style="color: #000000"><b>{{res1[column]}}</b></a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <footer [ngClass]="customObj.customizations.footerAlignment">
+          <span *ngIf="customObj.customizations.includeDatePrepared">{{datePrepared}}</span>
+          <span *ngIf="customObj.customizations.includeTimePrepared">{{timePrepared}}</span>
+        </footer>
+      </div>
+    </div>
+    <!--<div id="displayReport">
+      <div class="columns display-report" *ngIf="isSuccess" >
+        <div style="text-align: center;padding-top: 10px;">
+          <div [ngClass]="customObj.customizations.headerAlignment">
+            <template [ngIf]="customObj.customizations.includeCompanyName">
+              <span>
+                <img src="./images/logo.png" [hidden]="!printmodes"/>
+              </span>
+            <span>
+                <h4 class="report-heading">{{companyName}}</h4>
+              </span>
+            </template>
+            <h5 class="report-heading" *ngIf="customObj.customizations.includeReportTitle">{{reportName}}</h5>
+            <h6 class="report-heading" *ngIf="customObj.customizations.includeReportPeriod">As of {{displayDate}}</h6>
+          </div>
+          <table class="report-table">
+            <thead>
+            <tr>
+              <th></th>
+              <th></th>
+              <th *ngFor="let column of columns">{{column}}</th>
+            </tr>
+            </thead>
+            <tbody>
+            <template ngFor [ngForOf]="results" let-res="$implicit">
+              <tr>
+                <td >{{res.payments.vendorID}}</td>
+                <td>Payments</td>
+                <td *ngFor="let column of columns;let j=index" [ngClass]="{red: isNegativeValue(res.payments[column])}">
+                  <a *ngIf="res.payments[column]!=0" style="color: #000000;text-decoration: underline;" (click)="showReportDetails(column,res.payments,false,'payments')">{{res.payments[column]}}</a>
+                  <a *ngIf="res.payments[column]==0" style="color: #000000">{{res.payments[column]}}</a>
+                </td>
+              </tr>
+              <tr>
+                <td>{{res.payables.vendorID}}</td>
+                <td>payables</td>
+                <td *ngFor="let column of columns;let j=index" [ngClass]="{red: isNegativeValue(res.payables[column])}">
+                  <a *ngIf="res.payables[column]!=0" style="color: #000000;text-decoration: underline;" (click)="showReportDetails(column,res.payables,false,'payables')">{{res.payables[column]}}</a>
+                  <a *ngIf="res.payables[column]==0" style="color: #000000">{{res.payables[column]}}</a>
+                </td>
+              </tr>
+            </template>
+            <tr *ngFor="let res1 of totals;let i=index">
+              <td ><b>{{res1.VendorID}}</b></td>
+              <td></td>
+              <td *ngFor="let column of columns;let j=index" [ngClass]="{red: isNegativeValue(res1[column])}">
+                <a *ngIf="res1[column]!=0" style="color: #000000;text-decoration: underline;" (click)="showReportDetails(column,res1,true,'all')"><b>{{res1[column]}}</b></a>
+                <a *ngIf="res1[column]==0" style="color: #000000"><b>{{res1[column]}}</b></a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <footer [ngClass]="customObj.customizations.footerAlignment">
+            <span *ngIf="customObj.customizations.includeDatePrepared">{{datePrepared}}</span>
+            <span *ngIf="customObj.customizations.includeTimePrepared">{{timePrepared}}</span>
+          </footer>
+        </div>
+      </div>
+      <div class="columns report-failure" *ngIf="isFailure">
+        <div style="text-align: center;padding-top: 10px;">
+          <h4 class="report-heading">{{companyName}}</h4>
+          <h5 class="report-heading">A/P Aging Summary</h5>
+          <h6 class="report-heading">As of {{displayDate}}</h6>
+          <div class="failure-text">This report does not contain any data.</div>
+        </div>
+      </div>
+    </div>-->
+    <div class="reveal large bill-modal-container print-modal" id="printModal" data-reveal data-close-on-click="false" data-animation-in="ease-in" data-animation-out="ease-out">
+      <div class="row print-wrapper">
+        <div class="col third">
+          <select (change)="onChange($event.target.value)">
+            <option value="Landscape">Landscape</option>
+            <option value="Potrait">Potrait</option>
+          </select>
+        </div>
+        <div class="col half" id="sucess">
+          <div class="columns display-report" *ngIf="isSuccess" >
+            <div style="text-align: center;padding-top: 10px;">
+              <div [ngClass]="customObj.customizations.headerAlignment">
+                <template [ngIf]="customObj.customizations.includeCompanyName">
+              <span>
+                <img src="./images/logo.png" [hidden]="!printmodes"/>
+              </span>
+                  <span>
+                <h4 class="report-heading">{{companyName}}</h4>
+              </span>
+                </template>
+                <h5 class="report-heading" *ngIf="customObj.customizations.includeReportTitle">{{reportName}}</h5>
+                <h6 class="report-heading" *ngIf="customObj.customizations.includeReportPeriod">As of {{displayDate}}</h6>
+              </div>
+              <table class="report-table">
+                <thead>
+                <tr>
+                  <th></th>
+                  <th></th>
+                  <th *ngFor="let column of columns">{{column}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <template ngFor [ngForOf]="results" let-res="$implicit">
+                  <tr>
+                    <td >{{res.payments.vendorID}}</td>
+                    <td>Payments</td>
+                    <td *ngFor="let column of columns;let j=index" [ngClass]="{red: isNegativeValue(res.payments[column])}">
+                      <a *ngIf="res.payments[column]!=0" style="color: #000000;text-decoration: underline;" (click)="showReportDetails(column,res.payments,false,'payments')">{{res.payments[column]}}</a>
+                      <a *ngIf="res.payments[column]==0" style="color: #000000">{{res.payments[column]}}</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>{{res.payables.vendorID}}</td>
+                    <td>payables</td>
+                    <td *ngFor="let column of columns;let j=index" [ngClass]="{red: isNegativeValue(res.payables[column])}">
+                      <a *ngIf="res.payables[column]!=0" style="color: #000000;text-decoration: underline;" (click)="showReportDetails(column,res.payables,false,'payables')">{{res.payables[column]}}</a>
+                      <a *ngIf="res.payables[column]==0" style="color: #000000">{{res.payables[column]}}</a>
+                    </td>
+                  </tr>
+                </template>
+                <tr *ngFor="let res1 of totals;let i=index">
+                  <td ><b>{{res1.VendorID}}</b></td>
+                  <td></td>
+                  <td *ngFor="let column of columns;let j=index" [ngClass]="{red: isNegativeValue(res1[column])}">
+                    <a *ngIf="res1[column]!=0" style="color: #000000;text-decoration: underline;" (click)="showReportDetails(column,res1,true,'all')"><b>{{res1[column]}}</b></a>
+                    <a *ngIf="res1[column]==0" style="color: #000000"><b>{{res1[column]}}</b></a>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <footer [ngClass]="customObj.customizations.footerAlignment">
+                <span *ngIf="customObj.customizations.includeDatePrepared">{{datePrepared}}</span>
+                <span *ngIf="customObj.customizations.includeTimePrepared">{{timePrepared}}</span>
+              </footer>
+            </div>
+            <button class="button float-right" (click)="printDiv()">Print</button>
+          </div>
+          <div class="columns report-failure" *ngIf="isFailure">
+            <div style="text-align: center;padding-top: 10px;">
+              <h4 class="report-heading">{{companyName}}</h4>
+              <h5 class="report-heading">A/P Aging Summary</h5>
+              <h6 class="report-heading">As of {{displayDate}}</h6>
+              <div class="failure-text">This report does not contain any data.</div>
+            </div>
+          </div>
+        </div>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+    </div>
+    <div class="reveal medium bill-modal-container" #reportMail id="EmailModal" style="width: 900px;height:700px;" data-reveal data-close-on-click="false" data-animation-in="ease-in" data-animation-out="ease-out">
+      <form (ngSubmit)="doEmail($event)" novalidate [formGroup]="emailForm">
+        <div class="row">
+          <div style="font-size: larger;font-weight: 800">Email Report</div>
+        </div>
+        <div class="row">
+          <pre><label for="ToAddress" style="font-weight: 700;margin-top: 20px;">To    </label><br /></pre>
+          <div class="small-16 columns" style="margin-top: 20px;">
+            <input formControlName="Toaddress" id="Toaddress" [tagsList]="[]" class="bighalf-tags,input, empty" name="name" type="text" value="" size="30" custom-tags /><br />
+          </div>
+        </div>
+        <div class="row" *ngIf="showEmail">
+          <pre><label for="cc" style="font-weight: 700">CC    </label><br /></pre>
+          <div class="small-16 columns">
+            <input formControlName="cc" id="cc" [tagsList]="emailAddress"  class="bighalf-tags,input, empty" name="email" type="text" size="30" custom-tags /><br />
+          </div>
+        </div>
+        <div class="row">
+          <pre><label for="Emailsubject" style="font-weight: 700">Subject</label><br /></pre>
+          <div class="small-16 columns">
+            <input formControlName="Emailsubject" id="Emailsubject" class="input" name="email" type="text" value="Your A/P Aging Summary" size="30" /><br />
+          </div>
+        </div>
+        <div class="row">
+          <pre><label style="font-weight: 700">Body   </label><br /></pre>
+          <div class="small-16 columns">
+        <textarea formControlName="EmailBody" rows="7" cols="50"  id="EmailBody">
+Hello, &#13;&#10;
+Attached is A/P Aging Summary &#13;&#10;
+Regards,&#13;&#10;
+{{user.firstName}} {{user.lastName}}
+</textarea><br />
+          </div>
+        </div>
+        <div class="row">
+          <pre><label for="report" style="font-weight:bolder">Report </label><br /></pre>
+          <div class="small-16 columns">
+            <input id="report" class="input" name="Report" type="text" value="A/P Aging Summary report" size="30" /><br />
+          </div>
+        </div>
+        <!--<button id="cancel_button" class="button" data-close aria-label="Close modal" style="float: left" >Cancel</button>-->
+        <button class="button" style="float: right;" type="submit" data-close>Send</button>
+      </form>
+      <button class="close-button" data-close aria-label="Close reveal" type="button">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+</div>

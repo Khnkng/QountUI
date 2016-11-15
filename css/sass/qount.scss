@@ -17,7 +17,15 @@
 @import "toaster";
 @import "userprofile";
 @import "top-notifications";
-
+@import "pikaday";
+@import "pace-theme-minimal";
+@import "login-signup";
+@import "jquery.tagit";
+@import "userprofile";
+@import "toaster";
+@import "workflow";
+@import "line-item-flyout";
+@import "highcharts";
 
 @include foundation-global-styles;
 @include foundation-grid;
@@ -1125,21 +1133,22 @@ ul.side-nav a {
 }
 /*end tabber*/
 
+
 /*Box*/
-dashboard {
-  .header {
+dashboard{
+  .header{
     margin-bottom: 10px;
-    h6 {
+    h6{
       display: inline-block;
     }
-    i {
+    i{
       font-size: 1.2em;
       cursor: pointer;
       vertical-align: sub;
       color: #6f7f8f;
       margin-left: 0.25em;
       margin-right: 0;
-      &:hover {
+      &:hover{
         color: #505458;
       }
     }
@@ -1147,7 +1156,7 @@ dashboard {
 }
 .box-container {
 
-  &.disabled {
+  &.disabled{
     display: none;
     -webkit-transition: display 2s; /* Safari */
     transition: display 2s;
@@ -1189,40 +1198,43 @@ dashboard {
           border-radius: 50px;
           border: 1pt solid #34d3eb;
           background-color: rgba(52, 211, 235, 0.2);
-          margin-top: 5px;
+          margin-top:5px;
           .icon {
             font-size: 2rem;
             color: #34d3eb;
           }
-          &.due {
+          &.due{
             border: 1pt solid #fb6d9d;
             background-color: rgba(251, 109, 157, 0.2);
-            .icon {
+            .icon{
               color: #fb6d9d;
             }
           }
-          &.ytd {
+          &.ytd{
             border: 1pt solid #7266ba;
             background-color: rgba(114, 102, 186, 0.2);
-            .icon {
+            .icon{
               color: #7266ba;
             }
           }
-          &.month {
+          &.month{
             border: 1pt solid #81c868;
             background-color: rgba(129, 200, 104, 0.2);
-            .icon {
+            .icon{
               color: #81c868;
             }
           }
         }
       }
 
+
+
     }
   }
 }
 
 /*end box*/
+
 i {
   font-size: 1.2em;
   cursor: pointer;
@@ -1705,17 +1717,27 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
+.report-callout{
+  margin-top: 15px;
+  padding: 15px;
+  border: 2px solid $qount-table-border;
+  border-radius: 3px;
+  &:hover{
+    box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+  }
+  .report-header {
+    color: $qount-text;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+}
+
 .report-body {
   margin-top: 10px;
   font-size: 0.9rem;
   color: $qount-text;
   text-align: justify;
-}
-.report-header {
-  color: $qount-btn-primary;
-  margin-top: 10px;
-  font-weight: 700;
-  font-size: 1rem;
 }
 .report-footer {
   margin-top: 10px;
@@ -1724,7 +1746,7 @@ table.footable-editing-right tr.footable-editing td {
   font-size: 16px;
 }
 
-.report-heading {
+.report-heading{
   color: #282895;
   font-weight: 700;
 }
@@ -2062,116 +2084,6 @@ table.footable-editing-right tr.footable-editing td {
   border: none !important;
 }
 
-/* This parent can be any width and height */
-.box-notifier {
-  $qount-box-icon-width: 198px;
-  $qount-box-icon-height: 138px;
-  text-align: center;
-  margin-bottom: 10px;
-  /* May want to do this if there is risk the container may be narrower than the element inside */
-  white-space: nowrap;
-  &:before {
-    /* The ghost, nudged to maintain perfect centering */
-    content: '';
-    display: inline-block;
-    height: auto;
-    vertical-align: middle;
-    margin-right: -0.25em; /* Adjusts for spacing */
-  }
-  .centered {
-    /* The element to be centered, can also be of any width and height */
-    display: inline-block;
-    vertical-align: middle;
-    width: 100%;
-  }
-  .box-border {
-    width: 60%;
-    height: 150px;
-    border: 2px solid #f2f3f4;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    .box-icon {
-      display: block;
-      text-indent: -9999px;
-      width: $qount-box-icon-width;
-      height: $qount-box-icon-height;
-      margin: 10px auto 0;
-      &.companies {
-        background: url("../images/SVG/company.svg") no-repeat;
-        background-size: 36px 48px;
-        background-position: center center;
-      }
-      &.vendors {
-        background: url("../images/SVG/vendor.svg") no-repeat;
-        background-size: 36px 48px;
-        background-position: center center;
-      }
-      &.customers {
-        background: url("../images/SVG/customer.svg") no-repeat;
-        background-size: 36px 48px;
-        background-position: center center;
-      }
-      &.employees {
-        background: url("../images/SVG/customer.svg") no-repeat;
-        background-size: 36px 48px;
-        background-position: center center;
-      }
-
-    }
-    &:hover {
-      &.blue {
-        background-color: $qount-brand-blue;
-        border-color: $qount-brand-blue;
-        .box-icon {
-          &.companies {
-            background: url("../images/SVG/company.svg") no-repeat;
-            background-size: 36px 48px;
-            background-position: center center;
-          }
-          &.vendors {
-            background: url("../images/SVG/vendor.svg") no-repeat;
-            background-size: 36px 48px;
-            background-position: center center;
-          }
-          &.customers {
-            background: url("../images/SVG/customer.svg") no-repeat;
-            background-size: 36px 48px;
-            background-position: center center;
-          }
-          &.employees {
-            background: url("../images/SVG/customer.svg") no-repeat;
-            background-size: 36px 48px;
-            background-position: center center;
-          }
-        }
-        & + .box-label {
-          color: $qount-text;
-        }
-      }
-      cursor: pointer;
-      background-color: $qount-brand-grey-light;
-      & + .box-label {
-        color: $qount-brand-blue;
-      }
-    }
-  }
-  .box-notification-circle {
-    width: 22px;
-    height: 22px;
-    border-radius: 11px;
-    background-color: $qount-brand-red-pastel;
-    color: #ffffff;
-    font-size: 0.9rem;
-    float: right;
-    margin-right: 15px;
-    margin-top: -10px;
-  }
-  .box-label {
-    color: $qount-text;
-    cursor: pointer;
-  }
-}
-
 .tools-grids {
   margin: 20px 0px;
   .tool-grid {
@@ -2273,5 +2185,361 @@ table.footable-editing-right tr.footable-editing td {
   .tool-grid:hover .thumb-label {
     background-color: $qount-brand-blue;
     color: #fff;
+  }
+}
+
+
+.box-notifier {
+  $qount-box-icon-width:36px;
+  $qount-box-icon-height:48px;
+  text-align: center;
+  margin-bottom: 10px;
+  /* May want to do this if there is risk the container may be narrower than the element inside */
+  white-space: nowrap;
+  &:before{
+    /* The ghost, nudged to maintain perfect centering */
+    content: '';
+    display: inline-block;
+    height: auto;
+    vertical-align: middle;
+    margin-right: -0.25em; /* Adjusts for spacing */
+  }
+  .centered {
+    /* The element to be centered, can also be of any width and height */
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+  }
+
+
+
+
+  .box-border{
+    width: 78px;
+    height: 78px;
+    border-radius: 39px;
+    border: 2px solid $qount-brand-grey-light;
+    margin-bottom: 10px;
+    .box-icon{
+      display: block;
+      text-indent: -9999px;
+      width: $qount-box-icon-width;
+      height: $qount-box-icon-height;
+      margin: 10px auto 0;
+      &.flag{
+        background: url("../images/SVG/Payments_Approve.svg");
+        background-size: 36px 48px;
+      }
+      &.overdue{
+        background: url("../images/SVG/Payments_expensecode.svg");
+        background-size: 36px 48px;
+      }
+      &.month{
+        background: url("../images/SVG/Payments_Pay.svg");
+        background-size: 36px 48px;
+      }
+      &.year{
+        background: url("../images/SVG/Payments_Workflow.svg");
+        background-size: 36px 48px;
+      }
+
+    }
+    &:hover{
+      &.blue{
+        background-color: $qount-brand-blue;
+        border-color: $qount-brand-blue;
+        .box-icon{
+          &.flag{
+            background: url("../images/SVG/Payments_Approve-active.svg");
+            background-size: 36px 48px;
+          }
+          &.overdue{
+            background: url("../images/SVG/Payments_expensecode-active.svg");
+            background-size: 36px 48px;
+          }
+          &.month{
+            background: url("../images/SVG/Payments_Pay-active.svg");
+            background-size: 36px 48px;
+          }
+          &.year{
+            background: url("../images/SVG/Payments_Workflow-active.svg");
+            background-size: 36px 48px;
+          }
+        }
+        &+.box-label{
+          color: $qount-text;
+        }
+      }
+
+
+      cursor: pointer;
+      background-color: $qount-brand-grey-light;
+      &+.box-label{
+        color: $qount-brand-blue;
+      }
+    }
+  }
+  .box-notification-circle{
+    width: 22px;
+    height: 22px;
+    border-radius: 11px;
+    background-color: $qount-brand-red-pastel;
+    color: #ffffff;
+    position: relative;
+    left:50px;
+    bottom: 5px;
+    font-size: .9em;
+
+  }
+  .box-label{
+    color: $qount-text;
+    cursor: pointer;
+  }
+}
+
+tbody{
+  tr{
+    td{
+      vertical-align: middle !important;
+    }
+    color: #36404a;
+    &:hover{
+      background-color: #f4faff;
+      a{
+        &.action{
+          visibility: visible;
+        }
+      }
+    }
+    a{
+      &.action{
+        font-size: 1rem;
+        color: $qount-form-border;
+        visibility: hidden;
+        margin-right: 0.25em;
+        margin-left: 0;
+        vertical-align: middle;
+        &:hover{
+          color: $qount-text;
+        }
+        i{
+          &.ion-edit{
+            color: $qount-brand-primary-medium;
+            &:hover{
+              color: $qount-btn-primary;
+            }
+          }
+          &.ion-trash-b{
+            color: $qount-brand-red-medium;
+            &:hover{
+              color: $qount-brand-red;
+            }
+          }
+
+        }
+      }
+    }
+  }
+}
+
+.button{
+  &.text-button{
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background: none;
+    color: $qount-text;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    margin-top: 5px;
+    transition: background-color 0.3s ease;
+    &:hover{
+      background: $qount-table-border;
+    }
+    i{
+      font-size: 2.5rem;
+    }
+
+  }
+}
+
+.report-criteria-container{
+  background-color: $qount-table-tr-hover;
+  padding: 15px 10px;
+  header{
+    hr{
+      margin: 0;
+    }
+    .report-criteria-header{
+      text-transform: uppercase;
+    }
+  }
+  .report-criteria-form{
+
+
+    label{
+      &.report-form-fields{
+        border:1px solid $qount-table-border;
+        margin: 10px 0 5px;
+        padding: 5px 10px;
+        background-color: #ffffff;
+        .label-format{
+          color: $qount-text;
+          text-transform: uppercase;
+          font-size: .75rem;
+          font-weight: bold;
+        }
+        .required{
+          float:right;
+          color: $qount-brand-red;
+        }
+        .special-seperator{
+          color: $qount-text;
+          text-transform: uppercase;
+          font-size: .7rem;
+          font-weight: bold;
+          height: 1rem;
+        }
+        .no-padding{
+          padding-left: 0;
+        }
+        select, input{
+          color: $qount-text;
+          height: 1rem;
+          border: none;
+          border-bottom: 1px dotted $qount-form-border;
+          border-radius: 0px;
+          padding: 0 1rem 0 .25rem;
+          margin: 0;
+          font-size: .75rem;
+          //box-shadow: none;
+
+        }
+        input[type=checkbox]{
+          vertical-align: sub;
+        }
+        label{
+          color:$qount-text;
+          font-size: .9em;
+        }
+      }
+
+    }
+  }
+  .report-info-section{
+    color: $qount-text;
+    padding-top: 2em;
+    .section-header{
+      color: $qount-text;
+      font-size: .75em;
+    }
+    p{
+      padding-left: .75rem;
+      text-align: justify;
+      font-size: .75em;
+    }
+  }
+}
+
+.bill{
+
+  .ion-edit{
+    color: $qount-brand-primary-medium;
+    &:hover{
+      color: $qount-btn-primary;
+    }
+  }
+
+  .ion-ios-trash-outline{
+    color: $qount-brand-red-medium;
+    &:hover{
+      color: $qount-brand-red;
+    }
+  }
+  input + div.error{
+    margin: 0;
+  }
+
+  .bill-form-data{
+
+  }
+  .status{
+    &.button-style{
+      border-radius: 4px;
+      border: 2px solid #00B0F0;
+      min-width: 125px;
+      font-weight: 600;
+      &:hover{
+        color: #fff;
+        background: #00B0F0;
+      }
+
+    }
+  }
+  .bill-form-tabs{
+    &.tabs{
+      border:none;
+    }
+    .tabs-title{
+      a{
+        padding: .5em;
+        margin-right: 1em;
+
+        &[aria-selected="true"]{
+          border-bottom: 3px solid $qount-btn-primary;
+          background-color: #fff;
+        }
+      }
+    }
+  }
+  .bill-form-tabs-content{
+    &.tabs-content{
+      border: none;
+    }
+    .tabs-panel{
+      padding: 1em 0;
+    }
+  }
+
+
+  .bill-preview-icons{
+    position: relative;
+    top:-5px;
+    margin-right: 1em;
+    i{
+      font-size: 1.5rem;
+      color:#6f7f8f;
+      margin-right: .5em;
+    }
+
+  }
+
+  .bill-modal-container{
+
+  }
+  .bill-container{
+
+    margin-bottom: 15px;
+    .bill-preview-container{
+      overflow-y: auto;
+    }
+  }
+
+  .label{
+    &.success{
+      background-color: $qount-brand-green;
+    }
+    &.warning{
+      background-color: $qount-brand-yellow;
+    }
+    &.alert{
+      background-color: $qount-brand-red-pastel;
+    }
+    &.secondary{
+      background-color: $qount-form-border-hover;
+    }
+
   }
 }

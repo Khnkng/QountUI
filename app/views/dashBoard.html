@@ -1,0 +1,271 @@
+<div>
+  <header>
+    <div class="header">
+      <div class="row">
+        <div class="small-6"><h5>Dashboard</h5></div>
+        <div class="small-6 text-right"><i [ngClass]="{'ion-arrow-up-b': !hideBoxes, 'ion-arrow-down-b':hideBoxes}"  (click)="hideBoxes = !hideBoxes"></i></div>
+      </div>
+    </div>
+  </header>
+  <div class="row" [hidden]="hideBoxes">
+    <div class="column small-3 medium-3 large-3">
+      <div class="box-notifier">
+        <div class="box-border blue centered">
+          <div class="box-icon flag"></div>
+          <div class="box-notification-circle">
+            3
+          </div>
+        </div>
+        <div class="box-label">
+          Approve
+        </div>
+      </div>
+    </div>
+    <div class="column small-3 large-3">
+      <div class="box-notifier">
+        <div class="box-border blue centered">
+          <div class="box-icon month"></div>
+          <div class="box-notification-circle">
+            3
+          </div>
+        </div>
+        <div class="box-label">
+          Pay
+        </div>
+      </div>
+    </div>
+    <div class="column small-3 large-3">
+      <div class="box-notifier">
+        <div class="box-border blue centered">
+          <div class="box-icon year"></div>
+          <div class="box-notification-circle">
+            3
+          </div>
+        </div>
+        <div class="box-label">
+          Workflow
+        </div>
+      </div>
+    </div>
+    <div class="column small-3 large-3">
+      <div class="box-notifier">
+        <div class="box-border blue centered">
+          <div class="box-icon overdue"></div>
+          <div class="box-notification-circle">
+            3
+          </div>
+        </div>
+        <div class="box-label">
+          Expense Code
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row box-container" [ngClass]="{'disabled': true}">
+    <div class="column medium-6 large-3">
+      <div class="box">
+        <div class="content">
+          <div class="flex-item box-status">
+            <div class="value">{{boxInfo.pastDue | currency:displayCurrency:true:'1.2-2'}}</div>
+            <div class="label due">Past Due</div>
+          </div>
+          <div class="flex-item box-status-icon due">
+            <i class="icon ion-social-usd"></i>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+    <div class="column medium-6 large-3">
+      <div class="box">
+        <div class="content">
+          <div class="flex-item box-status">
+            <div class="value">{{boxInfo.dueToday | currency:displayCurrency:true:'1.2-2'}}</div>
+            <div class="label">Due Today</div>
+          </div>
+          <div class="flex-item box-status-icon today">
+            <i class="icon ion-social-usd"></i>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="column medium-6 large-3">
+      <div class="box">
+        <div class="content">
+          <div class="flex-item box-status">
+            <div class="value">{{boxInfo.dueThisWeek | currency:displayCurrency:true:'1.2-2'}}</div>
+            <div class="label">Due This Week</div>
+          </div>
+          <div class="flex-item box-status-icon month">
+            <i class="icon ion-social-usd"></i>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="column medium-6 large-3">
+      <div class="box">
+        <div class="content">
+          <div class="flex-item box-status">
+            <div class="value">{{boxInfo.payables | currency:displayCurrency:true:'1.2-2'}}</div>
+            <div class="label">Payables</div>
+          </div>
+          <div class="flex-item box-status-icon ytd">
+            <i class="icon ion-social-usd"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-container" foundation>
+    <!--<ul class="tabs home-dash-tabs" data-tabs id="home-dash-tabs">
+      <li class="tabs-title red-tab" (click)="reRoutePage(0)" [ngClass]="{'is-active': tabDisplay[0].display == 'block'}">
+        <a href="#panel1" aria-selected="true">
+          <h6>Enter</h6>
+          <span class="count">{{badges.entry ? badges.entry : localBadges ? localBadges.entry?localBadges.entry:0:0 }}</span>
+        </a>
+      </li>
+      <li class="tabs-title orange-tab" (click)="reRoutePage(1)" [ngClass]="{'is-active': tabDisplay[1].display == 'block'}">
+        <a href="#panel2">
+          <h6>Approve</h6>
+          <span class="count">{{badges.approve ? badges.approve : localBadges ? localBadges.approve?localBadges.approve:0:0 }}</span>
+        </a>
+      </li>
+      <li class="tabs-title blue-tab" (click)="reRoutePage(2)" [ngClass]="{'is-active': tabDisplay[2].display == 'block'}">
+        <a href="#panel3">
+          <h6>Pay</h6>
+          <span class="count">{{badges.payee ? badges.payee : localBadges ? localBadges.payee?localBadges.payee:0:0 }}</span>
+        </a>
+      </li>
+      <li class="tabs-title green-tab" (click)="reRoutePage(3)" [ngClass]="{'is-active': tabDisplay[3].display == 'block'}">
+        <a href="#panel4">
+          <h6>Paid</h6>
+          <span class="count">{{badges.paid ? badges.paid : localBadges ? localBadges.paid?localBadges.paid:0:0}}</span>
+        </a>
+      </li>
+    </ul>-->
+    <div class="row tabber ">
+      <div class="column tab red-tab" (click)="reRoutePage(0)" [ngClass]="{'selected': tabDisplay[0].display == 'block'}">
+        <label>Enter</label>
+        <span class="badge">{{badges.entry ? badges.entry : localBadges ? localBadges.entry?localBadges.entry:0:0 }}</span>
+      </div>
+      <div class="column tab orange-tab" (click)="reRoutePage(1)" [ngClass]="{'selected': tabDisplay[1].display == 'block'}">
+        <label>Approve</label>
+        <span class="badge">{{badges.approve ? badges.approve : localBadges ? localBadges.approve?localBadges.approve:0:0 }}</span>
+      </div>
+      <div class="column tab blue-tab" (click)="reRoutePage(2)" [ngClass]="{'selected': tabDisplay[2].display == 'block'}">
+        <label>Pay</label>
+        <span class="badge">{{badges.payee ? badges.payee : localBadges ? localBadges.payee?localBadges.payee:0:0 }}</span>
+      </div>
+      <div class="column tab green-tab" (click)="reRoutePage(3)" [ngClass]="{'selected': tabDisplay[3].display == 'block'}">
+        <label>Paid</label>
+        <span class="badge">{{badges.paid ? badges.paid : localBadges ? localBadges.paid?localBadges.paid:0:0}}</span>
+      </div>
+    </div>
+    <div class="row collapse tab-content ">
+      <div *ngIf="tabDisplay[0].display == 'block'" class="column small-12 medium-12 large-12" id="entry">
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column">
+                <button class="button small float-right" (click)="addFreshBill()"><i class="icon ion-plus-round"></i>Bill</button>
+              </div>
+            </div>
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasBillsList" [data]="billsTableData" [options]="billsTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasBillsList">
+              <div class="woo-woo">Woot Woot!</div>
+              <p>There are no bills to enter.</p>
+            </div>
+          </div>
+          <div class="column small-12 medium-6 large-6 " [ngClass] = "{'bill-selected':showPreview}" *ngIf="showPreview">
+            <div *ngIf="showPreview">
+              <h6 style="margin-top:10px;">{{hoveredBill?.name}} <i (click)="hideBillPreview()" class="icon ion-close-round float-right"></i><span class="float-right"> <a title="download" target="_blank" href="{{downloadLink}}"><i style="margin-right:10px;font-size: 1.5rem;color:#6f7f8f;" class="icon ion-ios-cloud-download"></i></a></span></h6>
+              <img *ngIf="!isPdf" [src]="billImageLink" width="100%"/>
+              <!--<embed *ngIf="isPdf" [src]="billLink" width="100%" height="400px;" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">-->
+              <div *ngIf="isPdf">
+                <iframe [src]="billPdfLink" [ngStyle]="{'width':'100%', 'height':tabHeight}" frameborder="0"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="tabDisplay[1].display == 'block'" class="column small-12 medium-12 large-12" id="approve">
+        <div class="row">
+          <div class="column">
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasBillsList" [data]="billsTableData" [options]="billsTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasBillsList">
+              <div class="woo-woo">Woot Woot!</div>
+              <p>There are no bills to approve.</p>
+            </div>
+          </div>
+          <div class="column small-12 medium-6 large-6" *ngIf="showPreview">
+            <div *ngIf="showPreview">
+              <h6 style="margin-top:10px;">{{hoveredBill?.name}} <i (click)="hideBillPreview()" class="icon ion-close-round float-right"></i><span class="float-right"> <a title="download" target="_blank" href="{{downloadLink}}"><i style="margin-right:10px;font-size: 1.5rem;color:#6f7f8f;" class="icon ion-ios-cloud-download"></i></a></span></h6>
+              <img *ngIf="!isPdf" [src]="billImageLink" width="100%"/>
+              <!--<embed *ngIf="isPdf" [src]="billLink" width="100%" height="400px;" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">-->
+              <div *ngIf="isPdf">
+                <iframe [src]="billPdfLink" [ngStyle]="{'width':'100%', 'height':tabHeight}" frameborder="0"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="tabDisplay[2].display == 'block'" class="column small-12 medium-12 large-12" id="pay">
+        <div class="row">
+          <div class="column">
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasBillsList" [data]="billsTableData" [options]="billsTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasBillsList">
+              <div class="woo-woo">Woot Woot!</div>
+              <p>There are no bills to pay.</p>
+            </div>
+          </div>
+          <div class="column small-12 medium-6 large-6" *ngIf="showPreview">
+            <div *ngIf="showPreview">
+              <h6 style="margin-top:10px;">{{hoveredBill?.name}} <i (click)="hideBillPreview()" class="icon ion-close-round float-right"></i><span class="float-right"> <a title="download" target="_blank" href="{{downloadLink}}"><i style="margin-right:10px;font-size: 1.5rem;color:#6f7f8f;" class="icon ion-ios-cloud-download"></i></a></span></h6>
+              <img *ngIf="!isPdf" [src]="billImageLink" width="100%"/>
+              <!--<embed *ngIf="isPdf" [src]="billLink" width="100%" height="400px;" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">-->
+              <div *ngIf="isPdf">
+                <iframe [src]="billPdfLink" [ngStyle]="{'width':'100%', 'height':tabHeight}" frameborder="0"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="tabDisplay[3].display == 'block'" class="column small-12 medium-12 large-12" id="paid">
+        <div class="row">
+          <div class="column">
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasBillsList" [data]="billsTableData" [options]="billsTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasBillsList">
+              <div class="woo-woo">Woot Woot!</div>
+              <p>There are no bills to paid.</p>
+            </div>
+          </div>
+          <div class="column small-12 medium-6 large-6" *ngIf="showPreview">
+            <div *ngIf="showPreview">
+              <h6 style="margin-top:10px;">{{hoveredBill?.name}} <i (click)="hideBillPreview()" class="icon ion-close-round float-right"></i> <span class="float-right"> <a title="download" target="_blank" href="{{downloadLink}}"><i style="margin-right:10px;font-size: 1.5rem;color:#6f7f8f;" class="icon ion-ios-cloud-download"></i></a></span></h6>
+              <img *ngIf="!isPdf" [src]="billImageLink" width="100%"/>
+              <!--<embed *ngIf="isPdf" [src]="billLink" width="100%" height="400px;" pluginspage="http://www.adobe.com/products/acrobat/readstep2.html">-->
+              <div *ngIf="isPdf">
+                <iframe [src]="billPdfLink" [ngStyle]="{'width':'100%', 'height':tabHeight}" frameborder="0"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="reveal tiny bill-modal-container" id="pay-later-dropdown" data-reveal foundation>
+    <label>Select a future date
+      <input type="text" [(ngModel)]="futureDate"  [customDatepicker1]="'MM-DD-YYYY'" (valueChanged)="setFutureDate($event)" placeholder="Future Date*">
+    </label>
+    <div class="text-right">
+      <button class="button small" [disabled]="!futureDate" (click)="makeFuturePayment()" data-close>Confirm</button>
+      <button class="button small" data-close>Cancel</button>
+    </div>
+  </div>
+
+</div>
