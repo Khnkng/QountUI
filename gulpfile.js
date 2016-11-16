@@ -308,7 +308,7 @@ gulp.task('bundle', ['copy-to-prod'], function (cb) {
 
   //builder.reset();
 
-  builder.buildStatic("app", "./build/prod/js/app.min.js", {minify: true})
+  builder.buildStatic("app", "./build/prod/js/app.min.js", {})
       .then(function (output) {
         /* gulp.src("build/prod/js/app.min.js")
          .pipe(inlineNg2Template({ base: "./", css: false}))
