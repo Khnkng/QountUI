@@ -113,7 +113,7 @@ export class DashBoardComponent {
   }
 
   reRoutePage(tabId) {
-    let link = ['/dashboard',tabId];
+    let link = ['payments/dashboard',tabId];
     this._router.navigate(link);
   }
 
@@ -250,7 +250,7 @@ export class DashBoardComponent {
   }
 
   addFreshBill(){
-    let link = ['newBill'];
+    let link = ['payments/newBill'];
     this._router.navigate(link);
   }
   updateTabHeight(){
@@ -297,7 +297,7 @@ export class DashBoardComponent {
     let selectedBill = _.find(this.bills, function(_bill:BillModel){
       return _bill.name == bill.name;
     });
-    let link = ['/bill',selectedBill.companyID,selectedBill.id,this.selectedTab];
+    let link = ['payments/bill',selectedBill.companyID,selectedBill.id,this.selectedTab];
     this._router.navigate(link);
   }
 
@@ -393,7 +393,7 @@ export class DashBoardComponent {
       this.hoveredBill = _.find(this.bills, function(_bill:BillModel){
         return _bill.name == event.name;
       });
-      let link = ['BillPay', {"companyId": this.hoveredBill.companyID,"id":this.hoveredBill.id}];
+      let link = ['payments/BillPay', {"companyId": this.hoveredBill.companyID,"id":this.hoveredBill.id}];
       this._router.navigate(link);
       //this.getFundingSource();
     } else if(action == 'view') {
@@ -423,7 +423,7 @@ export class DashBoardComponent {
   }
 
   showPaymentsTab() {
-    let link = ['Dashboard', {tabId: 3}];
+    let link = ['payments/dashboard',3];
     this._router.navigate(link);
   }
 

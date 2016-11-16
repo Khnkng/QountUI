@@ -80,6 +80,11 @@ export class ToolsComponent {
         this._router.navigate(link);
       }
         break;
+      case 'workflow': {
+        let link = ['payments/workflow'];
+        this._router.navigate(link);
+      }
+        break;
     }
   }
 }
