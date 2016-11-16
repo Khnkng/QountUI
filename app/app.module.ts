@@ -48,6 +48,8 @@ import {WorkflowComponent} from "./payments/app/components/Workflow.component";
 import {BillComponent} from "./payments/app/components/Bill.component";
 import {BillPayComponent} from "./payments/app/components/BillPay.component";
 import {RecipientInputComponent} from "./payments/app/components/RecipientInput.component";
+import {ItemCodesComponent} from "./components/ItemCodes.component";
+import {ItemCodeForm} from "./forms/ItemCode.form";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
@@ -101,6 +103,11 @@ import {RecipientInputComponent} from "./payments/app/components/RecipientInput.
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'itemCodes',
+            component: ItemCodesComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'tools',
             component: ToolsComponent,
             canActivate: [LoggedInActivator]
@@ -111,12 +118,12 @@ import {RecipientInputComponent} from "./payments/app/components/RecipientInput.
         {path: 'bill-pay/:companyId/:id', name: 'BillPay', component: BillPayComponent,canActivate: [LoggedInActivator]},
         {path: 'newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]}
     ])],
-    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,
+    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent, ItemCodesComponent,
         DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent
     ],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword,
-        ,WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm]
+    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,
+        WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm]
 })
 export class AppModule {
 
