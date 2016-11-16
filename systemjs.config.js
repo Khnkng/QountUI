@@ -25,7 +25,7 @@
       'rxjs':                      'npm:rxjs',
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
       'qCommon': 'npm:qCommon',
-      'ReportsUI': 'npm:ReportsUI',
+      'reportsUI': 'npm:reportsUI',
       'angular2-uuid':'npm:angular2-uuid'
 
     },
@@ -46,7 +46,7 @@
         main: './index.js',
         defaultExtension: 'js'
       },
-      'ReportsUI': {
+      'reportsUI': {
           main: './index.js',
           defaultExtension: 'js'
       },
