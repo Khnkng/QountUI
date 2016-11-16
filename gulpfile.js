@@ -41,7 +41,7 @@ var tsProject1 = ts.createProject('node_modules/qCommon/tsconfig.json', {
   typescript: require('typescript')
 });
 
-var tsProject2 = ts.createProject('node_modules/ReportsUI/tsconfig.json', {
+var tsProject2 = ts.createProject('node_modules/reportsUI/tsconfig.json', {
     typescript: require('typescript')
 });
 
@@ -126,7 +126,7 @@ gulp.task('typescript-compile', function () {
       .pipe(ts(tsProject1));
     var tsResult2 = tsProject2.src() // instead of gulp.src(...)
         .pipe(ts(tsProject2));
-  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/ReportsUI'))).pipe(livereload());
+  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/reportsUI'))).pipe(livereload());
   /*return gulp.src(['app/!**!/!*.ts', '!app/bower_components/!**!/!*.ts', '!node_modules/!**!/!*.ts'])
    .pipe(ts(tsProject))
    .pipe(gulp.dest('build/app/'));*/
@@ -139,7 +139,7 @@ gulp.task('prod-typescript-compile', function () {
    .pipe(ts(tsProject1));
     var tsResult2 = tsProject2.src() // instead of gulp.src(...)
         .pipe(ts(tsProject2));
-  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/ReportsUI'))).pipe(livereload());
+  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/reportsUI'))).pipe(livereload());
 });
 
 // watch for changes and run the relevant task
@@ -204,8 +204,11 @@ gulp.task('js', function () {
 
 // move html
 gulp.task('html', ['wiredep'], function () {
-  return gulp.src(['./index.html', './app/**/*.html'], {base: '.'})
-      .pipe(gulp.dest('build/')).pipe(livereload());
+  var html = gulp.src(['./index.html', './app/**/*.html'], {base: '.'})
+      .pipe(gulp.dest('build/'));
+    var reportsHtml = gulp.src(['./node_modules/reportsUI/app/views/*.html'])
+        .pipe(gulp.dest('build/app/views/'));
+  return merge(html, reportsHtml).pipe(livereload());
 });
 
 // move css
@@ -286,7 +289,9 @@ gulp.task('prod-css', ['sass'], function () {
 gulp.task('copy-to-prod', ['prod-images', 'copy-misc-prod', 'copy-fonts-prod', 'prod-html', 'prod-css'], function () {
   var views = gulp.src(['app/**/*.html'])
       .pipe(gulp.dest('build/prod/app'));
-  return views;
+  var reportsHtml = gulp.src(['./node_modules/reportsUI/app/views/*.html'])
+        .pipe(gulp.dest('build/prod/app/views/'));
+  return merge(views, reportsHtml);
 });
 
 gulp.task('gzipfiles', function(){
@@ -303,7 +308,7 @@ gulp.task('bundle', ['copy-to-prod'], function (cb) {
 
   //builder.reset();
 
-  builder.buildStatic("app", "./build/prod/js/app.min.js", {minify: true})
+  builder.buildStatic("app", "./build/prod/js/app.min.js", {})
       .then(function (output) {
         /* gulp.src("build/prod/js/app.min.js")
          .pipe(inlineNg2Template({ base: "./", css: false}))
