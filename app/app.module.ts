@@ -49,6 +49,7 @@ import {BillComponent} from "./payments/app/components/Bill.component";
 import {BillPayComponent} from "./payments/app/components/BillPay.component";
 import {RecipientInputComponent} from "./payments/app/components/RecipientInput.component";
 import {ItemCodesComponent} from "./components/ItemCodes.component";
+import {ItemCodeForm} from "./forms/ItemCode.form";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
@@ -122,7 +123,7 @@ import {ItemCodesComponent} from "./components/ItemCodes.component";
     ],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword,
+    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,
         WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
