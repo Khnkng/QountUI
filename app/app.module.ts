@@ -3,9 +3,9 @@
  */
 
 
-import {NgModule} from "@angular/core";
+import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {ShareModule} from "qCommon/app/share.module";
-import {ReportsModule} from "ReportsUI/app/reports.module";
+import {ReportsModule} from "reportsUI/app/reports.module";
 import {LoggedInActivator} from "qCommon/app/services/CheckSessionActivator";
 import {AddCompanyComponent} from "qCommon/app/components/AddCompany.component";
 import {CompaniesComponent} from "qCommon/app/components/Companies.component";
@@ -51,7 +51,7 @@ import {RecipientInputComponent} from "./payments/app/components/RecipientInput.
 //noinspection TypeScriptCheckImport
 
 @NgModule({
-    imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, ReportsModule, HttpModule, RouterModule.forRoot([
+    imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
         {
             path: '',
             component: CanvasComponent,
@@ -110,13 +110,15 @@ import {RecipientInputComponent} from "./payments/app/components/RecipientInput.
         {path: 'bill/:companyId/:id/:tabId', name: 'BillEntry', component: BillComponent,canActivate: [LoggedInActivator]},
         {path: 'bill-pay/:companyId/:id', name: 'BillPay', component: BillPayComponent,canActivate: [LoggedInActivator]},
         {path: 'newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]}
-    ])],
+    ]), ReportsModule],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,
         DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent
     ],
+    exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword,
-        ,WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm]
+        ,WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm],
+    schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
 
