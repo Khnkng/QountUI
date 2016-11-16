@@ -48,6 +48,7 @@ import {WorkflowComponent} from "./payments/app/components/Workflow.component";
 import {BillComponent} from "./payments/app/components/Bill.component";
 import {BillPayComponent} from "./payments/app/components/BillPay.component";
 import {RecipientInputComponent} from "./payments/app/components/RecipientInput.component";
+import {ItemCodesComponent} from "./components/ItemCodes.component";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
@@ -101,6 +102,11 @@ import {RecipientInputComponent} from "./payments/app/components/RecipientInput.
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'itemCodes',
+            component: ItemCodesComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'tools',
             component: ToolsComponent,
             canActivate: [LoggedInActivator]
@@ -112,12 +118,12 @@ import {RecipientInputComponent} from "./payments/app/components/RecipientInput.
         {path: 'newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]}
     ]), ReportsModule],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,
-        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent
+        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent, ItemCodesComponent
     ],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword,
-        ,WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm],
+        WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
