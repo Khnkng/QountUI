@@ -25,6 +25,7 @@
       'rxjs':                      'npm:rxjs',
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
       'qCommon': 'npm:qCommon',
+      'ReportsUI': 'npm:ReportsUI',
       'angular2-uuid':'npm:angular2-uuid'
     },
     // packages tells the System loader how to load when no filename and/or no extension
@@ -43,6 +44,10 @@
       'qCommon': {
         main: 'index.js',
         defaultExtension: 'js'
+      },
+      'ReportsUI': {
+          main: './index.js',
+          defaultExtension: 'js'
       },
       'angular2-uuid':{
         main: './index.js',

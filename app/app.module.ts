@@ -5,6 +5,7 @@
 
 import {NgModule} from "@angular/core";
 import {ShareModule} from "qCommon/app/share.module";
+import {ReportsModule} from "ReportsUI/app/reports.module";
 import {LoggedInActivator} from "qCommon/app/services/CheckSessionActivator";
 import {AddCompanyComponent} from "qCommon/app/components/AddCompany.component";
 import {CompaniesComponent} from "qCommon/app/components/Companies.component";
@@ -41,30 +42,16 @@ import {UsersService} from "./payments/app/services/Users.service";
 import {BillForm} from "./payments/app/forms/Bill.form";
 import {CheckListForm} from "./payments/app/forms/CheckListForm";
 import {LineListForm} from "./payments/app/forms/CheckListForm";
-import {ReportService} from "./payments/app/services/Reports.service";
-import {ExcelService} from "./payments/app/services/Excel.service";
-import {EmailService} from "./payments/app/services/Email.service";
 import {CustomDatepicker1} from "./payments/app/directives/customDatepicker1";
 import {CustomDatepicker} from "./payments/app/directives/customDatepicker";
 import {WorkflowComponent} from "./payments/app/components/Workflow.component";
 import {BillComponent} from "./payments/app/components/Bill.component";
 import {BillPayComponent} from "./payments/app/components/BillPay.component";
-import {ReportsComponent} from "./payments/app/components/Reports.component";
-import {APAgingReportComponent} from "./payments/app/components/APAgingReport.component";
-import {APAgingDetails} from "./payments/app/components/APAgingDetails";
-import {VendorExpenseAmountsByPeriod} from "./payments/app/components/VendorExpenseAmountsByPeriod.component";
-import {VendorPaidUnpaidBills} from "./payments/app/components/VendorPaidUnpaidBills.compoenet";
-import {BillPaymentHistory} from "./payments/app/components/BillPaymentHistory.component";
-import {VendorExpencesByExpenseType} from "./payments/app/components/VendorExpencesByExpenseType.component";
-import {ForeignCurrencyReport} from "./payments/app/components/ForeignCurrencyReport.component";
-import {PaymentRegister} from "./payments/app/components/PaymentRegister.component";
 import {RecipientInputComponent} from "./payments/app/components/RecipientInput.component";
-import {HighChart} from "./payments/app/directives/HighChart.directive";
-import {ReportsSearchCriteriaComponent} from "./payments/app/components/ReportSearchCriteria.component";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
-    imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
+    imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, ReportsModule, HttpModule, RouterModule.forRoot([
         {
             path: '',
             component: CanvasComponent,
@@ -122,27 +109,14 @@ import {ReportsSearchCriteriaComponent} from "./payments/app/components/ReportSe
         {path: 'workflow', name: 'Workflow', component: WorkflowComponent,canActivate: [LoggedInActivator]},
         {path: 'bill/:companyId/:id/:tabId', name: 'BillEntry', component: BillComponent,canActivate: [LoggedInActivator]},
         {path: 'bill-pay/:companyId/:id', name: 'BillPay', component: BillPayComponent,canActivate: [LoggedInActivator]},
-        {path: 'newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]},
-        {path: 'reports', name: 'Reports', component:ReportsComponent,canActivate: [LoggedInActivator]},
-        {path: 'reports/ap-aging', name: 'APAgingReport', component:APAgingReportComponent,canActivate: [LoggedInActivator]},
-
-        {path: 'reports/ap-aging-details', name: 'APAgingDetails', component:APAgingDetails,canActivate: [LoggedInActivator]},
-        {path: 'reports/vendor-expense-amounts-by-period', name: 'VendorExpenseAmountsByPeriod', component:VendorExpenseAmountsByPeriod,canActivate: [LoggedInActivator]},
-        {path: 'reports/vendor-paid-unpaid-bills', name: 'VendorPaidUnpaidBills', component:VendorPaidUnpaidBills,canActivate: [LoggedInActivator]},
-        {path: 'reports/bills-payment-history', name: 'BillPaymentHistory', component:BillPaymentHistory,canActivate: [LoggedInActivator]},
-        {path: 'reports/vendor-expense-by-expense-type', name: 'VendorExpencesByExpenseType', component:VendorExpencesByExpenseType,canActivate: [LoggedInActivator]},
-        {path: 'reports/foreign-currency-report', name: 'ForeignCurrencyReport', component:ForeignCurrencyReport,canActivate: [LoggedInActivator]},
-        {path: 'reports/payment-register-report', name: 'PaymentRegister', component:PaymentRegister,canActivate: [LoggedInActivator]},
+        {path: 'newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]}
     ])],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,
-        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent,ReportsComponent,
-        APAgingReportComponent,HighChart,ReportsSearchCriteriaComponent,APAgingDetails,VendorExpenseAmountsByPeriod,VendorPaidUnpaidBills,BillPaymentHistory,
-        VendorExpencesByExpenseType,ForeignCurrencyReport,PaymentRegister
+        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent
     ],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword,
-        ,WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm,
-        EmailService,ExcelService,ReportService]
+        ,WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm]
 })
 export class AppModule {
 
