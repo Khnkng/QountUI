@@ -79,6 +79,11 @@ export class ToolsComponent {
         let link = ['reports'];
         this._router.navigate(link);
       }
+        break;
+      case 'workflow': {
+        let link = ['payments/workflow'];
+        this._router.navigate(link);
+      }
       break;
       case 'items': {
         let link = ['itemCodes'];

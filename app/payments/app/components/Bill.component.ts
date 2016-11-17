@@ -634,7 +634,7 @@ export class BillComponent implements  OnInit {
       this.newForm();
       this._toastService.pop(TOAST_TYPE.success, this.message);
 
-      let link = ['/dashboard',nextTab];
+      let link = ['payments/dashboard',nextTab];
        base._router.navigate(link);
 
     } else {
@@ -694,7 +694,7 @@ export class BillComponent implements  OnInit {
 
   submitPay($event){
     $event && $event.preventDefault();
-    let link = ['/bill-pay',this.companyID,this.billID];
+    let link = ['payments/bill-pay',this.companyID,this.billID];
     this._router.navigate(link);
   }
 

@@ -112,11 +112,11 @@ import {ItemCodeForm} from "./forms/ItemCode.form";
             component: ToolsComponent,
             canActivate: [LoggedInActivator]
         },
-        {path: 'dashboard/:tabId', name: 'Dashboard', component: DashBoardComponent,canActivate: [LoggedInActivator]},
-        {path: 'workflow', name: 'Workflow', component: WorkflowComponent,canActivate: [LoggedInActivator]},
-        {path: 'bill/:companyId/:id/:tabId', name: 'BillEntry', component: BillComponent,canActivate: [LoggedInActivator]},
-        {path: 'bill-pay/:companyId/:id', name: 'BillPay', component: BillPayComponent,canActivate: [LoggedInActivator]},
-        {path: 'newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]}
+        {path: 'payments/dashboard/:tabId', name: 'Dashboard', component: DashBoardComponent,canActivate: [LoggedInActivator]},
+        {path: 'payments/workflow', name: 'Workflow', component: WorkflowComponent,canActivate: [LoggedInActivator]},
+        {path: 'payments/bill/:companyId/:id/:tabId', name: 'BillEntry', component: BillComponent,canActivate: [LoggedInActivator]},
+        {path: 'payments/bill-pay/:companyId/:id', name: 'BillPay', component: BillPayComponent,canActivate: [LoggedInActivator]},
+        {path: 'payments/newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]}
     ]), ReportsModule],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,
         DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent, ItemCodesComponent

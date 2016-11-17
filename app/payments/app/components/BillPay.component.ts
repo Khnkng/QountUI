@@ -151,7 +151,7 @@ export class BillPayComponent  {
     if(payLater) {
       tabId = 2;
     }
-    let link = ['/dashboard', tabId];
+    let link = ['payments/dashboard', tabId];
     this._router.navigate(link);
   }
 
