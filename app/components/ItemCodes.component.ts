@@ -56,8 +56,6 @@ export class ItemCodesComponent{
     }
     this.coaService.chartOfAccounts(this.currentCompany.id)
         .subscribe(chartOfAccounts => this.filterChartOfAccounts(chartOfAccounts), error=> this.handleError(error));
-    this.codeService.itemCodes(this.currentCompany.id)
-        .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));
   }
 
   handleError(error){
@@ -70,8 +68,6 @@ export class ItemCodesComponent{
     this.currentCompany = _.find(companies, {id: currentCompany.id});
     this.coaService.chartOfAccounts(this.currentCompany.id)
         .subscribe(chartOfAccounts => this.filterChartOfAccounts(chartOfAccounts), error=> this.handleError(error));
-    this.codeService.itemCodes(this.currentCompany.id)
-        .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));
   }
 
   filterChartOfAccounts(chartOfAccounts){
@@ -82,6 +78,8 @@ export class ItemCodesComponent{
     this.invoiceChartOfAccounts = _.filter(chartOfAccounts, function(coa){
       return coa.type != '';
     });
+    this.codeService.itemCodes(this.currentCompany.id)
+        .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));
   }
 
   showAddItemCode() {
@@ -96,12 +94,16 @@ export class ItemCodesComponent{
     this.editMode = true;
     this.newForm();
     this.row = row;
-    /*let parentIndex = _.findIndex(this.chartOfAccounts, {id: row.parentID});
-    if(parentIndex != -1){
-      setTimeout(function () {
-        base.paymentCOAComboBox.setValue(base.itemCodes[parentIndex], 'name');
-      },100);
-    }*/
+    let paymentCOAIndex = _.findIndex(this.paymentChartOfAccounts, function(coa){
+      return coa.id == row.payment_coa_mapping;
+    });
+    let invoiceCOAIndex = _.findIndex(this.paymentChartOfAccounts, function(coa){
+      return coa.id == row.invoice_coa_mapping;
+    });
+    setTimeout(function(){
+      base.paymentCOAComboBox.setValue(base.paymentChartOfAccounts[paymentCOAIndex], 'name');
+      base.invoiceCOAComboBox.setValue(base.invoiceChartOfAccounts[invoiceCOAIndex], 'name');
+    },0);
     this._itemCodeForm.updateForm(this.itemcodeForm, row);
     jQuery(this.addItemcode.nativeElement).foundation('open');
   }
@@ -110,7 +112,7 @@ export class ItemCodesComponent{
     let itemCodeId = row.id;
     this.codeService.removeItemCode(itemCodeId, this.currentCompany.id)
         .subscribe(coa => {
-          this.toastService.pop(TOAST_TYPE.success, "Deleted Chart of Account successfully");
+          this.toastService.pop(TOAST_TYPE.success, "Deleted Item code successfully");
           this.itemCodes.splice(_.findIndex(this.itemCodes, {id: itemCodeId}, 1));
         }, error => this.handleError(error));
   }
@@ -161,7 +163,8 @@ export class ItemCodesComponent{
     let data = this._itemCodeForm.getData(this.itemcodeForm);
     if(this.editMode){
       data.id = this.row.id;
-      this.codeService.updateItemCode(data.id, data)
+      data.companyID = this.currentCompany.id;
+      this.codeService.updateItemCode(data)
           .subscribe(itemCode => {
             base.row = {};
             base.toastService.pop(TOAST_TYPE.success, "ItemCode updated successfully");
@@ -170,7 +173,7 @@ export class ItemCodesComponent{
             base.buildTableData(base.itemCodes);
           }, error => this.handleError(error));
     } else{
-      data.companyId = this.currentCompany.id;
+      data.companyID = this.currentCompany.id;
       this.codeService.addItemCode(data)
           .subscribe(newItemcode => this.handleItemCode(newItemcode), error => this.handleError(error));
     }
@@ -195,6 +198,7 @@ export class ItemCodesComponent{
       {"name": "payment_coa_mapping", "title": "payment COA id", "visible": false},
       {"name": "invoiceCOAName", "title": "Invoice COA"},
       {"name": "invoice_coa_mapping", "title": "invoice COA id", "visible": false},
+      {"name": "companyID", "title": "Company ID", "visible": false},
       {"name": "id", "title": "Id", "visible": false},
       {"name": "actions", "title": ""}
     ];
