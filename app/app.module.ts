@@ -140,7 +140,7 @@ import {ExpensesSerice} from "./services/Expenses.service";
         {path: 'payments/newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]}
     ]), ReportsModule],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,
-        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent, ItemCodesComponent, ExpensesComponent, JournalEntryComponent
+        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent, ItemCodesComponent, ExpensesComponent, JournalEntryComponent, BooksComponent
     ],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
