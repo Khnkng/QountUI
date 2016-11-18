@@ -20,7 +20,7 @@ export class ExpensesSerice extends  QountServices{
   }
 
   getAllExpenses(company_id:String): Observable<any> {
-    var url = this.interpolateUrl(PATH.EXPENSES_SERVICE,null,{id: Session.getUser().id,cid:company_id});
+    var url = this.interpolateUrl(PATH.EXPENSE_SERVICE,null,{id: Session.getUser().id,cid:company_id});
     //var url = "/HalfService/user/"+ Session.getUser().id+"/company/"+company_id+"/expensecode";
     return this.query(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
         .catch(this.handleError)
@@ -28,14 +28,14 @@ export class ExpensesSerice extends  QountServices{
 
   addExpense(expense:ExpensesForm, company_id:string): Observable<any> {
     //var url = "/HalfService/user/"+ Session.getUser().id+"/company/"+company_id+"/expensecode";
-    var url = this.interpolateUrl(PATH.EXPENSES_SERVICE,null,{id: Session.getUser().id,cid:company_id});
+    var url = this.interpolateUrl(PATH.EXPENSE_SERVICE,null,{id: Session.getUser().id,cid:company_id});
     return this.create(url, expense, SOURCE_TYPE.JAVA).map(res => <any> res.json())
         .catch(this.handleError)
   }
 
   updateExpense(expense:ExpensesForm, company_id:string): Observable<any> {
     //var url = "/HalfService/user/"+ Session.getUser().id+"/company/"+company_id+"/expensecode";
-    var url = this.interpolateUrl(PATH.EXPENSES_SERVICE,null,{id: Session.getUser().id,cid:company_id});
+    var url = this.interpolateUrl(PATH.EXPENSE_SERVICE,null,{id: Session.getUser().id,cid:company_id});
     return this.update(url, expense, SOURCE_TYPE.JAVA).map(res => <any> res.json())
         .catch(this.handleError)
   }
@@ -43,7 +43,7 @@ export class ExpensesSerice extends  QountServices{
   removeExpense(company_id:string,expense_id: string): Observable<any> {
     //var url = this.interpolateUrl(PATH.COMPANIES_SERVICE,null,{id: Session.getUser().id});
     //var url = "/HalfService/user/"+ Session.getUser().id+"/company/"+company_id+"/expensecode/"+expense_id;
-    var url = this.interpolateUrl(PATH.EXPENSES_SERVICE,null,{id: Session.getUser().id,cid:company_id});
+    var url = this.interpolateUrl(PATH.EXPENSE_SERVICE,null,{id: Session.getUser().id,cid:company_id});
     return this.delete(url+"/"+expense_id, SOURCE_TYPE.JAVA).map(res => <any> res.json())
         .catch(this.handleError)
   }
