@@ -13,7 +13,7 @@
         <div class="box-border blue centered">
           <div class="box-icon flag"></div>
           <div class="box-notification-circle">
-            3
+            {{badges.approve ? badges.approve : localBadges ? localBadges.approve?localBadges.approve:0:0 }}
           </div>
         </div>
         <div class="box-label">
@@ -26,7 +26,7 @@
         <div class="box-border blue centered">
           <div class="box-icon month"></div>
           <div class="box-notification-circle">
-            3
+            {{badges.payee ? badges.payee : localBadges ? localBadges.payee?localBadges.payee:0:0 }}
           </div>
         </div>
         <div class="box-label">
@@ -36,11 +36,11 @@
     </div>
     <div class="column small-3 large-3">
       <div class="box-notifier">
-        <div class="box-border blue centered">
+        <div class="box-border blue centered" (click)="goToTools('workflow')">
           <div class="box-icon year"></div>
-          <div class="box-notification-circle">
+          <!--<div class="box-notification-circle">
             3
-          </div>
+          </div>-->
         </div>
         <div class="box-label">
           Workflow
@@ -49,10 +49,10 @@
     </div>
     <div class="column small-3 large-3">
       <div class="box-notifier">
-        <div class="box-border blue centered">
+        <div class="box-border blue centered" (click)="goToTools('expenseCode')">
           <div class="box-icon overdue"></div>
           <div class="box-notification-circle">
-            3
+            {{expenseCodeCount}}
           </div>
         </div>
         <div class="box-label">

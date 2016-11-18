@@ -33,6 +33,7 @@ import {WorkflowService} from "../services/Workflow.service";
 import {CustomTags} from "qCommon/app/directives/customTags";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {UUID} from "angular2-uuid/index";
+import {CodesService} from "qCommon/app/services/CodesService.service";
 
 
 declare var jQuery:any;
@@ -106,7 +107,7 @@ export class BillComponent implements  OnInit {
 
   constructor(private elementRef: ElementRef, private _fb: FormBuilder, private billsService:BillsService, private docHubService:DocHubService, private _billForm:BillForm, private _checkListForm:CheckListForm,private _lineListForm:LineListForm,
               private _route:ActivatedRoute, private dss: DomSanitizer,private _router: Router,private _toastService: ToastService,private _commentsService:CommentsService,private companyService: CompaniesService,
-              private workflowService:WorkflowService) {
+              private workflowService:WorkflowService,private codeService: CodesService) {
     this.routeSub = this._route.params.subscribe(params => {
       this.billID = params['id'];
       this.companyID = params['companyId'];
@@ -125,8 +126,13 @@ export class BillComponent implements  OnInit {
     if (this.billID) {
       this.tabHeight = (jQuery(window).height() - 250) + "px";
       this._commentsService.getComments(this.billID, this.companyID).subscribe(comments => this.handleComments(comments), error => this.showError(error));
+      this.codeService.itemCodes(this.companyID)
+          .subscribe(itemCodes => {
+            this.itemCodes = itemCodes ? _.map(itemCodes,'name') : [];
+          }, error=> this.handleError(error));
+
       this.companyService.company(this.companyID).subscribe(companies => {
-        this.itemCodes = companies.itemCodes ? companies.itemCodes : [];
+        /*this.itemCodes = companies.itemCodes ? companies.itemCodes : [];*/
         this.expenseCodes = companies.expenseCodes ? companies.expenseCodes : [];
         this.companyCurrency = companies.defaultCurrency;
       }, error => this.showError(error));
@@ -487,7 +493,7 @@ export class BillComponent implements  OnInit {
       unitPrice = null;
     }
 
-    if(amount && description && itemCode && expenseCode) {
+    if(amount && description ) {
       return {
         amount: amount,
         quantity: quantity,
