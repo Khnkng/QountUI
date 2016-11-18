@@ -1,0 +1,63 @@
+
+<div class="row" foundation>
+    <div class="column small-12 medium-6">
+        <h6>Expenses</h6>
+    </div>
+    <div class="columns small-6 small-offset-6 right">
+        <button class="button small float-right" (click)="showAddItemCode()"><i class="icon ion-plus-round"></i> Expense</button>
+    </div>
+</div>
+<div class="row chart-of-accounts" foundation>
+    <div class="column large-12 medium-12 small-12">
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    </div>
+    <div>
+        <div class="small reveal" id="addItemcode" #addItemcode data-reveal data-close-on-click="false">
+            <h6>
+                {{editMode ? "Update Expense" : "Add Expense"}}
+            </h6>
+            <form *ngIf="newFormActive" [formGroup]="expensesForm">
+                <div class="row">
+                    <div class="small-12 medium-6 columns">
+                        <label>Name
+                            <input type="text" formControlName="name" placeholder="Name*"/>
+                            <div class="error" [hidden]="expensesForm.controls.name.untouched || expensesForm.controls.name.valid">Name is required.</div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>Description
+                            <textarea formControlName="desc" style="height: 110px;" placeholder="Description"></textarea>
+                            <div class="error" [hidden]="expensesForm.controls.desc.untouched || expensesForm.controls.desc.valid">Description is required.</div>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-12 medium-6 columns">
+                        <label>Expense COA
+                            <select combo-box #selectedCOAComboBoxDir="comboBox" data-placeholder="Enter COA*" formControlName="coa_mapping_id" [listObject]="chartOfAccountsArr" (valueChanged)="updateExpenseCOA($event)">
+                                <option *ngFor="let chartOfAccount of chartOfAccountsArr" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                            </select>
+                            <div class="error" [hidden]="expensesForm.controls.coa_mapping_id.untouched || expensesForm.controls.coa_mapping_id.valid">COA is required.</div>
+                        </label>
+                    </div>
+                    <!--<div class="small-12 medium-6 columns">
+                        <label>Invoice COA
+                            <select combo-box #invoiceCOAComboBoxDir="comboBox" data-placeholder="Enter Invoice COA" formControlName="invoice_coa_mapping" [listObject]="invoiceChartOfAccounts" (valueChanged)="updateInvoiceCOA($event)">
+                                <option *ngFor="let chartOfAccount of invoiceChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                            </select>
+                            <div class="error" [hidden]="itemcodeForm.controls.invoice_coa_mapping.untouched || itemcodeForm.controls.invoice_coa_mapping.valid">Invoice COA is required.</div>
+                        </label>
+                    </div>-->
+                </div>
+                <div class="row" style="margin-top: 10px;">
+                    <div class="small-12 medium-12 columns">
+                        <button class="button small float-right" [disabled]="!expensesForm.valid" (click)="submit($event)">Save</button>
+                    </div>
+                </div>
+            </form>
+            <button class="close-button" data-close aria-label="Close reveal" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
