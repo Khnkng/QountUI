@@ -23,6 +23,8 @@ import {CustomDatepicker1} from "../directives/customDatepicker1";
 import {OAuthService} from "../services/OAuthService";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {PAYMENTMETHOD} from "../constants/payments.constants";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {CodesService} from "qCommon/app/services/CodesService.service";
 
 declare var _:any;
 declare var jQuery:any;
@@ -67,12 +69,27 @@ export class DashBoardComponent {
   boxInfo:BoxModel = new BoxModel();
   hideBoxes :boolean = true;
 
+  companySwitchSubscription: any;
+  expenseCodeCount:number=0;
+
   constructor(private billsService: BillsService, private boxService: BoxService, private docHubService:DocHubService, private dss: DomSanitizer,
-              private _router:Router,private _route: ActivatedRoute, private _oAuthService:OAuthService, private _toastService:ToastService, private companyService:CompaniesService) {
+              private _router:Router,private _route: ActivatedRoute, private _oAuthService:OAuthService, private _toastService:ToastService, private companyService:CompaniesService,
+              private switchBoard: SwitchBoard,private codeService: CodesService) {
     this.routeSub = this._route.params.subscribe(params => {
       this.selectedTab=params['tabId'];
+      let companyId = Session.getCurrentCompany();
+      if(companyId){
+        this.codeService.itemCodes(companyId)
+            .subscribe(itemCodes => {
+              this.expenseCodeCount=itemCodes?itemCodes.length:0;
+            }, error=> this.handleError(error));
+      }
+
       this.loadTabData();
     });
+
+    this.companySwitchSubscription = this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshCompany(currentCompany));
+
     this.boxService.boxInfo()
       .subscribe(boxInfo  => this.animateBoxInfo(boxInfo), error =>  this.handleError(error));
 
@@ -81,6 +98,14 @@ export class DashBoardComponent {
         console.log(data);
       });*/
   }
+
+  refreshCompany(currentCompany){
+    this.codeService.itemCodes(currentCompany.id)
+        .subscribe(itemCodes => {
+          this.expenseCodeCount=itemCodes?itemCodes.length:0;
+        }, error=> this.handleError(error));
+  }
+
 
   animateBoxInfo(boxInfo:BoxModel) {
     this.animateValue('payables', boxInfo.payables);
@@ -159,7 +184,6 @@ export class DashBoardComponent {
   ]
 
   buildBillsTableData(bills:Array<BillModel>, fromTab) {
-    console.log('bills', bills);
     this.bills = bills;
     this.billsTableData.columns = [
       {"name": "billID", "title": "Bill Number"},
@@ -467,7 +491,6 @@ export class DashBoardComponent {
       "billNumber":this.hoveredBill.billID
     };
     this._oAuthService.futureFundTransfer(transferObj, this.hoveredBill.companyID).subscribe(status  => {
-      console.log("status", status);
       this._toastService.pop(TOAST_TYPE.success, "Funds transfer initiated successfully");
       this.futureDate=null;
       this.showPaymentsTab();
@@ -492,6 +515,20 @@ export class DashBoardComponent {
 
   ngOnDestroy(){
     this.routeSub.unsubscribe();
+  }
+
+  goToTools(val){
+    if(val=='workflow'){
+      let link = ['payments/workflow'];
+      this._router.navigate(link);
+    }else if(val=='expenseCode'){
+      let link = ['/itemCodes'];
+      this._router.navigate(link);
+    }
+  }
+
+  ngOnDestroy(){
+    this.companySwitchSubscription.unsubscribe();
   }
 
 }

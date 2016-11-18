@@ -53,6 +53,9 @@ import {ItemCodeForm} from "./forms/ItemCode.form";
 import {BooksComponent} from "./components/Books.component";
 import {JournalEntryComponent} from "./components/JournalEntry.component";
 import {JournalEntryForm} from "./forms/JournalEntry.form";
+import {ExpensesComponent} from "./components/Expenses.component";
+import {ExpensesForm} from "./forms/Expenses.form";
+import {ExpensesSerice} from "./services/Expenses.service";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
@@ -137,11 +140,11 @@ import {JournalEntryForm} from "./forms/JournalEntry.form";
         {path: 'payments/newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]}
     ]), ReportsModule],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,
-        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent, ItemCodesComponent, ExpensesComponent
+        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent, ItemCodesComponent, ExpensesComponent, JournalEntryComponent
     ],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm,
+    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm,
         WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm,ExpensesSerice],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
