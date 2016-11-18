@@ -50,6 +50,9 @@ import {BillPayComponent} from "./payments/app/components/BillPay.component";
 import {RecipientInputComponent} from "./payments/app/components/RecipientInput.component";
 import {ItemCodesComponent} from "./components/ItemCodes.component";
 import {ItemCodeForm} from "./forms/ItemCode.form";
+import {BooksComponent} from "./components/Books.component";
+import {JournalEntryComponent} from "./components/JournalEntry.component";
+import {JournalEntryForm} from "./forms/JournalEntry.form";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
@@ -87,6 +90,16 @@ import {ItemCodeForm} from "./forms/ItemCode.form";
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'books/:tabId',
+            component: BooksComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'newJournalEntry',
+            component: JournalEntryComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'vendors',
             component: VendorComponent,
             canActivate: [LoggedInActivator]
@@ -108,6 +121,11 @@ import {ItemCodeForm} from "./forms/ItemCode.form";
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'expenses',
+            component: ExpensesComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'tools',
             component: ToolsComponent,
             canActivate: [LoggedInActivator]
@@ -119,12 +137,12 @@ import {ItemCodeForm} from "./forms/ItemCode.form";
         {path: 'payments/newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]}
     ]), ReportsModule],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,
-        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent, ItemCodesComponent
+        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent, ItemCodesComponent, ExpensesComponent
     ],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,
-        WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm],
+    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm,
+        WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm,ExpensesSerice],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
