@@ -7,11 +7,6 @@
     <a [routerLink]="['/addCompany']" class="button small"><i class="icon ion-plus-round"></i>Company</a>
   </div>
 </div>
-<!--<div class="row">
-  <div class="name">{{currentCompanyName}}
-    <i class="icon ion-ios-arrow-down" (click)="showCompaniesDropdown($event)" data-toggle="switchCompany1"></i>
-  </div>
-</div>-->
   <div class="row">
     <div class="column small-3 medium-2">
       <label> Change a company
@@ -27,12 +22,5 @@
     <foo-table class="bighalf-footable" *ngIf="hasCompanyList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)">
     </foo-table>
   </div>
-</div>
-
-<div class="dropdown-pane bottom float-left" id="switchCompany1" data-dropdown>
-  <span>Switch to:</span>
-  <ul>
-    <li *ngFor="let company of companies" (click)="changeCompany(company.id)" [hidden]="company.id == currentCompanyId">{{company.name}}</li>
-  </ul>
 </div>
 </div>
