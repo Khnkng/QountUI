@@ -34,6 +34,7 @@ import {CustomTags} from "qCommon/app/directives/customTags";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {UUID} from "angular2-uuid/index";
 import {CodesService} from "qCommon/app/services/CodesService.service";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 
 
 declare var jQuery:any;
@@ -105,9 +106,10 @@ export class BillComponent implements  OnInit {
   accountNumbers:Array<any> = [];
   routeSub:any;
 
+
   constructor(private elementRef: ElementRef, private _fb: FormBuilder, private billsService:BillsService, private docHubService:DocHubService, private _billForm:BillForm, private _checkListForm:CheckListForm,private _lineListForm:LineListForm,
               private _route:ActivatedRoute, private dss: DomSanitizer,private _router: Router,private _toastService: ToastService,private _commentsService:CommentsService,private companyService: CompaniesService,
-              private workflowService:WorkflowService,private codeService: CodesService) {
+              private workflowService:WorkflowService,private codeService: CodesService,private switchBoard:SwitchBoard) {
     this.routeSub = this._route.params.subscribe(params => {
       this.billID = params['id'];
       this.companyID = params['companyId'];
@@ -120,6 +122,16 @@ export class BillComponent implements  OnInit {
       }
       this.loadData();
     });
+
+    this.switchBoard.onSideBarExpand.subscribe(flag => {
+      this.toggleLine()
+    });
+
+  }
+  toggleLine(){
+      if(this.addLineItemMode){
+      this.addLineItemMode=false;
+    }
   }
 
   loadData(){

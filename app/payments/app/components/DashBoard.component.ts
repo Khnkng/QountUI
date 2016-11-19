@@ -71,15 +71,17 @@ export class DashBoardComponent {
 
   companySwitchSubscription: any;
   expenseCodeCount:number=0;
+  companyId:string;
+
 
   constructor(private billsService: BillsService, private boxService: BoxService, private docHubService:DocHubService, private dss: DomSanitizer,
               private _router:Router,private _route: ActivatedRoute, private _oAuthService:OAuthService, private _toastService:ToastService, private companyService:CompaniesService,
               private switchBoard: SwitchBoard,private codeService: CodesService) {
     this.routeSub = this._route.params.subscribe(params => {
       this.selectedTab=params['tabId'];
-      let companyId = Session.getCurrentCompany();
-      if(companyId){
-        this.codeService.itemCodes(companyId)
+      this.companyId = Session.getCurrentCompany();
+      if(this.companyId){
+        this.codeService.itemCodes(this.companyId)
             .subscribe(itemCodes => {
               this.expenseCodeCount=itemCodes?itemCodes.length:0;
             }, error=> this.handleError(error));
@@ -294,7 +296,6 @@ export class DashBoardComponent {
   }
   selectedColor:any='red-tab';
   selectTab(tabNo, color) {
-
     this.isLoading=true;
     this.selectedTab=tabNo;
     this.selectedColor=color;
@@ -307,7 +308,7 @@ export class DashBoardComponent {
     this.localBadges=JSON.parse(sessionStorage.getItem("localBadges"));
     this.tabDisplay[tabNo] = {'display':'block'};
     this.tabBackground = this.bgColors[tabNo];
-    this.billsService.bills(filters[tabNo])
+    this.billsService.bills(this.companyId,filters[tabNo])
       .subscribe(billsData  => {
         this.buildBillsTableData(billsData.bills, filters[tabNo]);
         this.badges = billsData.badges;
