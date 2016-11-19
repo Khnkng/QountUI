@@ -25,6 +25,7 @@ import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {PAYMENTMETHOD} from "../constants/payments.constants";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {CodesService} from "qCommon/app/services/CodesService.service";
+import {ExpensesSerice} from "../../../services/Expenses.service";
 
 declare var _:any;
 declare var jQuery:any;
@@ -76,15 +77,16 @@ export class DashBoardComponent {
 
   constructor(private billsService: BillsService, private boxService: BoxService, private docHubService:DocHubService, private dss: DomSanitizer,
               private _router:Router,private _route: ActivatedRoute, private _oAuthService:OAuthService, private _toastService:ToastService, private companyService:CompaniesService,
-              private switchBoard: SwitchBoard,private codeService: CodesService) {
+              private switchBoard: SwitchBoard,private expensesService:ExpensesSerice) {
     this.routeSub = this._route.params.subscribe(params => {
       this.selectedTab=params['tabId'];
       this.companyId = Session.getCurrentCompany();
       if(this.companyId){
-        this.codeService.itemCodes(this.companyId)
-            .subscribe(itemCodes => {
-              this.expenseCodeCount=itemCodes?itemCodes.length:0;
+        this.expensesService.getAllExpenses(this.companyId)
+            .subscribe(expenseCodes => {
+              this.expenseCodeCount=expenseCodes?expenseCodes.length:0;
             }, error=> this.handleError(error));
+
       }
 
       this.loadTabData();
@@ -524,7 +526,7 @@ export class DashBoardComponent {
       let link = ['payments/workflow'];
       this._router.navigate(link);
     }else if(val=='expenseCode'){
-      let link = ['/itemCodes'];
+      let link = ['/expenses'];
       this._router.navigate(link);
     }
   }

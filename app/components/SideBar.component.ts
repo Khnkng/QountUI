@@ -49,7 +49,7 @@ export class SideBarComponent {
     }
   }
 
-  changeCompany(companyId){
+  /*changeCompany(companyId){
     Session.setCurrentCompany(companyId);
     let currentCompany = _.find(this.companies, {id: companyId});
     this.currentCompanyId = currentCompany.id;
@@ -58,7 +58,7 @@ export class SideBarComponent {
     this.showSwitchCompany = !this.showSwitchCompany;
     this.toggleMenu();
     this.switchBoard.onCompanyChange.next({'id': companyId});
-  }
+  }*/
 
   logout() {
     console.log("into logout1");
@@ -127,7 +127,7 @@ export class SideBarComponent {
     this.switchBoard.onSideBarExpand.next(this.isExpanded)
   }
 
-  showCompaniesDropdown($event){
+  /*showCompaniesDropdown($event){
     $event && $event.preventDefault();
     $event && $event.stopImmediatePropagation();
     this.companies = Session.getCompanies() || [];
@@ -137,7 +137,7 @@ export class SideBarComponent {
       jQuery("#switchCompany").foundation('close');
     }
     this.showSwitchCompany = !this.showSwitchCompany;
-  }
+  }*/
 
   showError(err){
 

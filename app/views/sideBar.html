@@ -3,7 +3,7 @@
     <a ripple (click)="toggleMenu()">
       <i class="icon ion-navicon-round"></i>
       <div class="name">{{currentCompanyName}}
-        <i class="icon ion-ios-arrow-down" [hidden]="!isExpanded || !currentCompanyId" (click)="showCompaniesDropdown($event)" data-toggle="switchCompany"></i>
+        <!--<i class="icon ion-ios-arrow-down" [hidden]="!isExpanded || !currentCompanyId" (click)="showCompaniesDropdown($event)" data-toggle="switchCompany"></i>-->
       </div>
     </a>
   </li>
@@ -36,9 +36,10 @@
   </li>
 </ul>
 
+<!--
 <div class="dropdown-pane bottom float-left" id="switchCompany" data-dropdown>
   <span>Switch to:</span>
   <ul>
     <li *ngFor="let company of companies" (click)="changeCompany(company.id)" [hidden]="company.id == currentCompanyId">{{company.name}}</li>
   </ul>
-</div>
+</div>-->
