@@ -145,15 +145,15 @@ export class DashBoardComponent {
   payTabColumns:any = [
     {"name": "billID", "title": "Bill Number"},
     {"name": "name", "title": "Bill Name","visible": false},
-    {"name": "companyID", "title": "Company"},
+    {"name": "companyID", "title": "Company",'breakpoints': 'xs sm'},
     {"name": "vendorName", "title": "Vendor"},
     {"name": "vendorID", "title": "Vendor ID","visible": false},
     {"name": "billAmount", "title": "Bill Amount"},
-    {"name": "vendorPaymentMethod", "title": "Payment Method"},
-    {"name": "payByDate", "title": "Pay by Date"},
+    {"name": "vendorPaymentMethod", "title": "Payment Method",'breakpoints': 'xs sm'},
+    {"name": "payByDate", "title": "Pay by Date",'breakpoints': 'xs sm'},
     {"name": "dueDate", "title": "Due Date"},
     {"name": "state", "title": "", "type": "html", "filterable": false},
-    {"name": "payActions", "title": "", "type": "html", "filterable": false},
+    {"name": "payActions", "title": "", "type": "html", "filterable": false,'breakpoints': 'xs sm'},
     {"name": "actions", "title": "", "type": "html", "filterable": false}
   ]
 
@@ -166,15 +166,15 @@ export class DashBoardComponent {
     {"name": "vendorPaymentMethod", "title": "Payment Method","visible": false},
     {"name": "billAmount", "title": "Bill Amount"},
     {"name": "payByDate", "title": "Pay by Date"},
-    {"name": "dueDate", "title": "Due Date"},
-    {"name": "state", "title": "", "type": "html", "filterable": false},
+    {"name": "dueDate", "title": "Due Date",'breakpoints': 'xs sm'},
+    {"name": "state", "title": "", "type": "html", "filterable": false,'breakpoints': 'xs sm'},
     {"name": "actions", "title": "", "type": "html", "filterable": false}
   ]
 
   payedTabColumns:any = [
     {"name": "billID", "title": "Bill Number"},
     {"name": "name", "title": "Bill Name","visible": false},
-    {"name": "companyID", "title": "Company"},
+    {"name": "companyID", "title": "Company",'breakpoints': 'xs sm'},
     {"name": "vendorName", "title": "Vendor"},
     {"name": "vendorID", "title": "Vendor ID","visible": false},
     {"name": "vendorPaymentMethod", "title": "Payment Method","visible": false},
@@ -190,9 +190,9 @@ export class DashBoardComponent {
       {"name": "name", "title": "Bill Name","visible": false},
       {"name": "companyID", "title": "Company"},
       {"name": "dueDate", "title": "Due Date","visible": false},
-      {"name": "lastUpdated", "title": "Last Updated"},
+      {"name": "lastUpdated", "title": "Last Updated",'breakpoints': 'xs sm'},
       {"name": "lastUpdatedBy", "title": "Last Updated By", "classes":"last-updated-by"},
-      {"name": "state", "title": "", "type": "html", "filterable": false},
+      {"name": "state", "title": "", "type": "html", "filterable": false,'breakpoints': 'xs sm'},
       {"name": "actions", "title": "", "type": "html", "filterable": false}
     ];
     if((this.selectedTab==2)||(this.selectedTab==1)){
@@ -307,6 +307,7 @@ export class DashBoardComponent {
     this.localBadges=JSON.parse(sessionStorage.getItem("localBadges"));
     this.tabDisplay[tabNo] = {'display':'block'};
     this.tabBackground = this.bgColors[tabNo];
+    jQuery('.loading-initial-cont').hide();
     this.billsService.bills(filters[tabNo])
       .subscribe(billsData  => {
         this.buildBillsTableData(billsData.bills, filters[tabNo]);
