@@ -33,6 +33,9 @@ import {WorkflowService} from "../services/Workflow.service";
 import {CustomTags} from "qCommon/app/directives/customTags";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {UUID} from "angular2-uuid/index";
+import {CodesService} from "qCommon/app/services/CodesService.service";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {ExpensesSerice} from "../../../services/Expenses.service";
 
 
 declare var jQuery:any;
@@ -104,9 +107,10 @@ export class BillComponent implements  OnInit {
   accountNumbers:Array<any> = [];
   routeSub:any;
 
+
   constructor(private elementRef: ElementRef, private _fb: FormBuilder, private billsService:BillsService, private docHubService:DocHubService, private _billForm:BillForm, private _checkListForm:CheckListForm,private _lineListForm:LineListForm,
               private _route:ActivatedRoute, private dss: DomSanitizer,private _router: Router,private _toastService: ToastService,private _commentsService:CommentsService,private companyService: CompaniesService,
-              private workflowService:WorkflowService) {
+              private workflowService:WorkflowService,private codeService: CodesService,private switchBoard:SwitchBoard,private expensesService:ExpensesSerice) {
     this.routeSub = this._route.params.subscribe(params => {
       this.billID = params['id'];
       this.companyID = params['companyId'];
@@ -118,7 +122,18 @@ export class BillComponent implements  OnInit {
         }
       }
       this.loadData();
+      this.loadCodes();
     });
+
+    this.switchBoard.onSideBarExpand.subscribe(flag => {
+      this.toggleLine()
+    });
+
+  }
+  toggleLine(){
+      if(this.addLineItemMode){
+      this.addLineItemMode=false;
+    }
   }
 
   loadData(){
@@ -126,8 +141,6 @@ export class BillComponent implements  OnInit {
       this.tabHeight = (jQuery(window).height() - 250) + "px";
       this._commentsService.getComments(this.billID, this.companyID).subscribe(comments => this.handleComments(comments), error => this.showError(error));
       this.companyService.company(this.companyID).subscribe(companies => {
-        this.itemCodes = companies.itemCodes ? companies.itemCodes : [];
-        this.expenseCodes = companies.expenseCodes ? companies.expenseCodes : [];
         this.companyCurrency = companies.defaultCurrency;
       }, error => this.showError(error));
       this.companyService.vendors(this.companyID)
@@ -144,6 +157,18 @@ export class BillComponent implements  OnInit {
     } else {
       this.newBill = true;
     }
+  }
+
+  loadCodes(){
+    this.codeService.itemCodes(Session.getCurrentCompany())
+        .subscribe(itemCodes => {
+          this.itemCodes = itemCodes ? _.map(itemCodes,'name') : [];
+        }, error=> this.handleError(error));
+
+    this.expensesService.getAllExpenses(Session.getCurrentCompany())
+        .subscribe(expenseCodes => {
+          this.expenseCodes = expenseCodes ? _.map(expenseCodes,'name') : [];
+        }, error=> this.handleError(error));
   }
 
 
@@ -191,8 +216,8 @@ export class BillComponent implements  OnInit {
             this._toastService.pop(TOAST_TYPE.error, "No workflow found for "+ this.selectedCompany.name);
           } else{
             this.companyID = companyId;
-            this.expenseCodes = this.selectedCompany.expenseCodes;
-            this.itemCodes = this.selectedCompany.itemCodes;
+            /*this.expenseCodes = this.selectedCompany.expenseCodes;
+            this.itemCodes = this.selectedCompany.itemCodes;*/
           }
         });
       this.companyService.vendors(companyId)
@@ -487,7 +512,7 @@ export class BillComponent implements  OnInit {
       unitPrice = null;
     }
 
-    if(amount && description && itemCode && expenseCode) {
+    if(amount && description ) {
       return {
         amount: amount,
         quantity: quantity,

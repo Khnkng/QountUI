@@ -94,22 +94,31 @@ body {
     font-weight: 700;
   }
 
-.report{
-  display: none;
-}
+  .report{
+    display: none;
+  }
+  #displayReport1
+  {
+    display: none;
+  }
   *{
     visibility: hidden;
 
   }
 
-  #numeric, #numeric *{
+  .report-header, #printableArea,.reportheader{
+    display: none;
+  }
+  #numeric, #numeric *,#displayReport, #displayReport *{
     visibility: visible;
   }
 }
 
 *{margin: 0; padding: 0; box-sizing: border-box}
 
-
+#displayReport{
+  display: none;
+}
 .col {
   float: left;
 }
@@ -670,14 +679,39 @@ ul.side-nav a {
     margin-top: 10px;
   }
 }
+.button{
+  &.text-button{
+    position: absolute;
+    top: 60px;
+    right: 10px;
+    background: none;
+    color: $qount-text;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    margin-top: 5px;
+    transition: background-color 0.3s ease;
+    &:hover{
+      background: $qount-table-border;
+    }
+    i{
+      font-size: 2.5rem;
+    }
+
+  }
+}
+
 
 .report-wrapper {
   margin-top: 50px;
   @media #{$medium-up} {
     margin-top: 0px;
   }
-  .reporting-form {
-    border-bottom: 1px solid $qount-form-border;
+  .reporting-form{
+    background: #f4f4f4;
+    padding: 1em 0;
+    //border: 1px solid $qount-form-border;
 
     .no-padding {
       padding: 0;
@@ -708,31 +742,32 @@ ul.side-nav a {
     margin-left: 5px;
   }
 
-  .printable-area {
-    width: 75%;
-    margin: 2.5rem auto;
-    background-color: #00a379;
+  .printable-area{
+    margin:1rem auto;
+    .report-grid-container{
+      border: 1px solid $qount-table-border;
+      border-top: 0px;
+      overflow-x: auto;
+    }
   }
 
-  .report-icon-header {
-    border: 1px solid #e3e5e5;
-    background-color: aliceblue;
-
-    div.icon-wrapper {
-      padding: 10px 0 10px;
-    }
-
-    .report-name {
-      font-size: 1rem;
-    }
-
-    .icons {
+  .report-icon-header{
+    border: 1px solid $qount-table-border;
+    background-color: $qount-table-thead-bg;
+    color: $qount-text;
+    padding-top: 10px;
+    .icons{
       font-size: 1.5rem;
+      i{
+        &:hover{
+          color: $qount-brand-blue;
+        }
+      }
     }
   }
 
-  .display-report {
-    border: 1px solid #e3e5e5;
+  .display-report{
+    border: 1px solid $qount-table-border;
     text-align: center;
     padding-top: 10px;
 
@@ -784,7 +819,7 @@ ul.side-nav a {
     z-index: 100;
     right: -100%;
     overflow-x: hidden;
-    padding: 60px 5px;
+    padding: 50px 5px 0 0;
   }
 
   .custom-fields {
@@ -801,7 +836,7 @@ ul.side-nav a {
   }
 
   .collapsed {
-    right: -100%;
+    right: 100%;
   }
 
   .filters {
@@ -839,7 +874,6 @@ ul.side-nav a {
   footer {
     span {
       font-size: 12px;
-      font-weight: bold;
     }
   }
 
@@ -849,6 +883,10 @@ ul.side-nav a {
 
   div.right, footer.right {
     text-align: right;
+  }
+
+  .chartArea{
+    margin-top: 2.5em;
   }
 }
 
@@ -906,7 +944,7 @@ ul.side-nav a {
     }
   }
 
-  footer.left {
+  footer.left{
     text-align: left;
   }
 
@@ -922,6 +960,100 @@ ul.side-nav a {
 
   .custom-cell {
     width: 49%;
+  }
+  .customize-vert-tabs{
+    height: 100%;
+    margin: 0;
+    width: 100%;
+    .tabs-content{
+      border: none;
+    }
+    .customize-tabs-header{
+      background-color: #ffffff;
+      padding: 20px 10px;
+    }
+    .customize-tabs-content-section{
+      margin-left: 30px;
+      .customize-tabs-content{
+        padding: 0px 5px;
+        background-color: $qount-table-tr-hover;
+      }
+    }
+
+    .customize-vert-tabs-division{
+      height: 100%;
+      margin: 0;
+      width: 100%;
+      border-right: 1px solid $qount-form-border;
+      background-color: $qount-table-tr-hover;
+      ul.tabs{
+        border: none;
+        background-color: $qount-table-tr-hover;
+        li{
+          &.tabs-title{
+            a{
+              border-bottom: 1px solid $qount-form-border;
+              text-transform: uppercase;
+              color: $qount-text;
+              font-weight: 600;
+              //padding: 10px 25px 10px 5px;
+              //vertical-align: middle;
+              i{
+                float: right;
+                border: 1px solid $qount-form-border;
+                border-radius: 3px;
+                padding: 10px;
+                color: $qount-text;
+                position: relative;
+                top:-1em;
+              }
+              height:60px;
+            }
+            a[aria-selected='true']{
+              background-color: #ffffff;
+            }
+          }
+          &:first-child{
+            a{
+              border-top: 1px solid $qount-form-border;
+            }
+          }
+          &.is-active{
+            a{
+              border-top: 1px solid $qount-form-border;
+              border-right: 1px solid $qount-form-border;
+              border-radius: 0 5px 5px 0;
+              box-shadow: 0px 0px 0px 1px $qount-table-tr-hover;
+              color: $qount-brand-blue;
+              i{
+                background-color: $qount-brand-blue;
+                color: #ffffff;
+                border: none;
+              }
+              padding-right: 35px;
+            }
+            position: relative;
+            width: 105%;
+          }
+        }
+      }
+    }
+  }
+
+  button{
+    &.close-button{
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      margin-top: 50px;
+      transition: background-color 0.3s ease;
+      &:hover{
+        background: $qount-table-border;
+      }
+      i{
+        font-size: 1.5em;
+      }
+    }
   }
 }
 
@@ -1006,14 +1138,14 @@ ul.side-nav a {
 
   .selected {
 
-    background: #3498db;
-    background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
-    background-image: -moz-linear-gradient(top, #3498db, #2980b9);
-    background-image: -ms-linear-gradient(top, #3498db, #2980b9);
-    background-image: -o-linear-gradient(top, #3498db, #2980b9);
-    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    background: $qount-brand-blue;
+    background-image: -webkit-linear-gradient(top, $qount-brand-blue, #2980b9);
+    background-image: -moz-linear-gradient(top, $qount-brand-blue, #2980b9);
+    background-image: -ms-linear-gradient(top, $qount-brand-blue, #2980b9);
+    background-image: -o-linear-gradient(top, $qount-brand-blue, #2980b9);
+    background-image: linear-gradient(to bottom, $qount-brand-blue, #2980b9);
     .badge {
-      color: #3498db;
+      color:$qount-brand-blue;
       background: #fdfdfd;
 
     }
@@ -1163,7 +1295,7 @@ dashboard{
   }
   margin: 30px 0px 20px 0px;
   .box {
-    padding: 5px 15px;
+    //padding: 5px 15px;
     border: 1px solid #eee;
     -webkit-border-radius: 5px;
     border-radius: 5px;
@@ -1173,55 +1305,97 @@ dashboard{
 
     .content {
       height: 100px;
-
-      .stat {
-        text-align: right;
-        align-self: center;
-        font-size: 1.5rem;
+      padding: 0;
+      margin: 0;
+      display: table;
+      width: 100%;
+      .flex-item {
+        display: table-cell;
+        background: #ffffff;
         color: #505458;
+        height: 100%;
+      }
+      .box-status{
+        width: 60%;
+        display: table-cell;
+        vertical-align: middle;
+        border-radius: 3px 0px 0px 3px;
+        padding: 0 30px;
         div.value {
-          text-align: right;
+          font-size: 1.25rem;
           font-weight: 600;
-          margin-bottom: 10px;
+          margin-bottom: 5px;
         }
         .label {
           font-size: 1rem;
-          color: #98a6ad;
+          color: $qount-text;
           background: none;
           padding: 0px;
+          &.due{
+            color: $qount-brand-red;
+          }
+          &.ytd{
+            color: $qount-brand-green;
+          }
+          &.month{
+            background-color: $qount-brand-blue-light;
+          }
+          &.today{
+            background-color: $qount-brand-yellow-light;
+          }
+        }
+      }
+      .box-status-icon{
+        vertical-align: middle;
+        width: 40%;
+        text-align: center;
+        background-color: $qount-brand-green-light;
+        font-size: 2em;
+        border-radius: 0px 3px 3px 0px;
+        i{
+          color: $qount-brand-green;
         }
       }
 
+
+
+
       .stat-symbol {
+        display: inline-block;
+        height:100%;
+        width: 40%;
+        text-align: center;
+        align-self: center;
+
         .badge {
           padding: 30px 30px 30px 35px;
           border-radius: 50px;
-          border: 1pt solid #34d3eb;
-          background-color: rgba(52, 211, 235, 0.2);
+          border: 1pt solid #0FB45A;
+          background-color: #98FB98;
           margin-top:5px;
           .icon {
             font-size: 2rem;
-            color: #34d3eb;
+            color: #0FB45A;
           }
           &.due{
-            border: 1pt solid #fb6d9d;
-            background-color: rgba(251, 109, 157, 0.2);
+            border: 1pt solid #FA3219;
+            background-color: #FFD6D2;
             .icon{
-              color: #fb6d9d;
+              color: #FA3219;
             }
           }
           &.ytd{
-            border: 1pt solid #7266ba;
-            background-color: rgba(114, 102, 186, 0.2);
+            border: 1pt solid #00B0F0;
+            background-color: #D1EFFB;
             .icon{
-              color: #7266ba;
+              color: #00B0F0;
             }
           }
           &.month{
-            border: 1pt solid #81c868;
-            background-color: rgba(129, 200, 104, 0.2);
+            border: 1pt solid #00B0F0;
+            background-color: #D1EFFB;
             .icon{
-              color: #81c868;
+              color: #00B0F0;
             }
           }
         }
@@ -1238,6 +1412,32 @@ dashboard{
 i {
   font-size: 1.2em;
   cursor: pointer;
+  &.save-row-icon{
+    color: $qount-brand-green;
+  }
+}
+
+.line-items-table{
+  input, select{
+    margin-bottom: 0;
+  }
+  ul{
+    &.tagit{
+      padding: 0;
+      margin: 0 3px;
+    }
+    li{
+      display: inline-block;
+      &.tagit-new{
+        padding: 0 5px;
+        margin: 0;
+      }
+      &.tagit-choice-editable{
+        padding: 0 15px 0 5px;
+        margin: 5px;
+      }
+    }
+  }
 }
 
 .dropdown-values {
@@ -1245,6 +1445,15 @@ i {
   border-radius: 3px;
   height: 250px;
   overflow: auto;
+
+  td{
+    &.truncate{
+      max-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
 
   .add-line-item {
     input {
@@ -1416,12 +1625,36 @@ table.footable-editing-right tr.footable-editing td {
     }
   }
 }
+#_1009Form{
+  .ion-ios-trash-outline{
+    color: $qount-brand-red-medium;
+    &:hover{
+      color: $qount-brand-red;
+    }
+  }
+}
+.qount-form-backgorund{
+
+}
 .bill {
   input + div.error {
     margin: 0;
   }
   .bill-form-data {
 
+  }
+  .status{
+    &.button-style{
+      border-radius: 4px;
+      border: 2px solid #00B0F0;
+      min-width: 125px;
+      font-weight: 600;
+      &:hover{
+        color: #fff;
+        background: #00B0F0;
+      }
+
+    }
   }
   .bill-form-tabs {
     &.tabs {
@@ -1469,7 +1702,25 @@ table.footable-editing-right tr.footable-editing td {
       overflow-y: auto;
     }
   }
+
+  .label{
+    &.success{
+      background-color: $qount-brand-green;
+    }
+    &.warning{
+      background-color: $qount-brand-yellow;
+    }
+    &.alert{
+      background-color: $qount-brand-red-pastel;
+    }
+    &.secondary{
+      background-color: $qount-form-border-hover;
+    }
+
+  }
 }
+
+
 
 .bighalf-footable {
   &.bigpay-dashboard {
@@ -1501,6 +1752,9 @@ table.footable-editing-right tr.footable-editing td {
 
   tbody {
     tr {
+      td{
+        vertical-align: middle !important;
+      }
       color: #36404a;
       &:hover {
         background-color: #f4faff;
@@ -1513,18 +1767,35 @@ table.footable-editing-right tr.footable-editing td {
       a {
         &.action {
           font-size: 1rem;
-          color: #6f7f8f;
+          color: $qount-form-border;
           visibility: hidden;
           margin-right: 0.25em;
           margin-left: 0;
+          vertical-align: middle;
           &:hover {
-            color: #36404a;
+            color: $qount-text;
+          }
+          i{
+            &.ion-edit{
+              color: $qount-brand-primary-medium;
+              &:hover{
+                color: $qount-btn-primary;
+              }
+            }
+            &.ion-trash-b{
+              color: $qount-brand-red-medium;
+              &:hover{
+                color: $qount-brand-red;
+              }
+            }
+
           }
         }
       }
     }
   }
 }
+
 
 .bill {
   position: relative;
@@ -1589,7 +1860,7 @@ table.footable-editing-right tr.footable-editing td {
   bottom: 30px;
   right: 30px;
   width: 50px;
-  z-index: 1500;
+  z-index: 10;
   a {
     border: 1pt solid #dddddd;
     display: block;
@@ -1766,14 +2037,20 @@ table.footable-editing-right tr.footable-editing td {
 }
 
 .report-table {
-  /*tr{
-    &:last-child{
-      td{
-        border-top: 1px solid #0a4b3e;
-        border-bottom: 1px solid #0a4b3e;
-      }
+
+  thead{
+    background: $qount-brand-grey-light !important;
+  }
+
+  margin-bottom: 10px;
+  .report-cell-value{
+    &:hover{
+      //text-decoration: underline;
+      color: $qount-brand-primary-medium;
+      cursor:pointer;
     }
-  }*/
+  }
+
 }
 
 .notificationsTable {
@@ -1781,6 +2058,11 @@ table.footable-editing-right tr.footable-editing td {
     cursor: pointer;
     cursor: hand;
     background: #f4faff;
+  }
+  thead{
+    th{
+      font-size: .8em;
+    }
   }
 }
 
@@ -2088,9 +2370,7 @@ table.footable-editing-right tr.footable-editing td {
   margin: 20px 0px;
   .tool-grid {
     width: 198px;
-    height: 180px;
     border-radius: 5px;
-    border: 2px solid #f2f3f4;
     color: #f2f3f4;
     padding-left: 0px;
     padding-right: 0px;
@@ -2098,70 +2378,88 @@ table.footable-editing-right tr.footable-editing td {
     cursor: pointer;
     text-align: center;
     position: relative;
+    &:hover{
+      box-shadow: 2px 4px 4px 0 rgba(0, 0, 0, 0.2);
+      -webkit-box-shadow: 2px 8px 8px 0 rgba(0, 0, 0, 0.2);
+      -moz-box-shadow: 2px 8px 8px 0 rgba(0, 0, 0, 0.2);
+      .grid-qount{
+        //color: $qount-brand-blue;
+      }
+      .thumb-label {
+        border-color: $qount-brand-blue;
+        background-color: $qount-brand-blue;
+        color: #fff;
+      }
+    }
   }
   .grid-icon {
+    border-radius: 5px 5px 0px 0px;
+    border: 2px solid #f2f3f4;
     height: 130px;
     &.companies {
       background: url("../images/SVG/company.svg") no-repeat;
-      background-size: 36px 48px;
+      background-size: 60px 60px;
       background-position: center center;
     }
     &.vendors {
       background: url("../images/SVG/vendor.svg") no-repeat;
-      background-size: 36px 48px;
+      background-size: 60px 60px;
       background-position: center center;
     }
     &.customers {
       background: url("../images/SVG/customer.svg") no-repeat;
-      background-size: 36px 48px;
+      background-size: 60px 60px;
       background-position: center center;
     }
     &.employees {
       background: url("../images/SVG/customer.svg") no-repeat;
-      background-size: 36px 48px;
+      background-size: 60px 60px;
       background-position: center center;
     }
     &.items {
       background: url("../images/SVG/items.svg") no-repeat;
-      background-size: 36px 48px;
+      background-size: 60px 60px;
       background-position: center center;
     }
     &.chart-of-accounts {
       background: url("../images/SVG/chartofaccounts.svg") no-repeat;
-      background-size: 36px 48px;
+      background-size: 60px 60px;
       background-position: center center;
     }
     &.expense-codes {
       background: url("../images/SVG/expensecode.svg") no-repeat;
-      background-size: 36px 48px;
+      background-size: 60px 60px;
       background-position: center center;
     }
     &.reports {
       background: url("../images/SVG/reports.svg") no-repeat;
-      background-size: 36px 48px;
+      background-size: 60px 60px;
       background-position: center center;
     }
     &.billing {
       background: url("../images/SVG/billing.svg") no-repeat;
-      background-size: 36px 48px;
+      background-size: 60px 60px;
+      background-position: center center;
+    }
+    &.tool {
+      background: url("../images/SVG/Payments_Workflow.svg") no-repeat;
+      background-size: 60px 60px;
       background-position: center center;
     }
   }
   .thumb-label {
     width: 100%;
-    height: 50px;
     font-weight: 500;
     font-size: 15px;
-    border-top: 2px solid #f2f3f4;
+    border: 2px solid #f2f3f4;
+    border-top: none;
     padding: 12px 0px;
     border-radius: 0px 0px 5px 5px;
     font-family: sans-serif;
     text-transform: uppercase;
     color: #36404a;
   }
-  &:hover {
-    color: #ffffff;
-  }
+
 
   .clear {
     clear: both;
@@ -2173,9 +2471,9 @@ table.footable-editing-right tr.footable-editing td {
     font-size: 0.8rem;
     background-color: #d1d2d4;
     font-weight: 500;
-    line-height: 1;
     border-radius: 10px;
-    color: #ffffff;
+    color: #fff;
+    line-height: 1;
     padding-top: 3px;
     position: absolute;
     right: 15px;
@@ -2187,8 +2485,108 @@ table.footable-editing-right tr.footable-editing td {
     color: #fff;
   }
 }
+.reveal{
+  &.qount-flyout{
+    padding:3em;
+    button{
+      &.close-button{
+        width: 50px;
+        height: 50px;
+        border-radius: 25px;
+        margin-top: 10px;
+        transition: background-color 0.3s ease;
+        &:hover{
+          background: $qount-table-border;
+        }
+        i{
+          font-size: 1.5em;
+        }
+      }
+    }
+  }
+}
+
+.report-criteria-container{
+  background-color: $qount-table-tr-hover;
+  padding: 15px 10px;
+  header{
+    hr{
+      margin: 0;
+    }
+    .report-criteria-header{
+      text-transform: uppercase;
+    }
+  }
+  .report-criteria-form{
 
 
+    label{
+      &.report-form-fields{
+        border:1px solid $qount-table-border;
+        margin: 10px 0 5px;
+        padding: 5px 10px;
+        background-color: #ffffff;
+        .label-format{
+          color: $qount-text;
+          text-transform: uppercase;
+          font-size: .75rem;
+          font-weight: bold;
+        }
+        .required{
+          float:right;
+          color: $qount-brand-red;
+        }
+        .special-seperator{
+          color: $qount-text;
+          text-transform: uppercase;
+          font-size: .7rem;
+          font-weight: bold;
+          height: 1rem;
+        }
+        .no-padding{
+          padding-left: 0;
+        }
+        select, input{
+          color: $qount-text;
+          height: 1.5rem;
+          border-bottom: 1px solid $qount-form-border;
+          border-radius: 0px;
+          padding: 0 1.5rem 0 .25rem;
+          margin: 0;
+          font-size: .75rem;
+          //box-shadow: none;
+
+        }
+        input[type=checkbox]{
+          vertical-align: bottom;
+        }
+        input[type="radio"]{
+          vertical-align: bottom;
+        }
+        label{
+          color:$qount-text;
+          font-size: .9em;
+        }
+      }
+
+    }
+  }
+  .report-info-section{
+    color: $qount-text;
+    padding-top: 2em;
+    .section-header{
+      color: $qount-text;
+      font-size: .75em;
+    }
+    p{
+      padding-left: .75rem;
+      text-align: justify;
+      font-size: .75em;
+    }
+  }
+}
+
+/* This parent can be any width and height */
 .box-notifier {
   $qount-box-icon-width:36px;
   $qount-box-icon-height:48px;
@@ -2341,242 +2739,41 @@ tbody{
     }
   }
 }
-
-.button{
-  &.text-button{
-    position: absolute;
-    top: 60px;
-    right: 10px;
-    background: none;
-    color: $qount-text;
-    cursor: pointer;
-    width: 60px;
-    height: 60px;
-    border-radius: 30px;
-    margin-top: 5px;
-    transition: background-color 0.3s ease;
-    &:hover{
-      background: $qount-table-border;
-    }
-    i{
-      font-size: 2.5rem;
-    }
-
-  }
-}
-
-.report-criteria-container{
-  background-color: $qount-table-tr-hover;
-  padding: 15px 10px;
-  header{
-    hr{
-      margin: 0;
-    }
-    .report-criteria-header{
-      text-transform: uppercase;
-    }
-  }
-  .report-criteria-form{
-
-
-    label{
-      &.report-form-fields{
-        border:1px solid $qount-table-border;
-        margin: 10px 0 5px;
-        padding: 5px 10px;
-        background-color: #ffffff;
-        .label-format{
-          color: $qount-text;
-          text-transform: uppercase;
-          font-size: .75rem;
-          font-weight: bold;
-        }
-        .required{
-          float:right;
-          color: $qount-brand-red;
-        }
-        .special-seperator{
-          color: $qount-text;
-          text-transform: uppercase;
-          font-size: .7rem;
-          font-weight: bold;
-          height: 1rem;
-        }
-        .no-padding{
-          padding-left: 0;
-        }
-        select, input{
-          color: $qount-text;
-          height: 1rem;
-          border: none;
-          border-bottom: 1px dotted $qount-form-border;
-          border-radius: 0px;
-          padding: 0 1rem 0 .25rem;
-          margin: 0;
-          font-size: .75rem;
-          //box-shadow: none;
-
-        }
-        input[type=checkbox]{
-          vertical-align: sub;
-        }
-        label{
-          color:$qount-text;
-          font-size: .9em;
-        }
-      }
-
-    }
-  }
-  .report-info-section{
-    color: $qount-text;
-    padding-top: 2em;
-    .section-header{
-      color: $qount-text;
-      font-size: .75em;
-    }
-    p{
-      padding-left: .75rem;
-      text-align: justify;
-      font-size: .75em;
-    }
-  }
-}
-
-.bill{
-
-  .ion-edit{
-    color: $qount-brand-primary-medium;
-    &:hover{
-      color: $qount-btn-primary;
-    }
-  }
-
-  .ion-ios-trash-outline{
-    color: $qount-brand-red-medium;
-    &:hover{
-      color: $qount-brand-red;
-    }
-  }
-  input + div.error{
-    margin: 0;
-  }
-
-  .bill-form-data{
-
-  }
-  .status{
-    &.button-style{
-      border-radius: 4px;
-      border: 2px solid #00B0F0;
-      min-width: 125px;
-      font-weight: 600;
-      &:hover{
-        color: #fff;
-        background: #00B0F0;
-      }
-
-    }
-  }
-  .bill-form-tabs{
-    &.tabs{
-      border:none;
-    }
-    .tabs-title{
-      a{
-        padding: .5em;
-        margin-right: 1em;
-
-        &[aria-selected="true"]{
-          border-bottom: 3px solid $qount-btn-primary;
-          background-color: #fff;
-        }
-      }
-    }
-  }
-  .bill-form-tabs-content{
-    &.tabs-content{
-      border: none;
-    }
-    .tabs-panel{
-      padding: 1em 0;
-    }
-  }
-
-
-  .bill-preview-icons{
-    position: relative;
-    top:-5px;
-    margin-right: 1em;
-    i{
-      font-size: 1.5rem;
-      color:#6f7f8f;
-      margin-right: .5em;
-    }
-
-  }
-
-  .bill-modal-container{
-
-  }
-  .bill-container{
-
-    margin-bottom: 15px;
-    .bill-preview-container{
-      overflow-y: auto;
-    }
-  }
-
-  .label{
-    &.success{
-      background-color: $qount-brand-green;
-    }
-    &.warning{
-      background-color: $qount-brand-yellow;
-    }
-    &.alert{
-      background-color: $qount-brand-red-pastel;
-    }
-    &.secondary{
-      background-color: $qount-form-border-hover;
-    }
-
-  }
-}
 .tab-view{
-   // background: $qount-brand-blue;
-   .tab-view-container{
-     text-align: center;
-     margin: 5px 0;
-     line-height: 2em;
-     .icon-action{
-       color: $qount-text;
-       -moz-user-select: none;
-       -khtml-user-select: none;
-       -webkit-user-select: none;
+  // background: $qount-brand-blue;
+  .tab-view-container{
+    text-align: center;
+    margin: 5px 0;
+    line-height: 2em;
+    .icon-action{
+      color: $qount-text;
+      -moz-user-select: none;
+      -khtml-user-select: none;
+      -webkit-user-select: none;
 
-       /*
-         Introduced in IE 10.
-         See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
-       */
-       -ms-user-select: none;
-       user-select: none;
-       font-size: 1.5em;
-       margin: 0 .5em;
-       &:hover{
-         color: $qount-brand-blue;
-       }
-     }
-     .tab-view-name{
-       vertical-align: text-bottom;
-       min-width: 33%;
-       display: none;
-       &.active{
-         display: inline-block;
-       }
-     }
-   }
- }
+      /*
+        Introduced in IE 10.
+        See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+      */
+      -ms-user-select: none;
+      user-select: none;
+      font-size: 1.5em;
+      margin: 0 .5em;
+      &:hover{
+        color: $qount-brand-blue;
+      }
+    }
+    .tab-view-name{
+      color: $qount-text;
+      vertical-align: text-bottom;
+      min-width: 33%;
+      display: none;
+      &.active{
+        display: inline-block;
+      }
+    }
+  }
+}
 
 .chartArea {
   position: relative;

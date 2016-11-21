@@ -1,0 +1,164 @@
+<div class="bill row" foundation>
+    <div class="column small-12 medium-12 large-12 qount-form-backgorund">
+        <form *ngIf="active" (ngSubmit)="submit($event)" novalidate [formGroup]="jeForm">
+            <ul class="tabs bill-form-tabs" data-tabs id="bill-form-tabs">
+                <li class="tabs-title is-active"><a href="#journalDetails" aria-selected="true"><h6>Journal Details</h6></a></li>
+                <li class="tabs-title"><a href="#lineDetails"><h6>Line Details</h6></a></li>
+            </ul>
+
+            <div class="tabs-content bill-form-tabs-content" data-tabs-content="bill-form-tabs">
+                <div class="tabs-panel is-active" id="journalDetails">
+                    <div class="bill-form-data">
+                        <div class="row collapse">
+                            <div class="small-12 medium-4 columns">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <label>Number
+                                            <input type="text" formControlName="number" placeholder="Journal Number*">
+                                            <div class="error" [hidden]="jeForm.controls.number.untouched || jeForm.controls.number.valid"><small>Journal Number is required.</small></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small-12 medium-4 columns">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <label>Date
+                                            <input type="text" custom-datepicker [format]="MM/DD/YYYY" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*">
+                                            <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small-12 medium-4 columns">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <label>Journal Type
+                                            <div>
+                                                <input type="radio" formControlName="type" value="original" id="original"><label for="original">Original</label>
+                                                <input type="radio" formControlName="type" value="reversal" id="reversal"><label for="reversal">Reversal</label>
+                                                <div class="error" [hidden]="jeForm.controls.type.untouched || jeForm.controls.type.valid"><small>Please select journal type</small></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row collapse">
+                            <div class="small-12 medium-4 columns">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <label>Source
+                                            <select formcontrolname="source">
+                                                <option value="">Select one</option>
+                                                <option value="manual">Manual</option>
+                                                <option value="payroll">Payroll</option>
+                                                <option value="accountsPayable">Accounts Payable</option>
+                                                <option value="accountsReceivable">Accounts Receivable</option>
+                                                <option value="inventory">Inventory</option>
+                                            </select>
+                                            <div class="error" [hidden]="jeForm.controls.source.untouched || jeForm.controls.source.valid"><small>Journal Source is required.</small></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small-12 medium-4 columns">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <label>Category
+                                            <select formcontrolname="category">
+                                                <option value="">Select one</option>
+                                                <option value="depreciation">Depreciation, Tax Adj, Other</option>
+                                                <option value="payroll">Payroll</option>
+                                                <option value="apBalance">AP balance</option>
+                                                <option value="arBalance">AR balance</option>
+                                                <option value="inventoryBalance">Inventory Balance</option>
+                                            </select>
+                                            <div class="error" [hidden]="jeForm.controls.category.untouched || jeForm.controls.category.valid"><small>Please select category.</small></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small-12 medium-4 columns">
+                                <div class="row">
+                                    <div class="small-12 medium-4 columns">
+                                        <label>Auto Reverse
+                                            <div class="switch tiny">
+                                                <input class="switch-input" id="auto-reverse" type="checkbox" formControlName="autoReverse" (click)="toggleAutoReverse($event)"/>
+                                                <label class="switch-paddle" for="auto-reverse">
+                                                    <span class="show-for-sr">Auto Reverse switch</span>
+                                                </label>
+                                            </div>
+                                            <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select auto reverse.</small></div>
+                                        </label>
+                                    </div>
+                                    <div class="small-12 medium-8 columns" *ngIf="!disableReversalDate">
+                                        <label>Reversal Date
+                                            <input type="text" custom-datepicker [format]="MM/DD/YYYY" [mindate]="'past'" (valueChanged)="setReversalDate($event)" formControlName="reversalDate" placeholder="Reversal Date*"/>
+                                            <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select Reversal Date.</small></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row collapse">
+                            <div class="small-12 medium-4 columns">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <label>Description
+                                            <textarea formControlName="desc" style="height: 100px;"></textarea>
+                                            <div class="error" [hidden]="jeForm.controls.desc.untouched || jeForm.controls.desc.valid"><small>Please enter Description.</small></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small-12 medium-8 columns">
+                                <div class="row">
+                                    <div class="small-12 medium-3 columns">
+                                        <label>Recurring
+                                            <div class="switch tiny">
+                                                <input class="switch-input" id="recurring" type="checkbox" formControlName="recurring" (change)="toggleRecurring($event)"/>
+                                                <label class="switch-paddle" for="recurring">
+                                                    <span class="show-for-sr">Recurring switch</span>
+                                                </label>
+                                            </div>
+                                            <div class="error" [hidden]="jeForm.controls.recurring.untouched || jeForm.controls.recurring.valid"><small>Recurring is required.</small></div>
+                                        </label>
+                                    </div>
+                                    <div class="small-12 medium-4 columns" *ngIf="!disableRecurring">
+                                        <label>Next JE Date
+                                            <input type="text" custom-datepicker [format]="MM/DD/YYYY" [mindate]="'past'" (valueChanged)="setNextJEDate($event)" formControlName="nextJEDate" placeholder="Next JE Date*">
+                                            <div class="error" [hidden]="jeForm.controls.nextJEDate.untouched || jeForm.controls.nextJEDate.valid"><small>Next JE Date is required.</small></div>
+                                        </label>
+                                    </div>
+                                    <div class="small-12 medium-4 columns" *ngIf="!disableRecurring">
+                                        <label>Category
+                                            <select formcontrolname="recurringFrequency">
+                                                <option value="">Select one</option>
+                                                <option value="daily">Daily</option>
+                                                <option value="weekly">Weekly</option>
+                                                <option value="monthly">Monthly</option>
+                                                <option value="quarterly">Quarterly</option>
+                                                <option value="yearly">Yearly</option>
+                                            </select>
+                                            <div class="error" [hidden]="jeForm.controls.recurringFrequency.untouched || jeForm.controls.recurringFrequency.valid"><small>Please enter Journal date.</small></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tabs-panel" id="lineDetails" foundation>
+
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="columns">
+                    <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
