@@ -1,7 +1,7 @@
 
 <div class="row" foundation>
     <div class="column small-12 medium-6">
-        <h6>Expenses</h6>
+        <h6>Expense Code</h6>
     </div>
     <div class="columns small-6 small-offset-6 right">
         <button class="button small float-right" (click)="showAddItemCode()"><i class="icon ion-plus-round"></i> Expense Code</button>
@@ -33,7 +33,7 @@
                 </div>
                 <div class="row">
                     <div class="small-12 medium-6 columns">
-                        <label>Expense COA
+                        <label>Expense Code COA
                             <select combo-box #selectedCOAComboBoxDir="comboBox" data-placeholder="Enter COA*" formControlName="coa_mapping_id" [listObject]="chartOfAccountsArr" (valueChanged)="updateExpenseCOA($event)">
                                 <option *ngFor="let chartOfAccount of chartOfAccountsArr" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
                             </select>
