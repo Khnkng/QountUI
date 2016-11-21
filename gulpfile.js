@@ -302,7 +302,7 @@ gulp.task('copy-to-prod', ['prod-images', 'copy-misc-prod', 'copy-fonts-prod', '
   var reportsHtml = gulp.src(['./node_modules/reportsUI/app/views/*.html'])
         .pipe(gulp.dest('build/prod/app/views/'));
   var paymentsHtml = gulp.src(['./node_modules/billsUI/app/views/*.html'])
-      .pipe(gulp.dest('build/app/views/'));
+      .pipe(gulp.dest('build/prod/app/views/'));
   return merge(views, reportsHtml,paymentsHtml);
 });
 
