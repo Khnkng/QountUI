@@ -4,6 +4,8 @@
 
 import {Component} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
+import {Session} from "qCommon/app/services/Session";
+import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
 
 declare var _:any;
 declare var jQuery:any;
@@ -44,14 +46,24 @@ export class BooksComponent{
     hasJournalEntries:boolean = false;
     hasExpenses:boolean = false;
     hasDeposits:boolean = false;
+    allCompanies:Array<any>;
+    currentCompany:any;
 
-    constructor(private _router:Router,private _route: ActivatedRoute) {
+    constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService) {
         this.routeSub = this._route.params.subscribe(params => {
             this.selectedTab=params['tabId'];
             this.selectTab(this.selectedTab,"");
             this.isLoading = false;
             this.hasJournalEntries = false;
         });
+        let companyId = Session.getCurrentCompany();
+        this.allCompanies = Session.getCompanies();
+
+        if(companyId){
+            this.currentCompany = _.find(this.allCompanies, {id: companyId});
+        } else if(this.allCompanies.length> 0){
+            this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+        }
     }
 
     animateBoxInfo(boxInfo) {
@@ -85,6 +97,48 @@ export class BooksComponent{
         this.localBadges=JSON.parse(sessionStorage.getItem("localBadges"));
         this.tabDisplay[tabNo] = {'display':'block'};
         this.tabBackground = this.bgColors[tabNo];
+        if(this.selectedTab == 0){
+
+        } else if(this.selectedTab == 1){
+
+        } else if(this.selectedTab == 2){
+            this.journalService.journalEntries(this.currentCompany.id)
+                .subscribe(journalEntries => this.buildTableData(journalEntries), error => this.handleError(error));
+        }
+    }
+
+    handleError(error){
+
+    }
+
+    buildTableData(data){
+        let base = this;
+        let tableColumns = {};
+        this.jeTableData.columns = [
+            {"name": "number", "title": "Number"},
+            {"name": "date", "title": "Date"},
+            {"name": "type", "title": "Journal Type"},
+            {"name": "desc", "title": "Description"},
+            {"name": "source", "title": "Source", "visible": false},
+            {"name": "category", "title": "Category","visible": false},
+            {"name": "autoReverse", "title": "Auto Reverse","visible": false},
+            {"name": "reversalDate", "title": "Reversal Date","visible": false},
+            {"name": "recurring", "title": "Recurring","visible": false},
+            {"name": "nextJEDate", "title": "Next JE Date","visible": false},
+            {"name": "recurringFrequency", "title": "Recurring Frequency","visible": false},
+            {"name": "actions", "title": "", "type": "html","visible": false}];
+
+        this.jeTableData.rows = [];
+        let base = this;
+        data.forEach(function(journalEntry) {
+            let row: any = {};
+            _.each(Object.keys(journalEntry), function (key) {
+                row[key] = journalEntry[key];
+            });
+            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            base.jeTableData.rows.push(row);
+        });
+        this.hasJournalEntries = true;
     }
 
     reRoutePage(tabId) {

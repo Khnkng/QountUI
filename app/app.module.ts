@@ -53,7 +53,6 @@ import {ItemCodeForm} from "./forms/ItemCode.form";
 import {BooksComponent} from "./components/Books.component";
 import {JournalEntryComponent} from "./components/JournalEntry.component";
 import {JournalEntryForm, JournalLineForm} from "./forms/JournalEntry.form";
-import {ExpensesComponent} from "./components/Expenses.component";
 import {ExpensesForm} from "./forms/Expenses.form";
 import {ExpensesSerice} from "./services/Expenses.service";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
@@ -146,7 +145,7 @@ import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
-        WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm,ExpensesSerice],
+        WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm, ExpensesSerice],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

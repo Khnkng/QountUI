@@ -8,6 +8,10 @@ import {JournalEntryForm, JournalLineForm} from "../forms/JournalEntry.form";
 import {FormBuilder, FormGroup, FormArray} from "@angular/forms";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
+import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
+import {ToastService} from "qCommon/app/services/Toast.service";
+import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {Router} from "@angular/router";
 
 declare var _:any;
 declare var jQuery:any;
@@ -32,7 +36,8 @@ export class JournalEntryComponent{
     chartOfAccounts:Array = [];
     lines:Array<any> = [];
 
-    constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm) {
+    constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
+            private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router) {
         let companyId = Session.getCurrentCompany();
         this.allCompanies = Session.getCompanies();
 
@@ -136,15 +141,34 @@ export class JournalEntryComponent{
         this.addLineItemMode = !this.addLineItemMode;
     }
 
+    cleanData(data){
+        delete data.newType;
+        delete data.newAmount;
+        delete data.newCoa;
+        delete data.newMemo;
+        delete data.newTags;
+
+        return data;
+    }
+
     submit($event){
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
-        console.log(data);
+        this.journalService.addJournalEntry(this.cleanData(data), this.currentCompany.id)
+            .subscribe(journalEntry => {
+                this.toastService.pop(TOAST_TYPE.success, "Journal Entry created successfully");
+                let link = ['books', 2];
+                this._router.navigate(link);
+            }, error=> this.handleError(error));
+    }
+
+    handleError(error){
+        console.log(error);
     }
 
     ngOnInit() {
         let _form = this._jeForm.getForm();
-        _form['lines'] = this.journalLinesArray;
+        _form['journalLines'] = this.journalLinesArray;
         this.jeForm = this._fb.group(_form);
         this.newForm();
     }

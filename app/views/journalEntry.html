@@ -166,8 +166,8 @@
                                 <th width="5%"></th>
                             </tr>
                         </thead>
-                        <tbody formArrayName="lines" *ngIf="jeForm.controls.lines.controls.length != 0">
-                            <tr *ngFor="let lineListItem of jeForm.controls.lines.controls;let index=index;">
+                        <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
+                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;">
                                 <td>{{index+1}}</td>
                                 <td>{{lineListItem.controls.type.value}}</td>
                                 <td>{{getCOAName(lineListItem.controls.coa.value)}}</td>
@@ -177,7 +177,7 @@
                                 <td><i class="icon ion-ios-trash-outline" (click)="deleteLine(index)"></i></td>
                             </tr>
                         </tbody>
-                        <tbody *ngIf="jeForm.controls.lines.controls.length == 0" [hidden]="addLineItemMode">
+                        <tbody *ngIf="jeForm.controls.journalLines.controls.length == 0" [hidden]="addLineItemMode">
                             <tr>
                                 <td colspan="7" class="text-center">No lines found</td>
                             </tr>
@@ -186,7 +186,7 @@
                             <tr>
                                 <td>
                                     <div style="margin: 0 0 1rem;">
-                                        {{jeForm.controls.lines.controls.length + 1}}
+                                        {{jeForm.controls.journalLines.controls.length + 1}}
                                     </div>
                                 </td>
                                 <td>
