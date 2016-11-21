@@ -89,12 +89,12 @@ export class SideBarComponent {
         this.isBooks = true;
       }
         break;
-      case PAGES.EXPENSES: {
-        let link = ['expenses'];
-        this._router.navigate(link);
-        this.isExpenses = true;
-      }
-        break;
+      //case PAGES.EXPENSES: {
+      //  let link = ['expenses'];
+      //  this._router.navigate(link);
+      //  this.isExpenses = true;
+      //}
+      //  break;
       case PAGES.PAYROL: {
         let link = ['payrol'];
         this._router.navigate(link);
