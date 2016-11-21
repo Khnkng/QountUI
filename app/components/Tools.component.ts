@@ -89,6 +89,10 @@ export class ToolsComponent {
         let link = ['itemCodes'];
         this._router.navigate(link);
       }
+      case 'expenses': {
+        let link = ['expenses'];
+        this._router.navigate(link);
+      }
       break;
     }
   }
