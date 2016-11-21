@@ -52,7 +52,7 @@ import {ItemCodesComponent} from "./components/ItemCodes.component";
 import {ItemCodeForm} from "./forms/ItemCode.form";
 import {BooksComponent} from "./components/Books.component";
 import {JournalEntryComponent} from "./components/JournalEntry.component";
-import {JournalEntryForm} from "./forms/JournalEntry.form";
+import {JournalEntryForm, JournalLineForm} from "./forms/JournalEntry.form";
 import {ExpensesComponent} from "./components/Expenses.component";
 import {ExpensesForm} from "./forms/Expenses.form";
 import {ExpensesSerice} from "./services/Expenses.service";
@@ -144,7 +144,7 @@ import {ExpensesSerice} from "./services/Expenses.service";
     ],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm,
+    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
         WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm,ExpensesSerice],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })

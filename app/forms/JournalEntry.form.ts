@@ -15,7 +15,7 @@ export class JournalEntryForm extends abstractForm{
     numberValidator.push(Validators.required);
     return {
       "number": ['', Validators.required],
-      "date": ['', Validators.required],
+      "date": [''],
       "source": ['', Validators.required],
       "type": ['original'],
       "category": [''],
@@ -32,6 +32,19 @@ export class JournalEntryForm extends abstractForm{
       "newMemo": [],
       "newTags": [[]]
     }
+  }
+}
+
+@Injectable()
+export class JournalLineForm extends abstractForm{
+
+  getForm(model?:any) {
+    return {
+      type: [model? model.type: ''],
+      coa: [model? model.coa: ''],
+      amount: [model? model.amount: 0],
+      memo: [model? model.memo: '']
+    };
   }
 
 }

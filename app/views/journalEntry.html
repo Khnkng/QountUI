@@ -49,8 +49,7 @@
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
                                         <label>Source
-                                            <select formcontrolname="source">
-                                                <option value="">Select one</option>
+                                            <select formControlName="source">
                                                 <option value="manual">Manual</option>
                                                 <option value="payroll">Payroll</option>
                                                 <option value="accountsPayable">Accounts Payable</option>
@@ -66,8 +65,7 @@
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
                                         <label>Category
-                                            <select formcontrolname="category">
-                                                <option value="">Select one</option>
+                                            <select formControlName="category" placeholder="Category">
                                                 <option value="depreciation">Depreciation, Tax Adj, Other</option>
                                                 <option value="payroll">Payroll</option>
                                                 <option value="apBalance">AP balance</option>
@@ -133,8 +131,7 @@
                                     </div>
                                     <div class="small-12 medium-4 columns" *ngIf="!disableRecurring">
                                         <label>Frequency
-                                            <select formcontrolname="recurringFrequency">
-                                                <option value="">Select one</option>
+                                            <select formControlName="recurringFrequency">
                                                 <option value="daily">Daily</option>
                                                 <option value="weekly">Weekly</option>
                                                 <option value="monthly">Monthly</option>
@@ -170,7 +167,14 @@
                             </tr>
                         </thead>
                         <tbody formArrayName="lines" *ngIf="jeForm.controls.lines.controls.length != 0">
-                            <tr>
+                            <tr *ngFor="let lineListItem of jeForm.controls.lines.controls;let index=index;">
+                                <td>{{index+1}}</td>
+                                <td>{{lineListItem.controls.type.value}}</td>
+                                <td>{{getCOAName(lineListItem.controls.coa.value)}}</td>
+                                <td>{{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):null}}</td>
+                                <td>{{lineListItem.controls.memo.value}}</td>
+                                <td></td>
+                                <td><i class="icon ion-ios-trash-outline" (click)="deleteLine(index)"></i></td>
                             </tr>
                         </tbody>
                         <tbody *ngIf="jeForm.controls.lines.controls.length == 0" [hidden]="addLineItemMode">

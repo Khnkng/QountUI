@@ -4,7 +4,7 @@
 
 import {Component, ViewChild} from "@angular/core";
 import {Session} from "qCommon/app/services/Session";
-import {JournalEntryForm} from "../forms/JournalEntry.form";
+import {JournalEntryForm, JournalLineForm} from "../forms/JournalEntry.form";
 import {FormBuilder, FormGroup, FormArray} from "@angular/forms";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
@@ -30,8 +30,9 @@ export class JournalEntryComponent{
     allCompanies:Array = [];
     currentCompany:any;
     chartOfAccounts:Array = [];
+    lines:Array<any> = [];
 
-    constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService) {
+    constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm) {
         let companyId = Session.getCurrentCompany();
         this.allCompanies = Session.getCompanies();
 
@@ -50,8 +51,11 @@ export class JournalEntryComponent{
     }
 
     newForm() {
+        let base = this;
         this.active = false;
-        setTimeout(()=> this.active=true, 0);
+        setTimeout(function(){
+            base.active=true;
+        }, 0);
     }
 
     setJournalDate(date: string){
@@ -84,14 +88,48 @@ export class JournalEntryComponent{
     }
 
     updateChartOfAccount($event){
-        let newCOAControl:any = this.jeForm.controls['newCOA'];
-        newCOAControl.patchValue("");
+        let chartOfAccount = _.find(this.chartOfAccounts, {"name": $event});
+        if(chartOfAccount){
+            let newCOAControl:any = this.jeForm.controls['newCoa'];
+            newCOAControl.patchValue(chartOfAccount.id);
+        }
     }
 
     addNewLine(){
         let data = this._jeForm.getData(this.jeForm);
         let tags = jQuery('#lineTags').tagit("assignedTags");
-        console.log(data, tags);
+        let line = {
+            "type": data.newType,
+            "coa": data.newCoa,
+            "amount": data.newAmount,
+            "memo": data.newMemo
+        };
+        this.lines.push(line);
+        let lineListForm = this._fb.group(this._lineListForm.getForm(line));
+        this.journalLinesArray.push(lineListForm);
+        this.addLineItemMode = !this.addLineItemMode;
+
+        let typeControl:any = this.jeForm.controls['newType'];
+        typeControl.patchValue('');
+        let coaControl:any = this.jeForm.controls['newCoa'];
+        coaControl.patchValue('');
+        let amountControl:any = this.jeForm.controls['newAmount'];
+        amountControl.patchValue(0);
+        let memoControl:any = this.jeForm.controls['newMemo'];
+        memoControl.patchValue('');
+        this.coaComboBox.setValue({}, '');
+    }
+
+    deleteLine(lineIndex){
+
+    }
+
+    getCOAName(coaId){
+        let coa = _.find(this.chartOfAccounts, {id: coaId});
+        if(coa){
+            return coa.name;
+        }
+        return "";
     }
 
     clearNewRowData(){
@@ -99,12 +137,15 @@ export class JournalEntryComponent{
     }
 
     submit($event){
-
+        $event && $event.preventDefault();
+        let data = this._jeForm.getData(this.jeForm);
+        console.log(data);
     }
 
     ngOnInit() {
         let _form = this._jeForm.getForm();
         _form['lines'] = this.journalLinesArray;
         this.jeForm = this._fb.group(_form);
+        this.newForm();
     }
 }
