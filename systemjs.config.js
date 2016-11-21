@@ -26,7 +26,8 @@
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
       'qCommon': 'npm:qCommon',
       'reportsUI': 'npm:reportsUI',
-      'angular2-uuid':'npm:angular2-uuid'
+      'angular2-uuid':'npm:angular2-uuid',
+      'billsUI': 'npm:billsUI'
 
     },
     // packages tells the System loader how to load when no filename and/or no extension
@@ -51,6 +52,10 @@
           defaultExtension: 'js'
       },
       'angular2-uuid':{
+        main: './index.js',
+        defaultExtension: 'js'
+      },
+      'billsUI': {
         main: './index.js',
         defaultExtension: 'js'
       }

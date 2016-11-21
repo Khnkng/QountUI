@@ -27,6 +27,7 @@
     "zone.js": "^0.6.25",
     "qCommon" : "git+https://Qount:b2da10194989666d043efdd95d7302dd85bc1cd1@github.com/Qount/qCommon.git",
     "reportsUI" : "git+https://Qount:b2da10194989666d043efdd95d7302dd85bc1cd1@github.com/Qount/ReportsUI.git",
+    "billsUI":"git+https://Qount:b2da10194989666d043efdd95d7302dd85bc1cd1@github.com/Qount/BillsUI.git",
     "angular2-localstorage": "^0.2.0",
     "angular2-uuid": "^1.0.7",
     "ng2-file-upload": "^1.0.3"
