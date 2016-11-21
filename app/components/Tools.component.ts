@@ -58,6 +58,10 @@ export class ToolsComponent {
     this.expenseService.getAllExpenses(company.id).subscribe(expenses => {
         this.expenseCodeCount = expenses.length;
       }, error=> this.handleError(error));
+    this.expenseService.getAllExpenses(company.id)
+        .subscribe(expenseCodes =>{
+          this.expenseCodeCount = expenseCodes.length;
+        }, error=> this.handleError(error));
   }
 
   handleError(error){
@@ -96,8 +100,9 @@ export class ToolsComponent {
         let link = ['itemCodes'];
         this._router.navigate(link);
       }
-      case 'expenses': {
-        let link = ['expenses'];
+      break;
+      case 'expensecode': {
+        let link = ['expensecode'];
         this._router.navigate(link);
       }
       break;
