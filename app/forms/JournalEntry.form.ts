@@ -24,7 +24,13 @@ export class JournalEntryForm extends abstractForm{
       "recurring": [false],
       "nextJEDate": [''],
       "recurringFrequency": [''],
-      "desc": ['']
+      "desc": [''],
+
+      "newType": [],
+      "newCoa": [],
+      "newAmount": [],
+      "newMemo": [],
+      "newTags": [[]]
     }
   }
 

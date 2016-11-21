@@ -9,6 +9,8 @@ import {PAGES} from "qCommon/app/constants/Qount.constants";
 import {Session} from "qCommon/app/services/Session";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
+import {CodesService} from "qCommon/app/services/CodesService.service";
+import {ExpensesSerice} from "../services/Expenses.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -29,7 +31,8 @@ export class ToolsComponent {
   billCount: number = 0;
   companySwitchSubscription:any;
 
-  constructor(private switchBoard:SwitchBoard, private _router:Router, private companiesService: CompaniesService, private coaService: ChartOfAccountsService) {
+  constructor(private switchBoard:SwitchBoard, private _router:Router, private companiesService: CompaniesService, private coaService: ChartOfAccountsService,
+              private codeService: CodesService, private expenseService: ExpensesSerice) {
     console.info('QountApp Tools Component Mounted Successfully7');
     let companies = Session.getCompanies() || [];
     this.companyCount = companies.length;
@@ -43,14 +46,18 @@ export class ToolsComponent {
   }
 
   refreshCompany(company){
-    this.companiesService.vendors(company.id)
-        .subscribe(vendors => {
+    this.companiesService.vendors(company.id).subscribe(vendors => {
           this.vendorCount = vendors.length;
         }, error => this.handleError(error));
-    this.coaService.chartOfAccounts(company.id)
-        .subscribe(chartOfAccounts => {
+    this.coaService.chartOfAccounts(company.id).subscribe(chartOfAccounts => {
           this.coaCount = chartOfAccounts.length;
         }, error => this.handleError(error));
+    this.codeService.itemCodes(company.id).subscribe(itemCodes => {
+          this.itemCount = itemCodes.length;
+        }, error=> this.handleError(error));
+    this.expenseService.getAllExpenses(company.id).subscribe(expenses => {
+        this.expenseCodeCount = expenses.length;
+      }, error=> this.handleError(error));
   }
 
   handleError(error){
@@ -87,6 +94,11 @@ export class ToolsComponent {
       break;
       case 'items': {
         let link = ['itemCodes'];
+        this._router.navigate(link);
+      }
+      break;
+      case 'expensecodes': {
+        let link = ['expenses'];
         this._router.navigate(link);
       }
       break;

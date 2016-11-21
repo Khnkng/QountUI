@@ -2,10 +2,12 @@
  * Created by seshu on 26-02-2016.
  */
 
-import {Component} from "@angular/core";
-import {Router, ActivatedRoute} from "@angular/router";
+import {Component, ViewChild} from "@angular/core";
+import {Session} from "qCommon/app/services/Session";
 import {JournalEntryForm} from "../forms/JournalEntry.form";
-import {FormBuilder, FormGroup} from "@angular/forms";
+import {FormBuilder, FormGroup, FormArray} from "@angular/forms";
+import {ComboBox} from "qCommon/app/directives/comboBox.directive";
+import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 
 declare var _:any;
 declare var jQuery:any;
@@ -21,9 +23,28 @@ export class JournalEntryComponent{
     active:boolean = true;
     disableReversalDate:boolean = true;
     disableRecurring:boolean = true;
+    journalLinesArray: FormArray = new FormArray([]);
+    addLineItemMode:boolean = false;
+    @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
+    newTags:Array<string>=[];
+    allCompanies:Array = [];
+    currentCompany:any;
+    chartOfAccounts:Array = [];
 
-    constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder) {
-        this.jeForm = this._fb.group(this._jeForm.getForm());
+    constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService) {
+        let companyId = Session.getCurrentCompany();
+        this.allCompanies = Session.getCompanies();
+
+        if(companyId){
+            this.currentCompany = _.find(this.allCompanies, {id: companyId});
+        } else if(this.allCompanies.length> 0){
+            this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+        }
+
+        this.coaService.chartOfAccounts(this.currentCompany.id)
+            .subscribe(chartOfAccounts => {
+                this.chartOfAccounts = chartOfAccounts;
+            }, error=> this.handleError(error));
         this.toggleAutoReverse();
         this.toggleRecurring();
     }
@@ -62,10 +83,28 @@ export class JournalEntryComponent{
         }, 0);
     }
 
+    updateChartOfAccount($event){
+        let newCOAControl:any = this.jeForm.controls['newCOA'];
+        newCOAControl.patchValue("");
+    }
+
+    addNewLine(){
+        let data = this._jeForm.getData(this.jeForm);
+        let tags = jQuery('#lineTags').tagit("assignedTags");
+        console.log(data, tags);
+    }
+
+    clearNewRowData(){
+        this.addLineItemMode = !this.addLineItemMode;
+    }
+
     submit($event){
 
     }
 
     ngOnInit() {
+        let _form = this._jeForm.getForm();
+        _form['lines'] = this.journalLinesArray;
+        this.jeForm = this._fb.group(_form);
     }
 }
