@@ -25,6 +25,7 @@ import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {PAYMENTMETHOD} from "../constants/payments.constants";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {CodesService} from "qCommon/app/services/CodesService.service";
+import {ExpensesSerice} from "../../../services/Expenses.service";
 
 declare var _:any;
 declare var jQuery:any;
@@ -71,18 +72,21 @@ export class DashBoardComponent {
 
   companySwitchSubscription: any;
   expenseCodeCount:number=0;
+  companyId:string;
+
 
   constructor(private billsService: BillsService, private boxService: BoxService, private docHubService:DocHubService, private dss: DomSanitizer,
               private _router:Router,private _route: ActivatedRoute, private _oAuthService:OAuthService, private _toastService:ToastService, private companyService:CompaniesService,
-              private switchBoard: SwitchBoard,private codeService: CodesService) {
+              private switchBoard: SwitchBoard,private expensesService:ExpensesSerice) {
     this.routeSub = this._route.params.subscribe(params => {
       this.selectedTab=params['tabId'];
-      let companyId = Session.getCurrentCompany();
-      if(companyId){
-        this.codeService.itemCodes(companyId)
-            .subscribe(itemCodes => {
-              this.expenseCodeCount=itemCodes?itemCodes.length:0;
+      this.companyId = Session.getCurrentCompany();
+      if(this.companyId){
+        this.expensesService.getAllExpenses(this.companyId)
+            .subscribe(expenseCodes => {
+              this.expenseCodeCount=expenseCodes?expenseCodes.length:0;
             }, error=> this.handleError(error));
+
       }
 
       this.loadTabData();
@@ -145,15 +149,15 @@ export class DashBoardComponent {
   payTabColumns:any = [
     {"name": "billID", "title": "Bill Number"},
     {"name": "name", "title": "Bill Name","visible": false},
-    {"name": "companyID", "title": "Company"},
+    {"name": "companyID", "title": "Company",'breakpoints': 'xs sm'},
     {"name": "vendorName", "title": "Vendor"},
     {"name": "vendorID", "title": "Vendor ID","visible": false},
     {"name": "billAmount", "title": "Bill Amount"},
-    {"name": "vendorPaymentMethod", "title": "Payment Method"},
-    {"name": "payByDate", "title": "Pay by Date"},
+    {"name": "vendorPaymentMethod", "title": "Payment Method",'breakpoints': 'xs sm'},
+    {"name": "payByDate", "title": "Pay by Date",'breakpoints': 'xs sm'},
     {"name": "dueDate", "title": "Due Date"},
     {"name": "state", "title": "", "type": "html", "filterable": false},
-    {"name": "payActions", "title": "", "type": "html", "filterable": false},
+    {"name": "payActions", "title": "", "type": "html", "filterable": false,'breakpoints': 'xs sm'},
     {"name": "actions", "title": "", "type": "html", "filterable": false}
   ]
 
@@ -166,15 +170,15 @@ export class DashBoardComponent {
     {"name": "vendorPaymentMethod", "title": "Payment Method","visible": false},
     {"name": "billAmount", "title": "Bill Amount"},
     {"name": "payByDate", "title": "Pay by Date"},
-    {"name": "dueDate", "title": "Due Date"},
-    {"name": "state", "title": "", "type": "html", "filterable": false},
+    {"name": "dueDate", "title": "Due Date",'breakpoints': 'xs sm'},
+    {"name": "state", "title": "", "type": "html", "filterable": false,'breakpoints': 'xs sm'},
     {"name": "actions", "title": "", "type": "html", "filterable": false}
   ]
 
   payedTabColumns:any = [
     {"name": "billID", "title": "Bill Number"},
     {"name": "name", "title": "Bill Name","visible": false},
-    {"name": "companyID", "title": "Company"},
+    {"name": "companyID", "title": "Company",'breakpoints': 'xs sm'},
     {"name": "vendorName", "title": "Vendor"},
     {"name": "vendorID", "title": "Vendor ID","visible": false},
     {"name": "vendorPaymentMethod", "title": "Payment Method","visible": false},
@@ -190,9 +194,9 @@ export class DashBoardComponent {
       {"name": "name", "title": "Bill Name","visible": false},
       {"name": "companyID", "title": "Company"},
       {"name": "dueDate", "title": "Due Date","visible": false},
-      {"name": "lastUpdated", "title": "Last Updated"},
+      {"name": "lastUpdated", "title": "Last Updated",'breakpoints': 'xs sm'},
       {"name": "lastUpdatedBy", "title": "Last Updated By", "classes":"last-updated-by"},
-      {"name": "state", "title": "", "type": "html", "filterable": false},
+      {"name": "state", "title": "", "type": "html", "filterable": false,'breakpoints': 'xs sm'},
       {"name": "actions", "title": "", "type": "html", "filterable": false}
     ];
     if((this.selectedTab==2)||(this.selectedTab==1)){
@@ -294,7 +298,6 @@ export class DashBoardComponent {
   }
   selectedColor:any='red-tab';
   selectTab(tabNo, color) {
-
     this.isLoading=true;
     this.selectedTab=tabNo;
     this.selectedColor=color;
@@ -307,7 +310,8 @@ export class DashBoardComponent {
     this.localBadges=JSON.parse(sessionStorage.getItem("localBadges"));
     this.tabDisplay[tabNo] = {'display':'block'};
     this.tabBackground = this.bgColors[tabNo];
-    this.billsService.bills(filters[tabNo])
+    jQuery('.loading-initial-cont').hide();
+    this.billsService.bills(this.companyId,filters[tabNo])
       .subscribe(billsData  => {
         this.buildBillsTableData(billsData.bills, filters[tabNo]);
         this.badges = billsData.badges;
@@ -522,7 +526,7 @@ export class DashBoardComponent {
       let link = ['payments/workflow'];
       this._router.navigate(link);
     }else if(val=='expenseCode'){
-      let link = ['/itemCodes'];
+      let link = ['/expenses'];
       this._router.navigate(link);
     }
   }

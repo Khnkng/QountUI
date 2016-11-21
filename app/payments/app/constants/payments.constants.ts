@@ -6,14 +6,13 @@ export const PAYMENTMETHOD={
 
 export const PAYMENTSPATHS={
     COMPANIES_PAYMENT_SERVICE: '/HalfService/user/:id/companies/:companyId/paymentInfo',
-    BILLS_SERVICE: '/BigPayServices/user/:id/bills',
+    BILLS_SERVICE: '/BigPayServices/user/:id/companies/:companyID/bills',
     BOX_SERVICE: '/BigPayServices/user/:id/boxInfo',
     BILL_SERVICE: '/BigPayServices/user/:id/companies/:companyID/bills/:billID',
     CREATE_BILL_SERVICE: '/BigPayServices/user/:id/companies/:companyID/bills',
     CURRENCY_CONVERSION_SERVICE:'/HalfService/user/:userId/currency/convert?from=:from&to=:to&date=:date',
     DOCHUB_SERVICE_URL: 'https://dev-services.qount.io/DocumentServices',
     DOCHUB_SERVICE: '/:id/preview/dochub/file',
-    BILLS_SERVICE: '/BigPayServices/user/:id/bills',
     DWOLLA_TRANSFER_FUND_SERVICE: '/CheckbookService/user/:id/companies/:company/checkbook/transferFunds',
     DWOLLA_CODE_SUBMISSION_SERVICE: '/CheckbookService/user/:id/companies/:company/dwolla',
     DWOLLA_FUNDING_SOURCES_SERVICE: '/CheckbookService/user/:id/companies/:company/dwolla/fundingSources',

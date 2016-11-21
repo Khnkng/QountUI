@@ -22,8 +22,8 @@ export class BillsService extends QountServices {
     super(http);
   }
 
-  bills(filter?:string): Observable<any> {
-    var url = this.interpolateUrl(PAYMENTSPATHS.BILLS_SERVICE,null,{id: Session.getUser().id});
+  bills(companyId:string,filter?:string): Observable<any> {
+    var url = this.interpolateUrl(PAYMENTSPATHS.BILLS_SERVICE,null,{id: Session.getUser().id,companyID:companyId});
     if(filter) {
       url = url + "?filter="+filter;
     }

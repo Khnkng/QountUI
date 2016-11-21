@@ -15,6 +15,7 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
+import {CompanyModel} from "../models/Company.model";
 
 declare var jQuery:any;
 declare var _:any;
@@ -40,6 +41,8 @@ export class VendorComponent {
   message:string;
   companyId:string;
   companySwitchSubscription:any;
+  companies:Array<CompanyModel> = [];
+  companyName:string;
 
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm, private _router: Router, private _toastService: ToastService, private switchBoard: SwitchBoard) {
     this.vendorForm = this._fb.group(_vendorForm.getForm());
@@ -48,6 +51,13 @@ export class VendorComponent {
     if(this.companyId){
       this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
     }
+    this.companyService.companies()
+        .subscribe(companies  => {
+          this.companies = companies;
+          if(this.companies && this.companies.length > 0) {
+            this.companyName = this.companyId;
+          }
+        }, error =>  this.handleError(error));
   }
 
   ngOnDestroy(){
@@ -211,5 +221,9 @@ export class VendorComponent {
 
   handleError(error) {
 
+  }
+
+  onVendorChange(company){
+    this.companyService.vendors(company).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
   }
 }
