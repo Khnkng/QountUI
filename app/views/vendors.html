@@ -7,15 +7,6 @@
     <button class="button small float-right" (click)="showCreateVendor()">Add Vendor</button>
   </div>
 </div>
-<div class="row">
-  <div class="column small-3 medium-2">
-  <label> Select a company
-    <select [(ngModel)]="companyName" (change)="onVendorChange($event.target.value)">
-      <option *ngFor="let company of companies" [value]="company.id">{{company.name}}</option>
-    </select>
-  </label>
-</div>
-</div>
 <div class="row" foundation>
   <div class="column large-12 medium-12 small-12">
     <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasVendorsList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>

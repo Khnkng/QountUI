@@ -222,8 +222,4 @@ export class VendorComponent {
   handleError(error) {
 
   }
-
-  onVendorChange(company){
-    this.companyService.vendors(company).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
-  }
 }
