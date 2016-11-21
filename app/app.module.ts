@@ -53,9 +53,9 @@ import {ItemCodeForm} from "./forms/ItemCode.form";
 import {BooksComponent} from "./components/Books.component";
 import {JournalEntryComponent} from "./components/JournalEntry.component";
 import {JournalEntryForm} from "./forms/JournalEntry.form";
-import {ExpensesComponent} from "./components/Expenses.component";
 import {ExpensesForm} from "./forms/Expenses.form";
 import {ExpensesSerice} from "./services/Expenses.service";
+import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
@@ -124,8 +124,8 @@ import {ExpensesSerice} from "./services/Expenses.service";
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'expenses',
-            component: ExpensesComponent,
+            path: 'expensecode',
+            component: ExpensesCodesComponent,
             canActivate: [LoggedInActivator]
         },
         {
@@ -140,7 +140,7 @@ import {ExpensesSerice} from "./services/Expenses.service";
         {path: 'payments/newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]}
     ]), ReportsModule],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,
-        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent, ItemCodesComponent, ExpensesComponent, JournalEntryComponent, BooksComponent
+        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent, ItemCodesComponent, ExpensesCodesComponent, JournalEntryComponent, BooksComponent
     ],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
