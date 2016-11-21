@@ -35,11 +35,11 @@ import {ItemCodesComponent} from "./components/ItemCodes.component";
 import {ItemCodeForm} from "./forms/ItemCode.form";
 import {BooksComponent} from "./components/Books.component";
 import {JournalEntryComponent} from "./components/JournalEntry.component";
-import {JournalEntryForm} from "./forms/JournalEntry.form";
-import {ExpensesComponent} from "./components/Expenses.component";
+import {JournalEntryForm, JournalLineForm} from "./forms/JournalEntry.form";
 import {ExpensesForm} from "./forms/Expenses.form";
 import {ExpensesSerice} from "./services/Expenses.service";
 import {PaymentsModule} from "billsUI/app/payments.module";
+import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
@@ -108,8 +108,8 @@ import {PaymentsModule} from "billsUI/app/payments.module";
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'expenses',
-            component: ExpensesComponent,
+            path: 'expensecode',
+            component: ExpensesCodesComponent,
             canActivate: [LoggedInActivator]
         },
         {
@@ -119,8 +119,8 @@ import {PaymentsModule} from "billsUI/app/payments.module";
         }
     ]), ReportsModule,PaymentsModule
     ],
-    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, ExpensesComponent, JournalEntryComponent, BooksComponent
-    ],
+    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent,
+        ExpensesCodesComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm,

@@ -22,10 +22,10 @@ declare var _:any;
 
 @Component({
   selector: 'tools',
-  templateUrl: '/app/views/expenses.html'
+  templateUrl: '/app/views/expensecode.html'
 })
 
-export class ExpensesComponent {
+export class ExpensesCodesComponent {
   expensesForm: FormGroup;
   //itemCodes = [];
   expenses = [];
@@ -34,8 +34,8 @@ export class ExpensesComponent {
   chartOfAccountsArr:any=[];
   newFormActive:boolean = true;
   @ViewChild('addItemcode') addItemcode;
-  @ViewChild('selectedCOAComboBoxDir') selectedCOAComboBox: ComboBox;
-  @ViewChild('invoiceCOAComboBoxDir') invoiceCOAComboBox: ComboBox;
+  //@ViewChild('selectedCOAComboBoxDir') selectedCOAComboBox: ComboBox;
+  //@ViewChild('invoiceCOAComboBoxDir') invoiceCOAComboBox: ComboBox;
   hasItemCodes: boolean = false;
   tableData:any = {};
   tableOptions:any = {};
@@ -61,7 +61,8 @@ export class ExpensesComponent {
     } else if(this.allCompanies.length> 0){
       this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
     }
-    this.coaService.chartOfAccounts(this.currentCompany.id)
+
+    this.coaService.filterdChartOfAccounts(this.currentCompany.id,"?categories=Expenses")
         .subscribe(chartOfAccounts => this.filterChartOfAccounts(chartOfAccounts), error=> this.handleError(error));
   }
 
@@ -193,8 +194,8 @@ export class ExpensesComponent {
       //{"name": "payment_coa_mapping", "title": "payment COA id", "visible": false},
       //{"name": "invoiceCOAName", "title": "Invoice COA"},
       //{"name": "invoice_coa_mapping", "title": "invoice COA id", "visible": false},
-      {"name": "selectedCOAName", "title": "Selected COA"},
-      {"name": "coa_mapping_id", "title": "selected COA id", "visible": false},
+      {"name": "selectedCOAName", "title": "COA"},
+      {"name": "coa_mapping_id", "title": "COA id", "visible": false},
       {"name": "companyID", "title": "Company ID", "visible": false},
       {"name": "id", "title": "Id", "visible": false},
       {"name": "actions", "title": ""}

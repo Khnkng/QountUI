@@ -119,6 +119,9 @@ body {
 #displayReport{
   display: none;
 }
+#numeric{
+  visibility: hidden;
+}
 .col {
   float: left;
 }
@@ -2640,7 +2643,22 @@ table.footable-editing-right tr.footable-editing td {
         background: url("../images/SVG/Payments_Workflow.svg");
         background-size: 36px 48px;
       }
-
+      &.categorize{
+        background: url("../images/SVG/Books_Categorize.svg");
+        background-size: 36px 48px;
+      }
+      &.duplicates{
+        background: url("../images/SVG/Books_Duplicates.svg");
+        background-size: 36px 48px;
+      }
+      &.flagged{
+        background: url("../images/SVG/Books_Flagged.svg");
+        background-size: 36px 48px;
+      }
+      &.reconcile{
+        background: url("../images/SVG/Books_Reconcile.svg");
+        background-size: 36px 48px;
+      }
     }
     &:hover{
       &.blue{
@@ -2661,6 +2679,22 @@ table.footable-editing-right tr.footable-editing td {
           }
           &.year{
             background: url("../images/SVG/Payments_Workflow-active.svg");
+            background-size: 36px 48px;
+          }
+          &.categorize{
+            background: url("../images/SVG/Books_Categorize-active.svg");
+            background-size: 36px 48px;
+          }
+          &.duplicates{
+            background: url("../images/SVG/Books_Duplicates-active.svg");
+            background-size: 36px 48px;
+          }
+          &.flagged{
+            background: url("../images/SVG/Books_Flagged-active.svg");
+            background-size: 36px 48px;
+          }
+          &.reconcile{
+            background: url("../images/SVG/Books_Reconcile-active.svg");
             background-size: 36px 48px;
           }
         }
@@ -2771,6 +2805,14 @@ tbody{
       &.active{
         display: inline-block;
       }
+    }
+  }
+}
+
+#lineDetails{
+  .coa-field{
+    input, a{
+      margin-top: -11px;
     }
   }
 }
