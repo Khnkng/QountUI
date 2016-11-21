@@ -9,6 +9,7 @@ import {PAGES} from "qCommon/app/constants/Qount.constants";
 import {Session} from "qCommon/app/services/Session";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
+import {ExpensesSerice} from "../services/Expenses.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -29,7 +30,7 @@ export class ToolsComponent {
   billCount: number = 0;
   companySwitchSubscription:any;
 
-  constructor(private switchBoard:SwitchBoard, private _router:Router, private companiesService: CompaniesService, private coaService: ChartOfAccountsService) {
+  constructor(private switchBoard:SwitchBoard, private _router:Router, private companiesService: CompaniesService, private coaService: ChartOfAccountsService, private expensesSerice:ExpensesSerice) {
     console.info('QountApp Tools Component Mounted Successfully7');
     let companies = Session.getCompanies() || [];
     this.companyCount = companies.length;
@@ -51,6 +52,11 @@ export class ToolsComponent {
         .subscribe(chartOfAccounts => {
           this.coaCount = chartOfAccounts.length;
         }, error => this.handleError(error));
+    this.expensesSerice.getAllExpenses(company.id)
+        .subscribe(expenseCodes =>{
+          this.expenseCodeCount = expenseCodes.length;
+        }, error=> this.handleError(error));
+
   }
 
   handleError(error){
@@ -90,8 +96,8 @@ export class ToolsComponent {
         this._router.navigate(link);
       }
       break;
-      case 'expenses': {
-        let link = ['expenses'];
+      case 'expensecode': {
+        let link = ['expensecode'];
         this._router.navigate(link);
       }
       break;
