@@ -106,8 +106,8 @@ export class ToolsComponent {
         this._router.navigate(link);
       }
       break;
-      case 'expensecodes': {
-        let link = ['expenses'];
+      case 'customers': {
+        let link = ['customers'];
         this._router.navigate(link);
       }
       break;
