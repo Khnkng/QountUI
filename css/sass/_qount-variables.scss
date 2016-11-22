@@ -70,6 +70,12 @@ $qount-table-tr-hover: #F0F4FD;
 $qount-table-border: #DCDEDD;
 
 table{
+  &.footable{
+    &.footable-filtering{
+      margin-top: 40px;
+    }
+  }
+
   //border: 1px solid $qount-table-border;
   thead{
     background: $qount-table-thead-bg;
@@ -94,7 +100,7 @@ table{
               color: $qount-text;
               border: 1px solid $qount-form-border;
               //border-left: none;
-              background: none;
+              background: #fff;
               &:hover{
                 background: $qount-brand-grey-light;
               }
