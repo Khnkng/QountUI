@@ -135,6 +135,7 @@ export class CustomersComponent {
         });
         let stateName = row.state;
         var base=this;
+        
         setTimeout(function () {
             base.vendorCountryComboBox.setValue(country, 'name');
         },100);
