@@ -35,7 +35,7 @@ export class JournalEntryComponent{
     currentCompany:any;
     chartOfAccounts:Array = [];
     lines:Array<any> = [];
-    
+
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router) {
