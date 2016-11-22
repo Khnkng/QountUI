@@ -4,7 +4,7 @@
     <h6>Companies</h6>
   </div>
   <div class="column small-12 medium-6 text-right">
-    <a [routerLink]="['/addCompany']" class="button small"><i class="icon ion-plus-round"></i>Company</a>
+
   </div>
 </div>
   <div class="row">
@@ -17,8 +17,10 @@
     </div>
   </div>
 <div class="row">
-  <div class="column large-12 medium-12 small-12">
-
+  <div class="column large-12 medium-12 small-12 foo-container">
+    <div class="foo-toolbar">
+     <a [routerLink]="['/addCompany']" class="button small"><i class="icon ion-plus-round"></i>Company</a>
+    </div>
     <foo-table class="bighalf-footable" *ngIf="hasCompanyList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)">
     </foo-table>
   </div>

@@ -70,6 +70,12 @@ $qount-table-tr-hover: #F0F4FD;
 $qount-table-border: #DCDEDD;
 
 table{
+  &.footable{
+    &.footable-filtering{
+      margin-top: 40px;
+    }
+  }
+
   //border: 1px solid $qount-table-border;
   thead{
     background: $qount-table-thead-bg;
@@ -78,6 +84,35 @@ table{
       th{
         font-size: .8em;
         border: none !important;
+      }
+
+      &.footable-filtering{
+        position: absolute;
+        top: -50px;
+        right: -10px;
+        border: none !important;
+        .footable-filtering-search{
+          input.form-control{
+            //border-right: none;
+          }
+          button{
+            &.btn-primary{
+              color: $qount-text;
+              border: 1px solid $qount-form-border;
+              //border-left: none;
+              background: #fff;
+              &:hover{
+                background: $qount-brand-grey-light;
+              }
+            }
+            &.btn-default.dropdown-toggle{
+              &:hover{
+                background: $qount-brand-grey-light;
+              }
+            }
+          }
+        }
+
       }
     }
 
@@ -109,6 +144,8 @@ table{
           ul{
             color: $qount-text;
             &.pagination{
+              position: relative;
+              right: -10px;
               li{
                 &.active{
                   a{
