@@ -87,6 +87,11 @@ import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'journalEntry/:journalID',
+            component: JournalEntryComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'vendors',
             component: VendorComponent,
             canActivate: [LoggedInActivator]
@@ -123,8 +128,7 @@ import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
         ExpensesCodesComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm,
-                ExpensesSerice],
+    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpensesForm, JournalEntryForm, JournalLineForm, ExpensesSerice],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
