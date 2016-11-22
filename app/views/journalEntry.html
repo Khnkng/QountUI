@@ -49,8 +49,7 @@
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
                                         <label>Source
-                                            <select formcontrolname="source">
-                                                <option value="">Select one</option>
+                                            <select formControlName="source">
                                                 <option value="manual">Manual</option>
                                                 <option value="payroll">Payroll</option>
                                                 <option value="accountsPayable">Accounts Payable</option>
@@ -66,8 +65,7 @@
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
                                         <label>Category
-                                            <select formcontrolname="category">
-                                                <option value="">Select one</option>
+                                            <select formControlName="category" placeholder="Category">
                                                 <option value="depreciation">Depreciation, Tax Adj, Other</option>
                                                 <option value="payroll">Payroll</option>
                                                 <option value="apBalance">AP balance</option>
@@ -114,7 +112,7 @@
                             </div>
                             <div class="small-12 medium-8 columns">
                                 <div class="row">
-                                    <div class="small-12 medium-3 columns">
+                                    <div class="small-12 medium-2 columns">
                                         <label>Recurring
                                             <div class="switch tiny">
                                                 <input class="switch-input" id="recurring" type="checkbox" formControlName="recurring" (change)="toggleRecurring($event)"/>
@@ -132,9 +130,8 @@
                                         </label>
                                     </div>
                                     <div class="small-12 medium-4 columns" *ngIf="!disableRecurring">
-                                        <label>Category
-                                            <select formcontrolname="recurringFrequency">
-                                                <option value="">Select one</option>
+                                        <label>Frequency
+                                            <select formControlName="recurringFrequency">
                                                 <option value="daily">Daily</option>
                                                 <option value="weekly">Weekly</option>
                                                 <option value="monthly">Monthly</option>
@@ -150,8 +147,76 @@
                     </div>
                 </div>
                 <div class="tabs-panel" id="lineDetails" foundation>
-
-
+                    <div class="row">
+                        <div class="columns">
+                            <label class="float-right">
+                                <i class="icon ion-ios-plus-outline" (click)="addLineItemMode = !addLineItemMode"></i> Line
+                            </label>
+                        </div>
+                    </div>
+                    <table class="stack">
+                        <thead>
+                            <tr>
+                                <th width="5%">JE Line</th>
+                                <th width="15%">Type</th>
+                                <th width="20%">COA</th>
+                                <th width="10%">Amount</th>
+                                <th width="10%">Memo</th>
+                                <th width="20%">Tags</th>
+                                <th width="5%"></th>
+                            </tr>
+                        </thead>
+                        <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
+                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;">
+                                <td>{{index+1}}</td>
+                                <td>{{lineListItem.controls.type.value}}</td>
+                                <td>{{getCOAName(lineListItem.controls.coa.value)}}</td>
+                                <td>{{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):null}}</td>
+                                <td>{{lineListItem.controls.memo.value}}</td>
+                                <td></td>
+                                <td><i class="icon ion-ios-trash-outline" (click)="deleteLine(index)"></i></td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="jeForm.controls.journalLines.controls.length == 0" [hidden]="addLineItemMode">
+                            <tr>
+                                <td colspan="7" class="text-center">No lines found</td>
+                            </tr>
+                        </tbody>
+                        <tbody [hidden]="!addLineItemMode">
+                            <tr>
+                                <td>
+                                    <div style="margin: 0 0 1rem;">
+                                        {{jeForm.controls.journalLines.controls.length + 1}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <select formControlName="newType">
+                                        <option value="assets">Asset</option>
+                                        <option value="liability">Liability</option>
+                                        <option value="income">Income</option>
+                                        <option value="expense">Expense</option>
+                                        <option value="capital">Capital</option>
+                                    </select>
+                                </td>
+                                <td class="coa-field">
+                                    <select combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts"  formControlName="newCoa" (valueChanged)="updateChartOfAccount($event)">
+                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" placeholder="Amount" formControlName="newAmount"/>
+                                </td>
+                                <td>
+                                    <input type="text" placeholder="Memo" formControlName="newMemo"/>
+                                </td>
+                                <td><ul class="bighalf-tags" id="lineTags"  type="text" [tagsList]="newTags" custom-tags></ul></td>
+                                <td>
+                                    <i class="icon ion-ios-plus-outline" (click)="addNewLine()"></i>
+                                    <i class="icon ion-ios-trash-outline" (click)="clearNewRowData()"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <div class="row">

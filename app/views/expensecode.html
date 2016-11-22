@@ -1,20 +1,23 @@
 
 <div class="row" foundation>
     <div class="column small-12 medium-6">
-        <h6>Expenses</h6>
+        <h6>Expense Code</h6>
     </div>
     <div class="columns small-6 small-offset-6 right">
-        <button class="button small float-right" (click)="showAddItemCode()"><i class="icon ion-plus-round"></i> Expense</button>
+
     </div>
 </div>
 <div class="row chart-of-accounts" foundation>
-    <div class="column large-12 medium-12 small-12">
+    <div class="column large-12 medium-12 small-12 foo-container" style="padding-top:40px;">
+        <div class="foo-toolbar">
+            <button class="button small" (click)="showAddItemCode()"><i class="icon ion-plus-round"></i> Expense Code</button>
+        </div>
         <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
     <div>
         <div class="small reveal" id="addItemcode" #addItemcode data-reveal data-close-on-click="false">
             <h6>
-                {{editMode ? "Update Expense" : "Add Expense"}}
+                {{editMode ? "Update Expense Code" : "Add Expense Code"}}
             </h6>
             <form *ngIf="newFormActive" [formGroup]="expensesForm">
                 <div class="row">
@@ -33,7 +36,7 @@
                 </div>
                 <div class="row">
                     <div class="small-12 medium-6 columns">
-                        <label>Expense COA
+                        <label>Expense Code COA
                             <select combo-box #selectedCOAComboBoxDir="comboBox" data-placeholder="Enter COA*" formControlName="coa_mapping_id" [listObject]="chartOfAccountsArr" (valueChanged)="updateExpenseCOA($event)">
                                 <option *ngFor="let chartOfAccount of chartOfAccountsArr" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
                             </select>

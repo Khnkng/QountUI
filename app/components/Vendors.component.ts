@@ -83,6 +83,8 @@ export class VendorComponent {
     this.vendors = vendors;
     this.hasVendorsList = false;
     this.tableData.rows = [];
+    this.tableOptions.search = true;
+    this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
       {"name": "companyID", "title": "Company"},
@@ -221,9 +223,5 @@ export class VendorComponent {
 
   handleError(error) {
 
-  }
-
-  onVendorChange(company){
-    this.companyService.vendors(company).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
   }
 }

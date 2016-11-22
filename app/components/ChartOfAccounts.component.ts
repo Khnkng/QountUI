@@ -194,7 +194,7 @@ export class ChartOfAccountsComponent{
   }
 
   ngOnInit(){
-    
+
   }
 
   handleAction($event){
@@ -262,14 +262,16 @@ export class ChartOfAccountsComponent{
     this.sortChartOfAccounts(coaList);
     this.hasCOAList = false;
     this.tableData.rows = [];
+    this.tableOptions.search = true;
+    this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "numberHTML", "title": "Number"},
       {"name": "nameHTML", "title": "Name"},
       {"name": "type", "title": "Type"},
       {"name": "subType", "title": "Sub type"},
       {"name": "parentName", "title": "Parent"},
-      {"name": "number", "title": "Number", "visible": false},
-      {"name": "name", "title": "Name", "visible": false},
+      {"name": "number", "title": "Number", "visible": false, "filterable": false},
+      {"name": "name", "title": "Name", "visible": false, "filterable": false},
       {"name": "desc", "title": "Description", "visible": false},
       {"name": "categoryType", "title": "Type", "visible": false},
       {"name": "subTypeCode", "title": "Sub Type Code", "visible": false},

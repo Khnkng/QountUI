@@ -4,11 +4,14 @@
         <h6>Item Codes</h6>
     </div>
     <div class="columns small-6 small-offset-6 right">
-        <button class="button small float-right" (click)="showAddItemCode()"><i class="icon ion-plus-round"></i> Item code</button>
+
     </div>
 </div>
 <div class="row chart-of-accounts" foundation>
-    <div class="column large-12 medium-12 small-12">
+    <div class="column large-12 medium-12 small-12 foo-container" style="padding-top:40px;">
+        <div class="foo-toolbar">
+            <button class="button small" (click)="showAddItemCode()"><i class="icon ion-plus-round"></i> Item code</button>
+        </div>
         <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
     <div>
