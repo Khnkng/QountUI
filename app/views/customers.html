@@ -1,0 +1,102 @@
+
+<div class="row" foundation>
+    <div class="column small-12 medium-6">
+        <h6>Customers</h6>
+    </div>
+    <div class="columns small-6 small-offset-6 right">
+        <button class="button small float-right" (click)="showCreateVendor()">Add Customer</button>
+    </div>
+</div>
+<div class="row" foundation>
+    <div class="column large-12 medium-12 small-12">
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCustomersList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    </div>
+    <div class="small reveal" #createVendor id="createVendor" data-reveal data-close-on-click="false">
+        <div class="row expanded">
+            <h6>
+                {{editMode ? "Update Customer" : "Create Customer"}}
+            </h6>
+            <form *ngIf="active1" (ngSubmit)="submit($event)" [formGroup]="customerForm">
+                <div class="row">
+                    <div class="small-12 medium-6 columns">
+                        <label>Name
+                            <div class="input-group">
+                                <input class="input-group-field" type="text" formControlName="customer_name" placeholder="Name*">
+                                <div class="error" [hidden]="customerForm.controls.customer_name.untouched || customerForm.controls.customer_name.valid">Customer Name is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>EIN
+                            <div class="input-group">
+                                <input class="input-group-field" type="text" formControlName="customer_ein" placeholder="EIN*">
+                                <div class="error" [hidden]="customerForm.controls.customer_ein.untouched || customerForm.controls.customer_ein.valid">Customer EIN is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <!--<div class="small-12 medium-6 columns">
+                        <label>Phone Number
+                            <div class="input-group">
+                                <input class="input-group-field" type="text" formControlName="phoneNumber" placeholder="Phone Number*">
+                                <div class="error" [hidden]="customerForm.controls.phoneNumber.untouched || customerForm.controls.phoneNumber.valid">Phone Number is required.</div>
+                            </div>
+                        </label>
+                    </div>-->
+                    <div class="small-12 medium-6 columns">
+                        <label>Address
+                            <div class="input-group">
+                                <input type="text" class="input-group-field" formControlName="customer_address" placeholder="Address*" />
+                                <div class="error" [hidden]="customerForm.controls.customer_address.untouched || customerForm.controls.customer_address.valid">Customer Address is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>City
+                            <div class="input-group">
+                                <input type="text" class="input-group-field" formControlName="customer_city" placeholder="City"/>
+                                <div class="error" [hidden]="customerForm.controls.customer_city.untouched || customerForm.controls.customer_city.valid">City is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>State
+                            <div class="input-group">
+                                <input type="text" class="input-group-field" formControlName="customer_state" placeholder="State"/>
+                                <div class="error" [hidden]="customerForm.controls.customer_state.untouched || customerForm.controls.customer_state.valid">State is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>Country
+                            <div class="input-group">
+                                <select combo-box #vendorCountryComboBoxDir="comboBox" title="" data-placeholder="Enter Country" formControlName="customer_country" [listObject]="countries" (valueChanged)="showVendorProvince($event)">
+                                    <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
+                                </select>
+                                <div class="error" [hidden]="customerForm.controls.customer_country.untouched || customerForm.controls.customer_country.valid">Country is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>Zip Code
+                            <div class="input-group">
+                                <input type="text" class="input-group-field" formControlName="customer_zipcode" placeholder="State"/>
+                                <div class="error" [hidden]="customerForm.controls.customer_zipcode.untouched || customerForm.controls.customer_zipcode.valid">Zip code is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="small-12 medium-12 columns">
+                        <button class="button create small float-right" [disabled]="!customerForm.valid" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
+                    </div>
+                </div>
+            </form>
+            <button class="close-button" data-close aria-label="Close reveal" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>

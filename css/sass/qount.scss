@@ -2029,8 +2029,9 @@ table.footable-editing-right tr.footable-editing td {
   tr {
     &:last-child {
       td {
-        border-top: 1px solid #0a4b3e;
-        border-bottom: 1px solid #0a4b3e;
+        border-top: 2px solid #0a4b3e;
+        border-bottom: 2px solid #0a4b3e;
+        font-weight: bold;
         /*&:last-child {
           border-top: 1px solid #0a4b3e;
         }*/
@@ -2039,14 +2040,22 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
+
 .report-table {
 
   thead{
     background: $qount-brand-grey-light !important;
   }
-
+  tbody{
+    tr{
+      &:last-child, &:nth-last-child(2){
+        border-bottom: 2px solid $qount-text;
+      }
+    }
+  }
   margin-bottom: 10px;
   .report-cell-value{
+    color: $qount-text;
     &:hover{
       //text-decoration: underline;
       color: $qount-brand-primary-medium;
@@ -2809,11 +2818,43 @@ tbody{
   }
 }
 
+.chartArea {
+  position: relative;
+  padding-bottom: 30%;
+}
+
 #lineDetails{
   .coa-field{
     input, a{
       margin-top: -11px;
     }
+  }
+}
+
+.bighalf-footable .footable .btn-primary:hover {
+  color: #4B96FA;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.bighalf-footable .footable .btn-primary {
+  color: #4B96FA;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.foo-container {
+  position:relative;
+  margin-top:20px;
+  .foo-toolbar {
+    position:absolute;
+    left:15px;
+    top:0px;
+  }
+  .footable .open > .dropdown-menu {
+    display: block;
+    max-height: 130px;
+    overflow: auto;
   }
 }
 

@@ -40,6 +40,9 @@ import {ExpensesForm} from "./forms/Expenses.form";
 import {ExpensesSerice} from "./services/Expenses.service";
 import {PaymentsModule} from "billsUI/app/payments.module";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
+import {CustomersComponent} from "./components/Customers.component";
+import {CustomersService} from "./services/Customers.service";
+import {CustomersForm} from "./forms/Customers.form";
 //noinspection TypeScriptCheckImport
 
 @NgModule({
@@ -121,14 +124,19 @@ import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
             path: 'tools',
             component: ToolsComponent,
             canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'customers',
+            component: CustomersComponent,
+            canActivate: [LoggedInActivator]
         }
     ]), ReportsModule,PaymentsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent,
-        ExpensesCodesComponent],
+        ExpensesCodesComponent,CustomersComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpensesForm, JournalEntryForm, JournalLineForm, ExpensesSerice],
+    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm, ExpensesSerice, CustomersService, CustomersForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
