@@ -11,7 +11,7 @@ import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.servi
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
-import {Router} from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
 
 declare var _:any;
 declare var jQuery:any;
@@ -34,11 +34,22 @@ export class JournalEntryComponent{
     allCompanies:Array = [];
     currentCompany:any;
     chartOfAccounts:Array = [];
+    filteredChartOfAccounts:Array = [];
     lines:Array<any> = [];
-    
+    routeSub:any;
+    newJournalEntry:boolean = true;
+    journalID:string;
+    journalEntry:any;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
-            private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router) {
+            private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute) {
+        this.routeSub = this._route.params.subscribe(params => {
+            this.journalID=params['journalID'];
+            if(this.journalID){
+                this.newJournalEntry = false;
+            }
+        });
+
         let companyId = Session.getCurrentCompany();
         this.allCompanies = Session.getCompanies();
 
@@ -94,6 +105,9 @@ export class JournalEntryComponent{
     }
 
     updateChartOfAccount($event){
+        if(_.isEmpty($event)){
+            return false;
+        }
         let chartOfAccount = _.find(this.chartOfAccounts, {"name": $event});
         if(chartOfAccount){
             let newCOAControl:any = this.jeForm.controls['newCoa'];
@@ -120,10 +134,15 @@ export class JournalEntryComponent{
         let coaControl:any = this.jeForm.controls['newCoa'];
         coaControl.patchValue('');
         let amountControl:any = this.jeForm.controls['newAmount'];
-        amountControl.patchValue(0);
+        amountControl.patchValue('');
         let memoControl:any = this.jeForm.controls['newMemo'];
         memoControl.patchValue('');
-        this.coaComboBox.setValue({}, '');
+        this.coaComboBox.clearValue();
+    }
+
+    editLine(lineListItem){
+        let data = this._jeForm.getData(lineListItem);
+        lineListItem.editable = true;
     }
 
     deleteLine(lineIndex){
@@ -155,16 +174,56 @@ export class JournalEntryComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
-        this.journalService.addJournalEntry(this.cleanData(data), this.currentCompany.id)
-            .subscribe(journalEntry => {
-                this.toastService.pop(TOAST_TYPE.success, "Journal Entry created successfully");
-                let link = ['books', 2];
-                this._router.navigate(link);
-            }, error=> this.handleError(error));
+        if(this.newJournalEntry){
+            this.journalService.addJournalEntry(this.cleanData(data), this.currentCompany.id)
+                .subscribe(journalEntry => {
+                    this.toastService.pop(TOAST_TYPE.success, "Journal Entry created successfully");
+                    let link = ['books', 2];
+                    this._router.navigate(link);
+                }, error=> this.handleError(error));
+        }
     }
 
     handleError(error){
         console.log(error);
+    }
+
+    filterChartOfAccounts(category){
+        let base = this;
+        this.filteredChartOfAccounts = [];
+        _.each(this.chartOfAccounts, function (coa) {
+            if(coa.category.toLowerCase() == category.toLowerCase()){
+                base.filteredChartOfAccounts.push(coa);
+            }
+        });
+    }
+
+    getFilteredCOA(category){
+        let base = this;
+        let filteredCOA = [];
+        _.each(this.chartOfAccounts, function (coa) {
+            if(coa.category.toLowerCase() == category.toLowerCase()){
+                filteredCOA.push(coa);
+            }
+        });
+        return filteredCOA;
+    }
+
+    updateLineCOA($event, index){
+        let chartOfAccount = _.find(this.chartOfAccounts, {"name": $event});
+    }
+
+    processJournalEntry(journalEntry){
+        let base = this;
+        this.journalEntry = journalEntry;
+        this.disableReversalDate = !Boolean(journalEntry.autoReverse);
+        this.disableRecurring = !Boolean(journalEntry.recurring);
+        this.lines = this.journalEntry.journalLines;
+        this.journalEntry.journalLines.forEach(function(line){
+            let lineListForm = base._fb.group(base._lineListForm.getForm(line));
+            base.journalLinesArray.push(lineListForm);
+        });
+        this._jeForm.updateForm(this.jeForm, this.journalEntry);
     }
 
     ngOnInit() {
@@ -172,5 +231,9 @@ export class JournalEntryComponent{
         _form['journalLines'] = this.journalLinesArray;
         this.jeForm = this._fb.group(_form);
         this.newForm();
+        if(!this.newJournalEntry){
+            this.journalService.journalEntry(this.journalID, this.currentCompany.id)
+                .subscribe(journalEntry => this.processJournalEntry(journalEntry), error => this.handleError(error));
+        }
     }
 }

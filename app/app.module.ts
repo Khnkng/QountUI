@@ -90,6 +90,11 @@ import {CustomersForm} from "./forms/Customers.form";
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'journalEntry/:journalID',
+            component: JournalEntryComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'vendors',
             component: VendorComponent,
             canActivate: [LoggedInActivator]
@@ -131,8 +136,7 @@ import {CustomersForm} from "./forms/Customers.form";
         ExpensesCodesComponent,CustomersComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm,
-                ExpensesSerice,CustomersService,CustomersForm],
+    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm, ExpensesSerice, CustomersService, CustomersForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

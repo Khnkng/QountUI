@@ -24,7 +24,7 @@
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
                                         <label>Date
-                                            <input type="text" custom-datepicker [format]="MM/DD/YYYY" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*">
+                                            <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*">
                                             <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
                                         </label>
                                     </div>
@@ -90,9 +90,9 @@
                                             <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select auto reverse.</small></div>
                                         </label>
                                     </div>
-                                    <div class="small-12 medium-8 columns" *ngIf="!disableReversalDate">
+                                    <div class="small-12 medium-8 columns" [hidden]="disableReversalDate">
                                         <label>Reversal Date
-                                            <input type="text" custom-datepicker [format]="MM/DD/YYYY" [mindate]="'past'" (valueChanged)="setReversalDate($event)" formControlName="reversalDate" placeholder="Reversal Date*"/>
+                                            <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setReversalDate($event)" formControlName="reversalDate" placeholder="Reversal Date*"/>
                                             <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select Reversal Date.</small></div>
                                         </label>
                                     </div>
@@ -125,7 +125,7 @@
                                     </div>
                                     <div class="small-12 medium-4 columns" *ngIf="!disableRecurring">
                                         <label>Next JE Date
-                                            <input type="text" custom-datepicker [format]="MM/DD/YYYY" [mindate]="'past'" (valueChanged)="setNextJEDate($event)" formControlName="nextJEDate" placeholder="Next JE Date*">
+                                            <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setNextJEDate($event)" formControlName="nextJEDate" placeholder="Next JE Date*">
                                             <div class="error" [hidden]="jeForm.controls.nextJEDate.untouched || jeForm.controls.nextJEDate.valid"><small>Next JE Date is required.</small></div>
                                         </label>
                                     </div>
@@ -161,25 +161,45 @@
                                 <th width="15%">Type</th>
                                 <th width="20%">COA</th>
                                 <th width="10%">Amount</th>
-                                <th width="10%">Memo</th>
-                                <th width="20%">Tags</th>
+                                <th width="25%">Memo</th>
                                 <th width="5%"></th>
                             </tr>
                         </thead>
                         <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
-                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;">
+                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem)">
                                 <td>{{index+1}}</td>
-                                <td>{{lineListItem.controls.type.value}}</td>
-                                <td>{{getCOAName(lineListItem.controls.coa.value)}}</td>
-                                <td>{{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):null}}</td>
-                                <td>{{lineListItem.controls.memo.value}}</td>
-                                <td></td>
-                                <td><i class="icon ion-ios-trash-outline" (click)="deleteLine(index)"></i></td>
+                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.type.value}}</td>
+                                <td [hidden]="!lineListItem.editable">
+                                    <select [formControl]="lineListItem.controls.type" (change)="filterChartOfAccounts($event.target.value)">
+                                        <option value="Assets">Assets</option>
+                                        <option value="Liability">Liability</option>
+                                        <option value="Income">Income</option>
+                                        <option value="Expenses">Expenses</option>
+                                        <option value="Capital">Capital</option>
+                                    </select>
+                                </td>
+                                <td [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
+                                <td class="coa-field" [hidden]="!lineListItem.editable">
+                                    <select combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" (valueChanged)="updateLineCOA($event, index)">
+                                        <option *ngFor="let chartOfAccount of getFilteredCOA(lineListItem.controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                                    </select>
+                                </td>
+                                <td [hidden]="lineListItem.editable">
+                                    {{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):null}}
+                                </td>
+                                <td [hidden]="!lineListItem.editable">
+                                   <input type="text" [formControl]="lineListItem.controls.amount"/>
+                                </td>
+                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.memo.value}}</td>
+                                <td [hidden]="!lineListItem.editable">
+                                    <textarea [formControl]="lineListItem.controls.memo"></textarea>
+                                </td>
+                                <td><i class="icon ion-ios-trash-outline" (click)="lineListItem.editable = !lineListItem.editable"></i></td>
                             </tr>
                         </tbody>
                         <tbody *ngIf="jeForm.controls.journalLines.controls.length == 0" [hidden]="addLineItemMode">
                             <tr>
-                                <td colspan="7" class="text-center">No lines found</td>
+                                <td colspan="6" class="text-center">No lines found</td>
                             </tr>
                         </tbody>
                         <tbody [hidden]="!addLineItemMode">
@@ -190,17 +210,17 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <select formControlName="newType">
-                                        <option value="assets">Asset</option>
-                                        <option value="liability">Liability</option>
-                                        <option value="income">Income</option>
-                                        <option value="expense">Expense</option>
-                                        <option value="capital">Capital</option>
+                                    <select formControlName="newType" (change)="filterChartOfAccounts($event.target.value)">
+                                        <option value="Assets">Assets</option>
+                                        <option value="Liability">Liability</option>
+                                        <option value="Income">Income</option>
+                                        <option value="Expenses">Expenses</option>
+                                        <option value="Capital">Capital</option>
                                     </select>
                                 </td>
                                 <td class="coa-field">
                                     <select combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts"  formControlName="newCoa" (valueChanged)="updateChartOfAccount($event)">
-                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                                        <option *ngFor="let chartOfAccount of filteredChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
                                     </select>
                                 </td>
                                 <td>
@@ -209,7 +229,7 @@
                                 <td>
                                     <input type="text" placeholder="Memo" formControlName="newMemo"/>
                                 </td>
-                                <td><ul class="bighalf-tags" id="lineTags"  type="text" [tagsList]="newTags" custom-tags></ul></td>
+                                <!--<td><ul class="bighalf-tags" id="lineTags"  type="text" [tagsList]="newTags" custom-tags></ul></td>-->
                                 <td>
                                     <i class="icon ion-ios-plus-outline" (click)="addNewLine()"></i>
                                     <i class="icon ion-ios-trash-outline" (click)="clearNewRowData()"></i>

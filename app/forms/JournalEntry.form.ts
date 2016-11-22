@@ -15,8 +15,8 @@ export class JournalEntryForm extends abstractForm{
     numberValidator.push(Validators.required);
     return {
       "number": ['', Validators.required],
-      "date": [''],
-      "source": ['', Validators.required],
+      "date": ['', Validators.required],
+      "source": [''],
       "type": ['original'],
       "category": [''],
       "autoReverse": [false],

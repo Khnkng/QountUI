@@ -5,6 +5,8 @@
 import {Component} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
+import {ToastService} from "qCommon/app/services/Toast.service";
+import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
 
 declare var _:any;
@@ -49,21 +51,20 @@ export class BooksComponent{
     allCompanies:Array<any>;
     currentCompany:any;
 
-    constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService) {
+    constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService, private toastService: ToastService) {
+        let companyId = Session.getCurrentCompany();
+        this.allCompanies = Session.getCompanies();
+        if(companyId){
+            this.currentCompany = _.find(this.allCompanies, {id: companyId});
+        } else if(this.allCompanies.length> 0){
+            this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+        }
         this.routeSub = this._route.params.subscribe(params => {
             this.selectedTab=params['tabId'];
             this.selectTab(this.selectedTab,"");
             this.isLoading = false;
             this.hasJournalEntries = false;
         });
-        let companyId = Session.getCurrentCompany();
-        this.allCompanies = Session.getCompanies();
-
-        if(companyId){
-            this.currentCompany = _.find(this.allCompanies, {id: companyId});
-        } else if(this.allCompanies.length> 0){
-            this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-        }
     }
 
     animateBoxInfo(boxInfo) {
@@ -107,8 +108,32 @@ export class BooksComponent{
         }
     }
 
-    handleError(error){
+    handleAction($event){
+        let action = $event.action;
+        delete $event.action;
+        delete $event.actions;
+        if(action == 'edit') {
+            this.showJournalEntry($event);
+        } else if(action == 'delete'){
+            this.removeJournalEntry($event);
+        }
+    }
 
+    removeJournalEntry(journalEntry){
+        let base = this;
+        this.journalService.removeJournalEntry(journalEntry.id, this.currentCompany.id)
+            .subscribe(response => {
+                base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully.");
+            }, error => this.handleError(error));
+    }
+
+    showJournalEntry(journalEntry){
+        let link = ['journalEntry', journalEntry.id];
+        this._router.navigate(link);
+    }
+
+    handleError(error){
+        this.toastService.pop(TOAST_TYPE.error, "Could not perform action.")
     }
 
     buildTableData(data){
@@ -125,8 +150,9 @@ export class BooksComponent{
             {"name": "reversalDate", "title": "Reversal Date","visible": false},
             {"name": "recurring", "title": "Recurring","visible": false},
             {"name": "nextJEDate", "title": "Next JE Date","visible": false},
+            {"name": "id", "title": "Jounral ID","visible": false},
             {"name": "recurringFrequency", "title": "Recurring Frequency","visible": false},
-            {"name": "actions", "title": "", "type": "html","visible": false}];
+            {"name": "actions", "title": "", "type": "html"}];
 
         this.jeTableData.rows = [];
         let base = this;
