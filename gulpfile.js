@@ -45,6 +45,10 @@ var tsProject2 = ts.createProject('node_modules/reportsUI/tsconfig.json', {
     typescript: require('typescript')
 });
 
+var tsProject3 = ts.createProject('node_modules/billsUI/tsconfig.json', {
+  typescript: require('typescript')
+});
+
 var tsProjectProd = ts.createProject('tsconfig.json', {
   typescript: require('typescript')
 });
@@ -126,7 +130,9 @@ gulp.task('typescript-compile', function () {
       .pipe(ts(tsProject1));
     var tsResult2 = tsProject2.src() // instead of gulp.src(...)
         .pipe(ts(tsProject2));
-  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/reportsUI'))).pipe(livereload());
+  var tsResult3 = tsProject3.src() // instead of gulp.src(...)
+      .pipe(ts(tsProject3));
+  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/reportsUI')),tsResult3.js.pipe(gulp.dest('build/lib/billsUI'))).pipe(livereload());
   /*return gulp.src(['app/!**!/!*.ts', '!app/bower_components/!**!/!*.ts', '!node_modules/!**!/!*.ts'])
    .pipe(ts(tsProject))
    .pipe(gulp.dest('build/app/'));*/
@@ -139,7 +145,9 @@ gulp.task('prod-typescript-compile', function () {
    .pipe(ts(tsProject1));
     var tsResult2 = tsProject2.src() // instead of gulp.src(...)
         .pipe(ts(tsProject2));
-  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/reportsUI'))).pipe(livereload());
+  var tsResult3 = tsProject3.src() // instead of gulp.src(...)
+      .pipe(ts(tsProject3));
+  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/reportsUI')),tsResult3.js.pipe(gulp.dest('build/lib/billsUI'))).pipe(livereload());
 });
 
 // watch for changes and run the relevant task
@@ -151,7 +159,7 @@ gulp.task('watch', ['serve'], function () {
   gulp.watch('app/**/*.css', ['css']);
   gulp.watch('images/**/*.*', ['images']);
   gulp.watch('css/**/*.scss', ['sass']);
-  gulp.watch('node_modules/qCommon/**/*.*', ['generate-umd']);
+  //gulp.watch('node_modules/qCommon/**/*.*', ['generate-umd']);
   //gulp.watch(['build/**']).on('change', livereload.changed);
 });
 
@@ -208,7 +216,9 @@ gulp.task('html', ['wiredep'], function () {
       .pipe(gulp.dest('build/'));
     var reportsHtml = gulp.src(['./node_modules/reportsUI/app/views/*.html'])
         .pipe(gulp.dest('build/app/views/'));
-  return merge(html, reportsHtml).pipe(livereload());
+  var paymentsHtml = gulp.src(['./node_modules/billsUI/app/views/*.html'])
+      .pipe(gulp.dest('build/app/views/'));
+  return merge(html, reportsHtml,paymentsHtml).pipe(livereload());
 });
 
 // move css
@@ -291,7 +301,9 @@ gulp.task('copy-to-prod', ['prod-images', 'copy-misc-prod', 'copy-fonts-prod', '
       .pipe(gulp.dest('build/prod/app'));
   var reportsHtml = gulp.src(['./node_modules/reportsUI/app/views/*.html'])
         .pipe(gulp.dest('build/prod/app/views/'));
-  return merge(views, reportsHtml);
+  var paymentsHtml = gulp.src(['./node_modules/billsUI/app/views/*.html'])
+      .pipe(gulp.dest('build/prod/app/views/'));
+  return merge(views, reportsHtml,paymentsHtml);
 });
 
 gulp.task('gzipfiles', function(){

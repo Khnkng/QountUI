@@ -31,23 +31,6 @@ import {ChartOfAccountsComponent} from "./components/ChartOfAccounts.component";
 import {COAForm} from "./forms/COA.form";
 import {DashBoardActivator} from "qCommon/app/services/DashBoardActivator";
 import {ToolsComponent} from "./components/Tools.component";
-import {DashBoardComponent} from "./payments/app/components/DashBoard.component";
-import {WorkflowService} from "./payments/app/services/Workflow.service";
-import {BillsService} from "./payments/app/services/Bills.service";
-import {BoxService} from "./payments/app/services/Box.service";
-import {OAuthService} from "./payments/app/services/OAuthService";
-import {DocHubService} from "./payments/app/services/DocHub.service";
-import {CommentsService} from "./payments/app/services/Comments.service";
-import {UsersService} from "./payments/app/services/Users.service";
-import {BillForm} from "./payments/app/forms/Bill.form";
-import {CheckListForm} from "./payments/app/forms/CheckListForm";
-import {LineListForm} from "./payments/app/forms/CheckListForm";
-import {CustomDatepicker1} from "./payments/app/directives/customDatepicker1";
-import {CustomDatepicker} from "./payments/app/directives/customDatepicker";
-import {WorkflowComponent} from "./payments/app/components/Workflow.component";
-import {BillComponent} from "./payments/app/components/Bill.component";
-import {BillPayComponent} from "./payments/app/components/BillPay.component";
-import {RecipientInputComponent} from "./payments/app/components/RecipientInput.component";
 import {ItemCodesComponent} from "./components/ItemCodes.component";
 import {ItemCodeForm} from "./forms/ItemCode.form";
 import {BooksComponent} from "./components/Books.component";
@@ -55,6 +38,7 @@ import {JournalEntryComponent} from "./components/JournalEntry.component";
 import {JournalEntryForm, JournalLineForm} from "./forms/JournalEntry.form";
 import {ExpensesForm} from "./forms/Expenses.form";
 import {ExpensesSerice} from "./services/Expenses.service";
+import {PaymentsModule} from "billsUI/app/payments.module";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 //noinspection TypeScriptCheckImport
 
@@ -132,20 +116,15 @@ import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
             path: 'tools',
             component: ToolsComponent,
             canActivate: [LoggedInActivator]
-        },
-        {path: 'payments/dashboard/:tabId', name: 'Dashboard', component: DashBoardComponent,canActivate: [LoggedInActivator]},
-        {path: 'payments/workflow', name: 'Workflow', component: WorkflowComponent,canActivate: [LoggedInActivator]},
-        {path: 'payments/bill/:companyId/:id/:tabId', name: 'BillEntry', component: BillComponent,canActivate: [LoggedInActivator]},
-        {path: 'payments/bill-pay/:companyId/:id', name: 'BillPay', component: BillPayComponent,canActivate: [LoggedInActivator]},
-        {path: 'payments/newBill', name: 'NewBill', component: BillComponent,canActivate: [LoggedInActivator]}
-    ]), ReportsModule],
-    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,
-        DashBoardComponent,WorkflowComponent,BillComponent,BillPayComponent,CustomDatepicker,CustomDatepicker1,RecipientInputComponent, ItemCodesComponent, ExpensesCodesComponent, JournalEntryComponent, BooksComponent
+        }
+    ]), ReportsModule,PaymentsModule
     ],
+    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent,
+        ExpensesCodesComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
-        WorkflowService,BillsService,BoxService,OAuthService,DocHubService,CommentsService,UsersService,BillForm,CheckListForm, LineListForm, ExpensesSerice],
+    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm,
+                ExpensesSerice],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
