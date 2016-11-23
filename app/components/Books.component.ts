@@ -62,9 +62,15 @@ export class BooksComponent{
         this.routeSub = this._route.params.subscribe(params => {
             this.selectedTab=params['tabId'];
             this.selectTab(this.selectedTab,"");
-            this.isLoading = false;
             this.hasJournalEntries = false;
         });
+        this.localBadges=JSON.parse(sessionStorage.getItem("localBooksBadges"));
+        if(!this.localBadges){
+            this.localBadges = {'deposits':0,'expenses':0,'journalEntries':0};
+            sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+        } else{
+            this.localBadges = JSON.parse(sessionStorage.getItem("localBooksBadges"));
+        }
     }
 
     animateBoxInfo(boxInfo) {
@@ -95,14 +101,14 @@ export class BooksComponent{
         this.tabDisplay.forEach(function(tab, index){
             base.tabDisplay[index] = {'display':'none'}
         });
-        this.localBadges=JSON.parse(sessionStorage.getItem("localBadges"));
         this.tabDisplay[tabNo] = {'display':'block'};
         this.tabBackground = this.bgColors[tabNo];
         if(this.selectedTab == 0){
-
+            this.isLoading = false;
         } else if(this.selectedTab == 1){
-
+            this.isLoading = false;
         } else if(this.selectedTab == 2){
+            this.isLoading = true;
             this.journalService.journalEntries(this.currentCompany.id)
                 .subscribe(journalEntries => this.buildTableData(journalEntries), error => this.handleError(error));
         }
@@ -136,8 +142,18 @@ export class BooksComponent{
         this.toastService.pop(TOAST_TYPE.error, "Could not perform action.")
     }
 
+    handleBadges(length, selectedTab){
+        if(selectedTab == 2){
+            this.badges.journalEntries = length;
+            this.localBadges['journalEntries'] = length;
+            sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+        }
+    }
+
     buildTableData(data){
         let base = this;
+        this.isLoading = false;
+        this.handleBadges(data.length, 2);
         let tableColumns = {};
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
@@ -164,7 +180,9 @@ export class BooksComponent{
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.jeTableData.rows.push(row);
         });
-        this.hasJournalEntries = true;
+        if(this.jeTableData.rows.length > 0){
+            this.hasJournalEntries = true;
+        }
     }
 
     reRoutePage(tabId) {

@@ -123,13 +123,13 @@
                                             <div class="error" [hidden]="jeForm.controls.recurring.untouched || jeForm.controls.recurring.valid"><small>Recurring is required.</small></div>
                                         </label>
                                     </div>
-                                    <div class="small-12 medium-4 columns" *ngIf="!disableRecurring">
+                                    <div class="small-12 medium-4 columns" [hidden]="disableRecurring">
                                         <label>Next JE Date
                                             <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setNextJEDate($event)" formControlName="nextJEDate" placeholder="Next JE Date*">
                                             <div class="error" [hidden]="jeForm.controls.nextJEDate.untouched || jeForm.controls.nextJEDate.valid"><small>Next JE Date is required.</small></div>
                                         </label>
                                     </div>
-                                    <div class="small-12 medium-4 columns" *ngIf="!disableRecurring">
+                                    <div class="small-12 medium-4 columns" [hidden]="disableRecurring">
                                         <label>Frequency
                                             <select formControlName="recurringFrequency">
                                                 <option value="daily">Daily</option>
@@ -166,11 +166,11 @@
                             </tr>
                         </thead>
                         <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
-                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem)">
+                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem, index)">
                                 <td>{{index+1}}</td>
                                 <td [hidden]="lineListItem.editable">{{lineListItem.controls.type.value}}</td>
                                 <td [hidden]="!lineListItem.editable">
-                                    <select [formControl]="lineListItem.controls.type" (change)="filterChartOfAccounts($event.target.value)">
+                                    <select [formControl]="tempJournalLinesArray.controls[index].controls.type" (change)="filterChartOfAccounts(lineListItem, $event.target.value)">
                                         <option value="Assets">Assets</option>
                                         <option value="Liability">Liability</option>
                                         <option value="Income">Income</option>
@@ -180,21 +180,25 @@
                                 </td>
                                 <td [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
                                 <td class="coa-field" [hidden]="!lineListItem.editable">
-                                    <select combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" (valueChanged)="updateLineCOA($event, index)">
-                                        <option *ngFor="let chartOfAccount of getFilteredCOA(lineListItem.controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                                    <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" (valueChanged)="updateLineCOA($event, index)">
+                                        <option *ngFor="let chartOfAccount of getFilteredCOA(tempJournalLinesArray.controls[index].controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
                                     </select>
                                 </td>
                                 <td [hidden]="lineListItem.editable">
                                     {{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):null}}
                                 </td>
                                 <td [hidden]="!lineListItem.editable">
-                                   <input type="text" [formControl]="lineListItem.controls.amount"/>
+                                   <input type="text" [formControl]="tempJournalLinesArray.controls[index].controls.amount"/>
                                 </td>
                                 <td [hidden]="lineListItem.editable">{{lineListItem.controls.memo.value}}</td>
                                 <td [hidden]="!lineListItem.editable">
-                                    <textarea [formControl]="lineListItem.controls.memo"></textarea>
+                                    <textarea [formControl]="tempJournalLinesArray.controls[index].controls.memo"></textarea>
                                 </td>
-                                <td><i class="icon ion-ios-trash-outline" (click)="lineListItem.editable = !lineListItem.editable"></i></td>
+                                <td>
+                                    <i class="icon ion-checkmark-circled" (click)="updateLine(lineListItem, index)" *ngIf="lineListItem.editable"></i>
+                                    <i class="icon ion-close" *ngIf="lineListItem.editable" (click)="toggleLineEdit(lineListItem)"></i>
+                                    <i class="icon ion-ios-trash-outline" *ngIf="!lineListItem.editable" (click)="deleteLine(index)"></i>
+                                </td>
                             </tr>
                         </tbody>
                         <tbody *ngIf="jeForm.controls.journalLines.controls.length == 0" [hidden]="addLineItemMode">

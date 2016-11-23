@@ -43,7 +43,8 @@ export class JournalLineForm extends abstractForm{
       type: [model? model.type: ''],
       coa: [model? model.coa: ''],
       amount: [model? model.amount: 0],
-      memo: [model? model.memo: '']
+      memo: [model? model.memo: ''],
+      id: [model? model.id: null]
     };
   }
 

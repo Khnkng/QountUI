@@ -28,6 +28,7 @@ export class JournalEntryComponent{
     disableReversalDate:boolean = true;
     disableRecurring:boolean = true;
     journalLinesArray: FormArray = new FormArray([]);
+    tempJournalLinesArray: FormArray = new FormArray([]);
     addLineItemMode:boolean = false;
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     newTags:Array<string>=[];
@@ -127,6 +128,7 @@ export class JournalEntryComponent{
         this.lines.push(line);
         let lineListForm = this._fb.group(this._lineListForm.getForm(line));
         this.journalLinesArray.push(lineListForm);
+        this.tempJournalLinesArray.push(lineListForm);
         this.addLineItemMode = !this.addLineItemMode;
 
         let typeControl:any = this.jeForm.controls['newType'];
@@ -140,13 +142,25 @@ export class JournalEntryComponent{
         this.coaComboBox.clearValue();
     }
 
-    editLine(lineListItem){
+    editLine(lineListItem, index){
         let data = this._jeForm.getData(lineListItem);
+        //It works. Not sure whether it has better ways to do.
+        jQuery('#coa-'+index).siblings().children('input').val(this.getCOAName(data.coa));
         lineListItem.editable = true;
     }
 
-    deleteLine(lineIndex){
+    updateLine(lineListItem, index){
+        this.journalLinesArray.controls[index] = this.tempJournalLinesArray.controls[index];
+        lineListItem.editable = false;
+    }
 
+    toggleLineEdit(lineListItem){
+        lineListItem.editable = !lineListItem.editable;
+    }
+
+    deleteLine(lineIndex){
+        this.journalLinesArray.controls.splice(lineIndex, 1);
+        this.tempJournalLinesArray.controls.splice(lineIndex, 1);
     }
 
     getCOAName(coaId){
@@ -172,6 +186,7 @@ export class JournalEntryComponent{
     }
 
     submit($event){
+        let base = this;
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
         if(this.newJournalEntry){
@@ -181,11 +196,24 @@ export class JournalEntryComponent{
                     let link = ['books', 2];
                     this._router.navigate(link);
                 }, error=> this.handleError(error));
+        } else{
+            data.id = this.journalEntry.id;
+            data.journalLines = [];
+            _.each(this.journalLinesArray.controls, function(lineListForm){
+                data.journalLines.push(base._lineListForm.getData(lineListForm));
+            });
+            this.journalService.updateJournalEntry(this.cleanData(data), this.currentCompany.id)
+                .subscribe(journalEntry => {
+                    this.toastService.pop(TOAST_TYPE.success, "Journal Entry updated successfully");
+                    let link = ['books', 2];
+                    this._router.navigate(link);
+                    console.log(journalEntry);
+                }, error=> this.handleError(error));
         }
     }
 
     handleError(error){
-        console.log(error);
+        this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
     }
 
     filterChartOfAccounts(category){
@@ -211,6 +239,9 @@ export class JournalEntryComponent{
 
     updateLineCOA($event, index){
         let chartOfAccount = _.find(this.chartOfAccounts, {"name": $event});
+        if(!_.isEmpty(chartOfAccount)){
+            this.tempJournalLinesArray.controls[index].controls['coa'].patchValue(chartOfAccount.id);
+        }
     }
 
     processJournalEntry(journalEntry){
@@ -223,6 +254,7 @@ export class JournalEntryComponent{
             let lineListForm = base._fb.group(base._lineListForm.getForm(line));
             base.journalLinesArray.push(lineListForm);
         });
+        this.tempJournalLinesArray = _.cloneDeep(this.journalLinesArray);
         this._jeForm.updateForm(this.jeForm, this.journalEntry);
     }
 
