@@ -68,14 +68,119 @@ $qount-form-ele-border-error: $qount-brand-red;
 $qount-table-thead-bg: #E8F2FC;
 $qount-table-tr-hover: #F0F4FD;
 $qount-table-border: #DCDEDD;
-
-table{
-  &.footable{
-    &.footable-filtering{
-      margin-top: 40px;
+.foo-container {
+  position:relative;
+  margin-top:20px;
+  .foo-toolbar {
+    position:absolute;
+    right:15px;
+    top: -3px;
+  }
+  .bighalf-footable{
+    .footable-filtering{
+      .footable-filtering{
+        right: 100px;
+      }
     }
   }
+  .footable .open > .dropdown-menu {
+    display: block;
+    max-height: 130px;
+    overflow: auto;
+  }
 
+
+}
+
+.footable{
+  &.footable-filtering{
+    margin-top: 40px;
+  }
+  .footable-filtering{
+    position: absolute;
+    top: -50px;
+    right: -10px;
+    border: none !important;
+    .footable-filtering-search{
+      input.form-control{
+        border-right: none !important;
+        &:focus{
+          box-shadow: none;
+          //border: 1px solid $qount-btn-primary;
+          &+.input-group-btn .btn-primary{
+            //border: 1px solid $qount-btn-primary;
+            color: $qount-btn-primary;
+          }
+        }
+
+      }
+      button{
+        &.btn-primary{
+          z-index: 2;
+          color: $qount-text;
+          border: 1px solid $qount-brand-grey;
+          border-left: none !important;
+          background: #fff;
+        }
+        &.btn-default.dropdown-toggle{
+          &:hover{
+            background: $qount-brand-grey-light;
+          }
+        }
+      }
+    }
+  }
+  &.footable-paging{
+    position: relative;
+    td{
+      span{
+        &.label{
+          display: none !important;
+        }
+      }
+      ul{
+        color: $qount-text;
+        &.pagination{
+          position: relative;
+          right: -10px;
+          li{
+            &.active{
+              a{
+                color: $qount-text;
+                background: $qount-table-thead-bg;
+                border: 1px solid $qount-table-border;
+                &:focus{
+                  background: $qount-table-tr-hover;
+                  border-color: $qount-table-border;
+                  color: $qount-text;
+                }
+                &:hover{
+                  background: $qount-table-tr-hover;
+                  border-color: $qount-table-border;
+                  color: $qount-text;
+                }
+              }
+            }
+            a{
+              color: $qount-text;
+              font-size: .8em;
+            }
+            &:last-child{
+              a{
+                border-radius: 3px;
+              }
+
+            }
+          }
+
+        }
+
+      }
+    }
+  }
+}
+
+table{
   //border: 1px solid $qount-table-border;
   thead{
     background: $qount-table-thead-bg;
@@ -84,35 +189,6 @@ table{
       th{
         font-size: .8em;
         border: none !important;
-      }
-
-      &.footable-filtering{
-        position: absolute;
-        top: -50px;
-        right: -10px;
-        border: none !important;
-        .footable-filtering-search{
-          input.form-control{
-            //border-right: none;
-          }
-          button{
-            &.btn-primary{
-              color: $qount-text;
-              border: 1px solid $qount-form-border;
-              //border-left: none;
-              background: #fff;
-              &:hover{
-                background: $qount-brand-grey-light;
-              }
-            }
-            &.btn-default.dropdown-toggle{
-              &:hover{
-                background: $qount-brand-grey-light;
-              }
-            }
-          }
-        }
-
       }
     }
 
@@ -132,56 +208,6 @@ table{
   tfoot{
     background: #ffffff !important;
     border: none !important;
-    tr{
-      &.footable-paging{
-        position: relative;
-        td{
-          span{
-            &.label{
-              display: none !important;
-            }
-          }
-          ul{
-            color: $qount-text;
-            &.pagination{
-              position: relative;
-              right: -10px;
-              li{
-                &.active{
-                  a{
-                    color: $qount-text;
-                    background: $qount-table-thead-bg;
-                    border: 1px solid $qount-table-border;
-                    &:focus{
-                      background: $qount-table-tr-hover;
-                      border-color: $qount-table-border;
-                      color: $qount-text;
-                    }
-                    &:hover{
-                      background: $qount-table-tr-hover;
-                      border-color: $qount-table-border;
-                      color: $qount-text;
-                    }
-                  }
-                }
-                a{
-                  color: $qount-text;
-                  font-size: .8em;
-                }
-                &:last-child{
-                  a{
-                    border-radius: 3px;
-                  }
-
-                }
-              }
-
-            }
-
-          }
-        }
-      }
-    }
   }
 
 }
