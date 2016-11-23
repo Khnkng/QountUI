@@ -2837,24 +2837,4 @@ tbody{
   border-color: #ccc;
 }
 
-.bighalf-footable .footable .btn-primary {
-  color: #4B96FA;
-  background-color: #fff;
-  border-color: #ccc;
-}
-
-.foo-container {
-  position:relative;
-  margin-top:20px;
-  .foo-toolbar {
-    position:absolute;
-    left:15px;
-    top:0px;
-  }
-  .footable .open > .dropdown-menu {
-    display: block;
-    max-height: 130px;
-    overflow: auto;
-  }
-}
 
