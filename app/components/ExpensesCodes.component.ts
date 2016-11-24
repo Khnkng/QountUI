@@ -187,6 +187,8 @@ export class ExpensesCodesComponent {
     this.hasItemCodes = false;
     this.expenses = expenses;
     this.tableData.rows = [];
+    this.tableOptions.search = true;
+    this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
       {"name": "desc", "title": "Description"},

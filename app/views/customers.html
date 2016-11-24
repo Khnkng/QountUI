@@ -1,14 +1,14 @@
 
 <div class="row" foundation>
     <div class="column small-12 medium-6">
-        <h6>Customers</h6>
-    </div>
-    <div class="columns small-6 small-offset-6 right">
-        <button class="button small float-right" (click)="showCreateVendor()">Add Customer</button>
+        <h5>Customers</h5>
     </div>
 </div>
 <div class="row" foundation>
-    <div class="column large-12 medium-12 small-12">
+    <div class="column large-12 medium-12 small-12 foo-container">
+        <div class="foo-toolbar">
+            <button class="button small" (click)="showCreateVendor()"><i class="icon ion-plus-round"></i> Customer</button>
+        </div>
         <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCustomersList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
     <div class="small reveal" #createVendor id="createVendor" data-reveal data-close-on-click="false">
