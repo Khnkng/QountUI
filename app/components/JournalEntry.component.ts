@@ -27,10 +27,12 @@ export class JournalEntryComponent{
     active:boolean = true;
     disableReversalDate:boolean = true;
     disableRecurring:boolean = true;
+    disableReverseJournal: boolean = true;
     journalLinesArray: FormArray = new FormArray([]);
     tempJournalLinesArray: FormArray = new FormArray([]);
     addLineItemMode:boolean = false;
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
+    @ViewChild('reverseJournalDir') reverseJournalComboBox: ComboBox;
     newTags:Array<string>=[];
     allCompanies:Array = [];
     currentCompany:any;
@@ -41,6 +43,7 @@ export class JournalEntryComponent{
     newJournalEntry:boolean = true;
     journalID:string;
     journalEntry:any;
+    existingJournals:Array = [];
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute) {
@@ -60,12 +63,34 @@ export class JournalEntryComponent{
             this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
         }
 
+        this.journalService.journalEntries(this.currentCompany.id)
+            .subscribe(journalEntries => {
+                this.existingJournals = journalEntries;
+            }, error => this.handleError(error));
+
         this.coaService.chartOfAccounts(this.currentCompany.id)
             .subscribe(chartOfAccounts => {
                 this.chartOfAccounts = chartOfAccounts;
             }, error=> this.handleError(error));
         this.toggleAutoReverse();
         this.toggleRecurring();
+    }
+
+    toggleReverseJournal(type, reversedFrom){
+        let base = this;
+        if(type == 'Reversal'){
+            this.disableReverseJournal = false;
+            let journalEntry = _.find(this.existingJournals, {'id': reversedFrom});
+            setTimeout(function () {
+                base.reverseJournalComboBox.setValue(journalEntry, 'number');
+            });
+            if(this.journalEntry && this.journalEntry.id){
+                let index = _.findIndex(this.existingJournals, {'id': this.journalEntry.id});
+                this.existingJournals.splice(index, 1);
+            }
+        } else{
+            this.disableReverseJournal = true;
+        }
     }
 
     newForm() {
@@ -105,12 +130,22 @@ export class JournalEntryComponent{
         }, 0);
     }
 
-    updateChartOfAccount($event){
-        if(_.isEmpty($event)){
-            return false;
+    setReverseJournal(reverseJournal){
+        let journal;
+        _.each(this.existingJournals, function(existingJournal){
+            if(existingJournal.number == reverseJournal){
+                journal = existingJournal;
+            }
+        });
+        if(!_.isEmpty(journal)) {
+            var reverseJournalControl = this.jeForm.controls['reversedFrom'];
+            reverseJournalControl.patchValue(journal.id);
         }
+    }
+
+    updateChartOfAccount($event){
         let chartOfAccount = _.find(this.chartOfAccounts, {"name": $event});
-        if(chartOfAccount){
+        if(!_.isEmpty(chartOfAccount)){
             let newCOAControl:any = this.jeForm.controls['newCoa'];
             newCOAControl.patchValue(chartOfAccount.id);
         }
@@ -247,6 +282,7 @@ export class JournalEntryComponent{
     processJournalEntry(journalEntry){
         let base = this;
         this.journalEntry = journalEntry;
+        this.toggleReverseJournal(this.journalEntry.type, this.journalEntry.reversedFrom);
         this.disableReversalDate = !Boolean(journalEntry.autoReverse);
         this.disableRecurring = !Boolean(journalEntry.recurring);
         this.lines = this.journalEntry.journalLines;

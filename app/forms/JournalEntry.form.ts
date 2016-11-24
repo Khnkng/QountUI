@@ -21,6 +21,7 @@ export class JournalEntryForm extends abstractForm{
       "category": [''],
       "autoReverse": [false],
       "reversalDate": [''],
+      "reversedFrom": [''],
       "recurring": [false],
       "nextJEDate": [''],
       "recurringFrequency": [''],
