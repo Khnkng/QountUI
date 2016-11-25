@@ -2832,6 +2832,22 @@ tbody{
   }
 }
 
+#addDimension{
+  .dimension{
+    height: 30px;
+    float: left;
+    width: auto;
+    display: inline-block;
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 5px;
+
+    .icon{
+      font-size: 10px;
+    }
+  }
+}
+
 .bighalf-footable .footable .btn-primary:hover {
   color: #4B96FA;
   background-color: #fff;

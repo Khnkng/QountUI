@@ -19,18 +19,18 @@
             <h6>
                 {{editMode ? "Update Item Code" : "Add Item Code"}}
             </h6>
-            <form *ngIf="newFormActive" [formGroup]="itemcodeForm">
+            <form *ngIf="newFormActive" [formGroup]="dimensionForm">
                 <div class="row">
                     <div class="small-12 medium-6 columns">
                         <label>Name
                             <input type="text" formControlName="name" placeholder="Name*"/>
-                            <div class="error" [hidden]="itemcodeForm.controls.name.untouched || itemcodeForm.controls.name.valid">Name is required.</div>
+                            <div class="error" [hidden]="dimensionForm.controls.name.untouched || dimensionForm.controls.name.valid">Name is required.</div>
                         </label>
                     </div>
                     <div class="small-12 medium-6 columns">
                         <label>Description
                             <textarea formControlName="desc" style="height: 110px;" placeholder="Description"></textarea>
-                            <div class="error" [hidden]="itemcodeForm.controls.desc.untouched || itemcodeForm.controls.desc.valid">Description is required.</div>
+                            <div class="error" [hidden]="dimensionForm.controls.desc.untouched || dimensionForm.controls.desc.valid">Description is required.</div>
                         </label>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                             <select combo-box #paymentCOAComboBoxDir="comboBox" data-placeholder="Enter Payment COA" formControlName="payment_coa_mapping" [listObject]="paymentChartOfAccounts" (valueChanged)="updatePaymentCOA($event)">
                                 <option *ngFor="let chartOfAccount of paymentChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
                             </select>
-                            <div class="error" [hidden]="itemcodeForm.controls.payment_coa_mapping.untouched || itemcodeForm.controls.payment_coa_mapping.valid">Payment COA is required.</div>
+                            <div class="error" [hidden]="dimensionForm.controls.payment_coa_mapping.untouched || dimensionForm.controls.payment_coa_mapping.valid">Payment COA is required.</div>
                         </label>
                     </div>
                     <div class="small-12 medium-6 columns">
@@ -48,13 +48,13 @@
                             <select combo-box #invoiceCOAComboBoxDir="comboBox" data-placeholder="Enter Invoice COA" formControlName="invoice_coa_mapping" [listObject]="invoiceChartOfAccounts" (valueChanged)="updateInvoiceCOA($event)">
                                 <option *ngFor="let chartOfAccount of invoiceChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
                             </select>
-                            <div class="error" [hidden]="itemcodeForm.controls.invoice_coa_mapping.untouched || itemcodeForm.controls.invoice_coa_mapping.valid">Invoice COA is required.</div>
+                            <div class="error" [hidden]="dimensionForm.controls.invoice_coa_mapping.untouched || dimensionForm.controls.invoice_coa_mapping.valid">Invoice COA is required.</div>
                         </label>
                     </div>
                 </div>
                 <div class="row" style="margin-top: 10px;">
                     <div class="small-12 medium-12 columns">
-                        <button class="button small float-right" [disabled]="!itemcodeForm.valid" (click)="submit($event)">Save</button>
+                        <button class="button small float-right" [disabled]="!dimensionForm.valid" (click)="submit($event)">Save</button>
                     </div>
                 </div>
             </form>

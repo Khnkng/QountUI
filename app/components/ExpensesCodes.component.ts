@@ -27,7 +27,7 @@ declare var _:any;
 
 export class ExpensesCodesComponent {
   expensesForm: FormGroup;
-  //itemCodes = [];
+  //dimensions = [];
   expenses = [];
   paymentChartOfAccounts:any = [];
   invoiceChartOfAccounts:any = [];
