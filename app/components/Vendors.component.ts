@@ -51,6 +51,7 @@ export class VendorComponent {
     if(this.companyId){
       this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
     }
+    
     this.companyService.companies()
         .subscribe(companies  => {
           this.companies = companies;
