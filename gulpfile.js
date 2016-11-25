@@ -33,26 +33,6 @@ var processhtml_options = {
 var ranBower = false;
 var ranWiredep = false;
 
-var tsProject = ts.createProject('tsconfig.json', {
-  typescript: require('typescript')
-});
-
-var tsProject1 = ts.createProject('node_modules/qCommon/tsconfig.json', {
-  typescript: require('typescript')
-});
-
-var tsProject2 = ts.createProject('node_modules/reportsUI/tsconfig.json', {
-    typescript: require('typescript')
-});
-
-var tsProject3 = ts.createProject('node_modules/billsUI/tsconfig.json', {
-  typescript: require('typescript')
-});
-
-var tsProjectProd = ts.createProject('tsconfig.json', {
-  typescript: require('typescript')
-});
-
 gulp.task('clean', function () {
   return del(['build/**']);
 });
@@ -124,6 +104,24 @@ gulp.task('serve', ['build'], function () {
 
 
 gulp.task('typescript-compile', function () {
+
+    var tsProject = ts.createProject('tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject1 = ts.createProject('node_modules/qCommon/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject2 = ts.createProject('node_modules/reportsUI/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject3 = ts.createProject('node_modules/billsUI/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+
   var tsResult = tsProject.src() // instead of gulp.src(...)
       .pipe(ts(tsProject));
   var tsResult1 = tsProject1.src() // instead of gulp.src(...)
@@ -139,6 +137,24 @@ gulp.task('typescript-compile', function () {
 });
 
 gulp.task('prod-typescript-compile', function () {
+
+
+    var tsProject = ts.createProject('tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject1 = ts.createProject('node_modules/qCommon/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject2 = ts.createProject('node_modules/reportsUI/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject3 = ts.createProject('node_modules/billsUI/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
   var tsResult = tsProject.src() // instead of gulp.src(...)
       .pipe(ts(tsProject));
   var tsResult1 = tsProject1.src() // instead of gulp.src(...)
@@ -155,6 +171,8 @@ gulp.task('watch', ['serve'], function () {
   livereload.listen();
   gulp.watch('app/assets/*.js', ['js']);
   gulp.watch('app/**/*.ts', ['typescript-compile']);
+  gulp.watch('node_modules/reportsUI/app/**/*.*', ['typescript-compile']);
+  gulp.watch('node_modules/billsUI/app/**/*.*', ['typescript-compile']);
   gulp.watch(['./index.html', './app/views/*.html'], ['html']);
   gulp.watch('app/**/*.css', ['css']);
   gulp.watch('images/**/*.*', ['images']);

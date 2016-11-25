@@ -73,10 +73,10 @@ export class ItemCodesComponent{
   filterChartOfAccounts(chartOfAccounts){
     this.allCOAList = chartOfAccounts;
     this.paymentChartOfAccounts = _.filter(chartOfAccounts, function(coa){
-      return coa.type != '';
+      return coa.category == 'Expense';
     });
     this.invoiceChartOfAccounts = _.filter(chartOfAccounts, function(coa){
-      return coa.type != '';
+      return coa.category == 'Income';
     });
     this.codeService.itemCodes(this.currentCompany.id)
         .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));

@@ -43,7 +43,8 @@ import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 import {CustomersComponent} from "./components/Customers.component";
 import {CustomersService} from "./services/Customers.service";
 import {CustomersForm} from "./forms/Customers.form";
-//noinspection TypeScriptCheckImport
+import {DimensionsComponent} from "./components/Dimensions.component";
+import {DimensionForm} from "./forms/Dimension.form";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -111,7 +112,12 @@ import {CustomersForm} from "./forms/Customers.form";
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'itemCodes',
+            path: 'dimensions',
+            component: DimensionsComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'dimensions',
             component: ItemCodesComponent,
             canActivate: [LoggedInActivator]
         },
@@ -132,11 +138,13 @@ import {CustomersForm} from "./forms/Customers.form";
         }
     ]), ReportsModule,PaymentsModule
     ],
-    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent, VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent,
-        ExpensesCodesComponent,CustomersComponent],
+    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
+        VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
+        CustomersComponent, DimensionsComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm, ExpensesSerice, CustomersService, CustomersForm],
+    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
+        ExpensesSerice, CustomersService, CustomersForm, DimensionForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
