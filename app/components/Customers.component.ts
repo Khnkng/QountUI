@@ -55,6 +55,8 @@ export class CustomersComponent {
     buildTableData(customers) {
         this.customers = customers;
         this.hasCustomersList = false;
+        this.tableOptions.search = true;
+        this.tableOptions.pageSize = 9;
         this.tableData.rows = [];
         this.tableData.columns = [
             {"name": "customer_id", "title": "ID"},

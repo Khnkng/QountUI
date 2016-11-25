@@ -159,8 +159,9 @@ export class BooksComponent{
             {"name": "number", "title": "Number"},
             {"name": "date", "title": "Date"},
             {"name": "type", "title": "Journal Type"},
-            {"name": "desc", "title": "Description"},
-            {"name": "source", "title": "Source", "visible": false},
+            {"name": "sourceValue", "title": "Source"},
+            {"name": "source", "title": "Source", 'visible': false},
+            {"name": "desc", "title": "Description","visible": false},
             {"name": "category", "title": "Category","visible": false},
             {"name": "autoReverse", "title": "Auto Reverse","visible": false},
             {"name": "reversalDate", "title": "Reversal Date","visible": false},
@@ -175,6 +176,9 @@ export class BooksComponent{
         data.forEach(function(journalEntry) {
             let row: any = {};
             _.each(Object.keys(journalEntry), function (key) {
+                if(key == 'source'){
+                    row['sourceValue']=base.getSourceName(journalEntry[key]);
+                }
                 row[key] = journalEntry[key];
             });
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
@@ -183,6 +187,28 @@ export class BooksComponent{
         if(this.jeTableData.rows.length > 0){
             this.hasJournalEntries = true;
         }
+    }
+
+    getSourceName(source){
+        let result = source;
+        switch(source){
+            case 'manual':
+                result = 'Manual';
+                break;
+            case 'payroll':
+                result = 'Payroll';
+                break;
+            case 'accountsPayable':
+                result = 'Accounts Payable';
+                break;
+            case 'accountsReceivable':
+                result = 'Accounts Receivable';
+                break;
+            case 'inventory':
+                result = 'Inventory';
+                break;
+        }
+        return result;
     }
 
     reRoutePage(tabId) {

@@ -191,6 +191,8 @@ export class ItemCodesComponent{
     this.hasItemCodes = false;
     this.itemCodes = itemCodes;
     this.tableData.rows = [];
+    this.tableOptions.search = true;
+    this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
       {"name": "desc", "title": "Description"},

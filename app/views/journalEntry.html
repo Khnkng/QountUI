@@ -32,12 +32,22 @@
                             </div>
                             <div class="small-12 medium-4 columns">
                                 <div class="row">
-                                    <div class="small-12 medium-12 columns">
+                                    <div class="small-12 medium-6 columns">
                                         <label>Journal Type
                                             <div>
-                                                <input type="radio" formControlName="type" value="original" id="original"><label for="original">Original</label>
-                                                <input type="radio" formControlName="type" value="reversal" id="reversal"><label for="reversal">Reversal</label>
+                                                <input type="radio" formControlName="type" value="Original" id="original" (click)="toggleReverseJournal('Original')"><label for="original">Original</label>
+                                                <input type="radio" formControlName="type" value="Reversal" id="reversal" (click)="toggleReverseJournal('Reversal')"><label for="reversal">Reversal</label>
                                                 <div class="error" [hidden]="jeForm.controls.type.untouched || jeForm.controls.type.valid"><small>Please select journal type</small></div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="small-12 medium-6 columns" *ngIf="!disableReverseJournal">
+                                        <label>Reverse Journal
+                                            <div>
+                                                <select combo-box #reverseJournalDir="comboBox" data-placeholder="Select Journal" [listObject]="existingJournals"  formControlName="reversedFrom" (valueChanged)="setReverseJournal($event)">
+                                                    <option *ngFor="let existingJournal of existingJournals" [value]="existingJournal.id">{{existingJournal.number}}</option>
+                                                </select>
+                                                <div class="error" [hidden]="jeForm.controls.reversedFrom.untouched || jeForm.controls.reversedFrom.valid"><small>Please select Reverse Journal</small></div>
                                             </div>
                                         </label>
                                     </div>
