@@ -117,7 +117,7 @@ import {DimensionForm} from "./forms/Dimension.form";
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'dimensions',
+            path: 'itemCodes',
             component: ItemCodesComponent,
             canActivate: [LoggedInActivator]
         },
