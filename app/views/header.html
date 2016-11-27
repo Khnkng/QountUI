@@ -7,6 +7,9 @@
 <div class="top-bar-right">
   <ul class="menu">
     <li>
+      <switch-company></switch-company>
+    </li>
+    <li>
       <div [hidden]="!showSearch" class="search">
         <i class="icon ion-search"></i>
         <input [(ngModel)]="searchText" (keyup)="getTextValue($event,searchText)"
