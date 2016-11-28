@@ -52,11 +52,11 @@ export class JournalEntryComponent{
             this.journalID=params['journalID'];
             let tempReverse=params['reverse'];
             if(this.journalID){
-                this.newJournalEntry = false;
-            }
-
-            if(tempReverse){
-                this.isReverse = true;
+                if(tempReverse){
+                    this.isReverse = true;
+                } else{
+                    this.newJournalEntry = false;
+                }
             }
         });
 
@@ -69,10 +69,10 @@ export class JournalEntryComponent{
             this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
         }
 
-        this.journalService.journalEntries(this.currentCompany.id)
+        /*this.journalService.journalEntries(this.currentCompany.id)
             .subscribe(journalEntries => {
                 this.existingJournals = journalEntries;
-            }, error => this.handleError(error));
+            }, error => this.handleError(error));*/
 
         this.coaService.chartOfAccounts(this.currentCompany.id)
             .subscribe(chartOfAccounts => {
@@ -291,8 +291,9 @@ export class JournalEntryComponent{
         if(this.isReverse){
             this.journalEntry.number += 'R';
             this.journalEntry.type = 'Reversal';
+            this.journalEntry.reversedFrom = this.journalEntry.id;
         }
-        this.toggleReverseJournal(this.journalEntry.type, this.journalEntry.reversedFrom);
+        //this.toggleReverseJournal(this.journalEntry.type, this.journalEntry.reversedFrom);
         this.disableReversalDate = !Boolean(journalEntry.autoReverse);
         this.disableRecurring = !Boolean(journalEntry.recurring);
         this.lines = this.journalEntry.journalLines;
@@ -309,7 +310,7 @@ export class JournalEntryComponent{
         _form['journalLines'] = this.journalLinesArray;
         this.jeForm = this._fb.group(_form);
         this.newForm();
-        if(!this.newJournalEntry){
+        if(!this.newJournalEntry || this.isReverse){
             this.journalService.journalEntry(this.journalID, this.currentCompany.id)
                 .subscribe(journalEntry => this.processJournalEntry(journalEntry), error => this.handleError(error));
         }
