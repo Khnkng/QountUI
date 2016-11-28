@@ -103,7 +103,7 @@ export class ToolsComponent {
       }
       break;
       case 'items': {
-        let link = ['dimensions'];
+        let link = ['itemCodes'];
         this._router.navigate(link);
       }
       break;
