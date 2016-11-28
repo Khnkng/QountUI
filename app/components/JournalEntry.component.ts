@@ -44,13 +44,19 @@ export class JournalEntryComponent{
     journalID:string;
     journalEntry:any;
     existingJournals:Array = [];
+    isReverse:boolean = false;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute) {
         this.routeSub = this._route.params.subscribe(params => {
             this.journalID=params['journalID'];
+            let tempReverse=params['reverse'];
             if(this.journalID){
                 this.newJournalEntry = false;
+            }
+
+            if(tempReverse){
+                this.isReverse = true;
             }
         });
 
@@ -255,7 +261,7 @@ export class JournalEntryComponent{
         let base = this;
         this.filteredChartOfAccounts = [];
         _.each(this.chartOfAccounts, function (coa) {
-            if(coa.category.toLowerCase() == category.toLowerCase()){
+            if(coa.category && (coa.category.toLowerCase() == category.toLowerCase())){
                 base.filteredChartOfAccounts.push(coa);
             }
         });
@@ -265,7 +271,7 @@ export class JournalEntryComponent{
         let base = this;
         let filteredCOA = [];
         _.each(this.chartOfAccounts, function (coa) {
-            if(coa.category.toLowerCase() == category.toLowerCase()){
+            if(coa.category && (coa.category.toLowerCase() == category.toLowerCase())){
                 filteredCOA.push(coa);
             }
         });
@@ -282,6 +288,10 @@ export class JournalEntryComponent{
     processJournalEntry(journalEntry){
         let base = this;
         this.journalEntry = journalEntry;
+        if(this.isReverse){
+            this.journalEntry.number += 'R';
+            this.journalEntry.type = 'Reversal';
+        }
         this.toggleReverseJournal(this.journalEntry.type, this.journalEntry.reversedFrom);
         this.disableReversalDate = !Boolean(journalEntry.autoReverse);
         this.disableRecurring = !Boolean(journalEntry.recurring);

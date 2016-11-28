@@ -101,6 +101,11 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'journalEntry/:journalID/:reverse',
+            component: JournalEntryComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'vendors',
             component: VendorComponent,
             canActivate: [LoggedInActivator]

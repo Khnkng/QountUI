@@ -32,7 +32,7 @@
                             </div>
                             <div class="small-12 medium-4 columns">
                                 <div class="row">
-                                    <div class="small-12 medium-6 columns">
+                                    <!--<div class="small-12 medium-6 columns">
                                         <label>Journal Type
                                             <div>
                                                 <input type="radio" formControlName="type" value="Original" id="original" (click)="toggleReverseJournal('Original')"><label for="original">Original</label>
@@ -50,7 +50,7 @@
                                                 <div class="error" [hidden]="jeForm.controls.reversedFrom.untouched || jeForm.controls.reversedFrom.valid"><small>Please select Reverse Journal</small></div>
                                             </div>
                                         </label>
-                                    </div>
+                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -245,7 +245,7 @@
                                 </td>
                                 <!--<td><ul class="bighalf-tags" id="lineTags"  type="text" [tagsList]="newTags" custom-tags></ul></td>-->
                                 <td>
-                                    <i class="icon ion-ios-plus-outline" (click)="addNewLine()"></i>
+                                    <i class="icon ion-checkmark-circled" (click)="addNewLine()"></i>
                                     <i class="icon ion-ios-trash-outline" (click)="clearNewRowData()"></i>
                                 </td>
                             </tr>
