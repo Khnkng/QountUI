@@ -87,7 +87,7 @@ export class ToolsComponent {
       }
       break;
       case 'reports': {
-        let link = ['reports'];
+        let link = ['reports/dashboard'];
         this._router.navigate(link);
       }
         break;

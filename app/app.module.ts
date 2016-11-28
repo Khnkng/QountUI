@@ -49,9 +49,13 @@ import {CustomersForm} from "./forms/Customers.form";
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
         {
             path: '',
+            redirectTo: 'main',
+            pathMatch: 'full'
+        },
+        {
+            path: 'main',
             component: CanvasComponent,
-            canActivate: [LoggedInActivator],
-            useAsDefault: true
+            canActivate: [LoggedInActivator]
         },
         {
             path: 'login',
@@ -129,6 +133,10 @@ import {CustomersForm} from "./forms/Customers.form";
             path: 'customers',
             component: CustomersComponent,
             canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'reports',
+            loadChildren: 'reportsUI/app/reports.module#ReportsModule'
         }
     ]), ReportsModule,PaymentsModule
     ],
