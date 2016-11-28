@@ -63,7 +63,7 @@ export class HeaderComponent implements  OnInit{
     this.searchText = "";
     this.switchBoard.onNotificationMarkRead.subscribe(status => this.getNotifications());
   }
-  
+
   getNotifications() {
     this.notificationServie.getNotifications().subscribe(notifications =>  {this.unreadNotifications = _.filter(notifications, function(notification) {
       return notification.notification_type == "Comments" || notification.notification_type == "BillPay";

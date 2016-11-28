@@ -27,6 +27,7 @@
 @import "line-item-flyout";
 @import "highcharts";
 @import "custom.footable";
+@import "switch.company";
 
 @include foundation-global-styles;
 @include foundation-grid;
@@ -2392,6 +2393,7 @@ table.footable-editing-right tr.footable-editing td {
     text-align: center;
     position: relative;
     &:hover{
+      transition: box-shadow .2s ease-in-out;
       box-shadow: 2px 4px 4px 0 rgba(0, 0, 0, 0.2);
       -webkit-box-shadow: 2px 8px 8px 0 rgba(0, 0, 0, 0.2);
       -moz-box-shadow: 2px 8px 8px 0 rgba(0, 0, 0, 0.2);
@@ -2831,6 +2833,22 @@ tbody{
   }
 }
 
+#addDimension{
+  .dimension{
+    height: 30px;
+    float: left;
+    width: auto;
+    display: inline-block;
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 5px;
+
+    .icon{
+      font-size: 10px;
+    }
+  }
+}
+
 .bighalf-footable .footable .btn-primary:hover {
   color: #4B96FA;
   background-color: #fff;
@@ -2838,3 +2856,7 @@ tbody{
 }
 
 
+.add-bill-button{
+  min-width: 125px;
+  font-weight: 600;
+}

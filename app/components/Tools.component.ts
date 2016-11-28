@@ -29,6 +29,7 @@ export class ToolsComponent {
   coaCount: number = 0;
   expenseCodeCount: number = 0;
   billCount: number = 0;
+  dimensionCount: number = 0;
   companySwitchSubscription:any;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private companiesService: CompaniesService, private coaService: ChartOfAccountsService,
@@ -86,6 +87,11 @@ export class ToolsComponent {
         this._router.navigate(link);
       }
       break;
+      case 'dimensions': {
+        let link = ['dimensions'];
+        this._router.navigate(link);
+      }
+        break;
       case 'reports': {
         let link = ['reports/dashboard'];
         this._router.navigate(link);

@@ -66,4 +66,36 @@
             <div class="thumb-label">Payment Workflow</div>
         </div>
     </div>
+    <div class="row tools-grids">
+        <div class="column tool-grid" (click)="showPage('dimensions', $event)">
+            <div class="grid-icon chart-of-accounts"></div>
+            <span class="grid-qount" [hidden]="true">{{dimensionCount}}</span>
+            <div class="clear"></div>
+            <div class="thumb-label">Dimensions</div>
+        </div>
+        <div class="column tool-grid" (click)="showPage('employees', $event)">
+            <div class="grid-icon employees"></div>
+            <span class="grid-qount" [hidden]="employeeCount == 0">{{employeeCount}}</span>
+            <div class="clear"></div>
+            <div class="thumb-label">Users</div>
+        </div>
+        <div class="column tool-grid">
+            <div class="grid-icon chart-of-accounts"></div>
+            <span class="grid-qount" [hidden]="true"></span>
+            <div class="clear"></div>
+            <div class="thumb-label">Tool</div>
+        </div>
+        <div class="column tool-grid">
+            <div class="grid-icon chart-of-accounts"></div>
+            <span class="grid-qount" [hidden]="true"></span>
+            <div class="clear"></div>
+            <div class="thumb-label">Tool</div>
+        </div>
+        <div class="column tool-grid">
+            <div class="grid-icon chart-of-accounts"></div>
+            <span class="grid-qount" [hidden]="true"></span>
+            <div class="clear"></div>
+            <div class="thumb-label">Tool</div>
+        </div>
+    </div>
 </div>
