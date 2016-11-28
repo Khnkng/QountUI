@@ -45,6 +45,7 @@ import {CustomersService} from "./services/Customers.service";
 import {CustomersForm} from "./forms/Customers.form";
 import {DimensionsComponent} from "./components/Dimensions.component";
 import {DimensionForm} from "./forms/Dimension.form";
+import {SwitchCompanyComponent} from "./components/switchCompanies.component";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -117,7 +118,7 @@ import {DimensionForm} from "./forms/Dimension.form";
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'dimensions',
+            path: 'itemCodes',
             component: ItemCodesComponent,
             canActivate: [LoggedInActivator]
         },
@@ -140,7 +141,7 @@ import {DimensionForm} from "./forms/Dimension.form";
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
-        CustomersComponent, DimensionsComponent],
+        CustomersComponent, DimensionsComponent, SwitchCompanyComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
