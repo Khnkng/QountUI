@@ -14,6 +14,8 @@ $qount-brand-blue: #00B0F0;
 $qount-brand-red: #FF3219;
 $qount-brand-yellow: #F5C319;
 
+$qount-brand-icon: #6f7f8f;
+
 $qount-brand-grey: #CCCCCC;
 $qount-brand-grey-light: #EEEEEE;
 
@@ -45,7 +47,10 @@ $qount-btn-hover: #77AFFA;
 // Tab colors
 // ----------
 
-$qount-tab-bg: #36404A;
+$qount-tab-bg: rgb(54, 64, 74);
+$qount-tab-bg-medium: rgba(54, 64, 74,.9);
+
+//#36404A;
 
 // Links
 // -----
