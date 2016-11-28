@@ -90,7 +90,7 @@ export class SwitchCompanyComponent{
             row.pastDue =payabels.toLocaleString(base.displayCurrency, { style: 'currency', currency: base.displayCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
             row.admin = company.invitedBy;
 
-            row['actions'] = "<a class='action' data-action='switch-company'><span class='label'>Switch company</span></a>";
+            row['actions'] = "<a class='action' data-action='switch-company'><span class='label'>Switch</span></a>";
 
             base.tableData.rows.push(row);
         });
