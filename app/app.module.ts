@@ -148,7 +148,7 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
         },
         {
             path: 'reports',
-            loadChildren: '/lib/reportsUI/app/reports.module#ReportsModule'
+            loadChildren: '/lib/reportsUI/app/reports.module.js#ReportsModule'
         }
     ]), ReportsModule,PaymentsModule
     ],
