@@ -51,9 +51,13 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
         {
             path: '',
+            redirectTo: 'main',
+            pathMatch: 'full'
+        },
+        {
+            path: 'main',
             component: CanvasComponent,
-            canActivate: [LoggedInActivator],
-            useAsDefault: true
+            canActivate: [LoggedInActivator]
         },
         {
             path: 'login',
@@ -93,6 +97,11 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
         },
         {
             path: 'journalEntry/:journalID',
+            component: JournalEntryComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'journalEntry/:journalID/:reverse',
             component: JournalEntryComponent,
             canActivate: [LoggedInActivator]
         },
@@ -137,7 +146,7 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
             component: CustomersComponent,
             canActivate: [LoggedInActivator]
         }
-    ]), ReportsModule,PaymentsModule
+    ]), ReportsModule, PaymentsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,

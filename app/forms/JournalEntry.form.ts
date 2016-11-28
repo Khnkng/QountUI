@@ -17,7 +17,7 @@ export class JournalEntryForm extends abstractForm{
       "number": ['', Validators.required],
       "date": ['', Validators.required],
       "source": [''],
-      "type": ['original'],
+      "type": ['Original'],
       "category": [''],
       "autoReverse": [false],
       "reversalDate": [''],

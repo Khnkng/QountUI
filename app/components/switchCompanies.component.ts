@@ -22,6 +22,10 @@ export class SwitchCompanyComponent{
 
     allCompanies:Array<any>;
     currentCompany:any;
+    tableData:any = {};
+    tableOptions:any = {};
+    hasCompanyList:boolean;
+    displayCurrency:string='USD';
 
     constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService) {
         let companyId = Session.getCurrentCompany();
@@ -34,7 +38,7 @@ export class SwitchCompanyComponent{
     }
 
     ngOnInit() {
-
+        this.buildTableData(this.allCompanies);
     }
 
     ngAfterViewInit() {
@@ -45,11 +49,61 @@ export class SwitchCompanyComponent{
 
     }
 
+    handleAction($event){
+        let action = $event.action;
+        delete $event.action;
+        delete $event.actions;
+        if(action == 'switch-company') {
+            this.changeCompany($event);
+        }else if(action == 'delete'){
+
+        }else if(action == 'verify'){
+
+        }
+    }
+
+    buildTableData(companies) {
+
+
+        this.tableOptions.search = true;
+        this.tableOptions.pageSize = 9;
+        this.tableData.columns = [
+            {"name": "id", "title": "ID","visible": false, "filterable": false},
+            {"name": "name", "title": "Name"},
+            {"name": "admin", "title": "Admin"},
+            {"name": "actions", "title": "", "type": "html", "filterable": false}
+        ];
+        this.tableData.rows = [];
+        let base = this;
+        companies.forEach(function(company) {
+            let row:any = {};
+            let payabels=0;
+            let pastDate=0;
+            if(company.payables){
+                payabels=company.payables;
+            }if(company.payables){
+                pastDate=company.pastDue;
+            }
+            row.id=company.id;
+            row.name = company.name;
+            row.payables =payabels.toLocaleString(base.displayCurrency, { style: 'currency', currency: base.displayCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            row.pastDue =payabels.toLocaleString(base.displayCurrency, { style: 'currency', currency: base.displayCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            row.admin = company.invitedBy;
+
+            row['actions'] = "<a class='action' data-action='switch-company'><span class='label'>Switch</span></a>";
+
+            base.tableData.rows.push(row);
+        });
+        this.hasCompanyList = true;
+    }
+
     changeCompany(company){
         Session.setCurrentCompany(company.id);
         this.currentCompany = company;
         let currentCompany = _.find(this.allCompanies, {id: company.id});
         //this.switchBoard.onCompanyChange.next({'id': companyId});
+
+        jQuery("#SwitchCompany-modal").foundation('close');
     }
 
 }
