@@ -140,12 +140,8 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
             path: 'customers',
             component: CustomersComponent,
             canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'reports',
-            loadChildren: '/lib/reportsUI/app/reports.module.js#ReportsModule'
         }
-    ]), ReportsModule,PaymentsModule
+    ]), ReportsModule, PaymentsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
