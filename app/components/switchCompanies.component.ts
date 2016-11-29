@@ -92,7 +92,7 @@ export class SwitchCompanyComponent{
             row.pastDue =payabels.toLocaleString(base.displayCurrency, { style: 'currency', currency: base.displayCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
             row.admin = company.invitedBy;
 
-            row['actions'] = "<a class='action' data-action='switch-company'><span class='label'>Switch</span></a>";
+            row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Switch</span></a>";
 
             base.tableData.rows.push(row);
         });
@@ -102,10 +102,10 @@ export class SwitchCompanyComponent{
     changeCompany(company){
         Session.setCurrentCompany(company.id);
         this.currentCompany = company;
-        let currentCompany = _.find(this.allCompanies, {id: company.id});
-        //this.switchBoard.onCompanyChange.next({'id': companyId});
 
         jQuery("#SwitchCompany-modal").foundation('close');
+        let link = ['/dashboard'];
+        this._router.navigate(link);
     }
 
 }
