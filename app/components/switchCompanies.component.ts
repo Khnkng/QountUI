@@ -6,6 +6,7 @@ import {Component} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
 
@@ -21,24 +22,23 @@ declare var moment:any;
 export class SwitchCompanyComponent{
 
     allCompanies:Array<any>;
-    currentCompany:any;
+    currentCompany:any = {};
     tableData:any = {};
     tableOptions:any = {};
     hasCompanyList:boolean;
     displayCurrency:string='USD';
 
-    constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService) {
+    constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private companiesService: CompaniesService) {
         let companyId = Session.getCurrentCompany();
-        this.allCompanies = Session.getCompanies();
-        if(companyId){
-            this.currentCompany = _.find(this.allCompanies, {id: companyId});
-        } else if(this.allCompanies.length> 0){
-            this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-        }
-    }
-
-    ngOnInit() {
-        this.buildTableData(this.allCompanies);
+        this.companiesService.companies().subscribe(companies => {
+            this.allCompanies = companies;
+            if(companyId){
+                this.currentCompany = _.find(this.allCompanies, {id: companyId});
+            } else if(this.allCompanies.length> 0){
+                this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+            }
+            this.buildTableData(this.allCompanies);
+        }, error => this.handleError(error));
     }
 
     ngAfterViewInit() {
@@ -46,6 +46,10 @@ export class SwitchCompanyComponent{
     }
 
     ngOnDestroy(){
+
+    }
+
+    handleError(error){
 
     }
 
@@ -63,8 +67,6 @@ export class SwitchCompanyComponent{
     }
 
     buildTableData(companies) {
-
-
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
@@ -90,7 +92,7 @@ export class SwitchCompanyComponent{
             row.pastDue =payabels.toLocaleString(base.displayCurrency, { style: 'currency', currency: base.displayCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
             row.admin = company.invitedBy;
 
-            row['actions'] = "<a class='action' data-action='switch-company'><span class='label'>Switch</span></a>";
+            row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Switch</span></a>";
 
             base.tableData.rows.push(row);
         });
@@ -100,10 +102,10 @@ export class SwitchCompanyComponent{
     changeCompany(company){
         Session.setCurrentCompany(company.id);
         this.currentCompany = company;
-        let currentCompany = _.find(this.allCompanies, {id: company.id});
-        //this.switchBoard.onCompanyChange.next({'id': companyId});
 
         jQuery("#SwitchCompany-modal").foundation('close');
+        let link = ['/dashboard'];
+        this._router.navigate(link);
     }
 
 }

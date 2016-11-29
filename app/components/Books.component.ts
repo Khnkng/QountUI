@@ -7,6 +7,7 @@ import {Router, ActivatedRoute} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
 
 declare var _:any;
@@ -51,26 +52,29 @@ export class BooksComponent{
     allCompanies:Array<any>;
     currentCompany:any;
 
-    constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService, private toastService: ToastService) {
+    constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService, private toastService: ToastService,
+        private companiesService: CompaniesService) {
         let companyId = Session.getCurrentCompany();
-        this.allCompanies = Session.getCompanies();
-        if(companyId){
-            this.currentCompany = _.find(this.allCompanies, {id: companyId});
-        } else if(this.allCompanies.length> 0){
-            this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-        }
-        this.routeSub = this._route.params.subscribe(params => {
-            this.selectedTab=params['tabId'];
-            this.selectTab(this.selectedTab,"");
-            this.hasJournalEntries = false;
-        });
-        this.localBadges=JSON.parse(sessionStorage.getItem("localBooksBadges"));
-        if(!this.localBadges){
-            this.localBadges = {'deposits':0,'expenses':0,'journalEntries':0};
-            sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
-        } else{
-            this.localBadges = JSON.parse(sessionStorage.getItem("localBooksBadges"));
-        }
+        this.companiesService.companies().subscribe(companies => {
+            this.allCompanies = companies;
+            if(companyId){
+                this.currentCompany = _.find(this.allCompanies, {id: companyId});
+            } else if(this.allCompanies.length> 0){
+                this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+            }
+            this.routeSub = this._route.params.subscribe(params => {
+                this.selectedTab=params['tabId'];
+                this.selectTab(this.selectedTab,"");
+                this.hasJournalEntries = false;
+            });
+            this.localBadges=JSON.parse(sessionStorage.getItem("localBooksBadges"));
+            if(!this.localBadges){
+                this.localBadges = {'deposits':0,'expenses':0,'journalEntries':0};
+                sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+            } else{
+                this.localBadges = JSON.parse(sessionStorage.getItem("localBooksBadges"));
+            }
+        }, error => this.handleError(error));
     }
 
     animateBoxInfo(boxInfo) {

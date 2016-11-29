@@ -45,17 +45,20 @@ import {CustomersService} from "./services/Customers.service";
 import {CustomersForm} from "./forms/Customers.form";
 import {DimensionsComponent} from "./components/Dimensions.component";
 import {DimensionForm} from "./forms/Dimension.form";
+import {UsersComponent} from "./components/Users.component";
+import {UsersForm} from "./forms/Users.form";
+import {UsersService} from "./services/Users.service";
 import {SwitchCompanyComponent} from "./components/switchCompanies.component";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
         {
             path: '',
-            redirectTo: 'main',
+            redirectTo: 'dashboard',
             pathMatch: 'full'
         },
         {
-            path: 'main',
+            path: 'dashboard',
             component: CanvasComponent,
             canActivate: [LoggedInActivator]
         },
@@ -145,16 +148,20 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
             path: 'customers',
             component: CustomersComponent,
             canActivate: [LoggedInActivator]
+        },{
+            path: 'users',
+            component: UsersComponent,
+            canActivate: [LoggedInActivator]
         }
     ]), ReportsModule, PaymentsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
-        CustomersComponent, DimensionsComponent, SwitchCompanyComponent],
+        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
-        ExpensesSerice, CustomersService, CustomersForm, DimensionForm],
+        ExpensesSerice, CustomersService, CustomersForm, DimensionForm,UsersForm,UsersService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

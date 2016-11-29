@@ -9,7 +9,7 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {COA_CATEGORY_TYPES, COA_SUBTYPES, SUBTYPE_DESCRIPTIONS} from "qCommon/app/constants/Qount.constants";
 import {COAForm} from "../forms/COA.form";
-import {CompanyModel} from "../models/Company.model";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
@@ -39,7 +39,6 @@ export class ChartOfAccountsComponent{
   tableData:any = {};
   tableOptions:any = {};
   editMode:boolean = false;
-  companySwitchSubscription: any;
   currentCompany:any;
   allCompanies:Array<any>;
   mappings:Array<any>;
@@ -49,22 +48,21 @@ export class ChartOfAccountsComponent{
   sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices"];
   hasParentOrChild: boolean = false;
 
-  constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService, private toastService: ToastService){
+  constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService,
+              private toastService: ToastService, private companiesService: CompaniesService){
     this.coaForm = this._fb.group(_coaForm.getForm());
-    this.companySwitchSubscription = this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshCompany(currentCompany));
     let companyId = Session.getCurrentCompany();
-    this.allCompanies = Session.getCompanies();
+    this.companiesService.companies().subscribe(companies => {
+      this.allCompanies = companies;
 
-    /*this.coaService.mappings().subscribe(mappings => {
-      this.mappings = mappings;
-    }, error => this.handleError(error));*/
-    if(companyId){
-      this.currentCompany = _.find(this.allCompanies, {id: companyId});
-    } else if(this.allCompanies.length> 0){
-      this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-    }
-    this.coaService.chartOfAccounts(this.currentCompany.id)
-        .subscribe(chartOfAccounts => this.buildTableData(chartOfAccounts), error=> this.handleError(error));
+      if(companyId){
+        this.currentCompany = _.find(this.allCompanies, {id: companyId});
+      } else if(this.allCompanies.length> 0){
+        this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+      }
+      this.coaService.chartOfAccounts(this.currentCompany.id)
+          .subscribe(chartOfAccounts => this.buildTableData(chartOfAccounts), error=> this.handleError(error));
+    }, error => this.handleError(error));
   }
 
   handleError(error){

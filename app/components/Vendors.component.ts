@@ -40,29 +40,23 @@ export class VendorComponent {
   hasVendorsList:boolean = false;
   message:string;
   companyId:string;
-  companySwitchSubscription:any;
   companies:Array<CompanyModel> = [];
-  companyName:string;
+  currentCompany:any = {};
 
-  constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm, private _router: Router, private _toastService: ToastService, private switchBoard: SwitchBoard) {
+  constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm, private _router: Router,
+              private _toastService: ToastService, private switchBoard: SwitchBoard) {
     this.vendorForm = this._fb.group(_vendorForm.getForm());
-    this.companySwitchSubscription = this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshCompany(currentCompany));
     this.companyId = Session.getCurrentCompany();
-    if(this.companyId){
-      this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
-    }
-    
-    this.companyService.companies()
-        .subscribe(companies  => {
-          this.companies = companies;
-          if(this.companies && this.companies.length > 0) {
-            this.companyName = this.companyId;
-          }
-        }, error =>  this.handleError(error));
-  }
 
-  ngOnDestroy(){
-    this.companySwitchSubscription.unsubscribe();
+    this.companyService.companies().subscribe(companies => {
+      this.companies = companies;
+      if(this.companyId){
+        this.currentCompany = _.find(this.companies, {id: this.companyId});
+      } else if(this.companies.length> 0){
+        this.currentCompany = _.find(this.companies, {id: this.companies[0].id});
+      }
+      this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
+    }, error => this.handleError(error));
   }
 
   refreshCompany(curCompany){
@@ -88,7 +82,7 @@ export class VendorComponent {
     this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
-      {"name": "companyID", "title": "Company"},
+      /*{"name": "companyID", "title": "Company"},*/
       {"name": "ein", "title": "Ein"},
       {"name": "email", "title": "Email"},
       {"name": "address", "title": "Address","visible": false},
@@ -109,11 +103,7 @@ export class VendorComponent {
     this.vendors.forEach(function(vendor) {
       let row:any = {};
       for(let key in base.vendors[0]) {
-        if(key == 'companyID'){
-          row[key] = base.getCompanyName(vendor[key]);
-        } else{
-          row[key] = vendor[key];
-        }
+        row[key] = vendor[key];
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       }
       base.tableData.rows.push(row);

@@ -8,6 +8,7 @@ import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {CodesService} from "qCommon/app/services/CodesService.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
@@ -34,7 +35,6 @@ export class ItemCodesComponent{
   tableData:any = {};
   tableOptions:any = {};
   editMode:boolean = false;
-  companySwitchSubscription: any;
   currentCompany:any;
   allCompanies:Array<any>;
   row:any;
@@ -43,19 +43,19 @@ export class ItemCodesComponent{
   allCOAList:Array = [];
 
   constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard, private codeService: CodesService, private toastService: ToastService,
-        private coaService: ChartOfAccountsService){
+        private coaService: ChartOfAccountsService, private companiesService: CompaniesService){
     this.itemcodeForm = this._fb.group(_itemCodeForm.getForm());
-    this.companySwitchSubscription = this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshCompany(currentCompany));
     let companyId = Session.getCurrentCompany();
-    this.allCompanies = Session.getCompanies();
-
-    if(companyId){
-      this.currentCompany = _.find(this.allCompanies, {id: companyId});
-    } else if(this.allCompanies.length> 0){
-      this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-    }
-    this.coaService.chartOfAccounts(this.currentCompany.id)
-        .subscribe(chartOfAccounts => this.filterChartOfAccounts(chartOfAccounts), error=> this.handleError(error));
+    this.companiesService.companies().subscribe(companies => {
+      this.allCompanies = companies;
+      if(companyId){
+        this.currentCompany = _.find(this.allCompanies, {id: companyId});
+      } else if(this.allCompanies.length> 0){
+        this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+      }
+      this.coaService.chartOfAccounts(this.currentCompany.id)
+          .subscribe(chartOfAccounts => this.filterChartOfAccounts(chartOfAccounts), error=> this.handleError(error));
+    }, error => this.handleError(error));
   }
 
   handleError(error){

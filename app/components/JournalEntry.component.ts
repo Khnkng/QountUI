@@ -292,6 +292,9 @@ export class JournalEntryComponent{
             this.journalEntry.number += 'R';
             this.journalEntry.type = 'Reversal';
             this.journalEntry.reversedFrom = this.journalEntry.id;
+            _.each(this.journalEntry.journalLines, function(line){
+                line.amount = -line.amount;
+            });
         }
         //this.toggleReverseJournal(this.journalEntry.type, this.journalEntry.reversedFrom);
         this.disableReversalDate = !Boolean(journalEntry.autoReverse);
