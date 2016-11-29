@@ -51,11 +51,11 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
         {
             path: '',
-            redirectTo: 'main',
+            redirectTo: 'dashboard',
             pathMatch: 'full'
         },
         {
-            path: 'main',
+            path: 'dashboard',
             component: CanvasComponent,
             canActivate: [LoggedInActivator]
         },

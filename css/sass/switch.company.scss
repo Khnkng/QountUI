@@ -107,6 +107,13 @@
 
 .SwitchCompany-reveal{
   .bighalf-footable{
+    .switch-company-label{
+      .label{
+        &:hover{
+          cursor: pointer !important;
+        }
+      }
+    }
     .footable-filtering{
       .footable-filtering{
         right: -10px;
