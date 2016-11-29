@@ -9,7 +9,7 @@ export class CompanyModel {
   accountNumber:number;
   routing:string;
   creditCardNumber:number;
-  invitedUserEmails:Array<string>;
+  /*invitedUserEmails:Array<string>;*/
   id:string;
   country:string;
   state:string;

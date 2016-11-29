@@ -23,14 +23,15 @@ export class SwitchCompanyComponent{
     currentCompany:any = {};
     tableData:any = {};
     tableOptions:any = {};
-    hasCompanyList:boolean;
     displayCurrency:string='USD';
     currentCompanyName:string = '';
     currentCompanyId:string;
     subscription:any;
+    hasCompanyList:boolean;
 
     constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private companiesService: CompaniesService,
         private switchBoard: SwitchBoard) {
+        
         this.currentCompanyId = Session.getCurrentCompany();
         this.currentCompanyName = Session.getCurrentCompanyName();
         this.subscription = this.switchBoard.onCompanyUpdate.subscribe(company =>{

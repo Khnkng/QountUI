@@ -12,6 +12,8 @@ import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.servi
 import {DimensionService} from "qCommon/app/services/DimensionService.service";
 import {CodesService} from "qCommon/app/services/CodesService.service";
 import {ExpensesSerice} from "../services/Expenses.service";
+import {UsersService} from "../services/Users.service";
+import {CustomersService} from "../services/Customers.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -31,9 +33,10 @@ export class ToolsComponent {
   expenseCodeCount: number = 0;
   billCount: number = 0;
   dimensionCount: number = 0;
+  usersCount:number=0;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private companiesService: CompaniesService, private coaService: ChartOfAccountsService,
-              private codeService: CodesService, private expenseService: ExpensesSerice, private dimensionService: DimensionService) {
+              private codeService: CodesService, private expenseService: ExpensesSerice, private dimensionService: DimensionService,private usersService:UsersService,private customersService:CustomersService) {
     console.info('QountApp Tools Component Mounted Successfully7');
     let currentCompany = Session.getCurrentCompany();
     if(currentCompany){
@@ -65,6 +68,12 @@ export class ToolsComponent {
         .subscribe(dimensions => {
           this.dimensionCount = dimensions.length;
         }, error => this.handleError(error));
+    this.usersService.users(company.id).subscribe(users => {
+      this.usersCount=users.length;
+    }, error => this.handleError(error));
+    this.customersService.customers(company.id).subscribe(customers => {
+      this.customerCount=customers.length;
+    }, error => this.handleError(error));
   }
 
   handleError(error){
@@ -119,6 +128,11 @@ export class ToolsComponent {
         this._router.navigate(link);
       }
       break;
+      case 'users': {
+        let link = ['users'];
+        this._router.navigate(link);
+      }
+        break;
     }
   }
 }
