@@ -25,8 +25,8 @@ export class SwitchCompanyComponent{
     currentCompany:any = {};
     tableData:any = {};
     tableOptions:any = {};
-    hasCompanyList:boolean;
     displayCurrency:string='USD';
+    hasCompanyList:boolean;
 
     constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private companiesService: CompaniesService) {
         let companyId = Session.getCurrentCompany();
