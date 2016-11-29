@@ -82,7 +82,7 @@ export class VendorComponent {
     this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
-      {"name": "companyID", "title": "Company"},
+      /*{"name": "companyID", "title": "Company"},*/
       {"name": "ein", "title": "Ein"},
       {"name": "email", "title": "Email"},
       {"name": "address", "title": "Address","visible": false},
@@ -103,11 +103,7 @@ export class VendorComponent {
     this.vendors.forEach(function(vendor) {
       let row:any = {};
       for(let key in base.vendors[0]) {
-        if(key == 'companyID'){
-          row[key] = base.getCompanyName(vendor[key]);
-        } else{
-          row[key] = vendor[key];
-        }
+        row[key] = vendor[key];
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       }
       base.tableData.rows.push(row);

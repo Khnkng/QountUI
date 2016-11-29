@@ -1,0 +1,67 @@
+
+<div class="row" foundation>
+    <div class="column small-12 medium-6">
+        <h5>Users</h5>
+    </div>
+</div>
+<div class="row" foundation>
+    <div class="column large-12 medium-12 small-12 foo-container">
+        <div class="foo-toolbar">
+            <button class="button small" (click)="showCreateUser()"><i class="icon ion-plus-round"></i> User</button>
+        </div>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasUsersList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    </div>
+    <div class="small reveal" #createUser id="createUser" data-reveal data-close-on-click="false">
+        <div class="row expanded">
+            <h6>
+                {{editMode ? "Update User" : "Create User"}}
+            </h6>
+            <form *ngIf="active1" (ngSubmit)="submit($event)" [formGroup]="userForm">
+                <div class="row">
+                    <div class="small-12 medium-6 columns">
+                        <label>First Name
+                            <div class="input-group">
+                                <input type="text" class="input-group-field" formControlName="firstName" placeholder="First Name*" />
+                                <div class="error" [hidden]="userForm.controls.firstName.untouched || userForm.controls.firstName.valid">First Name is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>Last Name
+                            <div class="input-group">
+                                <input type="text" class="input-group-field" formControlName="lastName" placeholder="Last Name*"/>
+                                <div class="error" [hidden]="userForm.controls.lastName.untouched || userForm.controls.lastName.valid">City is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>Email
+                            <div class="input-group">
+                                <input type="text" class="input-group-field" formControlName="email" placeholder="Email*"/>
+                                <div class="error" [hidden]="userForm.controls.email.untouched || userForm.controls.email.valid">Email is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>Role
+                            <div class="input-group">
+                                <select combo-box #userRoleComboBoxDir="comboBox" title="" data-placeholder="Role" formControlName="roleID" [listObject]="roles" (valueChanged)="showVendorProvince($event)">
+                                    <option *ngFor="let role of roles" [value]="role.name">{{role.name}}</option>
+                                </select>
+                                <div class="error" [hidden]="userForm.controls.roleID.untouched || userForm.controls.roleID.valid">Role is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-12 medium-12 columns">
+                        <button class="button create small float-right" [disabled]="!userForm.valid" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
+                    </div>
+                </div>
+            </form>
+            <button class="close-button" data-close aria-label="Close reveal" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
