@@ -40,29 +40,23 @@ export class VendorComponent {
   hasVendorsList:boolean = false;
   message:string;
   companyId:string;
-  companySwitchSubscription:any;
   companies:Array<CompanyModel> = [];
-  companyName:string;
+  currentCompany:any = {};
 
-  constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm, private _router: Router, private _toastService: ToastService, private switchBoard: SwitchBoard) {
+  constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm, private _router: Router,
+              private _toastService: ToastService, private switchBoard: SwitchBoard) {
     this.vendorForm = this._fb.group(_vendorForm.getForm());
-    this.companySwitchSubscription = this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshCompany(currentCompany));
     this.companyId = Session.getCurrentCompany();
-    if(this.companyId){
-      this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
-    }
-    
-    this.companyService.companies()
-        .subscribe(companies  => {
-          this.companies = companies;
-          if(this.companies && this.companies.length > 0) {
-            this.companyName = this.companyId;
-          }
-        }, error =>  this.handleError(error));
-  }
 
-  ngOnDestroy(){
-    this.companySwitchSubscription.unsubscribe();
+    this.companyService.companies().subscribe(companies => {
+      this.companies = companies;
+      if(this.companyId){
+        this.currentCompany = _.find(this.companies, {id: this.companyId});
+      } else if(this.companies.length> 0){
+        this.currentCompany = _.find(this.companies, {id: this.companies[0].id});
+      }
+      this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
+    }, error => this.handleError(error));
   }
 
   refreshCompany(curCompany){

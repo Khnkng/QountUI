@@ -7,6 +7,7 @@ import {FormGroup, FormBuilder} from "@angular/forms";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {DimensionService} from "qCommon/app/services/DimensionService.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {DimensionForm} from "../forms/Dimension.form";
@@ -28,29 +29,28 @@ export class DimensionsComponent{
   tableData:any = {};
   tableOptions:any = {};
   editMode:boolean = false;
-  companySwitchSubscription: any;
   currentCompany:any;
   allCompanies:Array<any>;
   row:any;
   tempValues:Array<string> = [];
   tableColumns:Array<string> = ['name', 'id', 'values'];
 
-  constructor(private _fb: FormBuilder, private _dimensionForm: DimensionForm, private switchBoard: SwitchBoard, private dimensionService: DimensionService, private toastService: ToastService){
+  constructor(private _fb: FormBuilder, private _dimensionForm: DimensionForm, private switchBoard: SwitchBoard, private dimensionService: DimensionService,
+        private toastService: ToastService, private companiesService: CompaniesService){
     this.dimensionForm = this._fb.group(_dimensionForm.getForm());
-    this.companySwitchSubscription = this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshCompany(currentCompany));
     let companyId = Session.getCurrentCompany();
-    this.allCompanies = Session.getCompanies();
-
-    if(companyId){
-      this.currentCompany = _.find(this.allCompanies, {id: companyId});
-    } else if(this.allCompanies.length> 0){
-      this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-    }
-
-    this.dimensionService.dimensions(this.currentCompany.id)
-        .subscribe(dimensions => {
-          this.buildTableData(dimensions);
-        }, error => this.handleError(error));
+    this.companiesService.companies().subscribe(companies => {
+      this.allCompanies = companies;
+      if(companyId){
+        this.currentCompany = _.find(this.allCompanies, {id: companyId});
+      } else if(this.allCompanies.length> 0){
+        this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+      }
+      this.dimensionService.dimensions(this.currentCompany.id)
+          .subscribe(dimensions => {
+            this.buildTableData(dimensions);
+          }, error => this.handleError(error));
+    }, error => this.handleError(error));
   }
 
   handleError(error){
