@@ -81,6 +81,7 @@ export class LogInComponent implements OnInit {
   setComapnies(companies){
     if(companies.length > 0){
       Session.setCurrentCompany(companies[0].id);
+      Session.setCurrentCompanyName(companies[0].name);
     }
     this.gotoDefaultPage();
   }
