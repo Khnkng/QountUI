@@ -3,9 +3,6 @@
     <a ripple (click)="toggleMenu()">
       <i class="icon ion-navicon-round"></i>
       <div class="name">Menu</div>
-      <!--<div class="name">{{currentCompanyName}}
-        &lt;!&ndash;<i class="icon ion-ios-arrow-down" [hidden]="!isExpanded || !currentCompanyId" (click)="showCompaniesDropdown($event)" data-toggle="switchCompany"></i>&ndash;&gt;
-      </div>-->
     </a>
   </li>
   <li>
@@ -36,11 +33,3 @@
     <a ripple [ngClass]="{'collapsed': !expanded}" (click)="logout()"><i class="icon glyphicon glyphicon-off"></i><div class="name">Log Out</div></a>
   </li>
 </ul>
-
-<!--
-<div class="dropdown-pane bottom float-left" id="switchCompany" data-dropdown>
-  <span>Switch to:</span>
-  <ul>
-    <li *ngFor="let company of companies" (click)="changeCompany(company.id)" [hidden]="company.id == currentCompanyId">{{company.name}}</li>
-  </ul>
-</div>-->

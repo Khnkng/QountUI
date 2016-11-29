@@ -29,7 +29,6 @@ export class SideBarComponent {
 
   allBoards:any;
   currentBoardName = null;
-  companies:Array<any>;
   showSwitchCompany:boolean = false;
   currentCompanyId:string;
   currentCompanyName:string;
@@ -38,27 +37,7 @@ export class SideBarComponent {
 
   constructor(private switchBoard:SwitchBoard, private _router:Router) {
     console.info('QountApp sidebar Component Mounted Successfully7');
-    this.companies = Session.getCompanies() || [];
-    if(Session.getCurrentCompany()){
-      let currentCompany = _.find(this.companies, {id: Session.getCurrentCompany()});
-      this.currentCompanyId = currentCompany.id;
-      this.currentCompanyName = currentCompany.name;
-    } else if(this.companies.length > 0){
-      this.currentCompanyId = this.companies[0].id;
-      this.currentCompanyName = this.companies[0].name;
-    }
   }
-
-  /*changeCompany(companyId){
-    Session.setCurrentCompany(companyId);
-    let currentCompany = _.find(this.companies, {id: companyId});
-    this.currentCompanyId = currentCompany.id;
-    this.currentCompanyName = currentCompany.name;
-    jQuery("#switchCompany").foundation('close');
-    this.showSwitchCompany = !this.showSwitchCompany;
-    this.toggleMenu();
-    this.switchBoard.onCompanyChange.next({'id': companyId});
-  }*/
 
   logout() {
     console.log("into logout1");
@@ -89,12 +68,6 @@ export class SideBarComponent {
         this.isBooks = true;
       }
         break;
-      //case PAGES.EXPENSES: {
-      //  let link = ['expenses'];
-      //  this._router.navigate(link);
-      //  this.isExpenses = true;
-      //}
-      //  break;
       case PAGES.PAYROL: {
         let link = ['payrol'];
         this._router.navigate(link);
@@ -126,18 +99,6 @@ export class SideBarComponent {
     this.isExpanded = !this.isExpanded;
     this.switchBoard.onSideBarExpand.next(this.isExpanded)
   }
-
-  /*showCompaniesDropdown($event){
-    $event && $event.preventDefault();
-    $event && $event.stopImmediatePropagation();
-    this.companies = Session.getCompanies() || [];
-    if(!this.showSwitchCompany){
-      jQuery("#switchCompany").foundation('open');
-    } else{
-      jQuery("#switchCompany").foundation('close');
-    }
-    this.showSwitchCompany = !this.showSwitchCompany;
-  }*/
 
   showError(err){
 

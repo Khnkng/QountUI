@@ -69,7 +69,7 @@
     <div class="row tools-grids">
         <div class="column tool-grid" (click)="showPage('dimensions', $event)">
             <div class="grid-icon chart-of-accounts"></div>
-            <span class="grid-qount" [hidden]="true">{{dimensionCount}}</span>
+            <span class="grid-qount" [hidden]="dimensionCount == 0">{{dimensionCount}}</span>
             <div class="clear"></div>
             <div class="thumb-label">Dimensions</div>
         </div>

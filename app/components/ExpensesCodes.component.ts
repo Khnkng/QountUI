@@ -12,8 +12,8 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {CodesService} from "qCommon/app/services/CodesService.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
-//import {ItemCodeForm} from "../forms/ItemCode.form";
 import {ExpensesForm} from "../forms/Expenses.form";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ExpensesSerice} from "../services/Expenses.service";
 
 declare var jQuery:any;
@@ -27,7 +27,6 @@ declare var _:any;
 
 export class ExpensesCodesComponent {
   expensesForm: FormGroup;
-  //dimensions = [];
   expenses = [];
   paymentChartOfAccounts:any = [];
   invoiceChartOfAccounts:any = [];
@@ -40,30 +39,27 @@ export class ExpensesCodesComponent {
   tableData:any = {};
   tableOptions:any = {};
   editMode:boolean = false;
-  companySwitchSubscription: any;
   currentCompany:any;
   allCompanies:Array<any>;
   row:any;
-  //tableColumns:Array<string> = ['name', 'id', 'payment_coa_mapping', 'invoice_coa_mapping', 'desc'];
   tableColumns:Array<string> = ['name', 'id', 'companyID', 'coa_mapping_id', 'desc'];
   combo:boolean = true;
   allCOAList:Array = [];
 
   constructor(private _fb: FormBuilder, private _expensesForm: ExpensesForm, private switchBoard: SwitchBoard, private codeService: CodesService, private toastService: ToastService,
-              private coaService: ChartOfAccountsService, private expensesSerice:ExpensesSerice){
+              private coaService: ChartOfAccountsService, private expensesSerice:ExpensesSerice, private companiesService: CompaniesService){
     this.expensesForm = this._fb.group(_expensesForm.getForm());
-    this.companySwitchSubscription = this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshExpenses(currentCompany));
     let companyId = Session.getCurrentCompany();
-    this.allCompanies = Session.getCompanies();
-
-    if(companyId){
-      this.currentCompany = _.find(this.allCompanies, {id: companyId});
-    } else if(this.allCompanies.length> 0){
-      this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-    }
-
-    this.coaService.filterdChartOfAccounts(this.currentCompany.id,"?categories=Expenses")
-        .subscribe(chartOfAccounts => this.filterChartOfAccounts(chartOfAccounts), error=> this.handleError(error));
+    this.companiesService.companies().subscribe(companies => {
+      this.allCompanies = companies;
+      if(companyId){
+        this.currentCompany = _.find(this.allCompanies, {id: companyId});
+      } else if(this.allCompanies.length> 0){
+        this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+      }
+      this.coaService.filterdChartOfAccounts(this.currentCompany.id,"?categories=Expenses")
+          .subscribe(chartOfAccounts => this.filterChartOfAccounts(chartOfAccounts), error=> this.handleError(error));
+    }, error => this.handleError(error));
   }
 
   handleError(error){
