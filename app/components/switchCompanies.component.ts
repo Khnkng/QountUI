@@ -123,6 +123,7 @@ export class SwitchCompanyComponent{
         this.currentCompanyName = company.name;
         this.currentCompanyId = company.id;
         this.currentCompany = company;
+        this.refreshTable();
 
         jQuery("#SwitchCompany-modal").foundation('close');
         let link = ['/dashboard'];
