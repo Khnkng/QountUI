@@ -120,9 +120,16 @@ export class BooksComponent{
         delete $event.actions;
         if(action == 'edit') {
             this.showJournalEntry($event);
+        } else if(action == 'reverse'){
+            this.showReverseBill($event);
         } else if(action == 'delete'){
             this.removeJournalEntry($event);
         }
+    }
+
+    showReverseBill(journalEntry){
+        let link = ['journalEntry', journalEntry.id, 'reverse'];
+        this._router.navigate(link);
     }
 
     removeJournalEntry(journalEntry){
@@ -169,7 +176,8 @@ export class BooksComponent{
             {"name": "nextJEDate", "title": "Next JE Date","visible": false},
             {"name": "id", "title": "Jounral ID","visible": false},
             {"name": "recurringFrequency", "title": "Recurring Frequency","visible": false},
-            {"name": "actions", "title": "", "type": "html"}];
+            {"name": "actions", "title": "", "type": "html"},
+            {"name": "reverse", "title": "", "type": "html"}];
 
         this.jeTableData.rows = [];
         let base = this;
@@ -182,6 +190,9 @@ export class BooksComponent{
                 row[key] = journalEntry[key];
             });
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            if(row['type'] == 'Original'){
+                row['reverse'] = "<a style='font-size:0.6rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action' data-action='reverse'>Reverse</a>";
+            }
             base.jeTableData.rows.push(row);
         });
         if(this.jeTableData.rows.length > 0){

@@ -317,11 +317,13 @@ gulp.task('prod-css', ['sass'], function () {
 gulp.task('copy-to-prod', ['prod-images', 'copy-misc-prod', 'copy-fonts-prod', 'prod-html', 'prod-css'], function () {
   var views = gulp.src(['app/**/*.html'])
       .pipe(gulp.dest('build/prod/app'));
+  var reportsJs = gulp.src(['build/lib/reportsUI/**/*.js'])
+      .pipe(gulp.dest('build/prod/lib/reportsUI/'));
   var reportsHtml = gulp.src(['./node_modules/reportsUI/app/views/*.html'])
         .pipe(gulp.dest('build/prod/app/views/'));
   var paymentsHtml = gulp.src(['./node_modules/billsUI/app/views/*.html'])
       .pipe(gulp.dest('build/prod/app/views/'));
-  return merge(views, reportsHtml,paymentsHtml);
+  return merge(views, reportsJs, reportsHtml,paymentsHtml);
 });
 
 gulp.task('gzipfiles', function(){

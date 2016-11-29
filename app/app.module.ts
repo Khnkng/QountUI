@@ -48,14 +48,19 @@ import {DimensionForm} from "./forms/Dimension.form";
 import {UsersComponent} from "./components/Users.component";
 import {UsersForm} from "./forms/Users.form";
 import {UsersService} from "./services/Users.service";
+import {SwitchCompanyComponent} from "./components/switchCompanies.component";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
         {
             path: '',
+            redirectTo: 'dashboard',
+            pathMatch: 'full'
+        },
+        {
+            path: 'dashboard',
             component: CanvasComponent,
-            canActivate: [LoggedInActivator],
-            useAsDefault: true
+            canActivate: [LoggedInActivator]
         },
         {
             path: 'login',
@@ -99,6 +104,11 @@ import {UsersService} from "./services/Users.service";
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'journalEntry/:journalID/:reverse',
+            component: JournalEntryComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'vendors',
             component: VendorComponent,
             canActivate: [LoggedInActivator]
@@ -120,7 +130,7 @@ import {UsersService} from "./services/Users.service";
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'dimensions',
+            path: 'itemCodes',
             component: ItemCodesComponent,
             canActivate: [LoggedInActivator]
         },
@@ -143,11 +153,11 @@ import {UsersService} from "./services/Users.service";
             component: UsersComponent,
             canActivate: [LoggedInActivator]
         }
-    ]), ReportsModule,PaymentsModule
+    ]), ReportsModule, PaymentsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
-        CustomersComponent, DimensionsComponent,UsersComponent],
+        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,

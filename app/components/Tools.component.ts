@@ -93,7 +93,7 @@ export class ToolsComponent {
       }
         break;
       case 'reports': {
-        let link = ['reports'];
+        let link = ['reports/dashboard'];
         this._router.navigate(link);
       }
         break;
@@ -103,7 +103,7 @@ export class ToolsComponent {
       }
       break;
       case 'items': {
-        let link = ['dimensions'];
+        let link = ['itemCodes'];
         this._router.navigate(link);
       }
       break;
