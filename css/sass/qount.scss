@@ -283,24 +283,6 @@ h1, h2, h3, h4, h5, h6 {
   color: #36404a;
 }
 
-.switchcompany-grid{
-  color: $qount-brand-green;
-  font-weight: 500;
-}
-
-#switchCompanyModal{
-  .company-name{
-    margin: 0px 15px;
-    cursor: pointer;
-    outline: none !important;
-
-    width: 100px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
 .main-canvas {
   -webkit-transition : all 0.5s;
   -moz-transition : all 0.5s;

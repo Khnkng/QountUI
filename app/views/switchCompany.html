@@ -1,26 +1,6 @@
-<!--<div class="miniSwitchCompany">
-    <div class="miniSwitchCompany-selector float-right" data-toggle="miniSwitchCompany-dropdown">
-        &lt;!&ndash;<span class="miniSwitchCompany-selector-icon"></span>&ndash;&gt;
-        <span class="miniSwitchCompany-selector-name label">{{currentCompany.name}}</span>
-        &lt;!&ndash;<a class="small button" href="#">{{currentCompany.name}}</a>&ndash;&gt;
-        &lt;!&ndash;<span class="miniSwitchCompany-selector-name">{{currentCompany.name}}</span>
-        <span class="miniSwitchCompany-selector-arrow"><i class="ion-ios-arrow-down"></i></span>&ndash;&gt;
-    </div>
-    <div class="dropdown-pane bottom" id="miniSwitchCompany-dropdown" data-dropdown>
-        <h6>Current Company</h6>
-        {{currentCompany.name}}
-        <hr>
-        <select combo-box title="" data-placeholder="Search company"
-                [listObject]="allCompanies" (valueChanged)="changeCompany($event)">
-            <option *ngFor="let company of allCompanies" [value]="company.name">{{company.name}}</option>
-        </select>
-    </div>
+<div class="switchCompanyModal">
 
-</div>-->
-
-<div id="switchCompanyModal">
-
-    <div class="company-name float-right" data-toggle="SwitchCompany-modal">
+    <div class="switchCompany-modal-name" data-toggle="SwitchCompany-modal">
         <span>{{currentCompanyName}}</span>
     </div>
 
