@@ -9,6 +9,7 @@ import {FormBuilder, FormGroup, FormArray} from "@angular/forms";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {Router, ActivatedRoute} from "@angular/router";
@@ -47,39 +48,20 @@ export class JournalEntryComponent{
     isReverse:boolean = false;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
-            private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute) {
+            private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
+            private companiesService: CompaniesService) {
         this.routeSub = this._route.params.subscribe(params => {
             this.journalID=params['journalID'];
             let tempReverse=params['reverse'];
             if(this.journalID){
                 if(tempReverse){
                     this.isReverse = true;
+                    this.newJournalEntry = true;
                 } else{
                     this.newJournalEntry = false;
                 }
             }
         });
-
-        let companyId = Session.getCurrentCompany();
-        this.allCompanies = Session.getCompanies();
-
-        if(companyId){
-            this.currentCompany = _.find(this.allCompanies, {id: companyId});
-        } else if(this.allCompanies.length> 0){
-            this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-        }
-
-        /*this.journalService.journalEntries(this.currentCompany.id)
-            .subscribe(journalEntries => {
-                this.existingJournals = journalEntries;
-            }, error => this.handleError(error));*/
-
-        this.coaService.chartOfAccounts(this.currentCompany.id)
-            .subscribe(chartOfAccounts => {
-                this.chartOfAccounts = chartOfAccounts;
-            }, error=> this.handleError(error));
-        this.toggleAutoReverse();
-        this.toggleRecurring();
     }
 
     toggleReverseJournal(type, reversedFrom){
@@ -309,13 +291,29 @@ export class JournalEntryComponent{
     }
 
     ngOnInit() {
+        let companyId = Session.getCurrentCompany();
         let _form = this._jeForm.getForm();
         _form['journalLines'] = this.journalLinesArray;
         this.jeForm = this._fb.group(_form);
         this.newForm();
-        if(!this.newJournalEntry || this.isReverse){
-            this.journalService.journalEntry(this.journalID, this.currentCompany.id)
-                .subscribe(journalEntry => this.processJournalEntry(journalEntry), error => this.handleError(error));
-        }
+        this.companiesService.companies().subscribe(companies =>{
+            this.allCompanies = companies;
+            if(companyId){
+                this.currentCompany = _.find(this.allCompanies, {id: companyId});
+            } else if(this.allCompanies.length> 0){
+                this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+            }
+            this.coaService.chartOfAccounts(this.currentCompany.id)
+                .subscribe(chartOfAccounts => {
+                    this.chartOfAccounts = chartOfAccounts;
+                }, error=> this.handleError(error));
+            this.toggleAutoReverse();
+            this.toggleRecurring();
+
+            if(!this.newJournalEntry || this.isReverse){
+                this.journalService.journalEntry(this.journalID, this.currentCompany.id)
+                    .subscribe(journalEntry => this.processJournalEntry(journalEntry), error => this.handleError(error));
+            }
+        }, error => this.handleError(error));
     }
 }

@@ -58,15 +58,6 @@ export class DimensionsComponent{
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
   }
 
-  refreshCompany(currentCompany){
-    let companies = Session.getCompanies();
-    this.currentCompany = _.find(companies, {id: currentCompany.id});
-    this.dimensionService.dimensions(this.currentCompany.id)
-        .subscribe(dimensions => {
-          this.buildTableData(dimensions);
-        }, error => this.handleError(error));
-  }
-
   showAddDimension() {
     this.editMode = false;
     this.dimensionForm = this._fb.group(this._dimensionForm.getForm());

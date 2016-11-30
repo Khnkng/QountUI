@@ -59,16 +59,8 @@ export class VendorComponent {
     }, error => this.handleError(error));
   }
 
-  refreshCompany(curCompany){
-    let companies = Session.getCompanies();
-    let currentCompany = _.find(companies, {id: curCompany.id});
-    this.companyId = currentCompany.id;
-    this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
-  }
-
   getCompanyName(companyId){
-    let companies = Session.getCompanies();
-    let company = _.find(companies, {id: companyId});
+    let company = _.find(this.companies, {id: companyId});
     if(company){
       return company.name;
     }

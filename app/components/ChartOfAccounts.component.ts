@@ -70,13 +70,6 @@ export class ChartOfAccountsComponent{
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
   }
 
-  refreshCompany(currentCompany){
-    let companies = Session.getCompanies();
-    this.currentCompany = _.find(companies, {id: currentCompany.id});
-    this.coaService.chartOfAccounts(this.currentCompany.id)
-        .subscribe(chartOfAccounts => this.buildTableData(chartOfAccounts), error=> this.handleError(error));
-  }
-
   getCategoryName(value){
     let category = _.find(this.categoryTypes, function(categoryType){
       return categoryType.value == value;

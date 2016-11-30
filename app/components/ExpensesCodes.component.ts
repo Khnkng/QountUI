@@ -67,13 +67,6 @@ export class ExpensesCodesComponent {
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
   }
 
-  refreshExpenses(currentCompany){
-    let companies = Session.getCompanies();
-    this.currentCompany = _.find(companies, {id: currentCompany.id});
-    this.coaService.chartOfAccounts(this.currentCompany.id)
-        .subscribe(chartOfAccounts => this.filterChartOfAccounts(chartOfAccounts), error=> this.handleError(error));
-  }
-
   filterChartOfAccounts(chartOfAccounts){
     this.allCOAList = chartOfAccounts;
     //this.paymentChartOfAccounts = _.filter(chartOfAccounts, function(coa){

@@ -102,7 +102,9 @@ export class SwitchCompanyComponent{
             if(row.id != base.currentCompanyId){
                 row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Switch</span></a>";
             }
-
+            if(row.id != base.currentCompanyId){
+                console.log("No switch button", base.currentCompanyName);
+            }
             base.tableData.rows.push(row);
         });
         this.hasCompanyList = true;
@@ -110,11 +112,11 @@ export class SwitchCompanyComponent{
 
     refreshTable(){
         let base = this;
+        this.buildTableData(this.allCompanies);
         this.hasCompanyList = false;
         setTimeout(function(){
             base.hasCompanyList = true;
         }, 0);
-        this.buildTableData(this.allCompanies);
     }
 
     changeCompany(company){
