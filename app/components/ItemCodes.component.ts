@@ -66,7 +66,7 @@ export class ItemCodesComponent{
   filterChartOfAccounts(chartOfAccounts){
     this.allCOAList = chartOfAccounts;
     this.paymentChartOfAccounts = _.filter(chartOfAccounts, function(coa){
-      return coa.category == 'Expense';
+      return coa.category == 'Expenses';
     });
     this.invoiceChartOfAccounts = _.filter(chartOfAccounts, function(coa){
       return coa.category == 'Income';
