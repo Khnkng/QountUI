@@ -5,7 +5,7 @@
     </div>
 
     <div class="full reveal qount-flyout SwitchCompany-reveal" id="SwitchCompany-modal" data-reveal>
-        <h5>Switch company</h5>
+        <h5>Hop from {{currentCompanyName}} to </h5>
         <div class="column large-12 medium-12 small-12 foo-container">
             <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCompanyList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
         </div>
