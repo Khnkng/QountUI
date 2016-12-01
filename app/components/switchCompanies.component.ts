@@ -8,6 +8,7 @@ import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var _:any;
 declare var jQuery:any;
@@ -29,15 +30,17 @@ export class SwitchCompanyComponent{
     subscription:any;
     hasCompanyList:boolean;
 
-    constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private companiesService: CompaniesService,
+    constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService,
+                private companiesService: CompaniesService, private loadingService: LoadingService,
         private switchBoard: SwitchBoard) {
-        
+        this.loadingService.triggerLoadingEvent(true);
         this.currentCompanyId = Session.getCurrentCompany();
         this.currentCompanyName = Session.getCurrentCompanyName();
         this.subscription = this.switchBoard.onCompanyUpdate.subscribe(company =>{
            this.currentCompanyName = Session.getCurrentCompanyName();
         });
         this.companiesService.companies().subscribe(companies => {
+            this.loadingService.triggerLoadingEvent(false);
             this.allCompanies = companies;
             if(this.currentCompanyId){
                 this.currentCompany = _.find(this.allCompanies, {id: this.currentCompanyId});
