@@ -9,6 +9,7 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var _:any;
 declare var jQuery:any;
@@ -52,7 +53,8 @@ export class BooksComponent{
     allCompanies:Array<any>;
     currentCompany:any;
 
-    constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService, private toastService: ToastService,
+    constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
+                private toastService: ToastService, private loadingService:LoadingService,
         private companiesService: CompaniesService) {
         let companyId = Session.getCurrentCompany();
         this.companiesService.companies().subscribe(companies => {
@@ -113,8 +115,12 @@ export class BooksComponent{
             this.isLoading = false;
         } else if(this.selectedTab == 2){
             this.isLoading = true;
+            this.loadingService.triggerLoadingEvent(true);
             this.journalService.journalEntries(this.currentCompany.id)
-                .subscribe(journalEntries => this.buildTableData(journalEntries), error => this.handleError(error));
+                .subscribe(journalEntries => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.buildTableData(journalEntries);
+                }, error => this.handleError(error));
         }
     }
 

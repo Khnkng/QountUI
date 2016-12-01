@@ -51,6 +51,8 @@ import {UsersService} from "./services/Users.service";
 import {SwitchCompanyComponent} from "./components/switchCompanies.component";
 import {FinancialAccountsComponent} from "./components/FinancialAccounts.component";
 import {FinancialAccountForm} from "./forms/FinancialAccount.form";
+import {LoadingService} from "qCommon/app/services/LoadingService";
+import {LoadingComponent} from "qCommon/app/components/Loading.component";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -164,11 +166,11 @@ import {FinancialAccountForm} from "./forms/FinancialAccount.form";
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
-        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent],
+        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent, LoadingComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
-        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, UsersService, FinancialAccountForm],
+        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, UsersService, FinancialAccountForm, LoadingService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
