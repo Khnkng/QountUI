@@ -1,7 +1,7 @@
 
 <div class="row" foundation>
     <div class="column small-12 medium-6">
-        <h5>Dimensions</h5>
+        <h5>Financial Accounts</h5>
     </div>
     <div class="columns small-6 small-offset-6 right">
 
@@ -10,14 +10,14 @@
 <div class="row chart-of-accounts" foundation>
     <div class="column large-12 medium-12 small-12 foo-container">
         <div class="foo-toolbar">
-            <button class="button small" (click)="showAddDimension()"><i class="icon ion-plus-round"></i> Dimension</button>
+            <button class="button small" (click)="showAddAccount()"><i class="icon ion-plus-round"></i> Account</button>
         </div>
-        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasDimensions" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasAccounts" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
     <div>
-        <div class="small reveal" id="addDimension" #addDimension data-reveal data-close-on-click="false">
+        <div class="small reveal" id="addAccount" #addAccount data-reveal data-close-on-click="false">
             <h6>
-                {{editMode ? "Update Dimension" : "Add Dimension"}}
+                {{editMode ? "Update Account" : "Add Account"}}
             </h6>
             <form *ngIf="newFormActive" [formGroup]="accountForm">
                 <div class="row">
@@ -30,20 +30,13 @@
                                 </label>
                             </div>
                             <div class="small-12 medium-12 columns">
-                                <label>Description
-                                    <textarea formControlName="desc" style="height: 110px;" placeholder="Description"></textarea>
-                                    <div class="error" [hidden]="accountForm.controls.desc.untouched || accountForm.controls.desc.valid">Description is required.</div>
-                                </label>
+
                             </div>
                         </div>
                     </div>
                     <div class="small-12 medium-6 columns">
                         <div class="row">
-                            <div class="small-12 medium-12 columns">
-                                <label>Value
-                                    <ul class="bighalf-tags" id="dimensionValues"  type="text" [tagsList]="tempValues" custom-tags></ul>
-                                </label>
-                            </div>
+
                         </div>
                     </div>
                 </div>

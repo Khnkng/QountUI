@@ -34,6 +34,7 @@ export class ToolsComponent {
   billCount: number = 0;
   dimensionCount: number = 0;
   usersCount:number=0;
+  accountsCount:number = 0;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private companiesService: CompaniesService, private coaService: ChartOfAccountsService,
               private codeService: CodesService, private expenseService: ExpensesSerice, private dimensionService: DimensionService,private usersService:UsersService,private customersService:CustomersService) {
@@ -69,11 +70,11 @@ export class ToolsComponent {
           this.dimensionCount = dimensions.length;
         }, error => this.handleError(error));
     this.usersService.users(company.id).subscribe(users => {
-      this.usersCount=users.length;
-    }, error => this.handleError(error));
+          this.usersCount=users.length;
+        }, error => this.handleError(error));
     this.customersService.customers(company.id).subscribe(customers => {
-      this.customerCount=customers.length;
-    }, error => this.handleError(error));
+          this.customerCount=customers.length;
+        }, error => this.handleError(error));
   }
 
   handleError(error){
@@ -100,6 +101,11 @@ export class ToolsComponent {
       break;
       case 'dimensions': {
         let link = ['dimensions'];
+        this._router.navigate(link);
+      }
+        break;
+      case 'accounts': {
+        let link = ['financialAccounts'];
         this._router.navigate(link);
       }
         break;

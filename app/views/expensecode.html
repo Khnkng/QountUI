@@ -48,7 +48,7 @@
                             <select combo-box #invoiceCOAComboBoxDir="comboBox" data-placeholder="Enter Invoice COA" formControlName="invoice_coa_mapping" [listObject]="invoiceChartOfAccounts" (valueChanged)="updateInvoiceCOA($event)">
                                 <option *ngFor="let chartOfAccount of invoiceChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
                             </select>
-                            <div class="error" [hidden]="dimensionForm.controls.invoice_coa_mapping.untouched || dimensionForm.controls.invoice_coa_mapping.valid">Invoice COA is required.</div>
+                            <div class="error" [hidden]="accountForm.controls.invoice_coa_mapping.untouched || accountForm.controls.invoice_coa_mapping.valid">Invoice COA is required.</div>
                         </label>
                     </div>-->
                 </div>
