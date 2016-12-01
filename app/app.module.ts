@@ -49,6 +49,8 @@ import {UsersComponent} from "./components/Users.component";
 import {UsersForm} from "./forms/Users.form";
 import {UsersService} from "./services/Users.service";
 import {SwitchCompanyComponent} from "./components/switchCompanies.component";
+import {FinancialAccountsComponent} from "./components/FinancialAccounts.component";
+import {FinancialAccountForm} from "./forms/FinancialAccount.form";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -125,8 +127,13 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'dimensions',
+            path: 'accounts',
             component: DimensionsComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'financialAccounts',
+            component: FinancialAccountsComponent,
             canActivate: [LoggedInActivator]
         },
         {
@@ -157,11 +164,11 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
-        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent],
+        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
-        ExpensesSerice, CustomersService, CustomersForm, DimensionForm,UsersForm,UsersService],
+        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, UsersService, FinancialAccountForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
