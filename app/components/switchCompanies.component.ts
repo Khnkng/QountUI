@@ -100,10 +100,7 @@ export class SwitchCompanyComponent{
             row.admin = company.invitedBy;
 
             if(row.id != base.currentCompanyId){
-                row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Switch</span></a>";
-            }
-            if(row.id != base.currentCompanyId){
-                console.log("No switch button", base.currentCompanyName);
+                row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Hop</span></a>";
             }
             base.tableData.rows.push(row);
         });
