@@ -46,6 +46,8 @@ export class CustomersComponent {
         this.companyId = Session.getCurrentCompany();
         if(this.companyId){
             this.customersService.customers(this.companyId).subscribe(customers => this.buildTableData(customers), error => this.handleError(error));
+        }else {
+            this._toastService.pop(TOAST_TYPE.error, "Please add company first");
         }
     }
 
