@@ -1,0 +1,54 @@
+
+<div class="row" foundation>
+    <div class="column small-12 medium-6">
+        <h5>Financial Accounts</h5>
+    </div>
+    <div class="columns small-6 small-offset-6 right">
+
+    </div>
+</div>
+<div class="row chart-of-accounts" foundation>
+    <div class="column large-12 medium-12 small-12 foo-container">
+        <div class="foo-toolbar">
+            <button class="button small" (click)="showAddAccount()"><i class="icon ion-plus-round"></i> Account</button>
+        </div>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasAccounts" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    </div>
+    <div>
+        <div class="small reveal" id="addAccount" #addAccount data-reveal data-close-on-click="false">
+            <h6>
+                {{editMode ? "Update Account" : "Add Account"}}
+            </h6>
+            <form *ngIf="newFormActive" [formGroup]="accountForm">
+                <div class="row">
+                    <div class="small-12 medium-6 columns">
+                        <div class="row">
+                            <div class="small-12 medium-12 columns">
+                                <label>Name
+                                    <input type="text" formControlName="name" placeholder="Name*"/>
+                                    <div class="error" [hidden]="accountForm.controls.name.untouched || accountForm.controls.name.valid">Name is required.</div>
+                                </label>
+                            </div>
+                            <div class="small-12 medium-12 columns">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <div class="row">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px;">
+                    <div class="small-12 medium-12 columns">
+                        <button class="button small float-right" [disabled]="!accountForm.valid" (click)="submit($event)">Save</button>
+                    </div>
+                </div>
+            </form>
+            <button class="close-button" data-close aria-label="Close reveal" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>

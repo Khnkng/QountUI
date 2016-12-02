@@ -7,8 +7,8 @@ import {Router, ActivatedRoute} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
-import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
-import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var _:any;
 declare var jQuery:any;
@@ -20,20 +20,30 @@ declare var moment:any;
 })
 
 export class SwitchCompanyComponent{
-
     allCompanies:Array<any>;
     currentCompany:any = {};
     tableData:any = {};
     tableOptions:any = {};
-    hasCompanyList:boolean;
     displayCurrency:string='USD';
+    currentCompanyName:string = '';
+    currentCompanyId:string;
+    subscription:any;
+    hasCompanyList:boolean;
 
-    constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private companiesService: CompaniesService) {
-        let companyId = Session.getCurrentCompany();
+    constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService,
+                private companiesService: CompaniesService, private loadingService: LoadingService,
+        private switchBoard: SwitchBoard) {
+        this.loadingService.triggerLoadingEvent(true);
+        this.currentCompanyId = Session.getCurrentCompany();
+        this.currentCompanyName = Session.getCurrentCompanyName();
+        this.subscription = this.switchBoard.onCompanyUpdate.subscribe(company =>{
+           this.currentCompanyName = Session.getCurrentCompanyName();
+        });
         this.companiesService.companies().subscribe(companies => {
+            this.loadingService.triggerLoadingEvent(false);
             this.allCompanies = companies;
-            if(companyId){
-                this.currentCompany = _.find(this.allCompanies, {id: companyId});
+            if(this.currentCompanyId){
+                this.currentCompany = _.find(this.allCompanies, {id: this.currentCompanyId});
             } else if(this.allCompanies.length> 0){
                 this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
             }
@@ -46,7 +56,7 @@ export class SwitchCompanyComponent{
     }
 
     ngOnDestroy(){
-
+        this.subscription.unsubscribe();
     }
 
     handleError(error){
@@ -92,16 +102,30 @@ export class SwitchCompanyComponent{
             row.pastDue =payabels.toLocaleString(base.displayCurrency, { style: 'currency', currency: base.displayCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
             row.admin = "";
 
-            row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Switch</span></a>";
-
+            if(row.id != base.currentCompanyId){
+                row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Hop</span></a>";
+            }
             base.tableData.rows.push(row);
         });
         this.hasCompanyList = true;
     }
 
+    refreshTable(){
+        let base = this;
+        this.buildTableData(this.allCompanies);
+        this.hasCompanyList = false;
+        setTimeout(function(){
+            base.hasCompanyList = true;
+        }, 0);
+    }
+
     changeCompany(company){
         Session.setCurrentCompany(company.id);
+        Session.setCurrentCompanyName(company.name);
+        this.currentCompanyName = company.name;
+        this.currentCompanyId = company.id;
         this.currentCompany = company;
+        this.refreshTable();
 
         jQuery("#SwitchCompany-modal").foundation('close');
         let link = ['/dashboard'];

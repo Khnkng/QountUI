@@ -48,6 +48,10 @@ import {DimensionForm} from "./forms/Dimension.form";
 import {UsersComponent} from "./components/Users.component";
 import {UsersForm} from "./forms/Users.form";
 import {SwitchCompanyComponent} from "./components/switchCompanies.component";
+import {FinancialAccountsComponent} from "./components/FinancialAccounts.component";
+import {FinancialAccountForm} from "./forms/FinancialAccount.form";
+import {LoadingService} from "qCommon/app/services/LoadingService";
+import {LoadingComponent} from "qCommon/app/components/Loading.component";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -129,6 +133,11 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'financialAccounts',
+            component: FinancialAccountsComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'itemCodes',
             component: ItemCodesComponent,
             canActivate: [LoggedInActivator]
@@ -156,11 +165,11 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
-        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent],
+        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent, LoadingComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
-        ExpensesSerice, CustomersService, CustomersForm, DimensionForm,UsersForm],
+        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

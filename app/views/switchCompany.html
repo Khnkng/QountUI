@@ -1,33 +1,13 @@
-<!--<div class="miniSwitchCompany">
-    <div class="miniSwitchCompany-selector float-right" data-toggle="miniSwitchCompany-dropdown">
-        &lt;!&ndash;<span class="miniSwitchCompany-selector-icon"></span>&ndash;&gt;
-        <span class="miniSwitchCompany-selector-name label">{{currentCompany.name}}</span>
-        &lt;!&ndash;<a class="small button" href="#">{{currentCompany.name}}</a>&ndash;&gt;
-        &lt;!&ndash;<span class="miniSwitchCompany-selector-name">{{currentCompany.name}}</span>
-        <span class="miniSwitchCompany-selector-arrow"><i class="ion-ios-arrow-down"></i></span>&ndash;&gt;
-    </div>
-    <div class="dropdown-pane bottom" id="miniSwitchCompany-dropdown" data-dropdown>
-        <h6>Current Company</h6>
-        {{currentCompany.name}}
-        <hr>
-        <select combo-box title="" data-placeholder="Search company"
-                [listObject]="allCompanies" (valueChanged)="changeCompany($event)">
-            <option *ngFor="let company of allCompanies" [value]="company.name">{{company.name}}</option>
-        </select>
-    </div>
-
-</div>-->
-
 <div class="switchCompanyModal">
 
-    <div class="miniSwitchCompany-selector float-right" data-toggle="SwitchCompany-modal">
-        <span class="SwitchCompany-modal-name secondary label" *ngIf="currentCompany">{{currentCompany.name}}</span>
+    <div class="switchCompany-modal-name" data-toggle="SwitchCompany-modal">
+        <span *ngIf="currentCompany">{{currentCompanyName}}</span>
     </div>
 
     <div class="full reveal qount-flyout SwitchCompany-reveal" id="SwitchCompany-modal" data-reveal>
-        <h5>Switch company</h5>
+        <h5>Hop from {{currentCompanyName}} to ....</h5>
         <div class="column large-12 medium-12 small-12 foo-container">
-            <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="allCompanies" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCompanyList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
         </div>
 
         <button class="close-button " data-close aria-label="Close modal" type="button">
@@ -37,5 +17,4 @@
         </button>
     </div>
 </div>
-
 
