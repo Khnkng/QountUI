@@ -793,6 +793,7 @@ ul.side-nav a {
       margin-top: 2rem;
       margin-bottom: 4rem;
       color: red;
+      text-align: center;
     }
   }
 
@@ -884,7 +885,7 @@ ul.side-nav a {
   }
 
   div.left, footer.left {
-    text-align: left;
+    float: left;
   }
 
   div.right, footer.right {
@@ -893,6 +894,11 @@ ul.side-nav a {
 
   .chartArea{
     margin-top: 2.5em;
+  }
+
+  .ap-aging-report-heading{
+    color: #282895;
+    font-weight: 700;
   }
 }
 
@@ -929,17 +935,18 @@ ul.side-nav a {
       width: 900px;
       height: 800px;
 
-      img {
-        width: 40px;
-      }
 
-      div.left, footer.left {
-        text-align: left;
-      }
+    }
+    img {
+      width: 40px;
+    }
 
-      div.right, footer.right {
-        text-align: right;
-      }
+    div.left, footer.left {
+      float: left;
+    }
+
+    div.right, footer.right {
+      float: right;
     }
   }
 
@@ -2668,7 +2675,12 @@ tbody{
 .chartArea {
 
 }
-
+.failure-text {
+  margin-top: 2rem;
+  margin-bottom: 4rem;
+  color: red;
+  text-align: center;
+}
 #lineDetails{
   .coa-field{
     input, a{
