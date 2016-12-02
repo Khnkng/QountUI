@@ -3,7 +3,7 @@
  */
 
 import {Injectable} from "@angular/core";
-import {abstractForm} from "./abstractForm";
+import {abstractForm} from "qCommon/app/forms/abstractForm";
 import {Validators} from "@angular/forms";
 
 @Injectable()
@@ -17,6 +17,7 @@ export class VendorForm extends abstractForm{
       "name": ['', Validators.required],
       "ein": ['', Validators.required],
       "accountNumber": [''],
+      "accountNumbers": [['']],
       "email": ['', Validators.compose(numberValidator)],
       "address": ['', Validators.required],
       "routingNumber": [''],

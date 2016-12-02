@@ -22,7 +22,9 @@ var gulp = require('gulp'),
     gulpif = require('gulp-if'),
     autoprefix = require('gulp-autoprefixer'),
     merge = require('merge-stream'),
-    gzip = require('gulp-gzip');
+    gzip = require('gulp-gzip'),
+    umd = require("gulp-umd");
+
 
 var processhtml_options = {
   list: "build/replacementlist.txt"
@@ -30,14 +32,6 @@ var processhtml_options = {
 
 var ranBower = false;
 var ranWiredep = false;
-
-var tsProject = ts.createProject('tsconfig.json', {
-  typescript: require('typescript')
-});
-
-var tsProjectProd = ts.createProject('tsconfig.json', {
-  typescript: require('typescript')
-});
 
 gulp.task('clean', function () {
   return del(['build/**']);
@@ -73,7 +67,7 @@ gulp.task('dev', ['watch']);
 
 // run production task
 gulp.task('prod', function () {
-  runSequence('clean', 'typescript-compile', 'bundle');
+  runSequence('clean', 'prod-typescript-compile', 'bundle');
 });
 
 // serve the build dir
@@ -110,12 +104,66 @@ gulp.task('serve', ['build'], function () {
 
 
 gulp.task('typescript-compile', function () {
+
+    var tsProject = ts.createProject('tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject1 = ts.createProject('node_modules/qCommon/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject2 = ts.createProject('node_modules/reportsUI/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject3 = ts.createProject('node_modules/billsUI/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+
   var tsResult = tsProject.src() // instead of gulp.src(...)
       .pipe(ts(tsProject));
-  return tsResult.js.pipe(gulp.dest('build/app/')).pipe(livereload());
+  var tsResult1 = tsProject1.src() // instead of gulp.src(...)
+      .pipe(ts(tsProject1));
+    var tsResult2 = tsProject2.src() // instead of gulp.src(...)
+        .pipe(ts(tsProject2));
+  var tsResult3 = tsProject3.src() // instead of gulp.src(...)
+      .pipe(ts(tsProject3));
+  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/reportsUI')),tsResult3.js.pipe(gulp.dest('build/lib/billsUI'))).pipe(livereload());
   /*return gulp.src(['app/!**!/!*.ts', '!app/bower_components/!**!/!*.ts', '!node_modules/!**!/!*.ts'])
    .pipe(ts(tsProject))
    .pipe(gulp.dest('build/app/'));*/
+});
+
+gulp.task('prod-typescript-compile', function () {
+
+
+    var tsProject = ts.createProject('tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject1 = ts.createProject('node_modules/qCommon/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject2 = ts.createProject('node_modules/reportsUI/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+    var tsProject3 = ts.createProject('node_modules/billsUI/tsconfig.json', {
+        typescript: require('typescript')
+    });
+
+  var tsResult = tsProject.src() // instead of gulp.src(...)
+      .pipe(ts(tsProject));
+  var tsResult1 = tsProject1.src() // instead of gulp.src(...)
+   .pipe(ts(tsProject1));
+    var tsResult2 = tsProject2.src() // instead of gulp.src(...)
+        .pipe(ts(tsProject2));
+  var tsResult3 = tsProject3.src() // instead of gulp.src(...)
+      .pipe(ts(tsProject3));
+  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/reportsUI')),tsResult3.js.pipe(gulp.dest('build/lib/billsUI'))).pipe(livereload());
 });
 
 // watch for changes and run the relevant task
@@ -123,11 +171,20 @@ gulp.task('watch', ['serve'], function () {
   livereload.listen();
   gulp.watch('app/assets/*.js', ['js']);
   gulp.watch('app/**/*.ts', ['typescript-compile']);
+  gulp.watch('node_modules/reportsUI/app/**/*.*', ['typescript-compile']);
+  gulp.watch('node_modules/billsUI/app/**/*.*', ['typescript-compile']);
   gulp.watch(['./index.html', './app/views/*.html'], ['html']);
   gulp.watch('app/**/*.css', ['css']);
   gulp.watch('images/**/*.*', ['images']);
   gulp.watch('css/**/*.scss', ['sass']);
+  //gulp.watch('node_modules/qCommon/**/*.*', ['generate-umd']);
   //gulp.watch(['build/**']).on('change', livereload.changed);
+});
+
+gulp.task('generate-umd', ['typescript-compile'], function(){
+  return gulp.src('node_modules/qCommon/**/*.js')
+      .pipe(umd())
+      .pipe(gulp.dest('node_modules/qCommon/bundles'));
 });
 
 gulp.task('copy-to-build', ['dependencies', 'js', 'html', 'fonts', 'images']);
@@ -139,19 +196,18 @@ gulp.task('dependencies', function () {
     'node_modules/zone.js/dist/zone.js',
     'node_modules/reflect-metadata/Reflect.js',
     'node_modules/systemjs/dist/system.src.js',
-    //'node_modules/socket.io-client/socket.io.js',
+    'node_modules/socket.io-client/socket.io.js',
     'app/assets/**/*.js',
-    'app/bower_components/footable/compiled/footable.min.js'
-    //'app/bower_components/tag-it/js/tag-it.js'
+    'app/bower_components/footable/compiled/footable.min.js',
+    'app/bower_components/tag-it/js/tag-it.js'
   ]).pipe(gulp.dest('build/lib'));
 
   var angular = gulp.src(['node_modules/@angular/**/*.*']).pipe(gulp.dest('build/lib/@angular'));
   var angularInMemory = gulp.src(['node_modules/angular2-in-memory-web-api/**/*.*']).pipe(gulp.dest('build/lib/angular2-in-memory-web-api'));
   var rxjs = gulp.src(['node_modules/rxjs/**/*.*']).pipe(gulp.dest('build/lib/rxjs'));
-  /*var angular2uuid = gulp.src(['node_modules/angular2-uuid/!**!/!*.*']).pipe(gulp.dest('build/lib/angular2-uuid'));
-  var immutable = gulp.src(['node_modules/immutable/!**!/!*.*']).pipe(gulp.dest('build/lib/immutable'));*/
-  //var qCommon = gulp.src(['node_modules/qCommon/**/*.*']).pipe(gulp.dest('build/lib/qCommon'));
-  return merge(libs, angular, angularInMemory, rxjs);
+  var angular2uuid = gulp.src(['node_modules/angular2-uuid/**/*.*']).pipe(gulp.dest('build/lib/angular2-uuid'));
+  var immutable = gulp.src(['node_modules/immutable/**/*.*']).pipe(gulp.dest('build/lib/immutable'));
+  return merge(libs, angular, angularInMemory, rxjs, angular2uuid, immutable);
 });
 
 gulp.task('sass', function () {
@@ -174,8 +230,13 @@ gulp.task('js', function () {
 
 // move html
 gulp.task('html', ['wiredep'], function () {
-  return gulp.src(['./index.html', './app/**/*.html'], {base: '.'})
-      .pipe(gulp.dest('build/')).pipe(livereload());
+  var html = gulp.src(['./index.html', './app/**/*.html'], {base: '.'})
+      .pipe(gulp.dest('build/'));
+    var reportsHtml = gulp.src(['./node_modules/reportsUI/app/views/*.html'])
+        .pipe(gulp.dest('build/app/views/'));
+  var paymentsHtml = gulp.src(['./node_modules/billsUI/app/views/*.html'])
+      .pipe(gulp.dest('build/app/views/'));
+  return merge(html, reportsHtml,paymentsHtml).pipe(livereload());
 });
 
 // move css
@@ -221,6 +282,7 @@ gulp.task('prod-html', ['process-html'], function () {
   var fileList = []
   try {
     fileList = require('fs').readFileSync('build/replacementlist.txt', 'utf8');
+    console.log("list", fileList);
     del([
       'build/replacementlist.txt'
     ])
@@ -255,7 +317,13 @@ gulp.task('prod-css', ['sass'], function () {
 gulp.task('copy-to-prod', ['prod-images', 'copy-misc-prod', 'copy-fonts-prod', 'prod-html', 'prod-css'], function () {
   var views = gulp.src(['app/**/*.html'])
       .pipe(gulp.dest('build/prod/app'));
-  return views;
+  var reportsJs = gulp.src(['build/lib/reportsUI/**/*.js'])
+      .pipe(gulp.dest('build/prod/lib/reportsUI/'));
+  var reportsHtml = gulp.src(['./node_modules/reportsUI/app/views/*.html'])
+        .pipe(gulp.dest('build/prod/app/views/'));
+  var paymentsHtml = gulp.src(['./node_modules/billsUI/app/views/*.html'])
+      .pipe(gulp.dest('build/prod/app/views/'));
+  return merge(views, reportsJs, reportsHtml,paymentsHtml);
 });
 
 gulp.task('gzipfiles', function(){
@@ -272,7 +340,7 @@ gulp.task('bundle', ['copy-to-prod'], function (cb) {
 
   //builder.reset();
 
-  builder.buildStatic("app", "./build/prod/js/app.min.js", {minify: true})
+  builder.buildStatic("app", "./build/prod/js/app.min.js", {})
       .then(function (output) {
         /* gulp.src("build/prod/js/app.min.js")
          .pipe(inlineNg2Template({ base: "./", css: false}))

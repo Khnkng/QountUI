@@ -1,35 +1,25 @@
 
 <div class="row" foundation>
   <div class="column small-12 medium-6">
-    <h6>Vendors</h6>
+    <h5>Vendors</h5>
   </div>
-  <div class="columns small-6 small-offset-6 right">
-    <button class="button small float-right" (click)="showCreateVendor()">Add Vendor</button>
+  <div class="columns small-6 small-offset-6  medium-offset-0 medium-6 right">
+
   </div>
 </div>
 <div class="row" foundation>
-  <div class="column large-12 medium-12 small-12">
-    <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasVendorsList" attr.data="tableData" attr.options="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+  <div class="column large-12 medium-12 small-12 foo-container">
+    <div class="foo-toolbar">
+      <button class="button small" (click)="showCreateVendor()"><i class="icon ion-plus-round"></i>Vendor</button>
+    </div>
+    <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasVendorsList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
   </div>
-  <div>
-    <div class="small reveal" #createVendor id="createVendor" data-reveal data-close-on-click="false">
+  <div class="small reveal" #createVendor id="createVendor" data-reveal data-close-on-click="false">
+    <div class="row expanded">
       <h6>
         {{editMode ? "Update Vendor" : "Create Vendor"}}
       </h6>
       <form *ngIf="active1" (ngSubmit)="submit($event)" [formGroup]="vendorForm">
-        <div class="row" *ngIf="!editMode">
-          <div class="small-12 medium-6 columns">
-            <label>Company
-              <div class="input-group">
-                <select id="company" (change)="changeCompany($event.target.value)">
-                  <option value="">Select company</option>
-                  <option value="{{company.id}}" *ngFor="let company of allCompanies">{{company.name}}</option>
-                </select>
-                <div class="error" [hidden]="vendorForm.controls.name.untouched || vendorForm.controls.name.valid">Vendor Name is required.</div>
-              </div>
-            </label>
-          </div>
-        </div>
         <div class="row">
           <div class="small-12 medium-6 columns">
             <label>Name
@@ -60,10 +50,10 @@
         </div>
         <div class="row">
           <div class="small-12 medium-6 columns">
-            <label>Account Number
+            <label>Account Number(s)
               <div class="input-group">
-                <input type="text" class="input-group-field" formControlName="accountNumber" placeholder="Account Number" />
-                <div class="error" [hidden]="vendorForm.controls.accountNumber.untouched || vendorForm.controls.accountNumber.valid">Vendor Account number is required.</div>
+                <custom-tag [controlName]="'accountNumbers'" [group]="vendorForm" [inputType]="'text'"
+                            [height]="'80px'" [placeholder]="'Account number'">loading</custom-tag>
               </div>
             </label>
           </div>

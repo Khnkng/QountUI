@@ -9,8 +9,8 @@ import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
 import "rxjs/add/observable/throw";
 import {Injectable} from "@angular/core";
-import {QountServices} from "../share/services/QountServices";
-import {PATH, SOURCE_TYPE} from "../share/constants/Qount.constants";
+import {QountServices} from "qCommon/app/services/QountServices";
+import {PATH, SOURCE_TYPE} from "qCommon/app/constants/Qount.constants";
 
 
 @Injectable()

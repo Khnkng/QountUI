@@ -1,0 +1,121 @@
+<div>
+  <header>
+    <div class="header">
+      <div class="row">
+        <div class="small-6"><h5>Books</h5></div>
+        <div class="small-6 text-right"><i [ngClass]="{'ion-arrow-up-b': !hideBoxes, 'ion-arrow-down-b':hideBoxes}"  (click)="hideBoxes = !hideBoxes"></i></div>
+      </div>
+    </div>
+  </header>
+  <div class="row" [hidden]="hideBoxes">
+    <div class="column small-3 medium-3 large-3">
+      <div class="box-notifier">
+        <div class="box-border blue centered">
+          <div class="box-icon categorize"></div>
+          <div class="box-notification-circle">
+            3
+          </div>
+        </div>
+        <div class="box-label">
+          Categorize
+        </div>
+      </div>
+    </div>
+    <div class="column small-3 large-3">
+      <div class="box-notifier">
+        <div class="box-border blue centered">
+          <div class="box-icon duplicates"></div>
+          <div class="box-notification-circle">
+            3
+          </div>
+        </div>
+        <div class="box-label">
+          Duplicates
+        </div>
+      </div>
+    </div>
+    <div class="column small-3 large-3">
+      <div class="box-notifier">
+        <div class="box-border blue centered">
+          <div class="box-icon flagged"></div>
+          <div class="box-notification-circle">
+            3
+          </div>
+        </div>
+        <div class="box-label">
+          Flagged
+        </div>
+      </div>
+    </div>
+    <div class="column small-3 large-3">
+      <div class="box-notifier">
+        <div class="box-border blue centered">
+          <div class="box-icon reconcile"></div>
+          <div class="box-notification-circle">
+            3
+          </div>
+        </div>
+        <div class="box-label">
+          Reconcile
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="tab-container" foundation>
+    <div class="row tabber ">
+      <div class="column tab red-tab" (click)="reRoutePage(0)" [ngClass]="{'selected': tabDisplay[0].display == 'block'}">
+        <label>Deposits</label>
+        <span class="badge">{{badges.deposits ? badges.deposits : localBadges ? localBadges.deposits?localBadges.deposits:0:0 }}</span>
+      </div>
+      <div class="column tab orange-tab" (click)="reRoutePage(1)" [ngClass]="{'selected': tabDisplay[1].display == 'block'}">
+        <label>Expenses</label>
+        <span class="badge">{{badges.expenses ? badges.expenses : localBadges ? localBadges.expenses?localBadges.expenses:0:0 }}</span>
+      </div>
+      <div class="column tab blue-tab" (click)="reRoutePage(2)" [ngClass]="{'selected': tabDisplay[2].display == 'block'}">
+        <label>Journal Entries</label>
+        <span class="badge">{{badges.journalEntries ? badges.journalEntries : localBadges ? localBadges.journalEntries?localBadges.journalEntries:0:0 }}</span>
+      </div>
+    </div>
+    <div class="row collapse tab-content ">
+      <div *ngIf="tabDisplay[0].display == 'block'" class="column small-12 medium-12 large-12" id="deposits">
+        <div class="row">
+          <div class="column">
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasDeposits" [data]="depositsTableData" [options]="depositsTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasDeposits">
+              <div class="woo-woo">Woot Woot!</div>
+              <p>There are no Deposits.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="tabDisplay[1].display == 'block'" class="column small-12 medium-12 large-12" id="expenses">
+        <div class="row">
+          <div class="column">
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasExpenses" [data]="expensesTableData" [options]="expensesTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasExpenses">
+              <div class="woo-woo">Woot Woot!</div>
+              <p>There are no Expenses.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="tabDisplay[2].display == 'block'" class="column small-12 medium-12 large-12" id="journalEntries">
+        <div class="row">
+          <div class="column">
+            <div class="row">
+              <div class="column">
+                <button class="button small float-right" (click)="addNewJE()"><i class="icon ion-plus-round"></i>Journal Entry</button>
+              </div>
+            </div>
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasJournalEntries" [data]="jeTableData" [options]="jeTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasJournalEntries">
+              <div class="woo-woo">Woot Woot!</div>
+              <p>There are no Journal entries.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

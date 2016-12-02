@@ -1,0 +1,66 @@
+
+<div class="row" foundation>
+    <div class="column small-12 medium-6">
+        <h5>Item Codes</h5>
+    </div>
+    <div class="columns small-6 small-offset-6 right">
+
+    </div>
+</div>
+<div class="row chart-of-accounts" foundation>
+    <div class="column large-12 medium-12 small-12 foo-container">
+        <div class="foo-toolbar">
+            <button class="button small" (click)="showAddItemCode()"><i class="icon ion-plus-round"></i> Item code</button>
+        </div>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    </div>
+    <div>
+        <div class="small reveal" id="addItemcode" #addItemcode data-reveal data-close-on-click="false">
+            <h6>
+                {{editMode ? "Update Item Code" : "Add Item Code"}}
+            </h6>
+            <form *ngIf="newFormActive" [formGroup]="itemcodeForm">
+                <div class="row">
+                    <div class="small-12 medium-6 columns">
+                        <label>Name
+                            <input type="text" formControlName="name" placeholder="Name*"/>
+                            <div class="error" [hidden]="itemcodeForm.controls.name.untouched || itemcodeForm.controls.name.valid">Name is required.</div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>Description
+                            <textarea formControlName="desc" style="height: 110px;" placeholder="Description"></textarea>
+                            <div class="error" [hidden]="itemcodeForm.controls.desc.untouched || itemcodeForm.controls.desc.valid">Description is required.</div>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-12 medium-6 columns">
+                        <label>Payment COA
+                            <select combo-box #paymentCOAComboBoxDir="comboBox" data-placeholder="Enter Payment COA" formControlName="payment_coa_mapping" [listObject]="paymentChartOfAccounts" (valueChanged)="updatePaymentCOA($event)">
+                                <option *ngFor="let chartOfAccount of paymentChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                            </select>
+                            <div class="error" [hidden]="itemcodeForm.controls.payment_coa_mapping.untouched || itemcodeForm.controls.payment_coa_mapping.valid">Payment COA is required.</div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>Invoice COA
+                            <select combo-box #invoiceCOAComboBoxDir="comboBox" data-placeholder="Enter Invoice COA" formControlName="invoice_coa_mapping" [listObject]="invoiceChartOfAccounts" (valueChanged)="updateInvoiceCOA($event)">
+                                <option *ngFor="let chartOfAccount of invoiceChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                            </select>
+                            <div class="error" [hidden]="itemcodeForm.controls.invoice_coa_mapping.untouched || itemcodeForm.controls.invoice_coa_mapping.valid">Invoice COA is required.</div>
+                        </label>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 10px;">
+                    <div class="small-12 medium-12 columns">
+                        <button class="button small float-right" [disabled]="!itemcodeForm.valid" (click)="submit($event)">Save</button>
+                    </div>
+                </div>
+            </form>
+            <button class="close-button" data-close aria-label="Close reveal" type="button">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>

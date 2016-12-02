@@ -4,17 +4,18 @@
 
 import {Component, ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
-import {CompaniesService} from "../share/services/Companies.service";
-import {PROVINCES} from "../share/constants/Provinces.constants";
-import {ComboBox} from "../share/directives/comboBox.directive";
-import {FTable} from "../share/directives/footable.directive";
-import {VendorForm} from "../forms/Vendor.form";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
+import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
+import {ComboBox} from "qCommon/app/directives/comboBox.directive";
+import {FTable} from "qCommon/app/directives/footable.directive";
+import {VendorForm} from "qCommon/app/forms/Vendor.form";
 import {Router} from "@angular/router";
 import {VendorModel} from "../models/Vendor.model";
-import {TOAST_TYPE} from "../share/constants/Qount.constants";
-import {ToastService} from "../share/services/Toast.service";
-import {SwitchBoard} from "../share/services/SwitchBoard";
-import {Session} from "../share/services/Session";
+import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {ToastService} from "qCommon/app/services/Toast.service";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {Session} from "qCommon/app/services/Session";
+import {CompanyModel} from "../models/Company.model";
 
 declare var jQuery:any;
 declare var _:any;
@@ -25,7 +26,6 @@ declare var _:any;
 })
 
 export class VendorComponent {
-  type:string = "component";
   tableData:any = {};
   tableOptions:any = {};
   status:any;
@@ -40,30 +40,27 @@ export class VendorComponent {
   hasVendorsList:boolean = false;
   message:string;
   companyId:string;
-  allCompanies:Array<any>;
+  companies:Array<CompanyModel> = [];
+  currentCompany:any = {};
 
-  constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm, private _router: Router, private _toastService: ToastService, private switchBoard: SwitchBoard) {
+  constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm, private _router: Router,
+              private _toastService: ToastService, private switchBoard: SwitchBoard) {
     this.vendorForm = this._fb.group(_vendorForm.getForm());
-    this.switchBoard.onCompanyChange.subscribe(currentCompany => this.refreshCompany(currentCompany));
     this.companyId = Session.getCurrentCompany();
-    if(this.companyId){
+
+    this.companyService.companies().subscribe(companies => {
+      this.companies = companies;
+      if(this.companyId){
+        this.currentCompany = _.find(this.companies, {id: this.companyId});
+      } else if(this.companies.length> 0){
+        this.currentCompany = _.find(this.companies, {id: this.companies[0].id});
+      }
       this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
-    }
-  }
-
-  refreshCompany(currentCompany){
-    let companies = Session.getCompanies();
-    let currentCompany = _.find(companies, {id: currentCompany});
-    this.companyId = currentCompany.id;
-    this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
-  }
-
-  changeCompany(companyId){
-    this.companyId = companyId;
+    }, error => this.handleError(error));
   }
 
   getCompanyName(companyId){
-    let company = _.find(this.allCompanies, {id: companyId});
+    let company = _.find(this.companies, {id: companyId});
     if(company){
       return company.name;
     }
@@ -71,10 +68,13 @@ export class VendorComponent {
 
   buildTableData(vendors) {
     this.vendors = vendors;
+    this.hasVendorsList = false;
     this.tableData.rows = [];
+    this.tableOptions.search = true;
+    this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
-      {"name": "companyID", "title": "Company"},
+      /*{"name": "companyID", "title": "Company"},*/
       {"name": "ein", "title": "Ein"},
       {"name": "email", "title": "Email"},
       {"name": "address", "title": "Address","visible": false},
@@ -95,16 +95,14 @@ export class VendorComponent {
     this.vendors.forEach(function(vendor) {
       let row:any = {};
       for(let key in base.vendors[0]) {
-        if(key == 'companyID'){
-          row[key] = base.getCompanyName(vendor[key]);
-        } else{
-          row[key] = vendor[key];
-        }
+        row[key] = vendor[key];
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       }
       base.tableData.rows.push(row);
     });
-    this.hasVendorsList = true;
+    setTimeout(function(){
+      base.hasVendorsList = true;
+    }, 0)
   }
 
   showCreateVendor() {
@@ -127,17 +125,17 @@ export class VendorComponent {
 
   showVendorProvince(country:any) {
     let countryControl:any = this.vendorForm.controls['country'];
-    countryControl.updateValue(country.name);
+    countryControl.patchValue(country.name);
   }
 
   removeVendor(row:any) {
     let vendor:VendorModel = row;
     this.companyService.removeVendor(vendor.id, this.companyId)
-      .subscribe(success  => {
-        this._toastService.pop(TOAST_TYPE.success, "Vendor deleted successfully");
-        this.companyService.vendors(this.companyId)
-          .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
-      }, error =>  this.handleError(error));
+        .subscribe(success  => {
+          this._toastService.pop(TOAST_TYPE.success, "Vendor deleted successfully");
+          this.companyService.vendors(this.companyId)
+              .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
+        }, error =>  this.handleError(error));
     _.remove(this.vendors, function (_vendor) {
       return vendor.id == _vendor.id;
     });
@@ -170,14 +168,15 @@ export class VendorComponent {
   submit($event) {
     $event && $event.preventDefault();
     var data = this._vendorForm.getData(this.vendorForm);
+    this.companyId = Session.getCurrentCompany();
     if(this.editMode) {
       data.id = this.row.id;
       this.companyService.updateVendor(<VendorModel>data, this.companyId)
-        .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
+          .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
       jQuery(this.createVendor.nativeElement).foundation('close');
     } else {
       this.companyService.addVendor(<VendorModel>data, this.companyId)
-        .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
+          .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
     }
   }
 
@@ -188,13 +187,13 @@ export class VendorComponent {
       this.hasVendorsList=false;
       if(this.editMode) {
         this.companyService.vendors(this.companyId)
-          .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
+            .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
         this.newForm1();
         this._toastService.pop(TOAST_TYPE.success, "Vendor updated successfully.");
       } else {
         this.newForm1();
         this.companyService.vendors(this.companyId)
-          .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
+            .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
         this._toastService.pop(TOAST_TYPE.success, "Vendor created successfully.");
       }
     } else {

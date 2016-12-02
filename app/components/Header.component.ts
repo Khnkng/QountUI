@@ -4,10 +4,10 @@
 
 import {Component, Output, EventEmitter, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
-import {NotificationModel} from "../share/models/Notification.model";
-import {SwitchBoard} from "../share/services/SwitchBoard";
-import {FullScreenService} from "../share/services/fullscreen.service";
-import {NotificationService} from "../share/services/Notification.service";
+import {NotificationModel} from "qCommon/app//models/Notification.model";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {FullScreenService} from "qCommon/app/services/fullscreen.service";
+import {NotificationService} from "qCommon/app/services/Notification.service";
 
 
 declare var jQuery:any;
@@ -63,7 +63,7 @@ export class HeaderComponent implements  OnInit{
     this.searchText = "";
     this.switchBoard.onNotificationMarkRead.subscribe(status => this.getNotifications());
   }
-  
+
   getNotifications() {
     this.notificationServie.getNotifications().subscribe(notifications =>  {this.unreadNotifications = _.filter(notifications, function(notification) {
       return notification.notification_type == "Comments" || notification.notification_type == "BillPay";
@@ -166,7 +166,7 @@ export class HeaderComponent implements  OnInit{
   }
 
   viewUserProfilePage($event){
-    let link = ["/UserProfile"];
+    let link = ["/user-profile"];
     this.redirect.emit(link);
   }
 }

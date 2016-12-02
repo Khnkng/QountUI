@@ -5,12 +5,13 @@
 
 import {Component, OnInit} from "@angular/core";
 import {Router, NavigationEnd} from "@angular/router";
-import {UserModel} from "../share/models/User.model";
-import {SwitchBoard} from "../share/services/SwitchBoard";
-import {ToastService} from "../share/services/Toast.service";
-import {Session} from "../share/services/Session";
-import {TOAST_TYPE} from "../share/constants/Qount.constants";
+import {UserModel} from "qCommon/app/models/User.model";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {ToastService} from "qCommon/app/services/Toast.service";
+import {Session} from "qCommon/app/services/Session";
+import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import "rxjs/add/operator/filter";
+import {SocketService} from "qCommon/app/services/Socket.service";
 
 
 
@@ -33,6 +34,7 @@ export class AppComponent  implements OnInit{
     isLoginPath : boolean;
     toasts: Array<any>;
     toastClass: string;
+    switchBoard:SwitchBoard
     confirmClass = "";
 
     mainCanvasCss = {
@@ -46,10 +48,11 @@ export class AppComponent  implements OnInit{
         'shrink' : true
     }
 
-    constructor(private switchBoard:SwitchBoard, private _router:Router, private toastService: ToastService) {
+    constructor(_switchBoard:SwitchBoard, private _router:Router, private toastService: ToastService, private socketService: SocketService) {
         if(Session.hasSession()) {
             this.hasLoggedIn = true;
         }
+        this.switchBoard = _switchBoard;
         this.toasts = [];
         this.toastClass = "";
         this.switchBoard.onNewToast.subscribe(toast => this.addToast(toast));

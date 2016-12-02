@@ -1,0 +1,279 @@
+
+<div class="company-details add-company" foundation>
+  <div class="row">
+    <div class="small-12 medium-11 columns">
+      <form class="company-form" *ngIf="active" (ngSubmit)="companySubmit($event)" [formGroup]="companyForm">
+
+        <div class="row collapsed company-button-header">
+          <div class="columns small-12 right">
+            <button type="submit" class="button create small float-right" [disabled]="!companyForm.valid" [hidden]="companyDataSaved" (click)="submit($event)">Add</button>
+          </div>
+        </div>
+
+        <section class="company-info">
+          <header>Company Info</header>
+          <hr/>
+          <div class="row medium-collapse">
+            <div class="small-12 medium-8 columns">
+              <div class="row">
+                <div class="small-12 medium-4 columns">
+                  <label>Name
+                    <div>
+                      <input type="text" formControlName="name" placeholder="Legal Company Name*">
+                      <div class="error" [hidden]="companyForm.controls.name.untouched || companyForm.controls.name.valid"><small>Company Name is required.</small></div>
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-4 columns">
+                  <label>EIN
+                    <div class="">
+                      <input class="" type="text" formControlName="einNumber" placeholder="EIN*">
+                      <div class="error" [hidden]="companyForm.controls.einNumber.untouched || companyForm.controls.einNumber.valid"><small>Company EIN is required.</small></div>
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-4 columns">
+                  <label>Company Type
+                    <div class="">
+                      <select formControlName="companyType" placeholder="Company type">
+                        <option *ngFor="let companyType of companyTypes" value="{{companyType.value}}">{{companyType.name}}</option>
+                      </select>
+                      <div class="error" [hidden]="companyForm.controls.companyType.untouched || companyForm.controls.companyType.valid"><small>Select Company type</small></div>
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-4 columns">
+                  <label>Phone Number
+                    <div class="">
+                      <input class="" name="phoneNumber" formControlName="phoneNumber" type="text" placeholder="Phone Number">
+                      <div class="error" [hidden]="companyForm.controls.phoneNumber.untouched || companyForm.controls.phoneNumber.valid"><small>Company Phone Number is required.</small></div>
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-8 columns">
+                  <label>Address
+                    <div class="">
+                      <input type="text" class="" formControlName="address" placeholder="Address*"/>
+                      <div class="error" [hidden]="companyForm.controls.address.untouched || companyForm.controls.address.valid"><small>Company Address is required.</small></div>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="small-12 medium-3 columns">
+                  <label>City
+                    <div class="">
+                      <input type="text" class="" formControlName="city" placeholder="City"/>
+                      <div class="error" [hidden]="companyForm.controls.city.untouched || companyForm.controls.city.valid"><small>City is required.</small></div>
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                  <label>State
+                    <div class="">
+                      <input type="text" class="" formControlName="state" placeholder="State"/>
+                      <div class="error" [hidden]="companyForm.controls.state.untouched || companyForm.controls.state.valid"><small>State is required.</small></div>
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                  <label>Country
+                    <div class="">
+                      <select combo-box #countryComboBoxDir="comboBox" title="" data-placeholder="Enter Country" formControlName="country"
+                              [listObject]="countries" (valueChanged)="showProvince($event)">
+                        <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
+                      </select>
+                      <div class="error" [hidden]="companyForm.controls.country.untouched || companyForm.controls.country.valid"><small>Country is required.</small></div>
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                  <label>Zipcode
+                    <div class="">
+                      <input class="" name="zipCode" formControlName="zipcode" type="text" placeholder="Zipcode">
+                      <div class="error" [hidden]="companyForm.controls.zipcode.untouched || companyForm.controls.zipcode.valid"><small>Zipcode is required.</small></div>
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-6 columns">
+                  <label>Bills email
+                    <div class="input-group">
+                      <span class="input-group-label">dev.bills.</span>
+                      <input class="input-group-field" name="companyEmail" formControlName="companyEmail" type="text" (blur)="validateEmail()">
+                      <span class="input-group-label">@qounthq.io</span>
+                    </div>
+                    <div class="error" *ngIf="!emailValidation"><small>Email ID Does Not Exist</small></div>
+                  </label>
+                </div>
+                <div class="small-12 medium-4 columns">
+                  <label>Currency
+                    <div class="">
+                      <select formControlName="defaultCurrency" placeholder="currency">
+                        <option *ngFor="let currency of currencies" value="{{currency}}">{{currency}}</option>
+                      </select>
+                      <div class="error" [hidden]="companyForm.controls.defaultCurrency.untouched || companyForm.controls.defaultCurrency.valid"><small>Select Currency</small></div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <!--<div class="small-12 medium-4 columns">
+              <div class="row">
+                <div class="small-12 medium-12 columns">
+                  <label>Add User
+                    <custom-tag [controlName]="'invitedUserEmails'" [group]="companyForm" [inputType]="'email'"
+                                [height]="'155px'" [placeholder]="'Email Address'">loading</custom-tag>
+                  </label>
+                </div>
+              </div>
+            </div>-->
+          </div>
+        </section>
+        <section class="payment-info" [hidden]="!companyDataSaved">
+          <header>Payment Info</header>
+          <hr/>
+          <div class="row medium-collapse">
+            <div class="small-12 medium-12 columns">
+              <div class="row">
+                <div class="small-12 medium-3 columns">
+                  <label>Select payment type
+                    <select (change)="setPaymentType($event)">
+                      <option></option>
+                      <option value="bank">Bank</option>
+                      <option value="cheque">Cheque</option>
+                      <option value="creditCard">Card</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="small-12 medium-4 columns" *ngIf="paymentType=='creditCard'">
+                  <label>Name on Credit Card
+                    <div class="input-group">
+                      <input class="input-group-field" type="text" placeholder="Account Holder Name*">
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-4 columns" *ngIf="paymentType=='creditCard'">
+                  <label>Nick Name
+                    <div class="input-group">
+                      <input class="input-group-field" type="text" placeholder="Nick Name*">
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="row" *ngIf="paymentType=='bank'">
+                <div class="small-12 medium-3 columns">
+                  <label>Account Holder Name
+                    <div class="input-group">
+                      <input class="input-group-field" type="text" placeholder="Account Holder Name*">
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                  <label>Bank Name
+                    <div class="input-group">
+                      <input class="input-group-field" type="text" placeholder="Bank Name*">
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                  <label>Account Number
+                    <div class="input-group">
+                      <input class="input-group-field" type="text" name="accountNumber" placeholder="Account Number*">
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                  <label>Routing Number
+                    <div class="input-group">
+                      <input class="input-group-field" type="text" placeholder="Routing Number*">
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="row" *ngIf="paymentType=='creditCard'">
+                <div class="small-12 medium-4 columns">
+                  <label>Card Number
+                    <div class="input-group">
+                      <input class="input-group-field" type="text" placeholder="Card Number*">
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-2 columns">
+                  <label>CVV Number
+                    <div class="input-group">
+                      <input class="input-group-field" type="text" placeholder="CVV Number*">
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-6 columns">
+                  <div class="row collapsed">
+                    <div class="small-6 medium-6 columns">
+                      <label>Expiry Date (Month)
+                        <select>
+                          <option value="{{day}}" *ngFor="let day of days">{{day}}</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div class="small-6 medium-6 columns">
+                      <label>Year
+                        <select>
+                          <option value="{{year}}" *ngFor="let year of years">{{year}}</option>
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="row" *ngIf="paymentType=='creditCard'">
+
+              </div>
+              <div class="row" *ngIf="(paymentType=='creditCard')&&(!isValidCreditCard)" style="color: red;margin-left: 20px;font-weight: 600;">
+                Invalid credit card number or cvv
+              </div>
+
+              <div class="row" *ngIf="paymentType=='creditCard' || paymentType=='bank'">
+                <div class="small-12 medium-12 columns">
+                  <button class="button create small float-right" (click)="savePaymentInfo($event)">Add Payment Info</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </form>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="columns small-12 medium-6">
+      <div id="importExpenseModal" title="Import account codes">
+        <h5>Import account codes</h5>
+        <div class="row">
+          <div class="columns small-12 medium-12">
+            <div class="existing-company-wrapper">
+              <div class="existing-company-row" *ngFor="let company of existingCompanies">
+                <input type="radio" name="company" (click)="toggleCompany(company.id)"/>
+                <span>{{company.name}}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="columns">
+                <button class="button small float-right import-button" (click)="importExpenseCodes()">Import</button>
+              </div>
+            </div>
+          </div>
+          <button class="close-button" type="button" (click)="closeModal($event)">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<!--
+ <button class="button create small float-right" [disabled]="!companyForm.valid" type="submit" (click)="submit($event)"> Next&nbsp; <i class="icon ion-chevron-right"></i></button>
+  <div *ngIf="status" class="formstatus">
+    <!--<span [ngClass]="{'success': status.success, 'error': status.error}">{{message}}</span>-->

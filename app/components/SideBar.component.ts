@@ -4,9 +4,9 @@
 
 import {Component, Input, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
-import {SwitchBoard} from "../share/services/SwitchBoard";
-import {Session} from "../share/services/Session";
-import {PAGES} from "../share/constants/Qount.constants";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {Session} from "qCommon/app/services/Session";
+import {PAGES} from "qCommon/app/constants/Qount.constants";
 
 declare var jQuery:any;
 declare var _:any;
@@ -17,16 +17,18 @@ declare var _:any;
 })
 
 export class SideBarComponent {
-
   isDashboard:boolean = false;
-  isCompanies:boolean = false;
-  isVendors:boolean = false;
-  isWorkflow:boolean = false;
-  isNotifications:boolean = false;
-  isReports:boolean = false;
+  isBooks:boolean = false;
+  isInvoice:boolean = false;
+  isPayments:boolean = false;
+  isExpenses:boolean = false;
+  isPayrol:boolean = false;
+  isTaxes:boolean = false;
+  isTools:boolean = false;
+  isReports:boolean=false;
+
   allBoards:any;
   currentBoardName = null;
-  companies:Array<any>;
   showSwitchCompany:boolean = false;
   currentCompanyId:string;
   currentCompanyName:string;
@@ -35,22 +37,6 @@ export class SideBarComponent {
 
   constructor(private switchBoard:SwitchBoard, private _router:Router) {
     console.info('QountApp sidebar Component Mounted Successfully7');
-    this.companies = Session.getCompanies() || [];
-    if(this.companies.length > 0){
-      this.currentCompanyId = this.companies[0].id;
-      this.currentCompanyName = this.companies[0].name;
-    }
-  }
-
-  changeCompany(companyId){
-    Session.setCurrentCompany(companyId);
-    let currentCompany = _.find(this.companies, {id: companyId});
-    this.currentCompanyId = currentCompany.id;
-    this.currentCompanyName = currentCompany.name;
-    jQuery("#switchCompany").foundation('close');
-    this.showSwitchCompany = !this.showSwitchCompany;
-    this.toggleMenu();
-    this.switchBoard.onCompanyChange.next({'companyId': companyId});
   }
 
   logout() {
@@ -62,64 +48,56 @@ export class SideBarComponent {
   showPage(page:PAGES, $event) {
     $event && $event.stopImmediatePropagation();
     this.isDashboard = false;
-    this.isCompanies = false;
-    this.isVendors = false;
-    this.isWorkflow = false;
-    this.isNotifications = false;
+    this.isBooks = false;
+    this.isPayments = false;
+    this.isExpenses = false;
+    this.isPayrol = false;
+    this.isTaxes = false;
+    this.isTools = false;
+    this.isReports=false;
     switch (page) {
       case PAGES.DASHBOARD: {
-        let link = ['/dashboard'];
+        let link = [''];
         this._router.navigate(link);
         this.isDashboard = true;
       }
-      break;
-      case PAGES.COMPANIES: {
-        let link=['/companies'];
+        break;
+      case PAGES.BOOKS: {
+        let link = ['books', 0];
         this._router.navigate(link);
-        this.isCompanies = true;
-      }
-      break;
-      case PAGES.VENDORS: {
-        let link=['/vendors'];
-        this._router.navigate(link);
-        this.isVendors = true;
+        this.isBooks = true;
       }
         break;
-      case PAGES.WORKFLOW: {
-        let link=['/Workflow'];
+      case PAGES.PAYROL: {
+        let link = ['payrol'];
         this._router.navigate(link);
-        this.isWorkflow = true;
+        this.isPayrol = true;
       }
-      break;
-      case PAGES.NOTIFICATIONS: {
-        let link=['/notification'];
+        break;
+      case PAGES.TAX: {
+        let link = ['tax'];
         this._router.navigate(link);
-        this.isNotifications = true;
+        this.isTaxes = true;
       }
-      break;
-      case PAGES.REPORTS: {
-        let link=['/Reports'];
+        break;
+      case PAGES.TOOLS: {
+        let link = ['tools'];
+        this._router.navigate(link);
+        this.isTools = true;
+      }
+        break;
+      case PAGES.PAYMENTS: {
+        let link = ['payments/dashboard', 0];
         this._router.navigate(link);
         this.isReports = true;
       }
-      break;
+        break;
     }
   }
 
   toggleMenu(){
     this.isExpanded = !this.isExpanded;
     this.switchBoard.onSideBarExpand.next(this.isExpanded)
-  }
-
-  showCompaniesDropdown($event){
-    $event && $event.preventDefault();
-    $event && $event.stopImmediatePropagation();
-    if(!this.showSwitchCompany){
-      jQuery("#switchCompany").foundation('open');
-    } else{
-      jQuery("#switchCompany").foundation('close');
-    }
-    this.showSwitchCompany = !this.showSwitchCompany;
   }
 
   showError(err){

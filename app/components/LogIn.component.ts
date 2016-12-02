@@ -4,18 +4,18 @@
 
 
 import {Component, OnInit} from "@angular/core";
-import {ToastService} from "../share/services/Toast.service";
+import {ToastService} from "qCommon/app/services/Toast.service";
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {Router, ActivatedRoute} from "@angular/router";
-import {SwitchBoard} from "../share/services/SwitchBoard";
-import {LoginService} from "../services/Login.service";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {LoginService} from "qCommon/app/services/Login.service";
 import {LoginForm} from "../forms/Login.form";
 import {ForgotPassword} from "../forms/ForgotPassword.form";
 import {LoginModel} from "../models/Login.model";
-import {Session} from "../share/services/Session";
-import {PATH, TOAST_TYPE} from "../share/constants/Qount.constants";
-import {CompaniesService} from "../share/services/Companies.service";
-
+import {Session} from "qCommon/app/services/Session";
+import {PATH, TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var jQuery:any;
 
@@ -39,7 +39,7 @@ export class LogInComponent implements OnInit {
   resetPasswordHidden:boolean=true;
   routeSub:any;
 
-  constructor(fb: FormBuilder, private _router: Router,  private switchBoard: SwitchBoard, private loginService: LoginService, private _loginForm: LoginForm,
+  constructor(fb: FormBuilder, private _router: Router,  private switchBoard: SwitchBoard, private loginService: LoginService, private _loginForm: LoginForm, private loadingService:LoadingService,
               private _forgotPasswordForm: ForgotPassword, private _route:ActivatedRoute, private _toastService:ToastService, private companyService: CompaniesService) {
     this.routeSub = this._route.params.subscribe(params => {
       this.resetPasswordToken = params['resetPasswordToken'];
@@ -50,21 +50,23 @@ export class LogInComponent implements OnInit {
   }
 
   submit($event) {
+    this.loadingService.triggerLoadingEvent(true);
     $event && $event.preventDefault();
     var data = this._loginForm.getData(this.loginForm);
     data["username"] = data.id;
     this.loginService.login(<LoginModel>data)
-        .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
+        .subscribe(success  => {this.showMessage(true, success); this.loadingService.triggerLoadingEvent(false);}, error =>  this.showMessage(false, error));
   }
 
   showMessage(status, obj) {
     if(status) {
-      this.status = {};
+      /*this.status = {};
       this.status['success'] = true;
+      this.message = "logged in successfully.";
+      this.newLogin();*/
+
       //reading user object
       Session.create(obj.user, obj.token);
-      this.message = "logged in successfully.";
-      this.newLogin();
       this.fetchCompanies(obj.user);
     } else {
       this.status = {};
@@ -78,9 +80,9 @@ export class LogInComponent implements OnInit {
   }
 
   setComapnies(companies){
-    Session.setCompanies(companies);
     if(companies.length > 0){
       Session.setCurrentCompany(companies[0].id);
+      Session.setCurrentCompanyName(companies[0].name);
     }
     this.gotoDefaultPage();
   }
