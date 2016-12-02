@@ -95,9 +95,27 @@
                       <div class="small-12 medium-3 columns">
                         <label>Zipcode
                           <div class="">
-                            <input class="" name="zipCode" formControlName="zipCode" type="text" placeholder="Zipcode">
-                            <div class="error" [hidden]="companyForm.controls.zipCode.untouched || companyForm.controls.zipCode.valid"><small>Zipcode is required.</small></div>
+                            <input class="" name="zipcode" formControlName="zipcode" type="text" placeholder="Zipcode">
+                            <div class="error" [hidden]="companyForm.controls.zipcode.untouched || companyForm.controls.zipcode.valid"><small>Zipcode is required.</small></div>
                           </div>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-6 columns" *ngIf="havingCompanyMail">
+                        <label>Bills email
+                          <div class="">
+                            <input class="" name="companyEmail" formControlName="companyEmail" type="text" readonly>
+                            <div class="error" [hidden]="companyForm.controls.companyEmail.untouched || companyForm.controls.companyEmail.valid"><small>companyMail is required.</small></div>
+                          </div>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-6 columns" *ngIf="!havingCompanyMail">
+                        <label>Bills email
+                          <div class="input-group">
+                            <span class="input-group-label">dev.bills.</span>
+                            <input class="input-group-field" name="companyEmail" formControlName="companyEmail" type="text" (blur)="validateEmail()">
+                            <span class="input-group-label">@qounthq.io</span>
+                          </div>
+                          <div class="error" *ngIf="!emailValidation"><small>Email ID Does Not Exist</small></div>
                         </label>
                       </div>
                       <div class="small-12 medium-4 columns">

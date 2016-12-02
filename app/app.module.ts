@@ -47,7 +47,6 @@ import {DimensionsComponent} from "./components/Dimensions.component";
 import {DimensionForm} from "./forms/Dimension.form";
 import {UsersComponent} from "./components/Users.component";
 import {UsersForm} from "./forms/Users.form";
-import {UsersService} from "./services/Users.service";
 import {SwitchCompanyComponent} from "./components/switchCompanies.component";
 
 @NgModule({
@@ -161,7 +160,7 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
-        ExpensesSerice, CustomersService, CustomersForm, DimensionForm,UsersForm,UsersService],
+        ExpensesSerice, CustomersService, CustomersForm, DimensionForm,UsersForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

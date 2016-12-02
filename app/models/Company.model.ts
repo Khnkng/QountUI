@@ -18,4 +18,5 @@ export class CompanyModel {
   roles: Array<string>;
   accountHolderName:string;
   group:string;
+  companyEmail:string;
 }

@@ -10,8 +10,8 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {CompanyModel} from "../models/Company.model";
-import {UsersService} from "../services/Users.service";
-import {UsersModel} from "../models/Users.model";
+import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
+import {UsersModel} from "qCommon/app/models/Users.model";
 import {UsersForm} from "../forms/Users.form";
 
 declare var jQuery:any;
@@ -38,7 +38,7 @@ export class UsersComponent {
     companyId:string;
     roles:Array<any>;
 
-    constructor(private _fb: FormBuilder, private usersService: UsersService, private _usersForm:UsersForm, private _router: Router, private _toastService: ToastService, private switchBoard: SwitchBoard) {
+    constructor(private _fb: FormBuilder, private usersService: CompanyUsers, private _usersForm:UsersForm, private _router: Router, private _toastService: ToastService, private switchBoard: SwitchBoard) {
         this.userForm = this._fb.group(_usersForm.getForm());
         this.companyId = Session.getCurrentCompany();
         this.usersService.roles().subscribe(roles => {this.roles=roles}, error => this.handleError(error));

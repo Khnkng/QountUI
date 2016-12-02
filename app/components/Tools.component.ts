@@ -12,7 +12,7 @@ import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.servi
 import {DimensionService} from "qCommon/app/services/DimensionService.service";
 import {CodesService} from "qCommon/app/services/CodesService.service";
 import {ExpensesSerice} from "../services/Expenses.service";
-import {UsersService} from "../services/Users.service";
+import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
 import {CustomersService} from "../services/Customers.service";
 
 declare var jQuery:any;
@@ -36,7 +36,7 @@ export class ToolsComponent {
   usersCount:number=0;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private companiesService: CompaniesService, private coaService: ChartOfAccountsService,
-              private codeService: CodesService, private expenseService: ExpensesSerice, private dimensionService: DimensionService,private usersService:UsersService,private customersService:CustomersService) {
+              private codeService: CodesService, private expenseService: ExpensesSerice, private dimensionService: DimensionService,private usersService:CompanyUsers,private customersService:CustomersService) {
     console.info('QountApp Tools Component Mounted Successfully7');
     let currentCompany = Session.getCurrentCompany();
     if(currentCompany){
