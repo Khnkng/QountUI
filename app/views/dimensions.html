@@ -19,20 +19,20 @@
             <h6>
                 {{editMode ? "Update Dimension" : "Add Dimension"}}
             </h6>
-            <form *ngIf="newFormActive" [formGroup]="accountForm">
+            <form *ngIf="newFormActive" [formGroup]="dimensionForm">
                 <div class="row">
                     <div class="small-12 medium-6 columns">
                         <div class="row">
                             <div class="small-12 medium-12 columns">
                                 <label>Name
                                     <input type="text" formControlName="name" placeholder="Name*"/>
-                                    <div class="error" [hidden]="accountForm.controls.name.untouched || accountForm.controls.name.valid">Name is required.</div>
+                                    <div class="error" [hidden]="dimensionForm.controls.name.untouched || dimensionForm.controls.name.valid">Name is required.</div>
                                 </label>
                             </div>
                             <div class="small-12 medium-12 columns">
                                 <label>Description
                                     <textarea formControlName="desc" style="height: 110px;" placeholder="Description"></textarea>
-                                    <div class="error" [hidden]="accountForm.controls.desc.untouched || accountForm.controls.desc.valid">Description is required.</div>
+                                    <div class="error" [hidden]="dimensionForm.controls.desc.untouched || dimensionForm.controls.desc.valid">Description is required.</div>
                                 </label>
                             </div>
                         </div>
@@ -49,7 +49,7 @@
                 </div>
                 <div class="row" style="margin-top: 10px;">
                     <div class="small-12 medium-12 columns">
-                        <button class="button small float-right" [disabled]="!accountForm.valid" (click)="submit($event)">Save</button>
+                        <button class="button small float-right" [disabled]="!dimensionForm.valid" (click)="submit($event)">Save</button>
                     </div>
                 </div>
             </form>

@@ -129,7 +129,7 @@ import {LoadingComponent} from "qCommon/app/components/Loading.component";
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'accounts',
+            path: 'dimensions',
             component: DimensionsComponent,
             canActivate: [LoggedInActivator]
         },
