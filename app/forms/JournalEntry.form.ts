@@ -27,7 +27,7 @@ export class JournalEntryForm extends abstractForm{
       "recurringFrequency": [''],
       "desc": [''],
 
-      "newCategory": [],
+      "newType": [],
       "newCoa": [],
       "newEntryType": [],
       "newAmount": [],
@@ -41,7 +41,7 @@ export class JournalLineForm extends abstractForm{
 
   getForm(model?:any) {
     return {
-      category: [model? model.category: ''],
+      type: [model? model.type: ''],
       coa: [model? model.coa: ''],
       entryType: [model? model.entryType: ''],
       amount: [model? model.amount: 0],

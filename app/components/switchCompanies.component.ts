@@ -82,7 +82,10 @@ export class SwitchCompanyComponent{
         this.tableData.columns = [
             {"name": "id", "title": "ID","visible": false, "filterable": false},
             {"name": "name", "title": "Name"},
-            {"name": "admin", "title": "Admin"},
+            {"name":"einNumber","title":"EIN"},
+            {"name": "companyType", "title": "Type"},
+            {"name": "owner", "title": "Owner"},
+            {"name": "accountManager", "title": "Account Manager"},
             {"name": "actions", "title": "", "type": "html", "filterable": false}
         ];
         this.tableData.rows = [];
@@ -100,7 +103,10 @@ export class SwitchCompanyComponent{
             row.name = company.name;
             row.payables =payabels.toLocaleString(base.displayCurrency, { style: 'currency', currency: base.displayCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
             row.pastDue =payabels.toLocaleString(base.displayCurrency, { style: 'currency', currency: base.displayCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            row.admin = "";
+            row.owner = company.owner;
+            row.einNumber=company.einNumber;
+            row.companyType=company.companyType;
+            row.accountManager=company.accountManager;
 
             if(row.id != base.currentCompanyId){
                 row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Hop</span></a>";

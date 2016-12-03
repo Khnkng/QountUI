@@ -177,7 +177,7 @@ export class JournalEntryComponent{
         let data = this._jeForm.getData(this.jeForm);
         let tags = jQuery('#lineTags').tagit("assignedTags");
         let line = {
-            "category": data.newCategory,
+            "type": data.newType,
             "entryType": data.newEntryType,
             "coa": data.newCoa,
             "amount": data.newAmount,
@@ -190,8 +190,8 @@ export class JournalEntryComponent{
         this.tempJournalLinesArray.push(lineListForm);
         this.addLineItemMode = !this.addLineItemMode;
 
-        let categoryControl:any = this.jeForm.controls['newCategory'];
-        categoryControl.patchValue('');
+        let typeControl:any = this.jeForm.controls['newType'];
+        typeControl.patchValue('');
         let typeControl:any = this.jeForm.controls['newEntryType'];
         typeControl.patchValue('');
         let coaControl:any = this.jeForm.controls['newCoa'];
@@ -237,7 +237,8 @@ export class JournalEntryComponent{
     }
 
     cleanData(data){
-        delete data.newCategory;
+        delete data.newType;
+        delete data.newEntryType;
         delete data.newAmount;
         delete data.newCoa;
         delete data.newMemo;
@@ -341,7 +342,6 @@ export class JournalEntryComponent{
         this.lines = this.journalEntry.journalLines;
         this.journalEntry.journalLines.forEach(function(line, index){
             let lineListForm = base._fb.group(base._lineListForm.getForm(line));
-            base.initializeDimensions('#dimension-'+index, base.dimensions);
             base.journalLinesArray.push(lineListForm);
         });
         this.tempJournalLinesArray = _.cloneDeep(this.journalLinesArray);
@@ -361,36 +361,6 @@ export class JournalEntryComponent{
         return result;
     }
 
-    initializeDimensions(id, dimensions){
-        jQuery(id).selectize({
-            persist: false,
-            maxItems: null,
-            valueField: 'id',
-            labelField: 'name',
-            searchField: ['name'],
-            options: dimensions,
-            render: {
-                item: function(item, escape) {
-                    return '<div>' +
-                        (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '')
-                        +'</div>';
-                },
-                option: function(item, escape) {
-                    var label = item.name;
-                    return '<div>' +
-                        '<span class="label">' + escape(label) + '</span>' +
-                        '</div>';
-                }
-            },
-            createFilter: function(input) {
-                return false;
-            },
-            create: function(input) {
-                return false;
-            }
-        });
-    }
-
     ngOnInit() {
         let base = this;
         let companyId = Session.getCurrentCompany();
@@ -408,7 +378,6 @@ export class JournalEntryComponent{
             this.dimensionService.dimensions(this.currentCompany.id)
                 .subscribe(dimensions => {
                     this.dimensions = dimensions;
-                    base.initializeDimensions('#dimension', dimensions);
                 }, error => this.handleError(error));
 
             this.coaService.chartOfAccounts(this.currentCompany.id)
