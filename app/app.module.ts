@@ -47,7 +47,6 @@ import {DimensionsComponent} from "./components/Dimensions.component";
 import {DimensionForm} from "./forms/Dimension.form";
 import {UsersComponent} from "./components/Users.component";
 import {UsersForm} from "./forms/Users.form";
-import {UsersService} from "./services/Users.service";
 import {SwitchCompanyComponent} from "./components/switchCompanies.component";
 import {FinancialAccountsComponent} from "./components/FinancialAccounts.component";
 import {FinancialAccountForm} from "./forms/FinancialAccount.form";
@@ -170,7 +169,7 @@ import {LoadingComponent} from "qCommon/app/components/Loading.component";
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
-        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, UsersService, FinancialAccountForm, LoadingService],
+        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
