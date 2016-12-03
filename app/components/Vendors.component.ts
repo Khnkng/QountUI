@@ -199,8 +199,17 @@ export class VendorComponent {
     } else {
       this.status = {};
       this.status['error'] = true;
-      this._toastService.pop(TOAST_TYPE.error, "Failed to update the company");
-      this.message = obj;
+      try {
+        let resp = JSON.parse(obj);
+        debugger;
+        if(resp.message){
+          this._toastService.pop(TOAST_TYPE.error, resp.message);
+        } else{
+          this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+        }
+      }catch(err){
+        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+      }
     }
   }
 

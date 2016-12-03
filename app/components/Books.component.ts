@@ -147,6 +147,8 @@ export class BooksComponent{
         this.journalService.removeJournalEntry(journalEntry.id, this.currentCompany.id)
             .subscribe(response => {
                 base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully.");
+                _.remove(base.jeTableData.rows, {id: journalEntry.id});
+                base.buildTableData(base.jeTableData.rows);
             }, error => this.handleError(error));
     }
 

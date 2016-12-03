@@ -32,25 +32,6 @@
                             </div>
                             <div class="small-12 medium-4 columns">
                                 <div class="row">
-                                    <!--<div class="small-12 medium-6 columns">
-                                        <label>Journal Type
-                                            <div>
-                                                <input type="radio" formControlName="type" value="Original" id="original" (click)="toggleReverseJournal('Original')"><label for="original">Original</label>
-                                                <input type="radio" formControlName="type" value="Reversal" id="reversal" (click)="toggleReverseJournal('Reversal')"><label for="reversal">Reversal</label>
-                                                <div class="error" [hidden]="jeForm.controls.type.untouched || jeForm.controls.type.valid"><small>Please select journal type</small></div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                    <div class="small-12 medium-6 columns" *ngIf="!disableReverseJournal">
-                                        <label>Reverse Journal
-                                            <div>
-                                                <select combo-box #reverseJournalDir="comboBox" data-placeholder="Select Journal" [listObject]="existingJournals"  formControlName="reversedFrom" (valueChanged)="setReverseJournal($event)">
-                                                    <option *ngFor="let existingJournal of existingJournals" [value]="existingJournal.id">{{existingJournal.number}}</option>
-                                                </select>
-                                                <div class="error" [hidden]="jeForm.controls.reversedFrom.untouched || jeForm.controls.reversedFrom.valid"><small>Please select Reverse Journal</small></div>
-                                            </div>
-                                        </label>
-                                    </div>-->
                                 </div>
                             </div>
                         </div>
@@ -167,20 +148,20 @@
                     <table class="stack">
                         <thead>
                             <tr>
-                                <th width="5%">JE Line</th>
-                                <th width="15%">Type</th>
+                                <th width="15%">Category</th>
                                 <th width="20%">COA</th>
+                                <th width="10%">Entry Type</th>
                                 <th width="10%">Amount</th>
                                 <th width="25%">Memo</th>
+                                <th width="10%">Dimensions</th>
                                 <th width="5%"></th>
                             </tr>
                         </thead>
                         <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
                             <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem, index)">
-                                <td>{{index+1}}</td>
-                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.type.value}}</td>
+                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.category.value}}</td>
                                 <td [hidden]="!lineListItem.editable">
-                                    <select [formControl]="tempJournalLinesArray.controls[index].controls.type" (change)="filterChartOfAccounts(lineListItem, $event.target.value)">
+                                    <select [formControl]="tempJournalLinesArray.controls[index].controls.category" (change)="filterChartOfAccounts(lineListItem, $event.target.value)">
                                         <option value="Assets">Assets</option>
                                         <option value="Liability">Liability</option>
                                         <option value="Income">Income</option>
@@ -191,7 +172,16 @@
                                 <td [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
                                 <td class="coa-field" [hidden]="!lineListItem.editable">
                                     <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" (valueChanged)="updateLineCOA($event, index)">
-                                        <option *ngFor="let chartOfAccount of getFilteredCOA(tempJournalLinesArray.controls[index].controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                                        <option *ngFor="let chartOfAccount of getFilteredCOA(tempJournalLinesArray.controls[index].controls.category.value)" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                                    </select>
+                                </td>
+                                <td [hidden]="lineListItem.editable">
+                                    {{lineListItem.controls.entryType.value}}
+                                </td>
+                                <td [hidden]="!lineListItem.editable">
+                                    <select [formControl]="tempJournalLinesArray.controls[index].controls.entryType">
+                                        <option value="Credit">Credit</option>
+                                        <option value="Debit">Debit</option>
                                     </select>
                                 </td>
                                 <td [hidden]="lineListItem.editable">
@@ -205,6 +195,11 @@
                                     <textarea [formControl]="tempJournalLinesArray.controls[index].controls.memo"></textarea>
                                 </td>
                                 <td>
+                                    <div class="dimension-link">
+                                        <a (click)="showDimensionFlyout()"><i class="icon" [ngClass]="{'ion-chatbubble-working':true}"></i></a>
+                                    </div>
+                                </td>
+                                <td>
                                     <i class="icon ion-checkmark-circled" (click)="updateLine(lineListItem, index)" *ngIf="lineListItem.editable"></i>
                                     <i class="icon ion-close" *ngIf="lineListItem.editable" (click)="toggleLineEdit(lineListItem)"></i>
                                     <i class="icon ion-ios-trash-outline" *ngIf="!lineListItem.editable" (click)="deleteLine(index)"></i>
@@ -213,18 +208,13 @@
                         </tbody>
                         <tbody *ngIf="jeForm.controls.journalLines.controls.length == 0" [hidden]="addLineItemMode">
                             <tr>
-                                <td colspan="6" class="text-center">No lines found</td>
+                                <td colspan="7" class="text-center">No lines found</td>
                             </tr>
                         </tbody>
                         <tbody [hidden]="!addLineItemMode">
                             <tr>
                                 <td>
-                                    <div style="margin: 0 0 1rem;">
-                                        {{jeForm.controls.journalLines.controls.length + 1}}
-                                    </div>
-                                </td>
-                                <td>
-                                    <select formControlName="newType" (change)="filterChartOfAccounts($event.target.value)">
+                                    <select formControlName="newCategory" (change)="filterChartOfAccounts($event.target.value)">
                                         <option value="Assets">Assets</option>
                                         <option value="Liability">Liability</option>
                                         <option value="Income">Income</option>
@@ -238,12 +228,22 @@
                                     </select>
                                 </td>
                                 <td>
+                                    <select formControlName="newEntryType">
+                                        <option value="Credit">Credit</option>
+                                        <option value="Debit">Debit</option>
+                                    </select>
+                                </td>
+                                <td>
                                     <input type="text" placeholder="Amount" formControlName="newAmount"/>
                                 </td>
                                 <td>
                                     <input type="text" placeholder="Memo" formControlName="newMemo"/>
                                 </td>
-                                <!--<td><ul class="bighalf-tags" id="lineTags"  type="text" [tagsList]="newTags" custom-tags></ul></td>-->
+                                <td>
+                                    <div class="dimension-link">
+                                        <a (click)="showDimensionFlyout()"><i class="icon" [ngClass]="{'ion-android-open':true}"></i></a>
+                                    </div>
+                                </td>
                                 <td>
                                     <i class="icon ion-checkmark-circled" (click)="addNewLine()"></i>
                                     <i class="icon ion-ios-trash-outline" (click)="clearNewRowData()"></i>
@@ -259,5 +259,44 @@
                 </div>
             </div>
         </form>
+    </div>
+
+    <div class="report-wrapper">
+        <div class="sidenav customization-panel" [ngClass]="dimensionFlyoutCSS" foundation>
+            <button class="close-button " data-close aria-label="Close modal" type="button">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty" (click)="hideDimensionFlyout()"></i>
+                </span>
+            </button>
+            <div class="row collapse dimension-flyout">
+                <div class="row">
+                    <div class="small-1 small-centered column">
+                        <h5>Dimensions</h5>
+                    </div>
+                </div>
+                <div class="row dimension-grids">
+                    <div class="medium-9 large-centered column">
+                        <div class="row">
+                            <div class="medium-2 large-centered column" *ngFor="let dimension of dimensions">
+                                <div class="dimension-grid">
+                                    <div class="dimension-header">
+                                        <span class="float-left">{{dimension.name}}</span>
+                                        <span class="float-right">
+                                            <i class="icon ion-checkmark-circled" [ngClass]="{'selected': isDimensionSelected(dimension.id)}"
+                                                (click)="selectDimension(dimension.id)"></i>
+                                        </span>
+                                    </div>
+                                    <div class="dimension-values">
+                                        <div class="dimension-value" *ngFor="let value of getDimensionValues(dimension.values); let index = index">
+                                            <input type="checkbox" id="checkbox-{{index}}"/><label>{{value}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

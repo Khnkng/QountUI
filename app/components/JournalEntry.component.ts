@@ -9,6 +9,7 @@ import {FormBuilder, FormGroup, FormArray} from "@angular/forms";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
+import {DimensionService} from "qCommon/app/services/DimensionService.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
@@ -32,6 +33,7 @@ export class JournalEntryComponent{
     journalLinesArray: FormArray = new FormArray([]);
     tempJournalLinesArray: FormArray = new FormArray([]);
     addLineItemMode:boolean = false;
+    @ViewChild('editDimension') editDimension;
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     @ViewChild('reverseJournalDir') reverseJournalComboBox: ComboBox;
     newTags:Array<string>=[];
@@ -46,10 +48,14 @@ export class JournalEntryComponent{
     journalEntry:any;
     existingJournals:Array = [];
     isReverse:boolean = false;
+    dimensions:Array<any> = [];
+    editDimension:boolean = false;
+    dimensionFlyoutCSS:any;
+    selectedDimensions:Array = [];
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
-            private companiesService: CompaniesService) {
+            private companiesService: CompaniesService, private dimensionService: DimensionService) {
         this.routeSub = this._route.params.subscribe(params => {
             this.journalID=params['journalID'];
             let tempReverse=params['reverse'];
@@ -87,6 +93,34 @@ export class JournalEntryComponent{
         setTimeout(function(){
             base.active=true;
         }, 0);
+    }
+
+    getDimensionValues(dimensions){
+        if(dimensions){
+            return dimensions[0].split(',');
+        } else{
+            return [];
+        }
+    }
+
+    isDimensionSelected(id){
+        return this.selectedDimensions.indexOf(id) != -1;
+    }
+
+    selectDimension(id){
+        if(this.selectedDimensions.indexOf(id) == -1){
+            this.selectedDimensions.push(id);
+        } else{
+            this.selectedDimensions.splice(this.selectedDimensions.indexOf(id), 1);
+        }
+    }
+
+    hideDimensionFlyout(){
+        this.dimensionFlyoutCSS = "collapsed";
+    }
+
+    showDimensionFlyout(){
+        this.dimensionFlyoutCSS = "expanded";
     }
 
     setJournalDate(date: string){
@@ -143,10 +177,12 @@ export class JournalEntryComponent{
         let data = this._jeForm.getData(this.jeForm);
         let tags = jQuery('#lineTags').tagit("assignedTags");
         let line = {
-            "type": data.newType,
+            "category": data.newCategory,
+            "entryType": data.newEntryType,
             "coa": data.newCoa,
             "amount": data.newAmount,
-            "memo": data.newMemo
+            "memo": data.newMemo,
+            "dimensions": jQuery('#dimension').val()
         };
         this.lines.push(line);
         let lineListForm = this._fb.group(this._lineListForm.getForm(line));
@@ -154,7 +190,9 @@ export class JournalEntryComponent{
         this.tempJournalLinesArray.push(lineListForm);
         this.addLineItemMode = !this.addLineItemMode;
 
-        let typeControl:any = this.jeForm.controls['newType'];
+        let categoryControl:any = this.jeForm.controls['newCategory'];
+        categoryControl.patchValue('');
+        let typeControl:any = this.jeForm.controls['newEntryType'];
         typeControl.patchValue('');
         let coaControl:any = this.jeForm.controls['newCoa'];
         coaControl.patchValue('');
@@ -199,19 +237,39 @@ export class JournalEntryComponent{
     }
 
     cleanData(data){
-        delete data.newType;
+        delete data.newCategory;
         delete data.newAmount;
         delete data.newCoa;
         delete data.newMemo;
-        delete data.newTags;
 
         return data;
+    }
+
+    validateLineAmount(lines){
+        let creditTotal = 0;
+        let debitTotal = 0;
+        _.each(lines, function(line){
+            if(line.entryType == 'Credit'){
+                creditTotal += parseInt(line.amount);
+            }
+            if(line.entryType == 'Debit'){
+                debitTotal += parseInt(line.amount);
+            }
+        });
+        if(creditTotal == debitTotal){
+            return true;
+        }
+        return false;
     }
 
     submit($event){
         let base = this;
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
+        if(!this.validateLineAmount(data.journalLines)){
+            this.toastService.pop(TOAST_TYPE.error, "Credit and debit totals doesn't match");
+            return false;
+        }
         if(this.newJournalEntry){
             this.journalService.addJournalEntry(this.cleanData(data), this.currentCompany.id)
                 .subscribe(journalEntry => {
@@ -278,19 +336,63 @@ export class JournalEntryComponent{
                 line.amount = -line.amount;
             });
         }
-        //this.toggleReverseJournal(this.journalEntry.type, this.journalEntry.reversedFrom);
         this.disableReversalDate = !Boolean(journalEntry.autoReverse);
         this.disableRecurring = !Boolean(journalEntry.recurring);
         this.lines = this.journalEntry.journalLines;
-        this.journalEntry.journalLines.forEach(function(line){
+        this.journalEntry.journalLines.forEach(function(line, index){
             let lineListForm = base._fb.group(base._lineListForm.getForm(line));
+            base.initializeDimensions('#dimension-'+index, base.dimensions);
             base.journalLinesArray.push(lineListForm);
         });
         this.tempJournalLinesArray = _.cloneDeep(this.journalLinesArray);
         this._jeForm.updateForm(this.jeForm, this.journalEntry);
     }
 
+    getDimensionNames(dimensionsIds){
+        let base = this;
+        let ids = dimensionsIds.split(',');
+        let result = [];
+        _.each(ids, function(id){
+            let dimension = _.find(base.dimensions, {id: id});
+            if(!_.isEmpty(dimension)){
+                result.push(dimension.name);
+            }
+        });
+        return result;
+    }
+
+    initializeDimensions(id, dimensions){
+        jQuery(id).selectize({
+            persist: false,
+            maxItems: null,
+            valueField: 'id',
+            labelField: 'name',
+            searchField: ['name'],
+            options: dimensions,
+            render: {
+                item: function(item, escape) {
+                    return '<div>' +
+                        (item.name ? '<span class="name">' + escape(item.name) + '</span>' : '')
+                        +'</div>';
+                },
+                option: function(item, escape) {
+                    var label = item.name;
+                    return '<div>' +
+                        '<span class="label">' + escape(label) + '</span>' +
+                        '</div>';
+                }
+            },
+            createFilter: function(input) {
+                return false;
+            },
+            create: function(input) {
+                return false;
+            }
+        });
+    }
+
     ngOnInit() {
+        let base = this;
         let companyId = Session.getCurrentCompany();
         let _form = this._jeForm.getForm();
         _form['journalLines'] = this.journalLinesArray;
@@ -303,6 +405,12 @@ export class JournalEntryComponent{
             } else if(this.allCompanies.length> 0){
                 this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
             }
+            this.dimensionService.dimensions(this.currentCompany.id)
+                .subscribe(dimensions => {
+                    this.dimensions = dimensions;
+                    base.initializeDimensions('#dimension', dimensions);
+                }, error => this.handleError(error));
+
             this.coaService.chartOfAccounts(this.currentCompany.id)
                 .subscribe(chartOfAccounts => {
                     this.chartOfAccounts = chartOfAccounts;

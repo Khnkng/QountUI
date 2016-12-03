@@ -10,6 +10,7 @@
 @import "../../app/bower_components/Ionicons/scss/ionicons-variables";
 @import "../../app/bower_components/glyphicons/styles/glyphicons";
 @import "../../app/bower_components/font-awesome/scss/font-awesome";
+@import "../../app/bower_components/selectize/dist/css/selectize.default";
 @import "jquery-ui";
 @import "login-signup";
 @import "footable.standalone";
@@ -24,7 +25,6 @@
 @import "userprofile";
 @import "toaster";
 @import "workflow";
-@import "line-item-flyout";
 @import "highcharts";
 @import "custom.footable";
 @import "switch.company";
@@ -1538,7 +1538,7 @@ table.footable-editing-right tr.footable-editing td {
     height: 2.4375rem;
     position: absolute;
     right: -1px;
-    z-index: 1000;
+    z-index: 100;
   }
 }
 
@@ -2673,6 +2673,69 @@ tbody{
   .coa-field{
     input, a{
       margin-top: -11px;
+    }
+  }
+}
+
+.dimension-field{
+  #dimension-selectized{
+    width: 100% !important;
+  }
+}
+
+.dimension-link {
+  margin-left: 15px;
+  margin-top: -10px;
+  a {
+    border: 1pt solid #dddddd;
+    display: block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border-radius: 27px;
+    background-color: #e1e1e1;
+    .icon {
+      font-size: 2em;
+      margin: 0px;
+      position: relative;
+      top: 3px;
+    }
+    opacity: 0.6;
+  }
+  a:hover {
+    opacity: 1;
+    background-color: #F1F1F1;
+  }
+}
+
+.dimension-flyout{
+  padding: 15px;
+
+  .dimension-grids{
+    padding: 15px;
+  }
+
+  .dimension-grid{
+    /*border: 1px solid $qount-form-border;*/
+    border-radius: 5px;
+    height: 200px;
+    .dimension-header{
+      padding: 6px;
+      border-bottom: 2px solid $qount-form-border;
+      height: 35px;
+    }
+    .dimension-values{
+      height: 165px;
+      overflow-y: auto;
+    }
+    .dimension-value{
+      padding-left: 7px;
+    }
+
+    .icon{
+      &.selected{
+        color: #0FB45A;
+      }
     }
   }
 }
