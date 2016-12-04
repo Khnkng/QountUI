@@ -15,6 +15,7 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ExpensesForm} from "../forms/Expenses.form";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ExpensesSerice} from "../services/Expenses.service";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var jQuery:any;
 declare var _:any;
@@ -46,10 +47,13 @@ export class ExpensesCodesComponent {
   combo:boolean = true;
   allCOAList:Array = [];
 
-  constructor(private _fb: FormBuilder, private _expensesForm: ExpensesForm, private switchBoard: SwitchBoard, private codeService: CodesService, private toastService: ToastService,
-              private coaService: ChartOfAccountsService, private expensesSerice:ExpensesSerice, private companiesService: CompaniesService){
+  constructor(private _fb: FormBuilder, private _expensesForm: ExpensesForm, private switchBoard: SwitchBoard,
+              private codeService: CodesService, private toastService: ToastService,
+              private coaService: ChartOfAccountsService, private expensesSerice:ExpensesSerice,
+              private companiesService: CompaniesService, private loadingService:LoadingService){
     this.expensesForm = this._fb.group(_expensesForm.getForm());
     let companyId = Session.getCurrentCompany();
+    this.loadingService.triggerLoadingEvent(true);
     this.companiesService.companies().subscribe(companies => {
       this.allCompanies = companies;
       if(companyId){
@@ -58,7 +62,10 @@ export class ExpensesCodesComponent {
         this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
       }
       this.coaService.filterdChartOfAccounts(this.currentCompany.id,"?categories=Expenses")
-          .subscribe(chartOfAccounts => this.filterChartOfAccounts(chartOfAccounts), error=> this.handleError(error));
+          .subscribe(chartOfAccounts => {
+            this.loadingService.triggerLoadingEvent(false);
+            this.filterChartOfAccounts(chartOfAccounts);
+          }, error=> this.handleError(error));
     }, error => this.handleError(error));
   }
 
@@ -104,9 +111,11 @@ export class ExpensesCodesComponent {
   }
 
   removeExpense(row: any){
+    this.loadingService.triggerLoadingEvent(true);
     let itemCodeId = row.id;
     this.expensesSerice.removeExpense(this.currentCompany.id,itemCodeId)
         .subscribe(coa => {
+          this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.success, "Deleted Expense successfully");
           this.expenses.splice(_.findIndex(this.expenses, {id: itemCodeId}, 1));
         }, error => this.handleError(error));
@@ -143,6 +152,7 @@ export class ExpensesCodesComponent {
   }
 
   submit($event){
+    this.loadingService.triggerLoadingEvent(true);
     let base = this;
     $event && $event.preventDefault();
     let data = this._expensesForm.getData(this.expensesForm);
@@ -151,6 +161,7 @@ export class ExpensesCodesComponent {
       data.companyID = this.currentCompany.id;
       this.expensesSerice.updateExpense(data,this.currentCompany.id)
           .subscribe(itemCode => {
+            base.loadingService.triggerLoadingEvent(false);
             base.row = {};
             base.toastService.pop(TOAST_TYPE.success, "Expense updated successfully");
             let index = _.findIndex(base.expenses, {id: data.id});
@@ -160,7 +171,10 @@ export class ExpensesCodesComponent {
     } else{
       //data.companyID = this.currentCompany.id;
       this.expensesSerice.addExpense(data,this.currentCompany.id)
-          .subscribe(newItemcode => this.handleExpense(newItemcode), error => this.handleError(error));
+          .subscribe(newItemcode => {
+            this.loadingService.triggerLoadingEvent(false);
+            this.handleExpense(newItemcode);
+          }, error => this.handleError(error));
     }
     this.buildTableData(this.expenses);
     jQuery(this.addItemcode.nativeElement).foundation('close');

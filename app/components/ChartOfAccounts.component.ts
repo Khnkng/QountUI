@@ -13,6 +13,7 @@ import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var jQuery:any;
 declare var _:any;
@@ -48,10 +49,12 @@ export class ChartOfAccountsComponent{
   sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices"];
   hasParentOrChild: boolean = false;
 
-  constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService,
+  constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard,
+              private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private toastService: ToastService, private companiesService: CompaniesService){
     this.coaForm = this._fb.group(_coaForm.getForm());
     let companyId = Session.getCurrentCompany();
+    this.loadingService.triggerLoadingEvent(true);
     this.companiesService.companies().subscribe(companies => {
       this.allCompanies = companies;
 
@@ -61,7 +64,10 @@ export class ChartOfAccountsComponent{
         this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
       }
       this.coaService.chartOfAccounts(this.currentCompany.id)
-          .subscribe(chartOfAccounts => this.buildTableData(chartOfAccounts), error=> this.handleError(error));
+          .subscribe(chartOfAccounts => {
+            this.loadingService.triggerLoadingEvent(false);
+            this.buildTableData(chartOfAccounts);
+          }, error=> this.handleError(error));
     }, error => this.handleError(error));
   }
 
@@ -165,9 +171,11 @@ export class ChartOfAccountsComponent{
   }
 
   removeCOA(row: any){
+    this.loadingService.triggerLoadingEvent(true);
     let coaId = row.id;
     this.coaService.removeCOA(coaId, this.currentCompany.id)
         .subscribe(coa => {
+          this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.success, "Deleted Chart of Account successfully");
           this.chartOfAccounts.splice(_.findIndex(this.chartOfAccounts, {id: coaId}, 1));
         }, error => this.handleError(error));
@@ -210,6 +218,7 @@ export class ChartOfAccountsComponent{
   }
 
   saveCOA($event){
+    this.loadingService.triggerLoadingEvent(true);
     let base = this;
     $event && $event.preventDefault();
     let data = this._coaForm.getData(this.coaForm);
@@ -217,6 +226,7 @@ export class ChartOfAccountsComponent{
       data.id = this.row.id;
       this.coaService.updateCOA(data.id, data, this.currentCompany.id)
           .subscribe(coa => {
+            base.loadingService.triggerLoadingEvent(false);
             base.row = {};
             base.toastService.pop(TOAST_TYPE.success, "Chart of Account updated successfully");
             let index = _.findIndex(base.chartOfAccounts, {id: data.id});
@@ -225,7 +235,10 @@ export class ChartOfAccountsComponent{
           }, error => this.handleError(error));
     } else{
       this.coaService.addChartOfAccount(data, this.currentCompany.id)
-          .subscribe(newCOA => this.handleCOA(newCOA), error => this.handleError(error));
+          .subscribe(newCOA => {
+            this.loadingService.triggerLoadingEvent(false);
+            this.handleCOA(newCOA);
+          }, error => this.handleError(error));
     }
     this.buildTableData(this.chartOfAccounts);
     jQuery(this.addCOA.nativeElement).foundation('close');

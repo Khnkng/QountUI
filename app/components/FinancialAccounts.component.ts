@@ -12,6 +12,7 @@ import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.s
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {DimensionForm} from "../forms/Dimension.form";
 import {FinancialAccountForm} from "../forms/FinancialAccount.form";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var jQuery:any;
 declare var _:any;
@@ -36,10 +37,13 @@ export class FinancialAccountsComponent{
   tempValues:Array<string> = [];
   tableColumns:Array<string> = ['name', 'id', 'type', 'currentBalance', 'includeInPL'];
 
-  constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private switchBoard: SwitchBoard, private financialAccountsService: FinancialAccountsService,
+  constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm,
+              private switchBoard: SwitchBoard, private loadingService:LoadingService,
+              private financialAccountsService: FinancialAccountsService,
         private toastService: ToastService, private companiesService: CompaniesService){
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     let companyId = Session.getCurrentCompany();
+    this.loadingService.triggerLoadingEvent(true);
     this.companiesService.companies().subscribe(companies => {
       this.allCompanies = companies;
       if(companyId){
@@ -48,7 +52,10 @@ export class FinancialAccountsComponent{
         this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
       }
       this.financialAccountsService.financialAccounts(this.currentCompany.id)
-          .subscribe(accounts => this.buildTableData(accounts), error => this.handleError(error));
+          .subscribe(accounts => {
+            this.loadingService.triggerLoadingEvent(false);
+            this.buildTableData(accounts);
+          }, error => this.handleError(error));
     }, error => this.handleError(error));
   }
 
@@ -84,7 +91,7 @@ export class FinancialAccountsComponent{
   }
 
   ngOnInit(){
-    
+
   }
 
   handleAction($event){
