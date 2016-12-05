@@ -20,7 +20,7 @@ import {CanvasComponent} from "./components/canvas.component";
 import {HttpModule} from "@angular/http";
 import {LogInComponent} from "./components/LogIn.component";
 import {SignUpComponent} from "./components/SignUp.component";
-import {CommonModule} from "@angular/common";
+import {CommonModule, APP_BASE_HREF} from "@angular/common";
 import {SignUpService} from "./services/SignUp.service";
 import {LoginForm} from "./forms/Login.form";
 import {SignUpForm} from "./forms/SignUp.form";
@@ -53,6 +53,8 @@ import {FinancialAccountForm} from "./forms/FinancialAccount.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {LoadingComponent} from "qCommon/app/components/Loading.component";
 import {OffCanvasMenuComponent} from "./components/OffCanvasMenu.component";
+
+const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -170,7 +172,7 @@ import {OffCanvasMenuComponent} from "./components/OffCanvasMenu.component";
         OffCanvasMenuComponent, LoadingComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
+    providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
         ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
