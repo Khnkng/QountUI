@@ -139,6 +139,11 @@ export class ToolsComponent {
         this._router.navigate(link);
       }
         break;
+      case 'modules': {
+        let link = ['modules'];
+        this._router.navigate(link);
+      }
+        break;
     }
   }
 }

@@ -1,0 +1,16 @@
+<div class="row">
+    <div class="column small-12 medium-6">
+        <h5>Modules</h5>
+    </div>
+    <div class="row tools-grids">
+        <div class="column small-12 medium-12 large-12" *ngFor="let checkListItem of modulesList;let index=index;">
+            <div>
+                <label attr.for="moduleId-{{index}}"><input id="modileId-{{index}}" [(ngModel)]="checkListItem.moduleSelect" (change)="onModuleSelect(checkListItem.id)" type="checkbox" required> {{checkListItem.name}}</label>
+            </div>
+        </div>
+    </div>
+    <button class="button create small "
+            type="submit" (click)="submit($event)">Submit</button>
+    <div>
+    </div>
+</div>

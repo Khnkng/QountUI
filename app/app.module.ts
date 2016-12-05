@@ -53,6 +53,8 @@ import {FinancialAccountForm} from "./forms/FinancialAccount.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {LoadingComponent} from "qCommon/app/components/Loading.component";
 import {OffCanvasMenuComponent} from "./components/OffCanvasMenu.component";
+import {ModulesComponent} from "./components/modules.component";
+import {ModulesService} from "./services/Modules.service";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -163,17 +165,21 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             path: 'users',
             component: UsersComponent,
             canActivate: [LoggedInActivator]
+        },{
+            path: 'modules',
+            component: ModulesComponent,
+            canActivate: [LoggedInActivator]
         }
     ]), ReportsModule, PaymentsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
-        OffCanvasMenuComponent, LoadingComponent],
+        OffCanvasMenuComponent, LoadingComponent,ModulesComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
-        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService],
+        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService,ModulesService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
