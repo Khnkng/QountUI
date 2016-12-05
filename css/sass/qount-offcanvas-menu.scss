@@ -1,0 +1,85 @@
+@import "qount-variables";
+@import "settings";
+.qount-off-canvas-menu-buttom{
+  i{
+     font-size: 2em;
+     color: $qount-brand-icon;
+      margin-left: .25em;
+      margin-right: .25em;
+  }
+}
+.qount-off-canvas-menu{
+  .flyout{
+    &.qount-mobile-menu{
+      background: #ffffff;
+      height: 100%;
+      position: fixed;
+      width: 100%;
+      top:50px;
+      left:-100%;
+      -webkit-transition : all 0.5s;
+      -moz-transition : all 0.5s;
+      -o-transition : all 0.5s;
+      transition : all 0.5s;
+      z-index: 100;
+      &.expanded{
+        left:0px;
+        button{
+          &.close-flyout{
+            position: absolute;
+            background: #fff;
+            top:0;
+            right:10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+            &:hover{
+              background: $qount-table-border;
+            }
+            i{
+              font-size: 2.5em;
+            }
+          }
+        }
+      }
+
+      .side-nav{
+        margin: 0;
+        list-style: none;
+        display: block;
+        li{
+          &:first-child{
+            display: none;
+          }
+          border-bottom: 1px solid $qount-form-border;
+          display: block;
+          list-style: none;
+          height: 55px;
+          a {
+            color: $qount-text;
+            display: block;
+            font-size: 1rem;
+            padding: 1em 0.5em;
+            .icon {
+              display: inline-block;
+              width: 30px;
+              text-align: right;
+              margin-right: 20px;
+              font-size: 1.3em;
+            }
+            .name{
+              display: inline-block;
+              font-weight: 600;
+            }
+          }
+          &:hover{
+            background: $qount-table-tr-hover;
+          }
+        }
+      }
+
+    }
+  }
+}
