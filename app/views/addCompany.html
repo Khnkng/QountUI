@@ -108,7 +108,7 @@
                   <label>Currency
                     <div class="">
                       <select formControlName="defaultCurrency" placeholder="currency">
-                        <option *ngFor="let currency of currencies" value="{{currency}}">{{currency}}</option>
+                        <option *ngFor="let currency of currencies" value="{{currency.code}}">{{currency.code}}</option>
                       </select>
                       <div class="error" [hidden]="companyForm.controls.defaultCurrency.untouched || companyForm.controls.defaultCurrency.valid"><small>Select Currency</small></div>
                     </div>

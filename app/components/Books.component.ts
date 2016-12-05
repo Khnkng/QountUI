@@ -273,7 +273,7 @@ export class BooksComponent{
     }
 
     addNewJE(){
-        let link = ['newJournalEntry'];
+        let link = ['JournalEntry'];
         this._router.navigate(link);
     }
 }
