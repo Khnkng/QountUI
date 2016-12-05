@@ -52,6 +52,7 @@ import {FinancialAccountsComponent} from "./components/FinancialAccounts.compone
 import {FinancialAccountForm} from "./forms/FinancialAccount.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {LoadingComponent} from "qCommon/app/components/Loading.component";
+import {OffCanvasMenuComponent} from "./components/OffCanvasMenu.component";
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -165,7 +166,8 @@ import {LoadingComponent} from "qCommon/app/components/Loading.component";
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
-        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent, LoadingComponent],
+        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
+        OffCanvasMenuComponent, LoadingComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
