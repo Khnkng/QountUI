@@ -27,7 +27,7 @@
                 <div class="small-12 medium-4 columns">
                   <label>EIN
                     <div class="">
-                      <input class="" type="text" formControlName="einNumber" placeholder="EIN*">
+                      <input class="" type="text" formControlName="einNumber" placeholder="EIN">
                       <div class="error" [hidden]="companyForm.controls.einNumber.untouched || companyForm.controls.einNumber.valid"><small>Company EIN is required.</small></div>
                     </div>
                   </label>
@@ -53,7 +53,7 @@
                 <div class="small-12 medium-8 columns">
                   <label>Address
                     <div class="">
-                      <input type="text" class="" formControlName="address" placeholder="Address*"/>
+                      <input type="text" class="" formControlName="address" placeholder="Address"/>
                       <div class="error" [hidden]="companyForm.controls.address.untouched || companyForm.controls.address.valid"><small>Company Address is required.</small></div>
                     </div>
                   </label>
@@ -128,7 +128,7 @@
             </div>-->
           </div>
         </section>
-        <section class="payment-info" [hidden]="!companyDataSaved">
+        <!--<section class="payment-info" [hidden]="!companyDataSaved">
           <header>Payment Info</header>
           <hr/>
           <div class="row medium-collapse">
@@ -238,7 +238,7 @@
               </div>
             </div>
           </div>
-        </section>
+        </section>-->
       </form>
     </div>
   </div>
