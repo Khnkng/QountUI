@@ -116,6 +116,10 @@ export class SwitchCompanyComponent{
         this.hasCompanyList = true;
     }
 
+    ngOnDestroy(){
+        jQuery("#SwitchCompany-modal").remove();
+    }
+
     refreshTable(){
         let base = this;
         this.buildTableData(this.allCompanies);
