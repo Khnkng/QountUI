@@ -81,6 +81,14 @@ export class ItemCodesComponent{
         .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));
   }
 
+  isValid(itemcodeForm){
+    let data = this._itemCodeForm.getData(itemcodeForm);
+    if(data.payment_coa_mapping || data.invoice_coa_mapping){
+      return itemcodeForm.valid;
+    }
+    return false;
+  }
+
   showAddItemCode() {
     this.editMode = false;
     this.itemcodeForm = this._fb.group(this._itemCodeForm.getForm());
