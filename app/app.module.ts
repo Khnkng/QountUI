@@ -100,7 +100,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'newJournalEntry',
+            path: 'JournalEntry',
             component: JournalEntryComponent,
             canActivate: [LoggedInActivator]
         },
