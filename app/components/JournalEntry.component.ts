@@ -334,7 +334,11 @@ export class JournalEntryComponent{
             this.journalEntry.type = 'Reversal';
             this.journalEntry.reversedFrom = this.journalEntry.id;
             _.each(this.journalEntry.journalLines, function(line){
-                line.amount = -line.amount;
+                if(line.entryType == 'Debit'){
+                    line.entryType = 'Credit';
+                } else if(line.entryType == 'Credit'){
+                    line.entryType = 'Debit';
+                }
             });
         }
         this.disableReversalDate = !Boolean(journalEntry.autoReverse);

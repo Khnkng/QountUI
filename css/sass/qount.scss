@@ -2727,20 +2727,36 @@ tbody{
   }
 
   .dimension-grid{
-    /*border: 1px solid $qount-form-border;*/
     border-radius: 5px;
     height: 200px;
     .dimension-header{
       padding: 6px;
-      border-bottom: 2px solid $qount-form-border;
+      /*border-bottom: 3px solid $qount-form-border;*/
       height: 35px;
+      position: relative;
     }
     .dimension-values{
-      height: 165px;
-      overflow-y: auto;
+      max-height: 0px;
+      overflow: auto;
+      transition: 1s;
+      &.selected{
+        max-height: 165px;
+      }
     }
     .dimension-value{
       padding-left: 7px;
+    }
+
+    .bottom {
+      position: absolute;
+      bottom: 0;
+      border-bottom: 3px solid transparent;
+      width: 0px;
+      transition: 0.5s;
+      &.selected {
+        border-bottom: 3px solid #0FB45A !important;
+        width: 90% !important;
+      }
     }
 
     .icon{

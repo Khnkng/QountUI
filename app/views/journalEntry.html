@@ -219,7 +219,7 @@
                                         <option value="Liability">Liability</option>
                                         <option value="Income">Income</option>
                                         <option value="Expenses">Expenses</option>
-                                        <option value="Capital">Capital</option>
+                                        <option value="Equity">Equity</option>
                                     </select>
                                 </td>
                                 <td class="coa-field">
@@ -280,13 +280,16 @@
                             <div class="medium-2 large-centered column" *ngFor="let dimension of dimensions">
                                 <div class="dimension-grid">
                                     <div class="dimension-header">
-                                        <span class="float-left">{{dimension.name}}</span>
-                                        <span class="float-right">
-                                            <i class="icon ion-checkmark-circled" [ngClass]="{'selected': isDimensionSelected(dimension.id)}"
-                                                (click)="selectDimension(dimension.id)"></i>
-                                        </span>
+                                        <div>
+                                            <span class="float-left">{{dimension.name}}</span>
+                                            <span class="float-right">
+                                                <i class="icon ion-checkmark-circled" [ngClass]="{'selected': isDimensionSelected(dimension.id)}"
+                                                   (click)="selectDimension(dimension.id)"></i>
+                                            </span>
+                                        </div>
+                                        <div class="bottom" [ngClass]="{'selected': isDimensionSelected(dimension.id)}"></div>
                                     </div>
-                                    <div class="dimension-values">
+                                    <div class="dimension-values" [ngClass]="{'selected': isDimensionSelected(dimension.id)}">
                                         <div class="dimension-value" *ngFor="let value of getDimensionValues(dimension.values); let index = index">
                                             <input type="checkbox" id="checkbox-{{index}}"/><label>{{value}}</label>
                                         </div>
