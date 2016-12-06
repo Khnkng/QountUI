@@ -15,8 +15,9 @@ export class ItemCodeForm extends abstractForm{
     numberValidator.push(Validators.required);
     return {
       "name": ['', Validators.required],
-      "payment_coa_mapping": ['', Validators.required],
-      "invoice_coa_mapping": ['', Validators.required],
+      "payment_coa_mapping": [''],
+      "invoice_coa_mapping": [''],
+      "unitPrice": [''],
       "desc": ['']
     }
   }
