@@ -32,12 +32,21 @@ export class ChangePasswordComponent {
         $event && $event.preventDefault();
         if(this.checkPasswordsMatch()){
             var data={
-                "action":"change/reset",
+                "action":"change",
                 "password":this.password
             };
             this.CompanyUsersService.updatePassword(data).subscribe(res => {
                 if(res){
-
+                    let defaultCompany = Session.getUser().default_company;
+                    if(!_.isEmpty(defaultCompany) && defaultCompany.roles.indexOf('Owner') != -1){
+                        if(defaultCompany.isActive){
+                            this._router.navigate(['']);
+                        } else{
+                            this._router.navigate(['termsAndConditions']);
+                        }
+                    } else{
+                        this._router.navigate(['']);
+                    }
                 }
             }, error => {
                 this._toastService.pop(TOAST_TYPE.error, "Failed to update password");

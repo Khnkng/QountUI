@@ -56,6 +56,7 @@ import {OffCanvasMenuComponent} from "./components/OffCanvasMenu.component";
 import {ModulesComponent} from "./components/modules.component";
 import {ModulesService} from "./services/Modules.service";
 import {ChangePasswordComponent} from "./components/changePassword.component";
+import {TermsAndConditionsComponent} from "./components/TermsAndConditions.component";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -173,14 +174,18 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         },{
             path: 'activate',
             component: ChangePasswordComponent,
-            canActivate: [DashBoardActivator]
+            canActivate: [LoggedInActivator]
+        },{
+            path: 'termsAndConditions',
+            component: TermsAndConditionsComponent,
+            canActivate: [LoggedInActivator]
         }
     ]), ReportsModule, PaymentsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
-        OffCanvasMenuComponent, LoadingComponent,ModulesComponent,ChangePasswordComponent],
+        OffCanvasMenuComponent, LoadingComponent,ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,

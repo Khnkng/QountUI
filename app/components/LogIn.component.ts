@@ -18,6 +18,7 @@ import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var jQuery:any;
+declare var _:any;
 
 @Component({
   selector: 'qount-login',
@@ -81,8 +82,8 @@ export class LogInComponent implements OnInit {
 
   setComapnies(companies){
     if(companies.length > 0){
-      Session.setCurrentCompany(companies[0].id);
-      Session.setCurrentCompanyName(companies[0].name);
+      Session.setCurrentCompany(Session.getUser().default_company.id);
+      Session.setCurrentCompanyName(Session.getUser().default_company.name);
     }
     this.gotoDefaultPage();
   }
@@ -103,11 +104,20 @@ export class LogInComponent implements OnInit {
   }
 
   gotoDefaultPage() {
-    var  link ='' ;
+    var  link ='';
     if(Session.get('user').tempPassword){
-      link='activate';
+      link= 'activate';
+    } else{
+      let defaultCompany = Session.getUser().default_company;
+      if(!_.isEmpty(defaultCompany) && defaultCompany.roles.indexOf('Owner') != -1){
+        if(!defaultCompany.isActive){
+          link = 'termsAndConditions';
+        }
+      }
     }
-    this.switchBoard.onLogin.next(Session.get('user'));
+    if(link == ''){
+      this.switchBoard.onLogin.next(Session.get('user'));
+    }
     this._router.navigate([link]);
   }
 

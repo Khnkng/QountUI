@@ -107,7 +107,11 @@ export class AppComponent  implements OnInit{
 
     routeChanged(routeChange:NavigationEnd) {
         if(Session.hasSession()) {
-            this.hasLoggedIn = true;
+            if(routeChange.url == '/activate' || routeChange.url == '/termsAndConditions'){
+                this.hasLoggedIn = false;
+            } else{
+                this.hasLoggedIn = true;
+            }
         } else {
             this.hasLoggedIn = false;
         }
