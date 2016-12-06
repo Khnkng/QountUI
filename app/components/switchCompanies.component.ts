@@ -28,6 +28,7 @@ export class SwitchCompanyComponent{
     currentCompanyName:string = '';
     currentCompanyId:string;
     subscription:any;
+    compSubscription:any;
     hasCompanyList:boolean;
 
     constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService,
@@ -39,6 +40,11 @@ export class SwitchCompanyComponent{
         this.subscription = this.switchBoard.onCompanyUpdate.subscribe(company =>{
            this.currentCompanyName = Session.getCurrentCompanyName();
         });
+        this.compSubscription = this.switchBoard.onCompanyAddOrDelete.subscribe(msg => this.fetchCompanies());
+        this.fetchCompanies();
+    }
+
+    fetchCompanies(){
         this.companiesService.companies().subscribe(companies => {
             this.loadingService.triggerLoadingEvent(false);
             this.allCompanies = companies;
@@ -113,7 +119,7 @@ export class SwitchCompanyComponent{
             }
             base.tableData.rows.push(row);
         });
-        this.hasCompanyList = true;
+        this.refreshTable();
     }
 
     ngOnDestroy(){

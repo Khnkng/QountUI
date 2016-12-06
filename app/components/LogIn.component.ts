@@ -56,17 +56,12 @@ export class LogInComponent implements OnInit {
     var data = this._loginForm.getData(this.loginForm);
     data["username"] = data.id;
     this.loginService.login(<LoginModel>data)
-        .subscribe(success  => {this.showMessage(true, success); this.loadingService.triggerLoadingEvent(false);}, error =>  this.showMessage(false, error));
+        .subscribe(success  => {this.showMessage(true, success); }, error =>  this.showMessage(false, error));
   }
 
   showMessage(status, obj) {
+    this.loadingService.triggerLoadingEvent(false);
     if(status) {
-      /*this.status = {};
-      this.status['success'] = true;
-      this.message = "logged in successfully.";
-      this.newLogin();*/
-
-      //reading user object
       Session.create(obj.user, obj.token);
       this.fetchCompanies(obj.user);
     } else {
@@ -82,8 +77,11 @@ export class LogInComponent implements OnInit {
 
   setComapnies(companies){
     if(companies.length > 0){
-      Session.setCurrentCompany(Session.getUser().default_company.id);
-      Session.setCurrentCompanyName(Session.getUser().default_company.name);
+      let defaultCompany = Session.getUser().default_company;
+      if(!_.isEmpty(defaultCompany)){
+        Session.setCurrentCompany(defaultCompany.id);
+        Session.setCurrentCompanyName(defaultCompany.name);
+      }
     }
     this.gotoDefaultPage();
   }
@@ -110,7 +108,7 @@ export class LogInComponent implements OnInit {
     } else{
       let defaultCompany = Session.getUser().default_company;
       if(!_.isEmpty(defaultCompany) && defaultCompany.roles.indexOf('Owner') != -1){
-        if(!defaultCompany.isActive){
+        if(!defaultCompany.tcAccepted){
           link = 'termsAndConditions';
         }
       }

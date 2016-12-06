@@ -39,7 +39,7 @@ export class ChangePasswordComponent {
                 if(res){
                     let defaultCompany = Session.getUser().default_company;
                     if(!_.isEmpty(defaultCompany) && defaultCompany.roles.indexOf('Owner') != -1){
-                        if(defaultCompany.isActive){
+                        if(defaultCompany.tcAccepted){
                             this._router.navigate(['']);
                         } else{
                             this._router.navigate(['termsAndConditions']);
