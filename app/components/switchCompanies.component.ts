@@ -119,7 +119,10 @@ export class SwitchCompanyComponent{
             }
             base.tableData.rows.push(row);
         });
-        this.refreshTable();
+        this.hasCompanyList = false;
+        setTimeout(function(){
+            base.hasCompanyList = true;
+        }, 0);
     }
 
     ngOnDestroy(){
