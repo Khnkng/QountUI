@@ -55,6 +55,7 @@ import {LoadingComponent} from "qCommon/app/components/Loading.component";
 import {OffCanvasMenuComponent} from "./components/OffCanvasMenu.component";
 import {ModulesComponent} from "./components/modules.component";
 import {ModulesService} from "./services/Modules.service";
+import {ChangePasswordComponent} from "./components/changePassword.component";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -169,13 +170,17 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             path: 'modules',
             component: ModulesComponent,
             canActivate: [LoggedInActivator]
+        },{
+            path: 'activate',
+            component: ChangePasswordComponent,
+            canActivate: [DashBoardActivator]
         }
     ]), ReportsModule, PaymentsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
-        OffCanvasMenuComponent, LoadingComponent,ModulesComponent],
+        OffCanvasMenuComponent, LoadingComponent,ModulesComponent,ChangePasswordComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,

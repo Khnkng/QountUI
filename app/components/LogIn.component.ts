@@ -103,9 +103,12 @@ export class LogInComponent implements OnInit {
   }
 
   gotoDefaultPage() {
+    var  link ='' ;
+    if(Session.get('user').tempPassword){
+      link='activate';
+    }
     this.switchBoard.onLogin.next(Session.get('user'));
-    let link = [''];
-    this._router.navigate(link);
+    this._router.navigate([link]);
   }
 
   changePassword($event){
