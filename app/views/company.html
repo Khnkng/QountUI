@@ -121,8 +121,9 @@
                       <div class="small-12 medium-4 columns">
                         <label>Currency
                           <div class="">
-                            <select formControlName="defaultCurrency" placeholder="currency">
-                              <option *ngFor="let currency of currencies" value="{{currency}}">{{currency}}</option>
+                            <select combo-box #currencyComboBoxDir="comboBox" title="" data-placeholder="Enter Currency" formControlName="defaultCurrency"
+                                    [listObject]="currencies" (valueChanged)="selectCurrency($event)">
+                              <option *ngFor="let currency of currencies" [value]="currency.code">{{currency.code}}</option>
                             </select>
                             <div class="error" [hidden]="companyForm.controls.defaultCurrency.untouched || companyForm.controls.defaultCurrency.valid"><small>Select Currency</small></div>
                           </div>
