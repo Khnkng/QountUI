@@ -9,6 +9,7 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {UserProfileService} from "qCommon/app/services/UserProfile.service";
 
 declare var _:any;
 declare var jQuery:any;
@@ -31,9 +32,8 @@ export class SwitchCompanyComponent{
     compSubscription:any;
     hasCompanyList:boolean;
 
-    constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService,
-                private companiesService: CompaniesService, private loadingService: LoadingService,
-        private switchBoard: SwitchBoard) {
+    constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
+                private companiesService: CompaniesService, private loadingService: LoadingService, private userProfileService: UserProfileService) {
         this.loadingService.triggerLoadingEvent(true);
         this.currentCompanyId = Session.getCurrentCompany();
         this.currentCompanyName = Session.getCurrentCompanyName();
@@ -138,6 +138,18 @@ export class SwitchCompanyComponent{
         }, 0);
     }
 
+    setDefaultCompany(companyId){
+        let data ={
+            "firstName": Session.getUser().firstName,
+            "lastName": Session.getUser().lastName,
+            "phoneNumber": Session.getUser().phone_number,
+            "defaultCompany": companyId
+        };
+        debugger;
+        this.userProfileService.updateUserProfile(data)
+            .subscribe(test => console.log(test));
+    }
+
     changeCompany(company){
         Session.setCurrentCompany(company.id);
         Session.setCurrentCompanyName(company.name);
@@ -145,6 +157,7 @@ export class SwitchCompanyComponent{
         this.currentCompanyId = company.id;
         this.currentCompany = company;
         this.refreshTable();
+        this.setDefaultCompany(company.id);
 
         jQuery("#SwitchCompany-modal").foundation('close');
         let link = ['/dashboard'];

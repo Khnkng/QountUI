@@ -220,6 +220,8 @@ export class JournalEntryComponent{
     }
 
     deleteLine(lineIndex){
+        let lineList:any = this.jeForm.controls['journalLines'];
+        lineList.controls.splice(lineIndex, 1);
         this.journalLinesArray.controls.splice(lineIndex, 1);
         this.tempJournalLinesArray.controls.splice(lineIndex, 1);
     }
@@ -267,6 +269,10 @@ export class JournalEntryComponent{
         let base = this;
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
+        data.journalLines = [];
+        _.each(this.journalLinesArray.controls, function(lineListForm){
+            data.journalLines.push(base._lineListForm.getData(lineListForm));
+        });
         if(!this.validateLineAmount(data.journalLines)){
             this.toastService.pop(TOAST_TYPE.error, "Credit and debit totals doesn't match");
             return false;
@@ -280,10 +286,6 @@ export class JournalEntryComponent{
                 }, error=> this.handleError(error));
         } else{
             data.id = this.journalEntry.id;
-            data.journalLines = [];
-            _.each(this.journalLinesArray.controls, function(lineListForm){
-                data.journalLines.push(base._lineListForm.getData(lineListForm));
-            });
             this.journalService.updateJournalEntry(this.cleanData(data), this.currentCompany.id)
                 .subscribe(journalEntry => {
                     this.toastService.pop(TOAST_TYPE.success, "Journal Entry updated successfully");
