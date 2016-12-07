@@ -10,7 +10,7 @@
         </div>
     </div>
     <button class="button create small "
-            type="submit" (click)="submit($event)">Submit</button>
+            type="submit" (click)="submit($event)" *ngIf="isLoaded">Submit</button>
     <div>
     </div>
 </div>

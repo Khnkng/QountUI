@@ -21,7 +21,8 @@ declare var _:any;
 export class ModulesComponent {
     companyId:string;
     modulesList:Array<any>;
-    isCreate:boolean=true;
+    isCreate:boolean=true
+    isLoaded:boolean=false;
     constructor(private _fb: FormBuilder, private _router: Router, private _toastService: ToastService,
                 private switchBoard: SwitchBoard, private loadingService:LoadingService,private modulesService:ModulesService) {
         this.companyId = Session.getCurrentCompany();
@@ -37,6 +38,7 @@ export class ModulesComponent {
     loadData(){
         if(this.companyId){
             this.modulesService.getModules(this.companyId).subscribe(modules => {
+                this.isLoaded=true;
                 if(modules&&modules.length>0){
                     this.isCreate=false;
                     this.selectedModules=_.map(modules,'module_id');
