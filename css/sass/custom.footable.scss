@@ -20,6 +20,13 @@
         right: 125px;
       }
     }
+    &.search-right{
+      .footable-filtering{
+        .footable-filtering{
+          right: 0px;
+        }
+      }
+    }
   }
   .footable .open > .dropdown-menu {
     display: block;
