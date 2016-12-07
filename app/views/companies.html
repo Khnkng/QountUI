@@ -21,7 +21,7 @@
     <div class="foo-toolbar">
      <a [routerLink]="['/addCompany']" class="button small" [hidden]="!isAdmin"><i class="icon ion-plus-round"></i>Company</a>
     </div>
-    <foo-table class="bighalf-footable" *ngIf="hasCompanyList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)">
+    <foo-table class="bighalf-footable" [ngClass]='{"search-right": !isAdmin}' *ngIf="hasCompanyList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)">
     </foo-table>
   </div>
 </div>
