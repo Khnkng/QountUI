@@ -82,6 +82,13 @@ export class LogInComponent implements OnInit {
         Session.setCurrentCompany(defaultCompany.id);
         Session.setCurrentCompanyName(defaultCompany.name);
       }
+    } else{
+      if(Session.getUser().isAdmin){
+        this._toastService.pop(TOAST_TYPE.warning, "No companies added yet. Please add a company to start.");
+        this._router.navigate(['addCompany']);
+      } else{
+        this._toastService.pop(TOAST_TYPE.warning, "No companies found. Please contact admin to create companies.");
+      }
     }
     this.gotoDefaultPage();
   }
