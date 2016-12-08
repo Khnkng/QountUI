@@ -28,6 +28,7 @@ export class ModulesComponent {
         this.companyId = Session.getCurrentCompany();
         this.modulesService.modules().subscribe(modules => {
             this.modulesList=modules;
+            this.isLoaded=true;
             this.loadData();
         }, error => this.handleError(error));
     }
@@ -38,7 +39,6 @@ export class ModulesComponent {
     loadData(){
         if(this.companyId){
             this.modulesService.getModules(this.companyId).subscribe(modules => {
-                this.isLoaded=true;
                 if(modules&&modules.length>0){
                     this.isCreate=false;
                     this.selectedModules=_.map(modules,'module_id');
