@@ -45,6 +45,17 @@
                         </label>
                     </div>-->
                     <div class="small-12 medium-6 columns">
+                        <label>Country
+                            <div class="input-group">
+                                <select combo-box #vendorCountryComboBoxDir="comboBox" title="" data-placeholder="Enter Country" formControlName="customer_country" [listObject]="countries" (valueChanged)="showVendorProvince($event)">
+                                    <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
+                                </select>
+                                <div class="error" [hidden]="customerForm.controls.customer_country.untouched || customerForm.controls.customer_country.valid">Country is required.</div>
+                            </div>
+                        </label>
+                    </div>
+                    <Address [code]="countryCode" #addressDir="address"></Address>
+                    <!--<div class="small-12 medium-6 columns">
                         <label>Address
                             <div class="input-group">
                                 <input type="text" class="input-group-field" formControlName="customer_address" placeholder="Address*" />
@@ -85,12 +96,12 @@
                                 <div class="error" [hidden]="customerForm.controls.customer_zipcode.untouched || customerForm.controls.customer_zipcode.valid">Zip code is required.</div>
                             </div>
                         </label>
-                    </div>
+                    </div>-->
                 </div>
 
                 <div class="row">
                     <div class="small-12 medium-12 columns">
-                        <button class="button create small float-right" [disabled]="!customerForm.valid" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
+                        <button class="button create small float-right" [disabled]="!customerForm.valid || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
                     </div>
                 </div>
             </form>

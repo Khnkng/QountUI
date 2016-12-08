@@ -5,7 +5,6 @@
 
 import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {ShareModule} from "qCommon/app/share.module";
-import {ReportsModule} from "reportsUI/app/reports.module";
 import {LoggedInActivator} from "qCommon/app/services/CheckSessionActivator";
 import {AddCompanyComponent} from "qCommon/app/components/AddCompany.component";
 import {CompaniesComponent} from "qCommon/app/components/Companies.component";
@@ -74,12 +73,10 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
         },
         {
             path: 'addCompany',
-            name: 'AddCompany',
             component: AddCompanyComponent,
             canActivate: [LoggedInActivator]
         },
         {   path: 'company/:id',
-            name: 'Company',
             component: CompanyComponent,
             canActivate: [LoggedInActivator]
         },
@@ -115,7 +112,6 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
         },
         {
             path: 'user-profile',
-            name: 'UserProfile',
             component: UserProfileComponent,
             canActivate: [LoggedInActivator]
         },
@@ -152,8 +148,11 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
             path: 'users',
             component: UsersComponent,
             canActivate: [LoggedInActivator]
+        },{
+            path: 'reports',
+            loadChildren: '/lib/reportsUI/app/reports.module.js#ReportsModule'
         }
-    ]), ReportsModule, PaymentsModule
+    ]), PaymentsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,

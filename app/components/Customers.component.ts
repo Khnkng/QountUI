@@ -2,6 +2,7 @@
 import {Component, ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
+import {Address} from "qCommon/app/directives/address.directive";
 import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {FTable} from "qCommon/app/directives/footable.directive";
@@ -31,6 +32,7 @@ export class CustomersComponent {
     editMode:boolean = false;
     @ViewChild('createVendor') createVendor;
     @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
+    @ViewChild('addressDir') addressDir: Address;
     row:any;
     customerForm: FormGroup;
     countries:Array<any> = PROVINCES.COUNTRIES;
@@ -40,6 +42,8 @@ export class CustomersComponent {
     companyId:string;
     companies:Array<CompanyModel> = [];
     companyName:string;
+    countryCode:string;
+    
 
     constructor(private _fb: FormBuilder, private customersService: CustomersService, private _customersForm:CustomersForm, private _router: Router, private _toastService: ToastService, private switchBoard: SwitchBoard) {
         this.customerForm = this._fb.group(_customersForm.getForm());
@@ -104,6 +108,7 @@ export class CustomersComponent {
     showVendorProvince(country:any) {
         let countryControl:any = this.customerForm.controls['customer_country'];
         countryControl.patchValue(country.name);
+        this.countryCode = country.code;
     }
 
     removeVendor(row:any) {
@@ -181,6 +186,12 @@ export class CustomersComponent {
             this.message = obj;
         }
     }
+
+    addressValid() {
+        this.addressDir.isValid();
+    }
+
+
 
     handleError(error) {
 
