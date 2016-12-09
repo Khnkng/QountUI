@@ -29,6 +29,7 @@ export class JournalEntryForm extends abstractForm{
 
       "newType": [],
       "newCoa": [],
+      "newDimensions": [],
       "newEntryType": [],
       "newAmount": [],
       "newMemo": []
@@ -46,7 +47,8 @@ export class JournalLineForm extends abstractForm{
       entryType: [model? model.entryType: ''],
       amount: [model? model.amount: 0],
       memo: [model? model.memo: ''],
-      id: [model? model.id: null]
+      id: [model? model.id: null],
+      dimensions: [model? model.dimensions: []]
     };
   }
 

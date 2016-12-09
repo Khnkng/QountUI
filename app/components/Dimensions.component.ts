@@ -34,7 +34,7 @@ export class DimensionsComponent{
   allCompanies:Array<any>;
   row:any;
   tempValues:Array<string> = [];
-  tableColumns:Array<string> = ['name', 'id', 'values'];
+  tableColumns:Array<string> = ['name', 'id', 'values', 'desc'];
 
   constructor(private _fb: FormBuilder, private _dimensionForm: DimensionForm, private switchBoard: SwitchBoard,
               private dimensionService: DimensionService, private loadingService:LoadingService,
@@ -81,12 +81,12 @@ export class DimensionsComponent{
 
   removeDimension(row: any){
     this.loadingService.triggerLoadingEvent(true);
-    let dimensionId = row.id;
-    this.dimensionService.removeDimension(dimensionId, this.currentCompany.id)
+    let dimensionName = row.name;
+    this.dimensionService.removeDimension(dimensionName, this.currentCompany.id)
         .subscribe(coa => {
             this.loadingService.triggerLoadingEvent(false);
             this.toastService.pop(TOAST_TYPE.success, "Deleted Dimension successfully");
-            this.dimensions.splice(_.findIndex(this.dimensions, {id: dimensionId}), 1);
+            this.dimensions.splice(_.findIndex(this.dimensions, {name: dimensionName}), 1);
             this.buildTableData(this.dimensions);
         }, error => this.handleError(error));
   }
@@ -118,6 +118,11 @@ export class DimensionsComponent{
     let data = this._dimensionForm.getData(this.dimensionForm);
     delete data.tempValue;
     let values = jQuery('#dimensionValues').tagit("assignedTags");
+    if(values.length == 0){
+      this.loadingService.triggerLoadingEvent(false);
+      this.toastService.pop(TOAST_TYPE.error, "Dimension should have atleast one value");
+      return false;
+    }
     data.values = values;
     if(this.editMode){
       data.id = this.row.id;

@@ -52,6 +52,7 @@ export class JournalEntryComponent{
     editDimension:boolean = false;
     dimensionFlyoutCSS:any;
     selectedDimensions:Array = [];
+    editingLine:any;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -95,32 +96,68 @@ export class JournalEntryComponent{
         }, 0);
     }
 
-    getDimensionValues(dimensions){
-        if(dimensions){
-            return dimensions[0].split(',');
-        } else{
-            return [];
-        }
+    selectValue(dimension, value){
+        _.each(this.selectedDimensions, function (selectedDimension) {
+            if(selectedDimension.name == dimension.name){
+                if(selectedDimension.values.indexOf(value) == -1){
+                    selectedDimension.values.push(value);
+                } else{
+                    selectedDimension.values.splice(selectedDimension.values.indexOf(value), 1);
+                }
+            }
+        });
     }
 
-    isDimensionSelected(id){
-        return this.selectedDimensions.indexOf(id) != -1;
+    isDimensionSelected(dimensionName){
+        let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
+        return selectedDimensionNames.indexOf(dimensionName) != -1;
     }
 
-    selectDimension(id){
-        if(this.selectedDimensions.indexOf(id) == -1){
-            this.selectedDimensions.push(id);
+    selectDimension(dimensionName){
+        let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
+        if(selectedDimensionNames.indexOf(dimensionName) == -1){
+            this.selectedDimensions.push({
+                "name": dimensionName,
+                "values": []
+            });
         } else{
-            this.selectedDimensions.splice(this.selectedDimensions.indexOf(id), 1);
+            this.selectedDimensions.splice(selectedDimensionNames.indexOf(dimensionName), 1);
         }
     }
 
     hideDimensionFlyout(){
+        this.editingLine = {};
         this.dimensionFlyoutCSS = "collapsed";
     }
 
-    showDimensionFlyout(){
+    showDimensionFlyout(lineStatus, lineListItem){
         this.dimensionFlyoutCSS = "expanded";
+        if(lineStatus == 'NEW'){
+            this.editingLine = {
+                status: 'NEW'
+            };
+            let dimensions = this.jeForm.controls['newDimensions'].value || [];
+            this.selectedDimensions = dimensions;
+        } else{
+            this.editingLine = {
+                status: 'UPDATE',
+                lineItem: lineListItem
+            };
+            let dimensions = lineListItem.controls['dimensions'].value || [];
+            this.selectedDimensions = dimensions;
+        }
+    }
+
+    saveDimensionLine(){
+        if(this.editingLine.status == 'NEW'){
+            let dimensions = this.jeForm.controls['newDimensions'];
+            dimensions.patchValue(this.selectedDimensions);
+        } else{
+            let dimensions = this.editingLine.lineItem.controls['dimensions'];
+            dimensions.patchValue(this.selectedDimensions);
+        }
+        this.selectedDimensions = [];
+        this.hideDimensionFlyout();
     }
 
     setJournalDate(date: string){
@@ -182,7 +219,7 @@ export class JournalEntryComponent{
             "coa": data.newCoa,
             "amount": data.newAmount,
             "memo": data.newMemo,
-            "dimensions": jQuery('#dimension').val()
+            "dimensions": data.newDimensions
         };
         this.lines.push(line);
         let lineListForm = this._fb.group(this._lineListForm.getForm(line));
@@ -200,6 +237,8 @@ export class JournalEntryComponent{
         amountControl.patchValue('');
         let memoControl:any = this.jeForm.controls['newMemo'];
         memoControl.patchValue('');
+        let dimensionsControl:any = this.jeForm.controls['newDimensions'];
+        dimensionsControl.patchValue([]);
         this.coaComboBox.clearValue();
     }
 
@@ -241,6 +280,7 @@ export class JournalEntryComponent{
     cleanData(data){
         delete data.newType;
         delete data.newEntryType;
+        delete data.newDimensions;
         delete data.newAmount;
         delete data.newCoa;
         delete data.newMemo;
@@ -291,7 +331,6 @@ export class JournalEntryComponent{
                     this.toastService.pop(TOAST_TYPE.success, "Journal Entry updated successfully");
                     let link = ['books', 2];
                     this._router.navigate(link);
-                    console.log(journalEntry);
                 }, error=> this.handleError(error));
         }
     }
@@ -354,15 +393,14 @@ export class JournalEntryComponent{
         this._jeForm.updateForm(this.jeForm, this.journalEntry);
     }
 
-    getDimensionNames(dimensionsIds){
-        let base = this;
-        let ids = dimensionsIds.split(',');
-        let result = [];
-        _.each(ids, function(id){
-            let dimension = _.find(base.dimensions, {id: id});
-            if(!_.isEmpty(dimension)){
-                result.push(dimension.name);
-            }
+    getDimensions(dimensions){
+        let result = "";
+        _.each(dimensions, function(dimension){
+            result += dimension.name +",";
+            /*_.each(dimension.values, function(value, index){
+                result += value +",";
+            });
+            result += "<br>";*/
         });
         return result;
     }
