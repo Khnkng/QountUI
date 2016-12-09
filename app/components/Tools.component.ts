@@ -12,7 +12,7 @@ import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.servi
 import {DimensionService} from "qCommon/app/services/DimensionService.service";
 import {CodesService} from "qCommon/app/services/CodesService.service";
 import {ExpensesSerice} from "../services/Expenses.service";
-import {UsersService} from "../services/Users.service";
+import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
 import {CustomersService} from "../services/Customers.service";
 
 declare var jQuery:any;
@@ -34,9 +34,10 @@ export class ToolsComponent {
   billCount: number = 0;
   dimensionCount: number = 0;
   usersCount:number=0;
+  accountsCount:number = 0;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private companiesService: CompaniesService, private coaService: ChartOfAccountsService,
-              private codeService: CodesService, private expenseService: ExpensesSerice, private dimensionService: DimensionService,private usersService:UsersService,private customersService:CustomersService) {
+              private codeService: CodesService, private expenseService: ExpensesSerice, private dimensionService: DimensionService,private usersService:CompanyUsers,private customersService:CustomersService) {
     console.info('QountApp Tools Component Mounted Successfully7');
     let currentCompany = Session.getCurrentCompany();
     if(currentCompany){
@@ -69,11 +70,11 @@ export class ToolsComponent {
           this.dimensionCount = dimensions.length;
         }, error => this.handleError(error));
     this.usersService.users(company.id).subscribe(users => {
-      this.usersCount=users.length;
-    }, error => this.handleError(error));
+          this.usersCount=users.length;
+        }, error => this.handleError(error));
     this.customersService.customers(company.id).subscribe(customers => {
-      this.customerCount=customers.length;
-    }, error => this.handleError(error));
+          this.customerCount=customers.length;
+        }, error => this.handleError(error));
   }
 
   handleError(error){
@@ -100,6 +101,11 @@ export class ToolsComponent {
       break;
       case 'dimensions': {
         let link = ['dimensions'];
+        this._router.navigate(link);
+      }
+        break;
+      case 'accounts': {
+        let link = ['financialAccounts'];
         this._router.navigate(link);
       }
         break;
@@ -130,6 +136,11 @@ export class ToolsComponent {
       break;
       case 'users': {
         let link = ['users'];
+        this._router.navigate(link);
+      }
+        break;
+      case 'modules': {
+        let link = ['modules'];
         this._router.navigate(link);
       }
         break;

@@ -36,6 +36,7 @@ export class AppComponent  implements OnInit{
     toastClass: string;
     switchBoard:SwitchBoard
     confirmClass = "";
+    isOffCanvasMenuExpanded:boolean=false;
 
     mainCanvasCss = {
         'main-canvas': true,
@@ -106,7 +107,11 @@ export class AppComponent  implements OnInit{
 
     routeChanged(routeChange:NavigationEnd) {
         if(Session.hasSession()) {
-            this.hasLoggedIn = true;
+            if(routeChange.url == '/activate' || routeChange.url == '/termsAndConditions'){
+                this.hasLoggedIn = false;
+            } else{
+                this.hasLoggedIn = true;
+            }
         } else {
             this.hasLoggedIn = false;
         }
@@ -160,4 +165,10 @@ export class AppComponent  implements OnInit{
         }
         this.switchBoard.onSideMenuResize.next({'resize': true});
     }
+    toggleOffCanvasMenu(){
+        this.isOffCanvasMenuExpanded = !this.isOffCanvasMenuExpanded;
+        this.isSideMenuExpanded = this.isOffCanvasMenuExpanded;
+        this.switchBoard.onOffCanvasMenuExpand.next(this.isOffCanvasMenuExpanded);
+    }
+
 }

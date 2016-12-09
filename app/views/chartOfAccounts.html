@@ -72,7 +72,7 @@
               <span>Sub Account</span>
             </div>
             <div [hidden]="!subAccount" *ngIf="combo" >
-              var data = this._companyForm.getData(this.companyForm);  <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentID" [listObject]="parentAccounts" (valueChanged)="updateParent($event)">
+              <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentID" [listObject]="parentAccounts" (valueChanged)="updateParent($event)">
                 <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.id">{{parentAccount.name}}</option>
               </select>
             </div>

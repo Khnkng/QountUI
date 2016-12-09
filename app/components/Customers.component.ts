@@ -15,6 +15,7 @@ import {CompanyModel} from "../models/Company.model";
 import {CustomersService} from "../services/Customers.service";
 import {CustomersModel} from "../models/Customers.model";
 import {CustomersForm} from "../forms/Customers.form";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var jQuery:any;
 declare var _:any;
@@ -45,11 +46,19 @@ export class CustomersComponent {
     countryCode:string;
     
 
-    constructor(private _fb: FormBuilder, private customersService: CustomersService, private _customersForm:CustomersForm, private _router: Router, private _toastService: ToastService, private switchBoard: SwitchBoard) {
+    constructor(private _fb: FormBuilder, private customersService: CustomersService,
+                private _customersForm:CustomersForm, private _router: Router, private _toastService: ToastService,
+                private switchBoard: SwitchBoard, private loadingService:LoadingService) {
         this.customerForm = this._fb.group(_customersForm.getForm());
         this.companyId = Session.getCurrentCompany();
         if(this.companyId){
-            this.customersService.customers(this.companyId).subscribe(customers => this.buildTableData(customers), error => this.handleError(error));
+            this.loadingService.triggerLoadingEvent(true);
+            this.customersService.customers(this.companyId).subscribe(customers => {
+                this.buildTableData(customers);
+                this.loadingService.triggerLoadingEvent(false);
+            }, error => this.handleError(error));
+        }else {
+            this._toastService.pop(TOAST_TYPE.error, "Please add company first");
         }
     }
 
@@ -113,8 +122,10 @@ export class CustomersComponent {
 
     removeVendor(row:any) {
         let customer:CustomersModel = row;
+        this.loadingService.triggerLoadingEvent(true);
         this.customersService.removeCustomer(customer.customer_id, this.companyId)
             .subscribe(success  => {
+                this.loadingService.triggerLoadingEvent(false);
                 this._toastService.pop(TOAST_TYPE.success, "Customer deleted successfully");
                 this.customersService.customers(this.companyId)
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
@@ -149,17 +160,30 @@ export class CustomersComponent {
     }
 
     submit($event) {
+        this.loadingService.triggerLoadingEvent(true);
         $event && $event.preventDefault();
         var data = this._customersForm.getData(this.customerForm);
         this.companyId = Session.getCurrentCompany();
+        var data1 = this.addressDir.getData();
+        for(var prop in data1) {
+            data[prop
+        }
         if(this.editMode) {
             data.customer_id=this.row.customer_id;
             this.customersService.updateCustomer(<CustomersModel>data, this.companyId)
-                .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
+                .subscribe(success  => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.showMessage(true, success);
+
+                }, error =>  this.showMessage(false, error));
             jQuery(this.createVendor.nativeElement).foundation('close');
         } else {
             this.customersService.addCustomer(<CustomersModel>data, this.companyId)
-                .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
+                .subscribe(success  => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.showMessage(true, success);
+
+                }, error =>  this.showMessage(false, error));
         }
     }
 
@@ -188,7 +212,10 @@ export class CustomersComponent {
     }
 
     addressValid() {
-        this.addressDir.isValid();
+    if(this.addressDir) {
+        return this.addressDir.isValid();
+
+    } return false;
     }
 
 

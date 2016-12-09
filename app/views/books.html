@@ -65,15 +65,15 @@
     <div class="row tabber ">
       <div class="column tab red-tab" (click)="reRoutePage(0)" [ngClass]="{'selected': tabDisplay[0].display == 'block'}">
         <label>Deposits</label>
-        <span class="badge">{{badges.deposits ? badges.deposits : localBadges ? localBadges.deposits?localBadges.deposits:0:0 }}</span>
+        <span class="badge">{{badges.deposits ? badges.deposits : localBadges ? localBadges.deposits: 0 }}</span>
       </div>
       <div class="column tab orange-tab" (click)="reRoutePage(1)" [ngClass]="{'selected': tabDisplay[1].display == 'block'}">
         <label>Expenses</label>
-        <span class="badge">{{badges.expenses ? badges.expenses : localBadges ? localBadges.expenses?localBadges.expenses:0:0 }}</span>
+        <span class="badge">{{badges.expenses ? badges.expenses : localBadges ? localBadges.expenses: 0 }}</span>
       </div>
       <div class="column tab blue-tab" (click)="reRoutePage(2)" [ngClass]="{'selected': tabDisplay[2].display == 'block'}">
         <label>Journal Entries</label>
-        <span class="badge">{{badges.journalEntries ? badges.journalEntries : localBadges ? localBadges.journalEntries?localBadges.journalEntries:0:0 }}</span>
+        <span class="badge">{{badges.journalEntries ? badges.journalEntries : localBadges ? localBadges.journalEntries: 0 }}</span>
       </div>
     </div>
     <div class="row collapse tab-content ">
@@ -118,3 +118,4 @@
     </div>
   </div>
 </div>
+

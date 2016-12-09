@@ -8,6 +8,8 @@ import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {LoadingService} from "qCommon/app/services/LoadingService";
+import {UserProfileService} from "qCommon/app/services/UserProfile.service";
 
 declare var _:any;
 declare var jQuery:any;
@@ -27,17 +29,24 @@ export class SwitchCompanyComponent{
     currentCompanyName:string = '';
     currentCompanyId:string;
     subscription:any;
+    compSubscription:any;
     hasCompanyList:boolean;
 
-    constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private companiesService: CompaniesService,
-        private switchBoard: SwitchBoard) {
-        
+    constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
+                private companiesService: CompaniesService, private loadingService: LoadingService, private userProfileService: UserProfileService) {
+        this.loadingService.triggerLoadingEvent(true);
         this.currentCompanyId = Session.getCurrentCompany();
         this.currentCompanyName = Session.getCurrentCompanyName();
         this.subscription = this.switchBoard.onCompanyUpdate.subscribe(company =>{
            this.currentCompanyName = Session.getCurrentCompanyName();
         });
+        this.compSubscription = this.switchBoard.onCompanyAddOrDelete.subscribe(msg => this.fetchCompanies());
+        this.fetchCompanies();
+    }
+
+    fetchCompanies(){
         this.companiesService.companies().subscribe(companies => {
+            this.loadingService.triggerLoadingEvent(false);
             this.allCompanies = companies;
             if(this.currentCompanyId){
                 this.currentCompany = _.find(this.allCompanies, {id: this.currentCompanyId});
@@ -79,7 +88,10 @@ export class SwitchCompanyComponent{
         this.tableData.columns = [
             {"name": "id", "title": "ID","visible": false, "filterable": false},
             {"name": "name", "title": "Name"},
-            {"name": "admin", "title": "Admin"},
+            {"name":"einNumber","title":"EIN"},
+            {"name": "companyType", "title": "Type"},
+            {"name": "owner", "title": "Owner"},
+            {"name": "accountManager", "title": "Account Manager"},
             {"name": "actions", "title": "", "type": "html", "filterable": false}
         ];
         this.tableData.rows = [];
@@ -97,17 +109,24 @@ export class SwitchCompanyComponent{
             row.name = company.name;
             row.payables =payabels.toLocaleString(base.displayCurrency, { style: 'currency', currency: base.displayCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
             row.pastDue =payabels.toLocaleString(base.displayCurrency, { style: 'currency', currency: base.displayCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            row.admin = company.invitedBy;
+            row.owner = company.owner;
+            row.einNumber=company.einNumber;
+            row.companyType=company.companyType;
+            row.accountManager=company.accountManager;
 
             if(row.id != base.currentCompanyId){
-                row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Switch</span></a>";
-            }
-            if(row.id != base.currentCompanyId){
-                console.log("No switch button", base.currentCompanyName);
+                row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Hop</span></a>";
             }
             base.tableData.rows.push(row);
         });
-        this.hasCompanyList = true;
+        this.hasCompanyList = false;
+        setTimeout(function(){
+            base.hasCompanyList = true;
+        }, 0);
+    }
+
+    ngOnDestroy(){
+        jQuery("#SwitchCompany-modal").remove();
     }
 
     refreshTable(){
@@ -119,6 +138,18 @@ export class SwitchCompanyComponent{
         }, 0);
     }
 
+    setDefaultCompany(companyId){
+        let data ={
+            "firstName": Session.getUser().firstName,
+            "lastName": Session.getUser().lastName,
+            "phoneNumber": Session.getUser().phone_number,
+            "defaultCompany": companyId
+        };
+        debugger;
+        this.userProfileService.updateUserProfile(data)
+            .subscribe(test => console.log(test));
+    }
+
     changeCompany(company){
         Session.setCurrentCompany(company.id);
         Session.setCurrentCompanyName(company.name);
@@ -126,6 +157,7 @@ export class SwitchCompanyComponent{
         this.currentCompanyId = company.id;
         this.currentCompany = company;
         this.refreshTable();
+        this.setDefaultCompany(company.id);
 
         jQuery("#SwitchCompany-modal").foundation('close');
         let link = ['/dashboard'];

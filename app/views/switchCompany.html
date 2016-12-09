@@ -1,7 +1,7 @@
 <div class="switchCompanyModal">
 
     <div class="switchCompany-modal-name" data-toggle="SwitchCompany-modal">
-        <span>{{currentCompanyName}}</span>
+        <span *ngIf="currentCompany">{{currentCompanyName}}</span>
     </div>
 
     <div class="full reveal qount-flyout SwitchCompany-reveal" id="SwitchCompany-modal" data-reveal>
@@ -17,5 +17,4 @@
         </button>
     </div>
 </div>
-
 

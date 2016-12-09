@@ -24,10 +24,11 @@
 @import "userprofile";
 @import "toaster";
 @import "workflow";
-@import "line-item-flyout";
 @import "highcharts";
 @import "custom.footable";
 @import "switch.company";
+@import "loader";
+@import "qount-offcanvas-menu";
 
 @include foundation-global-styles;
 @include foundation-grid;
@@ -131,10 +132,10 @@ body {
   width: 100%;
 }
 .col.half {
-  width: 80%;
+  width: 90%;
 }
 .col.third {
-  width: 20%;
+  width: 5%;
 }
 h1, h2, h3, h4, h5, h6 {
   color: #505458;
@@ -637,18 +638,18 @@ form {
 }
 
 .sidebar ul.side-nav li a:hover {
-  border-left: 3pt solid #50AEE2;
-  color: #50AEE2;
+  /*border-left: 3pt solid #50AEE2;*/
+  color: #77AFFA;
 }
 
 .sidebar ul.side-nav li a.selected {
   // background: #666E76;
   // border-left: 3pt solid #50AEE2;
-  color: #50AEE2;
+  color: #77AFFA;
 }
 
 .sidebar ul.side-nav li a:hover .icon {
-  color: #50AEE2;
+  color: #77AFFA;
 }
 
 .sidebar ul.side-nav li {
@@ -792,6 +793,7 @@ ul.side-nav a {
       margin-top: 2rem;
       margin-bottom: 4rem;
       color: red;
+      text-align: center;
     }
   }
 
@@ -883,7 +885,7 @@ ul.side-nav a {
   }
 
   div.left, footer.left {
-    text-align: left;
+    float: left;
   }
 
   div.right, footer.right {
@@ -892,6 +894,11 @@ ul.side-nav a {
 
   .chartArea{
     margin-top: 2.5em;
+  }
+
+  .ap-aging-report-heading{
+    color: #282895;
+    font-weight: 700;
   }
 }
 
@@ -928,17 +935,18 @@ ul.side-nav a {
       width: 900px;
       height: 800px;
 
-      img {
-        width: 40px;
-      }
 
-      div.left, footer.left {
-        text-align: left;
-      }
+    }
+    img {
+      width: 40px;
+    }
 
-      div.right, footer.right {
-        text-align: right;
-      }
+    div.left, footer.left {
+      float: left;
+    }
+
+    div.right, footer.right {
+      float: right;
     }
   }
 
@@ -1537,7 +1545,7 @@ table.footable-editing-right tr.footable-editing td {
     height: 2.4375rem;
     position: absolute;
     right: -1px;
-    z-index: 1000;
+    z-index: 100;
   }
 }
 
@@ -2207,164 +2215,7 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
-/* Loading CSS*/
-.fond {
-  position: absolute;
-  padding-top: 85px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
 
-.contener_general {
-  -webkit-animation: animball_two 5s infinite;
-  -moz-animation: animball_two 2s infinite;
-  -ms-animation: animball_two 5s infinite;
-  animation: animball_two 2s infinite;
-  width: 44px;
-  height: 44px;
-}
-.contener_mixte {
-  width: 44px;
-  height: 44px;
-  position: absolute;
-}
-.ballcolor {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-}
-.ball_1, .ball_2, .ball_3, .ball_4 {
-  position: absolute;
-  -webkit-animation: animball_one 5s infinite ease;
-  -moz-animation: animball_one 2s infinite ease;
-  -ms-animation: animball_one 5s infinite ease;
-  animation: animball_one 2s infinite ease;
-}
-.ball_1 {
-  background-color: #4582fd;
-  top: 0;
-  left: 0;
-}
-.ball_2 {
-  background-color: #00B050;
-  top: 0;
-  left: 44px;
-}
-.ball_3 {
-  background-color: #FFC000;
-  top: 44px;
-  left: 0;
-}
-.ball_4 {
-  background-color: #EB4334;
-  top: 44px;
-  left: 44px;
-}
-
-@-webkit-keyframes animball_one {
-  0% {
-    position: absolute;
-  }
-  50% {
-    top: 12px;
-    left: 12px;
-    position: absolute;
-    opacity: 1;
-  }
-  100% {
-    position: absolute;
-  }
-}
-@-moz-keyframes animball_one {
-  0% {
-    position: absolute;
-  }
-  50% {
-    top: 12px;
-    left: 12px;
-    position: absolute;
-    opacity: 1;
-  }
-  100% {
-    position: absolute;
-  }
-}
-@-ms-keyframes animball_one {
-  0% {
-    position: absolute;
-  }
-  50% {
-    top: 12px;
-    left: 12px;
-    position: absolute;
-    opacity: 1;
-  }
-  100% {
-    position: absolute;
-  }
-}
-@keyframes animball_one {
-  0% {
-    position: absolute;
-  }
-  50% {
-    top: 12px;
-    left: 12px;
-    position: absolute;
-    opacity: 1;
-  }
-  100% {
-    position: absolute;
-  }
-}
-
-@-webkit-keyframes animball_two {
-  0% {
-    -webkit-transform: rotate(0deg) scale(1);
-  }
-  50% {
-    -webkit-transform: rotate(360deg) scale(1);
-  }
-  100% {
-    -webkit-transform: rotate(720deg) scale(1);
-  }
-}
-@-moz-keyframes animball_two {
-  0% {
-    -moz-transform: rotate(0deg) scale(1);
-  }
-  50% {
-    -moz-transform: rotate(360deg) scale(1);
-  }
-  100% {
-    -moz-transform: rotate(720deg) scale(1);
-  }
-}
-@-ms-keyframes animball_two {
-  0% {
-    -ms-transform: rotate(0deg) scale(1);
-  }
-  50% {
-    -ms-transform: rotate(360deg) scale(1);
-  }
-  100% {
-    -ms-transform: rotate(720deg) scale(1);
-  }
-}
-@keyframes animball_two {
-  0% {
-    transform: rotate(0deg) scale(1);
-  }
-  50% {
-    transform: rotate(360deg) scale(1);
-  }
-  100% {
-    transform: rotate(720deg) scale(1);
-  }
-}
-/*end*/
 
 #importExpenseModal {
   .close-button {
@@ -2393,7 +2244,7 @@ table.footable-editing-right tr.footable-editing td {
     text-align: center;
     position: relative;
     &:hover{
-      transition: box-shadow .2s ease-in-out;
+      transition: box-shadow .1s ease-in-out;
       box-shadow: 2px 4px 4px 0 rgba(0, 0, 0, 0.2);
       -webkit-box-shadow: 2px 8px 8px 0 rgba(0, 0, 0, 0.2);
       -moz-box-shadow: 2px 8px 8px 0 rgba(0, 0, 0, 0.2);
@@ -2824,11 +2675,95 @@ tbody{
 .chartArea {
 
 }
-
+.failure-text {
+  margin-top: 2rem;
+  margin-bottom: 4rem;
+  color: red;
+  text-align: center;
+}
 #lineDetails{
   .coa-field{
     input, a{
       margin-top: -11px;
+    }
+  }
+}
+
+.dimension-field{
+  #dimension-selectized{
+    width: 100% !important;
+  }
+}
+
+.dimension-link {
+  margin-left: 15px;
+  margin-top: -10px;
+  a {
+    border: 1pt solid #dddddd;
+    display: block;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border-radius: 27px;
+    background-color: #e1e1e1;
+    .icon {
+      font-size: 2em;
+      margin: 0px;
+      position: relative;
+      top: 3px;
+    }
+    opacity: 0.6;
+  }
+  a:hover {
+    opacity: 1;
+    background-color: #F1F1F1;
+  }
+}
+
+.dimension-flyout{
+  padding: 15px;
+
+  .dimension-grids{
+    padding: 15px;
+  }
+
+  .dimension-grid{
+    border-radius: 5px;
+    height: 200px;
+    .dimension-header{
+      padding: 6px;
+      /*border-bottom: 3px solid $qount-form-border;*/
+      height: 35px;
+      position: relative;
+    }
+    .dimension-values{
+      max-height: 0px;
+      overflow: auto;
+      transition: 1s;
+      &.selected{
+        max-height: 165px;
+      }
+    }
+    .dimension-value{
+      padding-left: 7px;
+    }
+
+    .bottom {
+      position: absolute;
+      bottom: 0;
+      border-bottom: 3px solid transparent;
+      width: 0px;
+      transition: 0.5s;
+      &.selected {
+        border-bottom: 3px solid #0FB45A !important;
+        width: 90% !important;
+      }
+    }
+
+    .icon{
+      &.selected{
+        color: #0FB45A;
+      }
     }
   }
 }

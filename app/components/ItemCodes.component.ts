@@ -13,6 +13,7 @@ import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.servi
 import {CodesService} from "qCommon/app/services/CodesService.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ItemCodeForm} from "../forms/ItemCode.form";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var jQuery:any;
 declare var _:any;
@@ -42,10 +43,12 @@ export class ItemCodesComponent{
   combo:boolean = true;
   allCOAList:Array = [];
 
-  constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard, private codeService: CodesService, private toastService: ToastService,
+  constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard,
+              private codeService: CodesService, private toastService: ToastService, private loadingService:LoadingService,
         private coaService: ChartOfAccountsService, private companiesService: CompaniesService){
     this.itemcodeForm = this._fb.group(_itemCodeForm.getForm());
     let companyId = Session.getCurrentCompany();
+    this.loadingService.triggerLoadingEvent(true);
     this.companiesService.companies().subscribe(companies => {
       this.allCompanies = companies;
       if(companyId){
@@ -54,7 +57,10 @@ export class ItemCodesComponent{
         this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
       }
       this.coaService.chartOfAccounts(this.currentCompany.id)
-          .subscribe(chartOfAccounts => this.filterChartOfAccounts(chartOfAccounts), error=> this.handleError(error));
+          .subscribe(chartOfAccounts => {
+            this.filterChartOfAccounts(chartOfAccounts);
+            this.loadingService.triggerLoadingEvent(false);
+          }, error=> this.handleError(error));
     }, error => this.handleError(error));
   }
 
@@ -73,6 +79,14 @@ export class ItemCodesComponent{
     });
     this.codeService.itemCodes(this.currentCompany.id)
         .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));
+  }
+
+  isValid(itemcodeForm){
+    let data = this._itemCodeForm.getData(itemcodeForm);
+    if(data.payment_coa_mapping || data.invoice_coa_mapping){
+      return itemcodeForm.valid;
+    }
+    return false;
   }
 
   showAddItemCode() {
@@ -103,8 +117,10 @@ export class ItemCodesComponent{
 
   removeItemCode(row: any){
     let itemCodeId = row.id;
+    this.loadingService.triggerLoadingEvent(true);
     this.codeService.removeItemCode(itemCodeId, this.currentCompany.id)
         .subscribe(coa => {
+          this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.success, "Deleted Item code successfully");
           this.itemCodes.splice(_.findIndex(this.itemCodes, {id: itemCodeId}, 1));
         }, error => this.handleError(error));
@@ -136,7 +152,7 @@ export class ItemCodesComponent{
   }
 
   ngOnInit(){
-    
+
   }
 
   handleAction($event){
@@ -151,6 +167,7 @@ export class ItemCodesComponent{
   }
 
   submit($event){
+    this.loadingService.triggerLoadingEvent(true);
     let base = this;
     $event && $event.preventDefault();
     let data = this._itemCodeForm.getData(this.itemcodeForm);
@@ -159,6 +176,7 @@ export class ItemCodesComponent{
       data.companyID = this.currentCompany.id;
       this.codeService.updateItemCode(data)
           .subscribe(itemCode => {
+            base.loadingService.triggerLoadingEvent(false);
             base.row = {};
             base.toastService.pop(TOAST_TYPE.success, "ItemCode updated successfully");
             let index = _.findIndex(base.itemCodes, {id: data.id});
@@ -168,7 +186,10 @@ export class ItemCodesComponent{
     } else{
       data.companyID = this.currentCompany.id;
       this.codeService.addItemCode(data)
-          .subscribe(newItemcode => this.handleItemCode(newItemcode), error => this.handleError(error));
+          .subscribe(newItemcode => {
+            this.loadingService.triggerLoadingEvent(false);
+            this.handleItemCode(newItemcode);
+          }, error => this.handleError(error));
     }
     this.buildTableData(this.itemCodes);
     jQuery(this.addItemcode.nativeElement).foundation('close');

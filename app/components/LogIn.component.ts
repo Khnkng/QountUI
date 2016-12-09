@@ -15,9 +15,10 @@ import {LoginModel} from "../models/Login.model";
 import {Session} from "qCommon/app/services/Session";
 import {PATH, TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
-
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var jQuery:any;
+declare var _:any;
 
 @Component({
   selector: 'qount-login',
@@ -39,7 +40,7 @@ export class LogInComponent implements OnInit {
   resetPasswordHidden:boolean=true;
   routeSub:any;
 
-  constructor(fb: FormBuilder, private _router: Router,  private switchBoard: SwitchBoard, private loginService: LoginService, private _loginForm: LoginForm,
+  constructor(fb: FormBuilder, private _router: Router,  private switchBoard: SwitchBoard, private loginService: LoginService, private _loginForm: LoginForm, private loadingService:LoadingService,
               private _forgotPasswordForm: ForgotPassword, private _route:ActivatedRoute, private _toastService:ToastService, private companyService: CompaniesService) {
     this.routeSub = this._route.params.subscribe(params => {
       this.resetPasswordToken = params['resetPasswordToken'];
@@ -50,21 +51,17 @@ export class LogInComponent implements OnInit {
   }
 
   submit($event) {
+    this.loadingService.triggerLoadingEvent(true);
     $event && $event.preventDefault();
     var data = this._loginForm.getData(this.loginForm);
     data["username"] = data.id;
     this.loginService.login(<LoginModel>data)
-        .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
+        .subscribe(success  => {this.showMessage(true, success); }, error =>  this.showMessage(false, error));
   }
 
   showMessage(status, obj) {
+    this.loadingService.triggerLoadingEvent(false);
     if(status) {
-      /*this.status = {};
-      this.status['success'] = true;
-      this.message = "logged in successfully.";
-      this.newLogin();*/
-
-      //reading user object
       Session.create(obj.user, obj.token);
       this.fetchCompanies(obj.user);
     } else {
@@ -80,8 +77,11 @@ export class LogInComponent implements OnInit {
 
   setComapnies(companies){
     if(companies.length > 0){
-      Session.setCurrentCompany(companies[0].id);
-      Session.setCurrentCompanyName(companies[0].name);
+      let defaultCompany = Session.getUser().default_company;
+      if(!_.isEmpty(defaultCompany)){
+        Session.setCurrentCompany(defaultCompany.id);
+        Session.setCurrentCompanyName(defaultCompany.name);
+      }
     }
     this.gotoDefaultPage();
   }
@@ -102,9 +102,21 @@ export class LogInComponent implements OnInit {
   }
 
   gotoDefaultPage() {
-    this.switchBoard.onLogin.next(Session.get('user'));
-    let link = [''];
-    this._router.navigate(link);
+    var  link ='';
+    if(Session.get('user').tempPassword){
+      link= 'activate';
+    } else{
+      let defaultCompany = Session.getUser().default_company;
+      if(!_.isEmpty(defaultCompany) && defaultCompany.roles.indexOf('Owner') != -1){
+        if(!defaultCompany.tcAccepted){
+          link = 'termsAndConditions';
+        }
+      }
+    }
+    if(link == ''){
+      this.switchBoard.onLogin.next(Session.get('user'));
+    }
+    this._router.navigate([link]);
   }
 
   changePassword($event){

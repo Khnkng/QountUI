@@ -10,9 +10,10 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {CompanyModel} from "../models/Company.model";
-import {UsersService} from "../services/Users.service";
-import {UsersModel} from "../models/Users.model";
+import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
+import {UsersModel} from "qCommon/app/models/Users.model";
 import {UsersForm} from "../forms/Users.form";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var jQuery:any;
 declare var _:any;
@@ -38,12 +39,18 @@ export class UsersComponent {
     companyId:string;
     roles:Array<any>;
 
-    constructor(private _fb: FormBuilder, private usersService: UsersService, private _usersForm:UsersForm, private _router: Router, private _toastService: ToastService, private switchBoard: SwitchBoard) {
+    constructor(private _fb: FormBuilder, private usersService: CompanyUsers, private _usersForm:UsersForm,
+                private _router: Router, private _toastService: ToastService, private loadingService:LoadingService,
+                private switchBoard: SwitchBoard) {
         this.userForm = this._fb.group(_usersForm.getForm());
         this.companyId = Session.getCurrentCompany();
+        this.loadingService.triggerLoadingEvent(true);
         this.usersService.roles().subscribe(roles => {this.roles=roles}, error => this.handleError(error));
         if(this.companyId){
-            this.usersService.users(this.companyId).subscribe(users => this.buildTableData(users), error => this.handleError(error));
+            this.usersService.users(this.companyId).subscribe(users => {
+                this.loadingService.triggerLoadingEvent(false);
+                this.buildTableData(users)
+            }, error => this.handleError(error));
         }
     }
 
@@ -102,9 +109,11 @@ export class UsersComponent {
     }
 
     removeUser(row:any) {
+        this.loadingService.triggerLoadingEvent(true);
         let user:UsersModel = row;
         this.usersService.removeUser(user.id, this.companyId)
             .subscribe(success  => {
+                this.loadingService.triggerLoadingEvent(false);
                 this._toastService.pop(TOAST_TYPE.success, "User deleted successfully");
                 this.usersService.users(this.companyId)
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
@@ -137,17 +146,22 @@ export class UsersComponent {
     }
 
     submit($event) {
+        this.loadingService.triggerLoadingEvent(true);
         $event && $event.preventDefault();
         var data = this._usersForm.getData(this.userForm);
         this.companyId = Session.getCurrentCompany();
         if(this.editMode) {
+            this.loadingService.triggerLoadingEvent(false);
             data.id=this.row.id;
             this.usersService.updateUser(<UsersModel>data, this.companyId)
                 .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
             jQuery(this.createUser.nativeElement).foundation('close');
         } else {
             this.usersService.addUser(<UsersModel>data, this.companyId)
-                .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
+                .subscribe(success  => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.showMessage(true, success);
+                }, error =>  this.showMessage(false, error));
         }
     }
 

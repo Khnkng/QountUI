@@ -16,6 +16,7 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {CompanyModel} from "../models/Company.model";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var jQuery:any;
 declare var _:any;
@@ -43,11 +44,12 @@ export class VendorComponent {
   companies:Array<CompanyModel> = [];
   currentCompany:any = {};
 
-  constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm, private _router: Router,
+  constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
+              private _router: Router, private loadingService:LoadingService,
               private _toastService: ToastService, private switchBoard: SwitchBoard) {
     this.vendorForm = this._fb.group(_vendorForm.getForm());
     this.companyId = Session.getCurrentCompany();
-
+    this.loadingService.triggerLoadingEvent(true);
     this.companyService.companies().subscribe(companies => {
       this.companies = companies;
       if(this.companyId){
@@ -55,7 +57,10 @@ export class VendorComponent {
       } else if(this.companies.length> 0){
         this.currentCompany = _.find(this.companies, {id: this.companies[0].id});
       }
-      this.companyService.vendors(this.companyId).subscribe(vendors => this.buildTableData(vendors), error => this.handleError(error));
+      this.companyService.vendors(this.companyId).subscribe(vendors => {
+        this.buildTableData(vendors);
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => this.handleError(error));
     }, error => this.handleError(error));
   }
 
@@ -130,11 +135,15 @@ export class VendorComponent {
 
   removeVendor(row:any) {
     let vendor:VendorModel = row;
+    this.loadingService.triggerLoadingEvent(true);
     this.companyService.removeVendor(vendor.id, this.companyId)
         .subscribe(success  => {
           this._toastService.pop(TOAST_TYPE.success, "Vendor deleted successfully");
           this.companyService.vendors(this.companyId)
-              .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
+              .subscribe(vendors  => {
+                this.buildTableData(vendors);
+                this.loadingService.triggerLoadingEvent(false);
+              }, error =>  this.handleError(error));
         }, error =>  this.handleError(error));
     _.remove(this.vendors, function (_vendor) {
       return vendor.id == _vendor.id;
@@ -166,17 +175,24 @@ export class VendorComponent {
   }
 
   submit($event) {
+    this.loadingService.triggerLoadingEvent(true);
     $event && $event.preventDefault();
     var data = this._vendorForm.getData(this.vendorForm);
     this.companyId = Session.getCurrentCompany();
     if(this.editMode) {
       data.id = this.row.id;
       this.companyService.updateVendor(<VendorModel>data, this.companyId)
-          .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
+          .subscribe(success  => {
+            this.loadingService.triggerLoadingEvent(false);
+            this.showMessage(true, success);
+          }, error =>  this.showMessage(false, error));
       jQuery(this.createVendor.nativeElement).foundation('close');
     } else {
       this.companyService.addVendor(<VendorModel>data, this.companyId)
-          .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
+          .subscribe(success  => {
+            this.loadingService.triggerLoadingEvent(false);
+            this.showMessage(true, success);
+          }, error =>  this.showMessage(false, error));
     }
   }
 
@@ -199,8 +215,17 @@ export class VendorComponent {
     } else {
       this.status = {};
       this.status['error'] = true;
-      this._toastService.pop(TOAST_TYPE.error, "Failed to update the company");
-      this.message = obj;
+      try {
+        let resp = JSON.parse(obj);
+        debugger;
+        if(resp.message){
+          this._toastService.pop(TOAST_TYPE.error, resp.message);
+        } else{
+          this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+        }
+      }catch(err){
+        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+      }
     }
   }
 

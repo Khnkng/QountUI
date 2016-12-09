@@ -19,7 +19,7 @@ import {CanvasComponent} from "./components/canvas.component";
 import {HttpModule} from "@angular/http";
 import {LogInComponent} from "./components/LogIn.component";
 import {SignUpComponent} from "./components/SignUp.component";
-import {CommonModule} from "@angular/common";
+import {CommonModule, APP_BASE_HREF} from "@angular/common";
 import {SignUpService} from "./services/SignUp.service";
 import {LoginForm} from "./forms/Login.form";
 import {SignUpForm} from "./forms/SignUp.form";
@@ -46,8 +46,18 @@ import {DimensionsComponent} from "./components/Dimensions.component";
 import {DimensionForm} from "./forms/Dimension.form";
 import {UsersComponent} from "./components/Users.component";
 import {UsersForm} from "./forms/Users.form";
-import {UsersService} from "./services/Users.service";
 import {SwitchCompanyComponent} from "./components/switchCompanies.component";
+import {FinancialAccountsComponent} from "./components/FinancialAccounts.component";
+import {FinancialAccountForm} from "./forms/FinancialAccount.form";
+import {LoadingService} from "qCommon/app/services/LoadingService";
+import {LoadingComponent} from "qCommon/app/components/Loading.component";
+import {OffCanvasMenuComponent} from "./components/OffCanvasMenu.component";
+import {ModulesComponent} from "./components/modules.component";
+import {ModulesService} from "./services/Modules.service";
+import {ChangePasswordComponent} from "./components/changePassword.component";
+import {TermsAndConditionsComponent} from "./components/TermsAndConditions.component";
+
+const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
 @NgModule({
     imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
@@ -91,7 +101,7 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'newJournalEntry',
+            path: 'JournalEntry',
             component: JournalEntryComponent,
             canActivate: [LoggedInActivator]
         },
@@ -126,6 +136,11 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'financialAccounts',
+            component: FinancialAccountsComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'itemCodes',
             component: ItemCodesComponent,
             canActivate: [LoggedInActivator]
@@ -149,18 +164,28 @@ import {SwitchCompanyComponent} from "./components/switchCompanies.component";
             component: UsersComponent,
             canActivate: [LoggedInActivator]
         },{
-            path: 'reports',
-            loadChildren: '/lib/reportsUI/app/reports.module.js#ReportsModule'
+            path: 'modules',
+            component: ModulesComponent,
+            canActivate: [LoggedInActivator]
+        },{
+            path: 'activate',
+            component: ChangePasswordComponent,
+            canActivate: [LoggedInActivator]
+        },{
+            path: 'termsAndConditions',
+            component: TermsAndConditionsComponent,
+            canActivate: [LoggedInActivator]
         }
     ]), PaymentsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
-        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent],
+        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
+        OffCanvasMenuComponent, LoadingComponent,ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
-        ExpensesSerice, CustomersService, CustomersForm, DimensionForm,UsersForm,UsersService],
+    providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
+        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService,ModulesService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

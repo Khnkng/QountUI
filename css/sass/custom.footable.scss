@@ -2,6 +2,7 @@
 @import "settings";
 
 .foo-container {
+  min-height: 100px;
   position:relative;
   margin-top:20px;
   .foo-toolbar {
@@ -17,6 +18,13 @@
     .footable-filtering{
       .footable-filtering{
         right: 125px;
+      }
+    }
+    &.search-right{
+      .footable-filtering{
+        .footable-filtering{
+          right: 0px;
+        }
       }
     }
   }

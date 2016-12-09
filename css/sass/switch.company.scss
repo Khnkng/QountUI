@@ -39,6 +39,7 @@
   .bighalf-footable{
     .switch-company-label{
       .label{
+        background-color: $qount-text;
         &:hover{
           cursor: pointer !important;
         }
