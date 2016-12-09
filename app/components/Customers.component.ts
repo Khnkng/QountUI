@@ -166,7 +166,7 @@ export class CustomersComponent {
         this.companyId = Session.getCurrentCompany();
         var data1 = this.addressDir.getData();
         for(var prop in data1) {
-            data[prop
+            data[prop] = data1[prop];
         }
         if(this.editMode) {
             data.customer_id=this.row.customer_id;
