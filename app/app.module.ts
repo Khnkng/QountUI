@@ -5,6 +5,7 @@
 
 import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {ShareModule} from "qCommon/app/share.module";
+import {ReportsModule} from "reportsUI/app/reports.module";
 import {LoggedInActivator} from "qCommon/app/services/CheckSessionActivator";
 import {AddCompanyComponent} from "qCommon/app/components/AddCompany.component";
 import {CompaniesComponent} from "qCommon/app/components/Companies.component";
@@ -176,7 +177,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: TermsAndConditionsComponent,
             canActivate: [LoggedInActivator]
         }
-    ]), PaymentsModule
+    ]), PaymentsModule, ReportsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
