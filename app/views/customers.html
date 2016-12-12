@@ -16,7 +16,7 @@
             <h6>
                 {{editMode ? "Update Customer" : "Create Customer"}}
             </h6>
-            <form *ngIf="active1" (ngSubmit)="submit($event)" [formGroup]="customerForm">
+            <form *ngIf="active" (ngSubmit)="submit($event)" [formGroup]="customerForm">
                 <div class="row">
                     <div class="small-12 medium-6 columns">
                         <label>Name
@@ -54,7 +54,7 @@
                             </div>
                         </label>
                     </div>
-                    <Address [code]="countryCode" #addressDir="address"></Address>
+                    <Address *ngIf="showAddress" [code]="countryCode" #addressDir="address"></Address>
                     <!--<div class="small-12 medium-6 columns">
                         <label>Address
                             <div class="input-group">

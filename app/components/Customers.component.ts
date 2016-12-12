@@ -44,7 +44,7 @@ export class CustomersComponent {
     companies:Array<CompanyModel> = [];
     companyName:string;
     countryCode:string;
-    
+    showAddress:boolean;
 
     constructor(private _fb: FormBuilder, private customersService: CustomersService,
                 private _customersForm:CustomersForm, private _router: Router, private _toastService: ToastService,
@@ -118,6 +118,8 @@ export class CustomersComponent {
         let countryControl:any = this.customerForm.controls['customer_country'];
         countryControl.patchValue(country.name);
         this.countryCode = country.code;
+        this.showAddress = false;
+        setTimeout(()=> this.showAddress=true, 0);
     }
 
     removeVendor(row:any) {
@@ -185,6 +187,7 @@ export class CustomersComponent {
 
                 }, error =>  this.showMessage(false, error));
         }
+
     }
 
     showMessage(status, obj) {
@@ -203,6 +206,7 @@ export class CustomersComponent {
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
                 this._toastService.pop(TOAST_TYPE.success, "Customer created successfully.");
             }
+            this.newCustomer();
         } else {
             this.status = {};
             this.status['error'] = true;
@@ -218,6 +222,18 @@ export class CustomersComponent {
     } return false;
     }
 
+
+    // Reset the form with a new hero AND restore 'pristine' class state
+    // by toggling 'active' flag which causes the form
+    // to be removed/re-added in a tick via NgIf
+    // TODO: Workaround until NgForm has a reset method (#6822)
+    active = true;
+
+    newCustomer() {
+        this.active = false;
+        this.showAddress = false;
+        setTimeout(()=> this.active=true, 0);
+    }
 
 
     handleError(error) {
