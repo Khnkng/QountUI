@@ -13,12 +13,7 @@ export class CustomersForm extends abstractForm{
         return {
             "customer_name": ['', Validators.required],
             "customer_ein": ['', Validators.required],
-            "customer_address":[''],
-            "customer_city":[''],
-            "customer_country": [''],
-            "customer_state": [''],
-            "customer_zipcode": ['']
-
+            "customer_country": ['', Validators.required]
         }
     }
 }

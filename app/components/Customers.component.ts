@@ -2,6 +2,7 @@
 import {Component, ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
+import {Address} from "qCommon/app/directives/address.directive";
 import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {FTable} from "qCommon/app/directives/footable.directive";
@@ -32,6 +33,7 @@ export class CustomersComponent {
     editMode:boolean = false;
     @ViewChild('createVendor') createVendor;
     @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
+    @ViewChild('addressDir') addressDir: Address;
     row:any;
     customerForm: FormGroup;
     countries:Array<any> = PROVINCES.COUNTRIES;
@@ -41,6 +43,8 @@ export class CustomersComponent {
     companyId:string;
     companies:Array<CompanyModel> = [];
     companyName:string;
+    countryCode:string;
+    showAddress:boolean;
 
     constructor(private _fb: FormBuilder, private customersService: CustomersService,
                 private _customersForm:CustomersForm, private _router: Router, private _toastService: ToastService,
@@ -113,6 +117,9 @@ export class CustomersComponent {
     showVendorProvince(country:any) {
         let countryControl:any = this.customerForm.controls['customer_country'];
         countryControl.patchValue(country.name);
+        this.countryCode = country.code;
+        this.showAddress = false;
+        setTimeout(()=> this.showAddress=true, 0);
     }
 
     removeVendor(row:any) {
@@ -159,6 +166,10 @@ export class CustomersComponent {
         $event && $event.preventDefault();
         var data = this._customersForm.getData(this.customerForm);
         this.companyId = Session.getCurrentCompany();
+        var data1 = this.addressDir.getData();
+        for(var prop in data1) {
+            data[prop] = data1[prop];
+        }
         if(this.editMode) {
             data.customer_id=this.row.customer_id;
             this.customersService.updateCustomer(<CustomersModel>data, this.companyId)
@@ -176,6 +187,7 @@ export class CustomersComponent {
 
                 }, error =>  this.showMessage(false, error));
         }
+
     }
 
     showMessage(status, obj) {
@@ -194,6 +206,7 @@ export class CustomersComponent {
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
                 this._toastService.pop(TOAST_TYPE.success, "Customer created successfully.");
             }
+            this.newCustomer();
         } else {
             this.status = {};
             this.status['error'] = true;
@@ -201,6 +214,27 @@ export class CustomersComponent {
             this.message = obj;
         }
     }
+
+    addressValid() {
+    if(this.addressDir) {
+        return this.addressDir.isValid();
+
+    } return false;
+    }
+
+
+    // Reset the form with a new hero AND restore 'pristine' class state
+    // by toggling 'active' flag which causes the form
+    // to be removed/re-added in a tick via NgIf
+    // TODO: Workaround until NgForm has a reset method (#6822)
+    active = true;
+
+    newCustomer() {
+        this.active = false;
+        this.showAddress = false;
+        setTimeout(()=> this.active=true, 0);
+    }
+
 
     handleError(error) {
 

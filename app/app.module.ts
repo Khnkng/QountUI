@@ -84,12 +84,10 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         },
         {
             path: 'addCompany',
-            name: 'AddCompany',
             component: AddCompanyComponent,
             canActivate: [LoggedInActivator]
         },
         {   path: 'company/:id',
-            name: 'Company',
             component: CompanyComponent,
             canActivate: [LoggedInActivator]
         },
@@ -125,7 +123,6 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         },
         {
             path: 'user-profile',
-            name: 'UserProfile',
             component: UserProfileComponent,
             canActivate: [LoggedInActivator]
         },
@@ -180,7 +177,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: TermsAndConditionsComponent,
             canActivate: [LoggedInActivator]
         }
-    ]), ReportsModule, PaymentsModule
+    ]), PaymentsModule, ReportsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
