@@ -28,7 +28,8 @@ export class VendorForm extends abstractForm{
       "city": ['',Validators.required],
       "zipcode": [''],
       "has1099":[''],
-      "paymentMethod":['']
+      "paymentMethod":[''],
+      "coa":['']
     }
   }
 }
