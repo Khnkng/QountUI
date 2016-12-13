@@ -18,6 +18,7 @@ import {Session} from "qCommon/app/services/Session";
 import {CompanyModel} from "../models/Company.model";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
+import {Address} from "qCommon/app/directives/address.directive";
 
 declare var jQuery:any;
 declare var _:any;
@@ -46,6 +47,9 @@ export class VendorComponent {
   currentCompany:any = {};
   chartOfAccounts:any;
   @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
+  @ViewChild('addressDir') addressDir: Address;
+  countryCode:string;
+  showAddress:boolean;
 
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
               private _router: Router, private loadingService:LoadingService,
@@ -139,6 +143,9 @@ export class VendorComponent {
   showVendorProvince(country:any) {
     let countryControl:any = this.vendorForm.controls['country'];
     countryControl.patchValue(country.name);
+    this.countryCode = country.code;
+    this.showAddress = false;
+    setTimeout(()=> this.showAddress=true, 0);
   }
 
   showCOA(coa:any) {
@@ -166,6 +173,7 @@ export class VendorComponent {
   active1:boolean=true;
   newForm1(){
     this.active1 = false;
+    this.showAddress = false;
     setTimeout(()=> this.active1=true, 0);
   }
 
@@ -196,6 +204,10 @@ export class VendorComponent {
     $event && $event.preventDefault();
     var data = this._vendorForm.getData(this.vendorForm);
     this.companyId = Session.getCurrentCompany();
+    var data1 = this.addressDir.getData();
+    for(var prop in data1) {
+      data[prop] = data1[prop];
+    }
     if(this.editMode) {
       data.id = this.row.id;
       this.companyService.updateVendor(<VendorModel>data, this.companyId)
@@ -211,6 +223,13 @@ export class VendorComponent {
             this.showMessage(true, success);
           }, error =>  this.showMessage(false, error));
     }
+  }
+
+  addressValid() {
+    if(this.addressDir) {
+      return this.addressDir.isValid();
+
+    } return false;
   }
 
   showMessage(status, obj) {

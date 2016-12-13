@@ -77,30 +77,7 @@
               </div>
             </label>
           </div>
-          <div class="small-12 medium-6 columns">
-            <label>Address
-              <div class="input-group">
-                <input type="text" class="input-group-field" formControlName="address" placeholder="Address*" />
-                <div class="error" [hidden]="vendorForm.controls.address.untouched || vendorForm.controls.address.valid">Vendor Address is required.</div>
-              </div>
-            </label>
-          </div>
-          <div class="small-12 medium-6 columns">
-            <label>City
-              <div class="input-group">
-                <input type="text" class="input-group-field" formControlName="city" placeholder="City"/>
-                <div class="error" [hidden]="vendorForm.controls.city.untouched || vendorForm.controls.city.valid">City is required.</div>
-              </div>
-            </label>
-          </div>
-          <div class="small-12 medium-6 columns">
-            <label>State
-              <div class="input-group">
-                <input type="text" class="input-group-field" formControlName="state" placeholder="State"/>
-                <div class="error" [hidden]="vendorForm.controls.state.untouched || vendorForm.controls.state.valid">State is required.</div>
-              </div>
-            </label>
-          </div>
+
           <div class="small-12 medium-6 columns">
             <label>Country
               <div class="input-group">
@@ -111,14 +88,7 @@
               </div>
             </label>
           </div>
-          <div class="small-12 medium-6 columns">
-            <label>Zip Code
-              <div class="input-group">
-                <input type="text" class="input-group-field" formControlName="zipcode" placeholder="State"/>
-                <div class="error" [hidden]="vendorForm.controls.zipcode.untouched || vendorForm.controls.zipcode.valid">Zip code is required.</div>
-              </div>
-            </label>
-          </div>
+          <Address *ngIf="showAddress" [code]="countryCode" #addressDir="address"></Address>
           <div class="small-12 medium-6 columns">
             <label>Please select a payment method.
               <select placeholder="Payment Method" formControlName="paymentMethod">
@@ -151,7 +121,7 @@
 
         <div class="row">
           <div class="small-12 medium-12 columns">
-            <button class="button create small float-right" [disabled]="!vendorForm.valid" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
+            <button class="button create small float-right" [disabled]="!vendorForm.valid || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
           </div>
         </div>
         <!--<div *ngIf="status" class="formstatus">

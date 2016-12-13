@@ -6,7 +6,7 @@
 
         <div class="row collapsed company-button-header">
           <div class="columns small-12 right">
-            <button type="submit" class="button create small float-right" [disabled]="!companyForm.valid" [hidden]="companyDataSaved" (click)="submit($event)">Add</button>
+            <button type="submit" class="button create small float-right" [disabled]="!companyForm.valid || !addressValid()" [hidden]="companyDataSaved" (click)="submit($event)">Add</button>
           </div>
         </div>
 
@@ -50,31 +50,6 @@
                     </div>
                   </label>
                 </div>
-                <div class="small-12 medium-8 columns">
-                  <label>Address
-                    <div class="">
-                      <input type="text" class="" formControlName="address" placeholder="Address"/>
-                      <div class="error" [hidden]="companyForm.controls.address.untouched || companyForm.controls.address.valid"><small>Company Address is required.</small></div>
-                    </div>
-                  </label>
-                </div>
-
-                <div class="small-12 medium-3 columns">
-                  <label>City
-                    <div class="">
-                      <input type="text" class="" formControlName="city" placeholder="City"/>
-                      <div class="error" [hidden]="companyForm.controls.city.untouched || companyForm.controls.city.valid"><small>City is required.</small></div>
-                    </div>
-                  </label>
-                </div>
-                <div class="small-12 medium-3 columns">
-                  <label>State
-                    <div class="">
-                      <input type="text" class="" formControlName="state" placeholder="State"/>
-                      <div class="error" [hidden]="companyForm.controls.state.untouched || companyForm.controls.state.valid"><small>State is required.</small></div>
-                    </div>
-                  </label>
-                </div>
 
                 <div class="small-12 medium-3 columns">
                   <label>Country
@@ -87,14 +62,7 @@
                     </div>
                   </label>
                 </div>
-                <div class="small-12 medium-3 columns">
-                  <label>Zipcode
-                    <div class="">
-                      <input class="" name="zipCode" formControlName="zipcode" type="text" placeholder="Zipcode">
-                      <div class="error" [hidden]="companyForm.controls.zipcode.untouched || companyForm.controls.zipcode.valid"><small>Zipcode is required.</small></div>
-                    </div>
-                  </label>
-                </div>
+                <Address *ngIf="showAddress" [code]="countryCode" #addressDir="address"></Address>
                 <div class="small-12 medium-6 columns">
                   <label>Bills email
                     <div class="input-group">
