@@ -14,6 +14,7 @@ import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {Router, ActivatedRoute} from "@angular/router";
+import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var _:any;
 declare var jQuery:any;
@@ -26,15 +27,16 @@ declare var moment:any;
 
 export class JournalEntryComponent{
     jeForm: FormGroup;
+    lineForm: FormGroup;
     active:boolean = true;
+    lineActive:boolean = true;
     disableReversalDate:boolean = true;
     disableRecurring:boolean = true;
     disableReverseJournal: boolean = true;
     journalLinesArray: FormArray = new FormArray([]);
-    tempJournalLinesArray: FormArray = new FormArray([]);
-    addLineItemMode:boolean = false;
     @ViewChild('editDimension') editDimension;
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
+    @ViewChild('newCoaComboBoxDir') newCoaComboBox: ComboBox;
     @ViewChild('reverseJournalDir') reverseJournalComboBox: ComboBox;
     newTags:Array<string>=[];
     allCompanies:Array = [];
@@ -56,7 +58,7 @@ export class JournalEntryComponent{
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
-            private companiesService: CompaniesService, private dimensionService: DimensionService) {
+            private companiesService: CompaniesService, private dimensionService: DimensionService, private loadingService: LoadingService) {
         this.routeSub = this._route.params.subscribe(params => {
             this.journalID=params['journalID'];
             let tempReverse=params['reverse'];
@@ -96,6 +98,14 @@ export class JournalEntryComponent{
         }, 0);
     }
 
+    newLineForm() {
+        let base = this;
+        this.lineActive = false;
+        setTimeout(function(){
+            base.lineActive=true;
+        }, 0);
+    }
+
     selectValue(dimension, value){
         _.each(this.selectedDimensions, function (selectedDimension) {
             if(selectedDimension.name == dimension.name){
@@ -125,39 +135,134 @@ export class JournalEntryComponent{
         }
     }
 
-    hideDimensionFlyout(){
+    hideFlyout(){
         this.editingLine = {};
         this.dimensionFlyoutCSS = "collapsed";
     }
 
-    showDimensionFlyout(lineStatus, lineListItem){
+    resetLineForm(){
+        let typeControl:any = this.lineForm.controls['type'];
+        typeControl.patchValue('');
+        let typeControl:any = this.lineForm.controls['entryType'];
+        typeControl.patchValue('');
+        let coaControl:any = this.lineForm.controls['coa'];
+        coaControl.patchValue('');
+        let amountControl:any = this.lineForm.controls['amount'];
+        amountControl.patchValue('');
+        let memoControl:any = this.lineForm.controls['memo'];
+        memoControl.patchValue('');
+        let dimensionsControl:any = this.lineForm.controls['dimensions'];
+        dimensionsControl.patchValue([]);
+        this.newCoaComboBox.clearValue();
+    }
+
+    showFlyout(lineStatus, index){
+        let base = this;
         this.dimensionFlyoutCSS = "expanded";
+        this.resetLineForm();
         if(lineStatus == 'NEW'){
             this.editingLine = {
                 status: 'NEW'
             };
-            let dimensions = this.jeForm.controls['newDimensions'].value || [];
-            this.selectedDimensions = dimensions;
         } else{
+            let lineListItem = this.journalLinesArray.controls[index];
             this.editingLine = {
                 status: 'UPDATE',
-                lineItem: lineListItem
+                index: index
             };
-            let dimensions = lineListItem.controls['dimensions'].value || [];
-            this.selectedDimensions = dimensions;
+            this.lineForm = _.cloneDeep(lineListItem);
+            this.filteredChartOfAccounts = _.filter(this.chartOfAccounts, {'category': this.lineForm.controls['type'].value});
+            let coa = _.find(this.filteredChartOfAccounts, {'id': this.lineForm.controls['coa'].value});
+            this.selectedDimensions = this.lineForm.controls['dimensions'].value;
+            setTimeout(function(){
+                base.newCoaComboBox.setValue(coa, 'name');
+            },0);
         }
     }
 
-    saveDimensionLine(){
+    /*When user clicks on save button in the flyout*/
+    saveLine(){
+        let base = this;
+        let dimensions = this.lineForm.controls['dimensions'];
+        dimensions.patchValue(this.selectedDimensions);
         if(this.editingLine.status == 'NEW'){
-            let dimensions = this.jeForm.controls['newDimensions'];
-            dimensions.patchValue(this.selectedDimensions);
+            let lineData = this._lineListForm.getData(this.lineForm);
+            this.resetLineForm();
+            if(this.newJournalEntry){
+                this.saveLineInView(lineData);
+            } else{
+                this.saveLineData(lineData);
+            }
         } else{
-            let dimensions = this.editingLine.lineItem.controls['dimensions'];
-            dimensions.patchValue(this.selectedDimensions);
+            let lineData = this._lineListForm.getData(this.lineForm);
+            if(this.newJournalEntry){
+                this.updateLineInView(lineData);
+            } else{
+                this.updateLineData(lineData);
+            }
         }
         this.selectedDimensions = [];
-        this.hideDimensionFlyout();
+        this.hideFlyout();
+    }
+
+    /*This will post new line data to backend*/
+    saveLineData(lineData){
+        this.loadingService.triggerLoadingEvent(true);
+        this.journalService.addJournalLine(this.currentCompany.id, this.journalEntry.id, lineData)
+            .subscribe(line => {
+                this.saveLineInView(line);
+                this.stopLoaderAndShowMessage(false, "New line added successfully");
+            }, error => this.stopLoaderAndShowMessage(true, "Failed to save Journal Line"));
+    }
+
+    /*This will just add new line details in VIEW*/
+    saveLineInView(line){
+        let base = this;
+        let lineListForm = _.cloneDeep(this._fb.group(this._lineListForm.getForm(line)));
+        this.journalLinesArray.push(lineListForm);
+        let journalData = [];
+        _.each(this.journalLinesArray.controls, function(lineListForm){
+            journalData.push(base._lineListForm.getData(lineListForm));
+        });
+        this.jeForm.controls['journalLines'].patchValue(journalData);
+    }
+
+    /*This will post updated line data to backend*/
+    updateLineData(lineData){
+        this.loadingService.triggerLoadingEvent(true);
+        this.journalService.updateLineData(this.journalEntry.id, this.currentCompany.id, lineData)
+            .subscribe(line => {
+                this.updateLineInView(line);
+                this.stopLoaderAndShowMessage(false, "Line updated successfully");
+            }, error => {
+                this.stopLoaderAndShowMessage(true, "Failed to update the line");
+            });
+    }
+
+    /*This will just update line details in VIEW*/
+    updateLineInView(line){
+        let data = this._jeForm.getData(this.jeForm);
+        let lineListForm = _.cloneDeep(this._fb.group(this._lineListForm.getForm(line)));
+        data.journalLines[this.editingLine.index] = line;
+        this.journalLinesArray.controls[this.editingLine.index] = lineListForm;
+        this.jeForm.controls['journalLines'].controls[this.editingLine.index].patchValue(line);
+    }
+
+    //When user double clicks on the line, it toggles and show the fields
+    editLine(lineListItem, index){
+        let data = this._jeForm.getData(lineListItem);
+        //It works. Not sure whether it has better ways to do.
+        jQuery('#coa-'+index).siblings().children('input').val(this.getCOAName(data.coa));
+        lineListItem.editable = true;
+    }
+
+    //To be invoked when user clicks on tick mark once done with iINLINE editing
+    updateLine(lineListItem, index){
+        this.editingLine = {
+            index: index
+        };
+        let data = this._lineListForm.getData(lineListItem);
+        this.updateLineData(data);
     }
 
     setJournalDate(date: string){
@@ -205,53 +310,9 @@ export class JournalEntryComponent{
     updateChartOfAccount($event){
         let chartOfAccount = _.find(this.chartOfAccounts, {"name": $event});
         if(!_.isEmpty(chartOfAccount)){
-            let newCOAControl:any = this.jeForm.controls['newCoa'];
+            let newCOAControl:any = this.lineForm.controls['coa'];
             newCOAControl.patchValue(chartOfAccount.id);
         }
-    }
-
-    addNewLine(){
-        let data = this._jeForm.getData(this.jeForm);
-        let tags = jQuery('#lineTags').tagit("assignedTags");
-        let line = {
-            "type": data.newType,
-            "entryType": data.newEntryType,
-            "coa": data.newCoa,
-            "amount": data.newAmount,
-            "memo": data.newMemo,
-            "dimensions": data.newDimensions
-        };
-        this.lines.push(line);
-        let lineListForm = this._fb.group(this._lineListForm.getForm(line));
-        this.journalLinesArray.push(lineListForm);
-        this.tempJournalLinesArray.push(lineListForm);
-        this.addLineItemMode = !this.addLineItemMode;
-
-        let typeControl:any = this.jeForm.controls['newType'];
-        typeControl.patchValue('');
-        let typeControl:any = this.jeForm.controls['newEntryType'];
-        typeControl.patchValue('');
-        let coaControl:any = this.jeForm.controls['newCoa'];
-        coaControl.patchValue('');
-        let amountControl:any = this.jeForm.controls['newAmount'];
-        amountControl.patchValue('');
-        let memoControl:any = this.jeForm.controls['newMemo'];
-        memoControl.patchValue('');
-        let dimensionsControl:any = this.jeForm.controls['newDimensions'];
-        dimensionsControl.patchValue([]);
-        this.coaComboBox.clearValue();
-    }
-
-    editLine(lineListItem, index){
-        let data = this._jeForm.getData(lineListItem);
-        //It works. Not sure whether it has better ways to do.
-        jQuery('#coa-'+index).siblings().children('input').val(this.getCOAName(data.coa));
-        lineListItem.editable = true;
-    }
-
-    updateLine(lineListItem, index){
-        this.journalLinesArray.controls[index] = this.tempJournalLinesArray.controls[index];
-        lineListItem.editable = false;
     }
 
     toggleLineEdit(lineListItem){
@@ -260,9 +321,21 @@ export class JournalEntryComponent{
 
     deleteLine(lineIndex){
         let lineList:any = this.jeForm.controls['journalLines'];
-        lineList.controls.splice(lineIndex, 1);
-        this.journalLinesArray.controls.splice(lineIndex, 1);
-        this.tempJournalLinesArray.controls.splice(lineIndex, 1);
+        if(this.newJournalEntry){
+            lineList.controls.splice(lineIndex, 1);
+            this.journalLinesArray.controls.splice(lineIndex, 1);
+        } else{
+            let lineId = lineList.controls[lineIndex].controls['id'].value;
+            this.loadingService.triggerLoadingEvent(true);
+            this.journalService.deleteJournalLine(this.currentCompany.id, this.journalEntry.id, lineId)
+                .subscribe(response => {
+                    lineList.controls.splice(lineIndex, 1);
+                    this.journalLinesArray.controls.splice(lineIndex, 1);
+                    this.stopLoaderAndShowMessage(false, "Deleted Journal Line successfully");
+                }, error =>{
+                    this.stopLoaderAndShowMessage(true, "Failed to delete Journal Line");
+                })
+        }
     }
 
     getCOAName(coaId){
@@ -271,10 +344,6 @@ export class JournalEntryComponent{
             return coa.name;
         }
         return "";
-    }
-
-    clearNewRowData(){
-        this.addLineItemMode = !this.addLineItemMode;
     }
 
     cleanData(data){
@@ -309,18 +378,15 @@ export class JournalEntryComponent{
         let base = this;
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
-        data.journalLines = [];
-        _.each(this.journalLinesArray.controls, function(lineListForm){
-            data.journalLines.push(base._lineListForm.getData(lineListForm));
-        });
         if(!this.validateLineAmount(data.journalLines)){
             this.toastService.pop(TOAST_TYPE.error, "Credit and debit totals doesn't match");
             return false;
         }
+        this.loadingService.triggerLoadingEvent(true);
         if(this.newJournalEntry){
             this.journalService.addJournalEntry(this.cleanData(data), this.currentCompany.id)
                 .subscribe(journalEntry => {
-                    this.toastService.pop(TOAST_TYPE.success, "Journal Entry created successfully");
+                    this.stopLoaderAndShowMessage(false, "Journal Entry created successfully");
                     let link = ['books', 2];
                     this._router.navigate(link);
                 }, error=> this.handleError(error));
@@ -328,7 +394,7 @@ export class JournalEntryComponent{
             data.id = this.journalEntry.id;
             this.journalService.updateJournalEntry(this.cleanData(data), this.currentCompany.id)
                 .subscribe(journalEntry => {
-                    this.toastService.pop(TOAST_TYPE.success, "Journal Entry updated successfully");
+                    this.stopLoaderAndShowMessage(false, "Journal Entry updated successfully");
                     let link = ['books', 2];
                     this._router.navigate(link);
                 }, error=> this.handleError(error));
@@ -336,6 +402,7 @@ export class JournalEntryComponent{
     }
 
     handleError(error){
+        this.loadingService.triggerLoadingEvent(false);
         this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
     }
 
@@ -363,11 +430,13 @@ export class JournalEntryComponent{
     updateLineCOA($event, index){
         let chartOfAccount = _.find(this.chartOfAccounts, {"name": $event});
         if(!_.isEmpty(chartOfAccount)){
-            this.tempJournalLinesArray.controls[index].controls['coa'].patchValue(chartOfAccount.id);
+            let linesControl:any = this.jeForm.controls['journalLines'];
+            linesControl.controls[index].controls['coa'].patchValue(chartOfAccount.id);
         }
     }
 
     processJournalEntry(journalEntry){
+        this.stopLoaderAndShowMessage(false);
         let base = this;
         this.journalEntry = journalEntry;
         if(this.isReverse){
@@ -389,18 +458,25 @@ export class JournalEntryComponent{
             let lineListForm = base._fb.group(base._lineListForm.getForm(line));
             base.journalLinesArray.push(lineListForm);
         });
-        this.tempJournalLinesArray = _.cloneDeep(this.journalLinesArray);
         this._jeForm.updateForm(this.jeForm, this.journalEntry);
+    }
+
+    stopLoaderAndShowMessage(error, message?){
+        this.loadingService.triggerLoadingEvent(false);
+        if(message){
+            let type = error? TOAST_TYPE.error : TOAST_TYPE.success;
+            this.toastService.pop(type, message);
+        }
     }
 
     getDimensions(dimensions){
         let result = "";
-        _.each(dimensions, function(dimension){
-            result += dimension.name +",";
-            /*_.each(dimension.values, function(value, index){
-                result += value +",";
-            });
-            result += "<br>";*/
+        _.each(dimensions, function(dimension, index){
+            if(index == 0){
+                result = dimension.name;
+            }else {
+                result += ','+dimension.name;
+            }
         });
         return result;
     }
@@ -411,7 +487,12 @@ export class JournalEntryComponent{
         let _form = this._jeForm.getForm();
         _form['journalLines'] = this.journalLinesArray;
         this.jeForm = this._fb.group(_form);
+
+        let _form = this._lineListForm.getForm();
+        this.lineForm = this._fb.group(_form);
+
         this.newForm();
+        this.loadingService.triggerLoadingEvent(true);
         this.companiesService.companies().subscribe(companies =>{
             this.allCompanies = companies;
             if(companyId){
@@ -434,6 +515,8 @@ export class JournalEntryComponent{
             if(!this.newJournalEntry || this.isReverse){
                 this.journalService.journalEntry(this.journalID, this.currentCompany.id)
                     .subscribe(journalEntry => this.processJournalEntry(journalEntry), error => this.handleError(error));
+            } else{
+                this.stopLoaderAndShowMessage(false);
             }
         }, error => this.handleError(error));
     }

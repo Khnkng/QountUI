@@ -145,7 +145,6 @@ export class SwitchCompanyComponent{
             "phoneNumber": Session.getUser().phone_number,
             "defaultCompany": companyId
         };
-        debugger;
         this.userProfileService.updateUserProfile(data)
             .subscribe(test => console.log(test));
     }
