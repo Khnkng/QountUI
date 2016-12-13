@@ -17,6 +17,7 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {CompanyModel} from "../models/Company.model";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -43,10 +44,12 @@ export class VendorComponent {
   companyId:string;
   companies:Array<CompanyModel> = [];
   currentCompany:any = {};
+  chartOfAccounts:any;
+  @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
 
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
               private _router: Router, private loadingService:LoadingService,
-              private _toastService: ToastService, private switchBoard: SwitchBoard) {
+              private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
     this.vendorForm = this._fb.group(_vendorForm.getForm());
     this.companyId = Session.getCurrentCompany();
     this.loadingService.triggerLoadingEvent(true);
@@ -62,6 +65,10 @@ export class VendorComponent {
         this.loadingService.triggerLoadingEvent(false);
       }, error => this.handleError(error));
     }, error => this.handleError(error));
+    this.coaService.chartOfAccounts(this.companyId)
+        .subscribe(chartOfAccounts => {
+          this.chartOfAccounts=chartOfAccounts?chartOfAccounts:[];
+        }, error=> this.handleError(error));
   }
 
   getCompanyName(companyId){
@@ -93,6 +100,7 @@ export class VendorComponent {
       {"name": "paymentMethod", "title": "Payment Method","visible": false},
       {"name": "accountNumber", "title": "Account Number","visible": false},
       {"name": "routingNumber", "title": "RoutingNumber","visible": false},
+      {"name": "coa", "title": "COA","visible": false},
       {"name": "creditCardNumber", "title": "Credit Card Number","visible": false},
       {"name": "actions", "title": "", "type": "html", "filterable": false}
     ];
@@ -133,6 +141,11 @@ export class VendorComponent {
     countryControl.patchValue(country.name);
   }
 
+  showCOA(coa:any) {
+    let coaControl:any = this.vendorForm.controls['coa'];
+    coaControl.patchValue(coa.id);
+  }
+
   removeVendor(row:any) {
     let vendor:VendorModel = row;
     this.loadingService.triggerLoadingEvent(true);
@@ -158,6 +171,7 @@ export class VendorComponent {
 
   showEditVendor(row:any) {
     this.editMode = true;
+    var base=this;
     jQuery(this.createVendor.nativeElement).foundation('open');
     this.row = row;
     this.newForm1();
@@ -167,10 +181,13 @@ export class VendorComponent {
     let country = _.find(PROVINCES.COUNTRIES, function(_country) {
       return _country.name == countryName;
     });
+    let coa = _.find(this.chartOfAccounts, function(_coa) {
+      return _coa.id==base.row.coa
+    });
     let stateName = row.state;
-    var base=this;
     setTimeout(function () {
       base.vendorCountryComboBox.setValue(country, 'name');
+      base.coaComboBox.setValue(coa, 'name');
     },100);
   }
 

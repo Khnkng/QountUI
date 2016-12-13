@@ -18,4 +18,5 @@ export class VendorModel {
   state:string;
   has1099:boolean;
   paymentMethod:string;
+  coa:string;
 }
