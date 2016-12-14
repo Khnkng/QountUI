@@ -7,7 +7,7 @@
 
     </div>
 </div>
-<div class="row chart-of-accounts" foundation>
+<div class="row financial-accounts" foundation>
     <div class="column large-12 medium-12 small-12 foo-container">
         <div class="foo-toolbar">
             <button class="button small" (click)="showAddAccount()"><i class="icon ion-plus-round"></i> Account</button>
@@ -22,21 +22,29 @@
             <form *ngIf="newFormActive" [formGroup]="accountForm">
                 <div class="row">
                     <div class="small-12 medium-6 columns">
-                        <div class="row">
-                            <div class="small-12 medium-12 columns">
-                                <label>Name
-                                    <input type="text" formControlName="name" placeholder="Name*"/>
-                                    <div class="error" [hidden]="accountForm.controls.name.untouched || accountForm.controls.name.valid">Name is required.</div>
-                                </label>
-                            </div>
-                            <div class="small-12 medium-12 columns">
-
-                            </div>
-                        </div>
+                        <label>Name
+                            <input type="text" formControlName="name" placeholder="Name*"/>
+                            <div class="error" [hidden]="accountForm.controls.name.untouched || accountForm.controls.name.valid">Name is required.</div>
+                        </label>
                     </div>
                     <div class="small-12 medium-6 columns">
-                        <div class="row">
-
+                        <label>Starting Balance
+                            <input type="text" formControlName="starting_balance" placeholder="Starting Balance"/>
+                            <div class="error" [hidden]="accountForm.controls.starting_balance.untouched || accountForm.controls.starting_balance.valid">Starting Balance is required.</div>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-12 medium-6 columns">
+                        <label>Starting Balance Date
+                            <input type="text" custom-datepicker [format]="'DD/MM/YYYY'" [mindate]="'past'" (valueChanged)="setBalanceDate($event)" formControlName="starting_balance_date" placeholder="Date"/>
+                            <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Date is required.</div>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <div class="options">
+                            <input type="checkbox" id="noEffectOnPL" formControlName="no_effect_on_pl"/><label for="noEffectOnPL">Effect on P/L</label>
+                            <input type="checkbox" id="credit-account" formControlName="is_credit_account"/><label for="credit-account">Credit Account</label>
                         </div>
                     </div>
                 </div>

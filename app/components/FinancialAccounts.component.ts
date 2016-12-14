@@ -7,10 +7,8 @@ import {FormGroup, FormBuilder} from "@angular/forms";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
-import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
-import {DimensionForm} from "../forms/Dimension.form";
 import {FinancialAccountForm} from "../forms/FinancialAccount.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 
@@ -32,36 +30,34 @@ export class FinancialAccountsComponent{
   tableOptions:any = {};
   editMode:boolean = false;
   currentCompany:any;
-  allCompanies:Array<any>;
   row:any;
   tempValues:Array<string> = [];
-  tableColumns:Array<string> = ['name', 'id', 'type', 'currentBalance', 'includeInPL'];
+  tableColumns:Array<string> = ['name', 'id', 'starting_balance', 'current_balance', 'no_effect_on_pl', 'is_credit_account', 'starting_balance_date'];
 
-  constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm,
-              private switchBoard: SwitchBoard, private loadingService:LoadingService,
-              private financialAccountsService: FinancialAccountsService,
-        private toastService: ToastService, private companiesService: CompaniesService){
+  constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private switchBoard: SwitchBoard, private loadingService:LoadingService,
+              private financialAccountsService: FinancialAccountsService, private toastService: ToastService){
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
-    let companyId = Session.getCurrentCompany();
-    this.loadingService.triggerLoadingEvent(true);
-    this.companiesService.companies().subscribe(companies => {
-      this.allCompanies = companies;
-      if(companyId){
-        this.currentCompany = _.find(this.allCompanies, {id: companyId});
-      } else if(this.allCompanies.length> 0){
-        this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-      }
-      this.financialAccountsService.financialAccounts(this.currentCompany.id)
-          .subscribe(accounts => {
+    this.currentCompany = Session.getCurrentCompany();
+    if(this.currentCompany){
+      this.loadingService.triggerLoadingEvent(true);
+      this.financialAccountsService.financialAccounts(this.currentCompany)
+          .subscribe(response => {
             this.loadingService.triggerLoadingEvent(false);
-            this.buildTableData(accounts);
+            this.buildTableData(response.accounts);
           }, error => this.handleError(error));
-    }, error => this.handleError(error));
+    } else{
+      this.toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
+    }
   }
 
   handleError(error){
     this.row = {};
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+  }
+
+  setBalanceDate(date){
+    let dateControl:any = this.accountForm.controls['starting_balance_date'];
+    dateControl.patchValue(date);
   }
 
   showAddAccount() {
@@ -82,7 +78,16 @@ export class FinancialAccountsComponent{
 
   removeAccount(row: any){
     let accountId = row.id;
-
+    this.loadingService.triggerLoadingEvent(true);
+    this.financialAccountsService.removeAccount(accountId, this.currentCompany)
+        .subscribe(response => {
+          console.log(response);
+          this.loadingService.triggerLoadingEvent(false);
+          this.toastService.pop(TOAST_TYPE.success, "Deleted Account successfully");
+        }, error =>{
+          this.loadingService.triggerLoadingEvent(false);
+          this.toastService.pop(TOAST_TYPE.error, "Failed to delete account.");
+        })
   }
 
   newForm(){
@@ -113,7 +118,13 @@ export class FinancialAccountsComponent{
       data.id = this.row.id;
 
     } else{
-
+      this.financialAccountsService.addAccount(data, this.currentCompany)
+          .subscribe(response => {
+            this.accounts.push(response.account);
+            this.buildTableData(this.accounts);
+          }, error => {
+            this.toastService.pop(TOAST_TYPE.error, "Failed to create Account");
+          });
     }
     this.buildTableData(this.accounts);
     jQuery(this.addAccount.nativeElement).foundation('close');
@@ -133,13 +144,14 @@ export class FinancialAccountsComponent{
     this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
-      {"name": "type", "title": "Type"},
-      {"name": "currentBalance", "title": "Current Balance"},
+      {"name": "starting_balance", "title": "Starting Balance"},
+      {"name": "starting_balance_date", "title": "Start Balance Date"},
+      {"name": "current_balance", "title": "Current Balance"},
       {"name": "id", "title": "Id", "visible": false},
       {"name": "actions", "title": ""}
     ];
     let base = this;
-      accounts.forEach(function(account) {
+      _.each(accounts, function(account) {
       let row:any = {};
       _.each(base.tableColumns, function(key) {
         row[key] = account[key];

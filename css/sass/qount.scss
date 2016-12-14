@@ -902,6 +902,12 @@ ul.side-nav a {
   }
 }
 
+.journal-flyout{
+  .expanded{
+    width: 96%;
+  }
+}
+
 .email-report {
   width: 900px;
   height: 700px;
@@ -2781,6 +2787,12 @@ tbody{
     .icon{
       font-size: 10px;
     }
+  }
+}
+
+#addAccount{
+  .options{
+    margin: 30px 0px;
   }
 }
 
