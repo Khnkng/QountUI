@@ -902,9 +902,10 @@ ul.side-nav a {
   }
 }
 
-.journal-flyout{
+.journal-flyout, .financial-account-flyout{
   .expanded{
     width: 96%;
+    top: 15px;
   }
 }
 
@@ -2802,8 +2803,25 @@ tbody{
   border-color: #ccc;
 }
 
-
 .add-bill-button{
   font-weight: 600;
   min-width: 125px;
+}
+
+.financial-account-flyout{
+  .button-group{
+    .button{
+      &.selected{
+        background-color: #086FF5;
+      }
+    }
+  }
+  .auto-import, .manual-import{
+    height: 200px;
+  }
+  .auto-import{
+    label{
+      text-align: right;
+    }
+  }
 }

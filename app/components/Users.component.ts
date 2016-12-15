@@ -38,14 +38,25 @@ export class UsersComponent {
     message:string;
     companyId:string;
     roles:Array<any>;
+    canAddUsers:boolean = false;
 
     constructor(private _fb: FormBuilder, private usersService: CompanyUsers, private _usersForm:UsersForm,
                 private _router: Router, private _toastService: ToastService, private loadingService:LoadingService,
                 private switchBoard: SwitchBoard) {
         this.userForm = this._fb.group(_usersForm.getForm());
         this.companyId = Session.getCurrentCompany();
+        let defaultCompany = Session.getUser().default_company || {};
+        if(!_.isEmpty(defaultCompany)){
+            let roles = defaultCompany.roles;
+            if(roles.indexOf('Owner') != -1 || roles.indexOf('Account Manager') != -1){
+                this.canAddUsers = true;
+            }
+        }
         this.loadingService.triggerLoadingEvent(true);
-        this.usersService.roles().subscribe(roles => {this.roles=roles}, error => this.handleError(error));
+        this.usersService.roles().subscribe(roles => {
+            _.remove(roles, {'id':'Admin'});
+            this.roles=roles;
+        }, error => this.handleError(error));
         if(this.companyId){
             this.usersService.users(this.companyId).subscribe(users => {
                 this.loadingService.triggerLoadingEvent(false);
