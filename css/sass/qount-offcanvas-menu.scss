@@ -10,41 +10,52 @@
 }
 .qount-off-canvas-menu{
   .flyout{
-    &.qount-mobile-menu{
-      background: #ffffff;
-      height: 100%;
-      position: fixed;
-      width: 100%;
-      top:50px;
-      left:-100%;
-      -webkit-transition : all 0.5s;
-      -moz-transition : all 0.5s;
-      -o-transition : all 0.5s;
-      transition : all 0.5s;
-      z-index: 100;
-      &.expanded{
-        left:0px;
-        button{
-          &.close-flyout{
-            position: absolute;
-            background: #fff;
-            top:0;
-            right:10px;
-            width: 40px;
-            height: 40px;
-            border-radius: 20px;
-            margin-top: 10px;
-            transition: background-color 0.3s ease;
-            &:hover{
-              background: $qount-table-border;
-            }
-            i{
-              font-size: 2.5em;
-            }
+    $left-margin-for-menu: 55px;
+    /*@media #{$small-only} {
+      $left-margin-for-menu: 0px;
+    }*/
+    background: #ffffff;
+    height: 100%;
+    position: fixed;
+    width: 100%;
+    @media #{$large-up} {
+      width: calc(100% - 55px);
+    }
+    top:50px;
+    left:-100%;
+    -webkit-transition : all 0.5s;
+    -moz-transition : all 0.5s;
+    -o-transition : all 0.5s;
+    transition : all 0.5s;
+    z-index: 100;
+    &.expanded{
+      left: 0px;
+
+      @media #{$large-up} {
+        left: 55px;
+      }
+      button{
+        &.close-flyout{
+          position: absolute;
+          background: #fff;
+          top:55px;
+          right: 25px;
+          width: 40px;
+          height: 40px;
+          border-radius: 20px;
+          margin-top: 10px;
+          transition: background-color 0.3s ease;
+          &:hover{
+            background: $qount-table-border;
+          }
+          i{
+            font-size: 2.5em;
           }
         }
       }
+    }
 
+    &.qount-mobile-menu{
       .side-nav{
         margin: 0;
         list-style: none;
@@ -77,6 +88,62 @@
           &:hover{
             background: $qount-table-tr-hover;
           }
+        }
+      }
+
+    }
+    .flyout-placeholder{
+      padding: 25px 20px;
+      min-height: calc(100vh - 50px);
+      background: linear-gradient(to bottom, $qount-btn-primary 0%,$qount-brand-blue-medium 15%, $qount-brand-blue-light 0%,
+              $qount-brand-blue-light 100%,$qount-brand-blue-light 100%); /* W3C */
+
+      .flyout-header{
+        padding-left: 5px;
+        background: transparent;
+        color: #FFF;
+        height: 30px;
+        text-transform: uppercase;
+        h1,h2,h3,h4,h5,h6{
+          color: #FFF;
+          font-weight: 500;
+        }
+      }
+      .flyout-body{
+        min-height: calc(100vh - 75px);
+        background: #FFF;
+        padding: 60px 30px;
+      }
+
+      .flyout-shadow-effect
+      {
+        position:relative;
+        -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        &:before, &:after{
+          content:"";
+          position:absolute;
+          z-index:-1;
+          -webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);
+          -moz-box-shadow:0 0 20px rgba(0,0,0,0.8);
+          box-shadow:0 0 20px rgba(0,0,0,0.8);
+          top:10px;
+          bottom:10px;
+          left:0;
+          right:0;
+          -moz-border-radius:100px / 10px;
+          border-radius:100px / 10px;
+        }
+
+        &:after{
+          right:10px;
+          left:auto;
+          -webkit-transform:skew(8deg) rotate(3deg);
+          -moz-transform:skew(8deg) rotate(3deg);
+          -ms-transform:skew(8deg) rotate(3deg);
+          -o-transform:skew(8deg) rotate(3deg);
+          transform:skew(8deg) rotate(3deg);
         }
       }
 
