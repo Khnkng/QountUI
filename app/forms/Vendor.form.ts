@@ -14,8 +14,10 @@ export class VendorForm extends abstractForm{
     numberValidator.push(Validators.pattern);
     numberValidator.push(Validators.required);
     return {
+      "vendorType": ['', Validators.required],
       "name": ['', Validators.required],
-      "ein": ['', Validators.required],
+      "ein": [''],
+      "ssn": [''],
       "accountNumber": [''],
       "accountNumbers": [['']],
       "email": ['', Validators.compose(numberValidator)],

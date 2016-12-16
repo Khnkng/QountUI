@@ -3,7 +3,7 @@
  */
 
 import {Component, ViewChild} from "@angular/core";
-import {FormGroup, FormBuilder} from "@angular/forms";
+import {FormGroup, FormBuilder, Validators} from "@angular/forms";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
@@ -101,6 +101,8 @@ export class VendorComponent {
       {"name": "city", "title": "City","visible": false},
       {"name": "zipcode", "title": "Zip code","visible": false},
       {"name": "id", "title": "ID","visible": false},
+      {"name": "type", "title": "Vendor Type","visible": false},
+      {"name": "ssn", "title": "SSN","visible": false},
       {"name": "has1099", "title": "1099","visible": false},
       {"name": "paymentMethod", "title": "Payment Method","visible": false},
       {"name": "accountNumber", "title": "Account Number","visible": false},
@@ -114,6 +116,13 @@ export class VendorComponent {
       let row:any = {};
       for(let key in base.vendors[0]) {
         row[key] = vendor[key];
+        if(key == 'type'){
+          base.setVendorType({
+            target: {
+              value: row[key]
+            }
+          });
+        }
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       }
       base.tableData.rows.push(row);
@@ -271,5 +280,24 @@ export class VendorComponent {
 
   handleError(error) {
 
+  }
+
+  setVendorType($event){
+    let vendorType = $event.target.value;
+    if(vendorType == 'company'){
+      this.vendorForm.controls['ein'].setValidators([Validators.required]);
+      this.vendorForm.controls['ssn'].setValidators([]);
+    } else {
+      this.vendorForm.controls['ssn'].setValidators([Validators.required]);
+      this.vendorForm.controls['ein'].setValidators([]);
+    }
+  }
+
+  isVendorCompany(form){
+    let data = this._vendorForm.getData(form);
+    if(data.type == 'company'){
+      return true;
+    }
+    return false;
   }
 }

@@ -31,18 +31,36 @@
                 <header class="form-section-header">Basic Info</header>
                 <div class="row">
                   <div class="column small-12 medium-4 large-3">
+                    <label>Vendor Type
+                      <div>
+                        <select formControlName="type" (change)="setVendorType($event)">
+                          <option value="company">Company</option>
+                          <option value="individual">Individual</option>
+                        </select>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="column small-12 medium-4 large-3">
                     <label>Name
                       <div>
-                        <input type="text" formControlName="name" placeholder="Legal Company Name*">
+                        <input type="text" formControlName="name" placeholder="Name*">
                         <div class="error" [hidden]="vendorForm.controls.name.untouched || vendorForm.controls.name.valid">Vendor Name is required.</div>
                       </div>
                     </label>
                   </div>
                   <div class="column small-12 medium-4 large-3">
-                    <label>EIN
+                    <label *ngIf="isVendorCompany(vendorForm)">EIN
                       <div>
                         <input type="text" formControlName="ein" placeholder="EIN*">
                         <div class="error" [hidden]="vendorForm.controls.ein.untouched || vendorForm.controls.ein.valid">Vendor EIN is required.</div>
+                      </div>
+                    </label>
+                    <label *ngIf="!isVendorCompany(vendorForm)">SSN
+                      <div>
+                        <input type="text" formControlName="ssn" placeholder="SSN*">
+                        <div class="error" [hidden]="vendorForm.controls.ssn.untouched || vendorForm.controls.ein.valid">Vendor SSN is required.</div>
                       </div>
                     </label>
                   </div>
