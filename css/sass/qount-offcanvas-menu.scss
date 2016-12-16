@@ -28,6 +28,8 @@
     -o-transition : all 0.5s;
     transition : all 0.5s;
     z-index: 100;
+    overflow-x: hidden;
+    overflow-y: auto;
     &.expanded{
       left: 0px;
 
@@ -56,6 +58,7 @@
     }
 
     &.qount-mobile-menu{
+      z-index: 1000;
       .side-nav{
         margin: 0;
         list-style: none;
@@ -110,10 +113,34 @@
         }
       }
       .flyout-body{
-        min-height: calc(100vh - 75px);
+        min-height: calc(100vh - 80px);
         background: #FFF;
-        padding: 60px 30px;
+        padding: 40px 0;
+        .form-section{
+          div.error{
+            font-size: 0.9em;
+          }
+          .ng-dirty.ng-invalid, .ng-touched.ng-invalid {
+            margin-bottom: 0px;
+          }
+          padding: 15px 15px 30px 15px;
+          &:first-child{
+            padding-top: 0;
+          }
+          &:nth-child(2){
+            background: $qount-brand-grey-light;
+          }
+          .form-section-header{
+            font-weight: normal;
+            font-size: 1.2em;
+            color: $qount-text;
+            margin: 4px 0;
+            padding-left: 14px;
+          }
+        }
       }
+
+
 
       .flyout-shadow-effect
       {
@@ -149,4 +176,14 @@
 
     }
   }
+}
+
+/*TODO need to move to different scss file, it donnt belong here */
+.create-vendor{
+  .create-vendor-separator{
+    @media #{$medium-up}{
+      border-left: 1px solid $qount-form-border;
+    }
+  }
+
 }

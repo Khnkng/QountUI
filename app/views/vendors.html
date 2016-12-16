@@ -17,76 +17,60 @@
 
 
   <div class="qount-off-canvas-menu">
-    <div class="flyout expanded">
+    <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
       <section class="flyout-placeholder">
         <header class="flyout-header">
-            <h6> {{editMode ? "Update Vendor" : "Create Vendor"}}</h6>
+            <h5> {{editMode ? "Update Vendor" : "Create Vendor"}}</h5>
         </header>
         <div class="flyout-body flyout-shadow-effect">
-          <div #createVendor id="createVendor">
-            <div class="row expanded">
-              <form *ngIf="active1" (ngSubmit)="submit($event)" [formGroup]="vendorForm">
+          <!--here comes actual flyout code-->
+          <div #createVendor id="createVendor" class="create-vendor">
+            <form *ngIf="active1" (ngSubmit)="submit($event)" [formGroup]="vendorForm">
+
+              <section class="form-section">
+                <header class="form-section-header">Basic Info</header>
                 <div class="row">
-                  <div class="small-12 medium-6 columns">
+                  <div class="column small-12 medium-4 large-3">
                     <label>Name
-                      <div class="input-group">
-                        <input class="input-group-field" type="text" formControlName="name" placeholder="Legal Company Name*">
+                      <div>
+                        <input type="text" formControlName="name" placeholder="Legal Company Name*">
                         <div class="error" [hidden]="vendorForm.controls.name.untouched || vendorForm.controls.name.valid">Vendor Name is required.</div>
                       </div>
                     </label>
                   </div>
-                  <div class="small-12 medium-6 columns">
+                  <div class="column small-12 medium-4 large-3">
                     <label>EIN
-                      <div class="input-group">
-                        <input class="input-group-field" type="text" formControlName="ein" placeholder="EIN*">
+                      <div>
+                        <input type="text" formControlName="ein" placeholder="EIN*">
                         <div class="error" [hidden]="vendorForm.controls.ein.untouched || vendorForm.controls.ein.valid">Vendor EIN is required.</div>
                       </div>
                     </label>
                   </div>
-                  <!--<div class="small-12 medium-3 columns">
-                    <label>Currency
-                      <div class="input-group">
-                        <select formControlName="currency" placeholder="currency">
-                          <option *ngFor="let currency of currencies" value="{{currency}}">{{currency}}</option>
-                        </select>
-                        <div class="error" [hidden]="vendorForm.controls.currency.untouched || vendorForm.controls.currency.valid"><smal>Select Currency</div>
-                      </div>
-                    </label>
-                  </div>-->
-                </div>
-                <div class="row">
-                  <div class="small-12 medium-6 columns">
-                    <label>Account Number(s)
-                      <div class="input-group">
-                        <custom-tag [controlName]="'accountNumbers'" [group]="vendorForm" [inputType]="'text'"
-                                    [height]="'80px'" [placeholder]="'Account number'">loading</custom-tag>
-                      </div>
-                    </label>
-                  </div>
-                  <div class="small-12 medium-6 columns">
-                    <label>Email
-                      <div class="input-group">
-                        <input class="input-group-field" type="text" formControlName="email" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
-                        <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('required')">Vendor email is required.</div>
-                        <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('pattern')">Invalid email format.</div>
-                      </div>
-                    </label>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="small-12 medium-6 columns">
+                  <div class="column small-12 medium-4 large-3">
                     <label>Phone Number
-                      <div class="input-group">
-                        <input class="input-group-field" type="text" formControlName="phoneNumber" placeholder="Phone Number*">
+                      <div>
+                        <input type="text" formControlName="phoneNumber" placeholder="Phone Number*">
                         <div class="error" [hidden]="vendorForm.controls.phoneNumber.untouched || vendorForm.controls.phoneNumber.valid">Phone Number is required.</div>
                       </div>
                     </label>
                   </div>
-
-                  <div class="small-12 medium-6 columns">
+                  <div class="column small-12 medium-4 large-3">
+                    <label>Email
+                      <div>
+                        <input type="text" formControlName="email" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
+                        <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('required')">Vendor email is required.</div>
+                        <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('pattern')">Please check email format.</div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </section>
+              <section class="form-section">
+                <header class="form-section-header">Contact Info</header>
+                <div class="row">
+                  <div class="column small-12 medium-4 large-3">
                     <label>Country
-                      <div class="input-group">
+                      <div>
                         <select combo-box #vendorCountryComboBoxDir="comboBox" title="" data-placeholder="Enter Country" formControlName="country" [listObject]="countries" (valueChanged)="showVendorProvince($event)">
                           <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
                         </select>
@@ -94,10 +78,22 @@
                       </div>
                     </label>
                   </div>
-
                   <Address *ngIf="showAddress" [code]="countryCode" #addressDir="address"></Address>
-                  <div class="small-12 medium-6 columns">
-                    <label>Please select a payment method.
+                </div>
+              </section>
+              <section class="form-section">
+                <header class="form-section-header">Financial Info</header>
+                <div class="row">
+                  <div class="column small-12 medium-4 large-3">
+                    <label>Account Number(s)
+                      <div>
+                        <custom-tag [controlName]="'accountNumbers'" [group]="vendorForm" [inputType]="'text'"
+                                    [height]="'80px'" [placeholder]="'Account number'">loading</custom-tag>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="column small-12 medium-4 large-3">
+                    <label>Payment method.
                       <select placeholder="Payment Method" formControlName="paymentMethod">
                         <option [value]="'ach'">ACH</option>
                         <option [value]="'digitalCheque'">Digital Cheque</option>
@@ -105,10 +101,8 @@
                       </select>
                       <div class="error" [hidden]="vendorForm.controls.paymentMethod.untouched || vendorForm.controls.paymentMethod.valid">Payment method required.</div>
                     </label>
-                  </div>
-                  <div class="small-12 medium-6 columns">
                     <label>COA
-                      <div class="input-group">
+                      <div>
                         <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="coa" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
                           <option *ngFor="let coa1 of chartOfAccounts" [value]="coa1.name">{{coa1.name}}</option>
                         </select>
@@ -116,30 +110,28 @@
                       </div>
                     </label>
                   </div>
-                  <div class="small-12 medium-6 columns">
-                    <label> &nbsp;
-                      <div class="input-group">
-                        <input type="checkbox" class="input-group-field" formControlName="has1099" /> Eligible 1099
+                  <div class="column small-12 medium-4 large-3">
+                    <label> Tax Forms
+                      <div>
+                        <input type="checkbox" formControlName="has1099" /> 1099
                         <div class="error" [hidden]="vendorForm.controls.has1099.untouched || vendorForm.controls.has1099.valid">Eligible for 1099 is required.</div>
                       </div>
                     </label>
                   </div>
                 </div>
+              </section>
 
-                <div class="row">
-                  <div class="small-12 medium-12 columns">
-                    <button class="button create small float-right" [disabled]="!vendorForm.valid || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
-                  </div>
+              <div class="row">
+                <div class="small-12 medium-12 columns">
+                  <button class="button create small float-right" [disabled]="!vendorForm.valid || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
                 </div>
-                <!--<div *ngIf="status" class="formstatus">
-                  <span [ngClass]="{'success': status.success, 'error': status.error}">{{message}}</span>
-                </div>-->
-              </form>
+              </div>
+            </form>
 
-            </div>
+
           </div>
         </div>
-        <button class="close-flyout" aria-label="Close modal" type="button">
+        <button class="close-flyout" aria-label="Close modal" type="button" (click)="showFlyout = !showFlyout">
                 <span aria-hidden="true">
                   <i class="ion-ios-close-empty"></i>
                 </span>

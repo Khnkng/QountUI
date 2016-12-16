@@ -50,6 +50,7 @@ export class VendorComponent {
   @ViewChild('addressDir') addressDir: Address;
   countryCode:string;
   showAddress:boolean;
+  showFlyout:boolean = false;
 
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
               private _router: Router, private loadingService:LoadingService,
@@ -126,7 +127,7 @@ export class VendorComponent {
     this.editMode = false;
     this.vendorForm = this._fb.group(this._vendorForm.getForm());
     this.newForm1();
-    jQuery(this.createVendor.nativeElement).foundation('open');
+    this.showFlyout = true;
   }
 
   handleAction($event){
@@ -178,6 +179,7 @@ export class VendorComponent {
   }
 
   showEditVendor(row:any) {
+    this.showFlyout = true;
     this.editMode = true;
     var base=this;
     jQuery(this.createVendor.nativeElement).foundation('open');
@@ -214,6 +216,7 @@ export class VendorComponent {
           .subscribe(success  => {
             this.loadingService.triggerLoadingEvent(false);
             this.showMessage(true, success);
+            this.showFlyout = false;
           }, error =>  this.showMessage(false, error));
       jQuery(this.createVendor.nativeElement).foundation('close');
     } else {
@@ -221,6 +224,7 @@ export class VendorComponent {
           .subscribe(success  => {
             this.loadingService.triggerLoadingEvent(false);
             this.showMessage(true, success);
+            this.showFlyout = false;
           }, error =>  this.showMessage(false, error));
     }
   }

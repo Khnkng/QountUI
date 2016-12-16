@@ -1,33 +1,33 @@
 <div [formGroup]="addressForm">
 
-<div class="small-12 medium-6 columns">
+<div class="column small-12 medium-4 large-4">
     <label>Address
-        <div class="input-group">
-            <input type="text" class="input-group-field" formControlName="customer_address" placeholder="Address*" />
+        <div>
+            <input type="text" formControlName="customer_address" placeholder="Address*" />
             <div class="error" [hidden]="addressForm.controls.customer_address.untouched || addressForm.controls.customer_address.valid">Customer Address is required.</div>
         </div>
     </label>
 </div>
-<div class="small-12 medium-6 columns">
+<div class="column small-12 medium-4 large-4">
     <label>City
-        <div class="input-group">
-            <input type="text" class="input-group-field" formControlName="customer_city" placeholder="City*"/>
+        <div>
+            <input type="text" formControlName="customer_city" placeholder="City*"/>
             <div class="error" [hidden]="addressForm.controls.customer_city.untouched || addressForm.controls.customer_city.valid">City is required.</div>
         </div>
     </label>
 </div>
-<div class="small-12 medium-6 columns">
+<div class="column small-12 medium-4 large-4">
     <label>State
-        <div class="input-group">
-            <input type="text" class="input-group-field" formControlName="customer_state" placeholder="State*"/>
+        <div>
+            <input type="text" formControlName="customer_state" placeholder="State*"/>
             <div class="error" [hidden]="addressForm.controls.customer_state.untouched || addressForm.controls.customer_state.valid">State is required.</div>
         </div>
     </label>
 </div>
-<div class="small-12 medium-6 columns">
+<div class="column small-12 medium-4 large-4">
     <label>Zip Code
-        <div class="input-group">
-            <input type="text" class="input-group-field" formControlName="customer_zipcode" placeholder="Zip Code*"/>
+        <div>
+            <input type="text" formControlName="customer_zipcode" placeholder="Zip Code*"/>
             <div class="error" [hidden]="addressForm.controls.customer_zipcode.untouched || addressForm.controls.customer_zipcode.valid">Zip code is required.</div>
         </div>
     </label>
