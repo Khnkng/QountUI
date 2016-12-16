@@ -21,6 +21,18 @@
             </h6>
             <form *ngIf="newFormActive" [formGroup]="accountForm">
                 <div class="row">
+                    <div class="small-12 medium-8 large-centered columns">
+                        <div class="row">
+                            <div class="small-12 medium-6 columns">
+                                <input type="radio" name="importType" formControlName="importType" value="AUTO" (click)="setImportType('AUTO')"/><label>Auto Import</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <input type="radio" name="importType" formControlName="importType" value="MANUAL" (click)="setImportType('MANUAL')"/><label>Manual Import</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="small-12 medium-6 columns">
                         <label>Name
                             <input type="text" formControlName="name" placeholder="Name*"/>
@@ -36,21 +48,42 @@
                 </div>
                 <div class="row">
                     <div class="small-12 medium-6 columns">
-                        <label>Starting Balance Date
-                            <input type="text" custom-datepicker [format]="'DD/MM/YYYY'" [mindate]="'past'" (valueChanged)="setBalanceDate($event)" formControlName="starting_balance_date" placeholder="Date"/>
-                            <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Date is required.</div>
+                        <label>Select bank
+                            <select formControlName="id">
+                                <option *ngFor="let bank of banks;" value="{{bank.id}}">{{bank.name}}</option>
+                            </select>
                         </label>
                     </div>
                     <div class="small-12 medium-6 columns">
-                        <div class="options">
-                            <input type="checkbox" id="noEffectOnPL" formControlName="no_effect_on_pl"/><label for="noEffectOnPL">Effect on P/L</label>
-                            <input type="checkbox" id="credit-account" formControlName="is_credit_account"/><label for="credit-account">Credit Account</label>
-                        </div>
+                        <label>Starting Balance Date
+                            <input type="text" custom-datepicker [format]="'DD/MM/YYYY'" [mindate]="'past'" (valueChanged)="setBalanceDate($event)" formControlName="starting_balance_date" placeholder="Starting Balance Date"/>
+                            <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Date is required.</div>
+                        </label>
                     </div>
                 </div>
-                <div class="row" style="margin-top: 10px;">
+                <div class="row">
+                    <div class="small-12 medium-6 columns">
+                        <label>Username
+                            <input type="text" disabled *ngIf="importType != 'AUTO'"/>
+                            <input type="text" formControlName="user_name" *ngIf="importType == 'AUTO'" placeholder="Username"/>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>Password
+                            <input type="text" disabled *ngIf="importType != 'AUTO'"/>
+                            <input type="password" formControlName="password" *ngIf="importType == 'AUTO'" placeholder="Password"/>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-12 medium-6 columns"></div>
+                    <div class="small-12 medium-6 columns">
+                        <input type="checkbox" id="credit-account" formControlName="is_credit_account"/><label for="credit-account">Credit Account</label>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="small-12 medium-12 columns">
-                        <button class="button small float-right" [disabled]="!accountForm.valid" (click)="submit($event)">Save</button>
+                        <button class="button small float-right" [disabled]="!accountForm.valid && isValid(accountForm)" (click)="submit($event)">Save</button>
                     </div>
                 </div>
             </form>

@@ -34,12 +34,19 @@ export class FinancialAccountsComponent{
   tempValues:Array<string> = [];
   tableColumns:Array<string> = ['name', 'id', 'starting_balance', 'current_balance', 'no_effect_on_pl', 'is_credit_account', 'starting_balance_date'];
 
+  importType:string = 'AUTO';
+  banks:Array<any> = [];
+
   constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private switchBoard: SwitchBoard, private loadingService:LoadingService,
               private financialAccountsService: FinancialAccountsService, private toastService: ToastService){
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
     if(this.currentCompany){
       this.loadingService.triggerLoadingEvent(true);
+      this.financialAccountsService.financialInstitutions()
+          .subscribe(banks => {
+            this.banks = banks;
+          }, error => this.handleError(error));
       this.financialAccountsService.financialAccounts(this.currentCompany)
           .subscribe(response => {
             this.loadingService.triggerLoadingEvent(false);
@@ -114,6 +121,7 @@ export class FinancialAccountsComponent{
     let base = this;
     $event && $event.preventDefault();
     let data = this._financialAccountForm.getData(this.accountForm);
+    delete data.importType;
     if(this.editMode){
       data.id = this.row.id;
 
@@ -162,5 +170,19 @@ export class FinancialAccountsComponent{
     setTimeout(function(){
       base.hasAccounts = true;
     }, 0)
+  }
+
+  setImportType(type){
+    this.importType = type;
+  }
+
+  isValid(form){
+    let data = this._financialAccountForm.getData(form);
+    if(data.importType == 'AUTO'){
+      if(!data.id || !data.user_name || !data.password){
+        return true;
+      }
+    }
+    return false;
   }
 }

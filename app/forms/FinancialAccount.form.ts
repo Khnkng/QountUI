@@ -15,10 +15,13 @@ export class FinancialAccountForm extends abstractForm{
     numberValidator.push(Validators.required);
     return {
       "name": ['', Validators.required],
-      "no_effect_on_pl": [false],
       "starting_balance": [''],
       "starting_balance_date": [''],
-      "is_credit_account": [true]
+      "is_credit_account": [false],
+      "id": [''],
+      "user_name": [''],
+      "password": [''],
+      "importType":['AUTO']
     }
   }
 }

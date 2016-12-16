@@ -7,9 +7,9 @@
 <div class="row" foundation>
     <div class="column large-12 medium-12 small-12 foo-container">
         <div class="foo-toolbar">
-            <button class="button small" (click)="showCreateUser()"><i class="icon ion-plus-round"></i> User</button>
+            <button class="button small" *ngIf="canAddUsers" (click)="showCreateUser()"><i class="icon ion-plus-round"></i> User</button>
         </div>
-        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasUsersList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" [ngClass]='{"search-right": !canAddUsers}'  *ngIf="hasUsersList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
     <div class="small reveal" #createUser id="createUser" data-reveal data-close-on-click="false">
         <div class="row expanded">
