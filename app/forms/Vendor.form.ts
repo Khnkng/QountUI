@@ -22,7 +22,6 @@ export class VendorForm extends abstractForm{
       "address": ['', Validators.required],
       "routingNumber": [''],
       "creditCardNumber": [''],
-      "phoneNumber": ['', Validators.compose(numberValidator)],
       "country": ['', Validators.required],
       "state": ['', Validators.required],
       "city": ['',Validators.required],

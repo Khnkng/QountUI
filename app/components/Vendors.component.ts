@@ -144,8 +144,8 @@ export class VendorComponent {
     let countryControl:any = this.vendorForm.controls['country'];
     countryControl.patchValue(country.name);
     this.countryCode = country.code;
-    this.showAddress = false;
-    setTimeout(()=> this.showAddress=true, 0);
+    /*this.showAddress = false;
+    setTimeout(()=> this.showAddress=true, 0);*/
   }
 
   showCOA(coa:any) {
@@ -173,8 +173,8 @@ export class VendorComponent {
   active1:boolean=true;
   newForm1(){
     this.active1 = false;
-    this.showAddress = false;
-    setTimeout(()=> this.active1=true, 0);
+    /*this.showAddress = false;
+    setTimeout(()=> this.active1=true, 0);*/
   }
 
   showEditVendor(row:any) {
@@ -205,9 +205,8 @@ export class VendorComponent {
     var data = this._vendorForm.getData(this.vendorForm);
     this.companyId = Session.getCurrentCompany();
     var data1 = this.addressDir.getData();
-    for(var prop in data1) {
-      data[prop] = data1[prop];
-    }
+    data1.country=data.country;
+    data.addresses=[data1];
     if(this.editMode) {
       data.id = this.row.id;
       this.companyService.updateVendor(<VendorModel>data, this.companyId)
@@ -253,7 +252,6 @@ export class VendorComponent {
       this.status['error'] = true;
       try {
         let resp = JSON.parse(obj);
-        debugger;
         if(resp.message){
           this._toastService.pop(TOAST_TYPE.error, resp.message);
         } else{

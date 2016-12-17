@@ -3,34 +3,44 @@
     <div class="small-12 medium-6 columns">
         <label>Address
             <div class="input-group">
-                <input type="text" class="input-group-field" formControlName="customer_address" placeholder="Address*" />
-                <div class="error" [hidden]="addressForm.controls.customer_address.untouched || addressForm.controls.customer_address.valid">Customer Address is required.</div>
+                <input type="text" class="input-group-field" formControlName="line" placeholder="Address*" />
+                <div class="error" [hidden]="addressForm.controls.line.untouched || addressForm.controls.line.valid">Customer Address is required.</div>
             </div>
         </label>
     </div>
     <div class="small-12 medium-6 columns">
         <label>City
             <div class="input-group">
-                <input type="text" class="input-group-field" formControlName="customer_city" placeholder="City*"/>
-                <div class="error" [hidden]="addressForm.controls.customer_city.untouched || addressForm.controls.customer_city.valid">City is required.</div>
+            <input type="text" class="input-group-field" formControlName="city" placeholder="City*"/>
+                <div class="error" [hidden]="addressForm.controls.city.untouched || addressForm.controls.city.valid">City is required.</div>
             </div>
         </label>
     </div>
     <div class="small-12 medium-6 columns">
         <label>State
             <div class="input-group">
-                <input type="text" class="input-group-field" formControlName="customer_state" placeholder="State*"/>
-                <div class="error" [hidden]="addressForm.controls.customer_state.untouched || addressForm.controls.customer_state.valid">State is required.</div>
+                <input type="text" class="input-group-field" formControlName="state" placeholder="State*"/>
+                <div class="error" [hidden]="addressForm.controls.state.untouched || addressForm.controls.state.valid">State is required.</div>
             </div>
         </label>
     </div>
     <div class="small-12 medium-6 columns">
         <label>Pin Code
             <div class="input-group">
-                <input type="text" class="input-group-field" formControlName="customer_zipcode" placeholder="Zip Code*"/>
-                <div class="error" [hidden]="addressForm.controls.customer_zipcode.untouched || addressForm.controls.customer_zipcode.valid">Pin code is required.</div>
+                <input type="text" class="input-group-field" formControlName="pincode" placeholder="Pin Code*"/>
+                <div class="error" [hidden]="addressForm.controls.pincode.untouched || addressForm.controls.pincode.valid">Pin code is required.</div>
             </div>
         </label>
     </div>
+    <div class="small-12 medium-6 columns">
+        <label>Phone Number
+            <div class="input-group">
+                <input type="text" class="input-group-field" formControlName="phone_number" placeholder="Phone Number*"/>
+                <div class="error" [hidden]="addressForm.controls.phone_number.untouched || addressForm.controls.phone_number.valid">Pin code is required.</div>
+            </div>
+        </label>
+    </div>
+    <div class="small-12 medium-6 columns">
 
+    </div>
 </div>
