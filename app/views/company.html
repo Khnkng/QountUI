@@ -34,8 +34,9 @@
                       <div class="small-12 medium-4 columns">
                         <label>EIN
                           <div class="">
-                            <input class="" type="text" formControlName="einNumber" placeholder="EIN*">
-                            <div class="error" [hidden]="companyForm.controls.einNumber.untouched || companyForm.controls.einNumber.valid"><small>Company EIN is required.</small></div>
+                            <input class="" type="text" formControlName="einNumber" placeholder="EIN*" pattern="[0-9]{9}$">
+                            <div class="error" *ngIf="companyForm.controls.einNumber.touched && companyForm.controls.einNumber.hasError('required')">Company EIN is required.</div>
+                            <div class="error" *ngIf="companyForm.controls.einNumber.touched && companyForm.controls.einNumber.hasError('pattern')">EIN should have 9 digits only.</div>
                           </div>
                         </label>
                       </div>
