@@ -1,7 +1,5 @@
-
 import {Component, ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
-import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {FTable} from "qCommon/app/directives/footable.directive";
 import {Router} from "@angular/router";
@@ -9,7 +7,6 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
-import {CompanyModel} from "../models/Company.model";
 import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
 import {UsersModel} from "qCommon/app/models/Users.model";
 import {UsersForm} from "../forms/Users.form";

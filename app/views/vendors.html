@@ -53,14 +53,16 @@
                   <div class="column small-12 medium-4 large-3">
                     <label *ngIf="isVendorCompany(vendorForm)">EIN
                       <div>
-                        <input type="text" formControlName="ein" placeholder="EIN*">
-                        <div class="error" [hidden]="vendorForm.controls.ein.untouched || vendorForm.controls.ein.valid">Vendor EIN is required.</div>
+                        <input type="text" formControlName="ein" placeholder="EIN*" pattern="[0-9]{9}$">
+                        <div class="error" *ngIf="vendorForm.controls.ein.touched && vendorForm.controls.ein.hasError('required')">Vendor EIN is required.</div>
+                        <div class="error" *ngIf="vendorForm.controls.ein.touched && vendorForm.controls.ein.hasError('pattern')">EIN should have 9 digits only.</div>
                       </div>
                     </label>
                     <label *ngIf="!isVendorCompany(vendorForm)">SSN
                       <div>
-                        <input type="text" formControlName="ssn" placeholder="SSN*">
-                        <div class="error" [hidden]="vendorForm.controls.ssn.untouched || vendorForm.controls.ein.valid">Vendor SSN is required.</div>
+                        <input type="text" formControlName="ssn" placeholder="SSN*" pattern="[0-9]{9}$">
+                        <div class="error" *ngIf="vendorForm.controls.ssn.touched && vendorForm.controls.ssn.hasError('required')">Vendor SSN is required.</div>
+                        <div class="error" *ngIf="vendorForm.controls.ssn.touched && vendorForm.controls.ssn.hasError('pattern')">SSN should have 9 digits only.</div>
                       </div>
                     </label>
                   </div>
