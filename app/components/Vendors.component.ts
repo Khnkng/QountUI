@@ -154,8 +154,14 @@ export class VendorComponent {
     let countryControl:any = this.vendorForm.controls['country'];
     countryControl.patchValue(country.name);
     this.countryCode = country.code;
-    this.showAddress = false;
-    setTimeout(()=> this.showAddress=true, 0);
+    var base=this;
+    if(this.editAddress&&this.editAddress.country==country.name){
+      setTimeout(function () {
+        base.addressDir.setData(base.editAddress);
+      },500);
+    }
+    /*this.showAddress = false;
+    setTimeout(()=> this.showAddress=true, 0);*/
   }
 
   showCOA(coa:any) {
@@ -183,31 +189,31 @@ export class VendorComponent {
   active1:boolean=true;
   newForm1(){
     this.active1 = false;
-    this.showAddress = false;
+    //this.showAddress = false;
     setTimeout(()=> this.active1=true, 0);
   }
 
   showEditVendor(row:any) {
     this.showFlyout = true;
     this.editMode = true;
+    this.getVendorDetails(row.id);
     var base=this;
-    jQuery(this.createVendor.nativeElement).foundation('open');
     this.row = row;
     this.newForm1();
     row.has1099=row.has1099 == 'true';
     this._vendorForm.updateForm(this.vendorForm, row);
-    let countryName = row.country;
+    /*let countryName = row.country;
     let country = _.find(PROVINCES.COUNTRIES, function(_country) {
       return _country.name == countryName;
-    });
+    });*/
     let coa = _.find(this.chartOfAccounts, function(_coa) {
       return _coa.id==base.row.coa
     });
     let stateName = row.state;
-    setTimeout(function () {
+    /*setTimeout(function () {
       base.vendorCountryComboBox.setValue(country, 'name');
       base.coaComboBox.setValue(coa, 'name');
-    },100);
+    },100);*/
   }
 
   submit($event) {
@@ -216,9 +222,8 @@ export class VendorComponent {
     var data = this._vendorForm.getData(this.vendorForm);
     this.companyId = Session.getCurrentCompany();
     var data1 = this.addressDir.getData();
-    for(var prop in data1) {
-      data[prop] = data1[prop];
-    }
+    data1.country=data.country;
+    data.addresses=[data1];
     if(this.editMode) {
       data.id = this.row.id;
       this.companyService.updateVendor(<VendorModel>data, this.companyId)
@@ -227,7 +232,6 @@ export class VendorComponent {
             this.showMessage(true, success);
             this.showFlyout = false;
           }, error =>  this.showMessage(false, error));
-      jQuery(this.createVendor.nativeElement).foundation('close');
     } else {
       this.companyService.addVendor(<VendorModel>data, this.companyId)
           .subscribe(success  => {
@@ -266,7 +270,6 @@ export class VendorComponent {
       this.status['error'] = true;
       try {
         let resp = JSON.parse(obj);
-        debugger;
         if(resp.message){
           this._toastService.pop(TOAST_TYPE.error, resp.message);
         } else{
@@ -299,5 +302,23 @@ export class VendorComponent {
       return true;
     }
     return false;
+  }
+
+  editAddress:any;
+
+  getVendorDetails(vendorID){
+    this.companyService.vendor(this.companyId,vendorID).subscribe(vendors => {
+      if(vendors.addresses[0]){
+        let countryName = vendors.addresses[0].country;
+        this.editAddress=vendors.addresses[0];
+        let country = _.find(PROVINCES.COUNTRIES, function(_country) {
+          return _country.name == countryName;
+        });
+        var base=this;
+        setTimeout(function () {
+          base.vendorCountryComboBox.setValue(country, 'name');
+        },100);
+      }
+    }, error => this.handleError(error));
   }
 }

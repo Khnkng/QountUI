@@ -14,13 +14,11 @@
     </div>
     <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasVendorsList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
   </div>
-
-
   <div class="qount-off-canvas-menu">
     <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
       <section class="flyout-placeholder">
         <header class="flyout-header">
-            <h5> {{editMode ? "Update Vendor" : "Create Vendor"}}</h5>
+            <h6> {{editMode ? "Update Vendor" : "Create Vendor"}}</h6>
         </header>
         <div class="flyout-body flyout-shadow-effect">
           <!--here comes actual flyout code-->
@@ -66,14 +64,14 @@
                       </div>
                     </label>
                   </div>
-                  <div class="column small-12 medium-4 large-3">
+                  <!--<div class="column small-12 medium-4 large-3">
                     <label>Phone Number
                       <div>
                         <input type="text" formControlName="phoneNumber" placeholder="Phone Number*">
                         <div class="error" [hidden]="vendorForm.controls.phoneNumber.untouched || vendorForm.controls.phoneNumber.valid">Phone Number is required.</div>
                       </div>
                     </label>
-                  </div>
+                  </div>-->
                   <div class="column small-12 medium-4 large-3">
                     <label>Email
                       <div>
@@ -98,7 +96,7 @@
                       </div>
                     </label>
                   </div>
-                  <Address *ngIf="showAddress" [code]="countryCode" #addressDir="address"></Address>
+                  <Address [code]="countryCode" #addressDir="address"></Address>
                 </div>
               </section>
               <section class="form-section">

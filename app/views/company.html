@@ -49,15 +49,15 @@
                           </div>
                         </label>
                       </div>
-                      <div class="small-12 medium-4 columns">
+                      <!--<div class="small-12 medium-4 columns">
                         <label>Phone Number
                           <div class="">
                             <input class="" name="phoneNumber" formControlName="phoneNumber" type="text" placeholder="Phone Number">
                             <div class="error" [hidden]="companyForm.controls.phoneNumber.untouched || companyForm.controls.phoneNumber.valid"><small>Company Phone Number is required.</small></div>
                           </div>
                         </label>
-                      </div>
-                      <div class="small-12 medium-3 columns">
+                      </div>-->
+                      <div class="small-12 medium-4 columns">
                         <label>Country
                           <div class="">
                             <select combo-box #countryComboBoxDir="comboBox" title="" data-placeholder="Enter Country" formControlName="country"
@@ -68,7 +68,7 @@
                           </div>
                         </label>
                       </div>
-                      <Address *ngIf="showAddress" [code]="countryCode" #addressDir="address"></Address>
+                      <Address [code]="countryCode" #addressDir="address"></Address>
                       <div class="small-12 medium-6 columns" *ngIf="havingCompanyMail">
                         <label>Bills email
                           <div class="">

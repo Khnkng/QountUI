@@ -1,36 +1,49 @@
 <div [formGroup]="addressForm">
 
-<div class="column small-12 medium-4 large-4">
-    <label>Address
-        <div>
-            <input type="text" formControlName="customer_address" placeholder="Address*" />
-            <div class="error" [hidden]="addressForm.controls.customer_address.untouched || addressForm.controls.customer_address.valid">Customer Address is required.</div>
-        </div>
-    </label>
-</div>
-<div class="column small-12 medium-4 large-4">
-    <label>City
-        <div>
-            <input type="text" formControlName="customer_city" placeholder="City*"/>
-            <div class="error" [hidden]="addressForm.controls.customer_city.untouched || addressForm.controls.customer_city.valid">City is required.</div>
-        </div>
-    </label>
-</div>
-<div class="column small-12 medium-4 large-4">
-    <label>State
-        <div>
-            <input type="text" formControlName="customer_state" placeholder="State*"/>
-            <div class="error" [hidden]="addressForm.controls.customer_state.untouched || addressForm.controls.customer_state.valid">State is required.</div>
-        </div>
-    </label>
-</div>
-<div class="column small-12 medium-4 large-4">
-    <label>Zip Code
-        <div>
-            <input type="text" formControlName="customer_zipcode" placeholder="Zip Code*"/>
-            <div class="error" [hidden]="addressForm.controls.customer_zipcode.untouched || addressForm.controls.customer_zipcode.valid">Zip code is required.</div>
-        </div>
-    </label>
-</div>
+    <div class="column small-12 medium-4 large-4">
+        <label>Address
+            <div>
+                <input type="text" formControlName="line" placeholder="Address*" />
+                <div class="error" [hidden]="addressForm.controls.line.untouched || addressForm.controls.line.valid">Address is required.</div>
+            </div>
+        </label>
+    </div>
+    <div class="column small-12 medium-4 large-4">
+        <label>City
+            <div>
+                <input type="text" formControlName="city" placeholder="City*"/>
+                <div class="error" [hidden]="addressForm.controls.city.untouched || addressForm.controls.city.valid">City is required.</div>
+            </div>
+        </label>
+    </div>
+    <div class="column small-12 medium-4 large-4">
+        <label>State
+            <div>
+                <input type="text" formControlName="state" placeholder="State*"/>
+                <div class="error" [hidden]="addressForm.controls.state.untouched || addressForm.controls.state.valid">State is required.</div>
+            </div>
+        </label>
+    </div>
+    <div class="column small-12 medium-4 large-4">
+        <label>Zip Code
+            <div>
+                <input type="text" formControlName="zipcode" placeholder="Zip Code*"/>
+                <div class="error" [hidden]="addressForm.controls.zipcode.untouched || addressForm.controls.zipcode.valid">Zip code is required.</div>
+            </div>
+        </label>
+    </div>
+    <div class="small-12 medium-4 columns">
+        <label>Phone Number
+            <div>
+                <input type="text" formControlName="phone_number" placeholder="Phone Number*"/>
+                <div class="error" [hidden]="addressForm.controls.phone_number.untouched || addressForm.controls.phone_number.valid">Phone number is required.</div>
+            </div>
+        </label>
+    </div>
+    <div class="small-12 medium-4 columns">
 
+    </div>
+    <div class="small-12 medium-4 columns">
+
+    </div>
 </div>
