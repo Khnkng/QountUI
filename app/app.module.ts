@@ -57,6 +57,7 @@ import {ModulesComponent} from "./components/modules.component";
 import {ModulesService} from "./services/Modules.service";
 import {ChangePasswordComponent} from "./components/changePassword.component";
 import {TermsAndConditionsComponent} from "./components/TermsAndConditions.component";
+import {ResetPasswordComponent} from "./components/resetpassword.component";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -76,6 +77,10 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             path: 'login',
             component: LogInComponent,
             canActivate: [DashBoardActivator]
+        },{
+            path: 'resetpassword/:token',
+            component: ResetPasswordComponent,
+            canActivate: [LoggedInActivator]
         },
         {
             path: 'signUp',
@@ -182,7 +187,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
-        OffCanvasMenuComponent, LoadingComponent,ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent],
+        OffCanvasMenuComponent, LoadingComponent,ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,ResetPasswordComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
