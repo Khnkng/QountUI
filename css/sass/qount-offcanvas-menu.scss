@@ -126,6 +126,7 @@
           border: 1px solid $qount-brand-grey;
           border-radius: 5px;
           margin-bottom: 15px;
+
           .form-section-header{
             font-weight: 700;
             font-size: 1em;
@@ -133,7 +134,17 @@
             margin: 4px 0;
             padding-left: 14px;
           }
+          .form-section-left{
+            @media #{$medium-up} {
+              width: 50%;
+              float: left;
+            }
+          }
         }
+        .form-section:last-child{
+          margin-bottom: 5px !important;
+        }
+
       }
 
 
