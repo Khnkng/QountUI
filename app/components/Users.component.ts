@@ -42,10 +42,10 @@ export class UsersComponent {
                 private switchBoard: SwitchBoard) {
         this.userForm = this._fb.group(_usersForm.getForm());
         this.companyId = Session.getCurrentCompany();
-        let defaultCompany = Session.getUser().default_company || {};
+        let defaultCompany:any = Session.getUser().default_company || {};
         if(!_.isEmpty(defaultCompany)){
             let roles = defaultCompany.roles;
-            if(roles.indexOf('Owner') != -1 || roles.indexOf('Account Manager') != -1){
+            if(roles.indexOf('Owner') != -1 || roles.indexOf('Account Manager') != -1 || roles.indexOf('Admin') != -1){
                 this.canAddUsers = true;
             }
         }
