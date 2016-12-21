@@ -307,17 +307,17 @@ g.highcharts-series, .highcharts-point {
 }
 
 /* Legend */
-.highcharts-legend-box {
-  fill: none;
-  stroke-width: 0;
-}
+//.highcharts-legend-box {
+//  fill: none;
+//  stroke-width: 0;
+//}
 
-.highcharts-legend-item text {
-  fill: #333333;
-  font-weight: bold;
-  cursor: pointer;
-  stroke-width: 0;
-}
+//.highcharts-legend-item text {
+//  fill: #333333;
+//  font-weight: bold;
+//  cursor: pointer;
+//  stroke-width: 0;
+//}
 
 .highcharts-legend-item:hover text {
   fill: #000000;
