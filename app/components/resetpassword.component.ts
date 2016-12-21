@@ -14,8 +14,8 @@ declare var _:any;
 
 
 @Component({
-    selector: 'activate',
-    templateUrl: '/app/views/changePassword.html'
+    selector: 'reset-password',
+    templateUrl: '/app/views/resetpassword.html'
 })
 
 export class ResetPasswordComponent {
@@ -25,7 +25,7 @@ export class ResetPasswordComponent {
     routeSub:any;
     token:string;
     constructor(private _router: Router, private _toastService: ToastService,private _route:ActivatedRoute,
-                private loadingService:LoadingService,private CompanyUsersService:CompanyUsers) {
+                private CompanyUsersService:CompanyUsers) {
         this.routeSub = this._route.params.subscribe(params => {
             this.token = params['token'];
         });
@@ -47,10 +47,11 @@ export class ResetPasswordComponent {
             };
             this.CompanyUsersService.updatePassword(data).subscribe(res => {
                 if(res){
+                    this._toastService.pop(TOAST_TYPE.error, "Password reset was successful");
                     this._router.navigate(['login']);
                 }
             }, error => {
-                this._toastService.pop(TOAST_TYPE.error, "Failed to update password");
+                this._toastService.pop(TOAST_TYPE.error, "Failed to reset password");
             });
         }
     }

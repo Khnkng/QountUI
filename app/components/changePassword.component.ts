@@ -37,7 +37,7 @@ export class ChangePasswordComponent {
             };
             this.CompanyUsersService.updatePassword(data).subscribe(res => {
                 if(res){
-                    let defaultCompany = Session.getUser().default_company;
+                    let defaultCompany:any = Session.getUser().default_company;
                     if(!_.isEmpty(defaultCompany) && defaultCompany.roles.indexOf('Owner') != -1){
                         if(defaultCompany.tcAccepted){
                             this._router.navigate(['']);
