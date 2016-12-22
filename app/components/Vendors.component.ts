@@ -133,9 +133,15 @@ export class VendorComponent {
   }
 
   showCreateVendor() {
+    let defaultCountry  = {name:'United States', code:'US'};
+    var self = this;
     this.editMode = false;
     this.vendorForm = this._fb.group(this._vendorForm.getForm());
     this.newForm1();
+    setTimeout(function () {
+      self.vendorCountryComboBox.setValue(defaultCountry, 'name');
+    },100);
+    this.showVendorProvince({name:'India', code:'IN'});
     this.showFlyout = true;
   }
 

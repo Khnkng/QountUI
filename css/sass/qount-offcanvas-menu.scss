@@ -40,18 +40,18 @@
         &.close-flyout{
           position: absolute;
           //background: #fff;
-          top:0px;
+          top:-5px;
           right: 25px;
-          width: 40px;
-          height: 40px;
-          border-radius: 20px;
+          width: 50px;
+          height: 50px;
+          border-radius: 25px;
           margin-top: 10px;
           transition: background-color 0.3s ease;
           &:hover{
             background: $qount-table-border;
           }
           i{
-            font-size: 2.5em;
+            font-size: 3em;
           }
         }
       }
@@ -98,7 +98,7 @@
     .flyout-placeholder{
       padding: 25px 20px;
       min-height: calc(100vh - 50px);
-      background: #EEE;
+      background: $qount-form-background-grey;
 
       .flyout-header{
         padding-left: 5px;
@@ -115,6 +115,9 @@
         min-height: calc(100vh - 80px);
         //padding: 40px 0;
         .form-section{
+          .address-component{
+            border: none !important;
+          }
           div.error{
             font-size: 0.9em;
           }
@@ -140,6 +143,16 @@
               float: left;
             }
           }
+          .custom-qount-form-field{
+            margin-bottom: 18px;
+          }
+
+          .custom-qount-form-submit{
+            position: absolute;
+            right: 30px;
+            bottom: 80px;
+          }
+
         }
         .form-section:last-child{
           margin-bottom: 5px !important;
