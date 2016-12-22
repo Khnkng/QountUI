@@ -196,7 +196,7 @@ gulp.task('dependencies', function () {
     'node_modules/zone.js/dist/zone.js',
     'node_modules/reflect-metadata/Reflect.js',
     'node_modules/systemjs/dist/system.src.js',
-    'node_modules/socket.io-client/dist/socket.io.js',
+    'node_modules/socket.io-client/socket.io.js',
     'app/assets/**/*.js',
     'app/bower_components/footable/compiled/footable.min.js',
     'app/bower_components/tag-it/js/tag-it.js'
