@@ -1,55 +1,57 @@
+/**
+ * Created by Nazia on 20-12-2016.
+ */
 import {Component, ViewChild} from "@angular/core";
-import {Router} from "@angular/router";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {Session} from "qCommon/app/services/Session";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
+import {Router,ActivatedRoute} from "@angular/router";
 
 declare var jQuery:any;
 declare var _:any;
 
+
 @Component({
-    selector: 'activate',
-    templateUrl: '/app/views/changePassword.html'
+    selector: 'reset-password',
+    templateUrl: '/app/views/resetpassword.html'
 })
 
-export class ChangePasswordComponent {
+export class ResetPasswordComponent {
     password:string;
     notValid:boolean=false;
     confirmPassword:string;
-    constructor(private _router: Router, private _toastService: ToastService,
-                private loadingService:LoadingService,private CompanyUsersService:CompanyUsers) {
+    routeSub:any;
+    token:string;
+    constructor(private _router: Router, private _toastService: ToastService,private _route:ActivatedRoute,
+                private CompanyUsersService:CompanyUsers) {
+        this.routeSub = this._route.params.subscribe(params => {
+            this.token = params['token'];
+        });
     }
 
     ngOnDestroy(){
     }
 
-     handleError(err){
+    handleError(err){
 
     }
     submit($event){
         $event && $event.preventDefault();
         if(this.checkPasswordsMatch()){
             var data={
-                "action":"change",
-                "password":this.password
+                "action":"reset",
+                "password":this.password,
+                "token":this.token
             };
             this.CompanyUsersService.updatePassword(data).subscribe(res => {
                 if(res){
-                    let defaultCompany:any = Session.getUser().default_company;
-                    if(!_.isEmpty(defaultCompany) && defaultCompany.roles.indexOf('Owner') != -1){
-                        if(defaultCompany.tcAccepted){
-                            this._router.navigate(['']);
-                        } else{
-                            this._router.navigate(['termsAndConditions']);
-                        }
-                    } else{
-                        this._router.navigate(['']);
-                    }
+                    this._toastService.pop(TOAST_TYPE.error, "Password reset was successful");
+                    this._router.navigate(['login']);
                 }
             }, error => {
-                this._toastService.pop(TOAST_TYPE.error, "Failed to update password");
+                this._toastService.pop(TOAST_TYPE.error, "Failed to reset password");
             });
         }
     }

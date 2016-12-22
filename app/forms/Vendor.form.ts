@@ -14,15 +14,16 @@ export class VendorForm extends abstractForm{
     numberValidator.push(Validators.pattern);
     numberValidator.push(Validators.required);
     return {
+      "vendorType": ['', Validators.required],
       "name": ['', Validators.required],
-      "ein": ['', Validators.required],
+      "ein": [''],
+      "ssn": [''],
       "accountNumber": [''],
       "accountNumbers": [['']],
       "email": ['', Validators.compose(numberValidator)],
       "address": ['', Validators.required],
       "routingNumber": [''],
       "creditCardNumber": [''],
-      "phoneNumber": ['', Validators.compose(numberValidator)],
       "country": ['', Validators.required],
       "state": ['', Validators.required],
       "city": ['',Validators.required],

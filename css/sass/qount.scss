@@ -24,7 +24,6 @@
 @import "userprofile";
 @import "toaster";
 @import "workflow";
-@import "highcharts";
 @import "custom.footable";
 @import "switch.company";
 @import "loader";
@@ -363,18 +362,25 @@ h1, h2, h3, h4, h5, h6 {
 /*form-validations*/
 form {
   .ng-valid[required] {
-    border: 1px solid #22bb5b;
+    border: 1px solid $qount-brand-red;
+    box-shadow: none;
   }
   .ng-dirty.ng-valid {
-    /*border: 1px solid #22bb5b;*/
+    border: 1px solid $qount-brand-green;
+    box-shadow: none;
   }
   .ng-dirty.ng-invalid, .ng-touched.ng-invalid {
     border: 1px solid $qount-form-ele-border-error;
+    box-shadow: none;
+    &.address-component{
+      border: none;
+    }
   }
 }
 
 .error {
   color: $qount-form-ele-border-error;
+  padding: 1px 0 5px 0;
 }
 
 .success {
