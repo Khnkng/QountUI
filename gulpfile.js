@@ -196,7 +196,7 @@ gulp.task('dependencies', function () {
     'node_modules/zone.js/dist/zone.js',
     'node_modules/reflect-metadata/Reflect.js',
     'node_modules/systemjs/dist/system.src.js',
-    'node_modules/socket.io-client/socket.io.js',
+    'node_modules/socket.io-client/dist/socket.io.js',
     'app/assets/**/*.js',
     'app/bower_components/footable/compiled/footable.min.js',
     'app/bower_components/tag-it/js/tag-it.js'
@@ -206,8 +206,9 @@ gulp.task('dependencies', function () {
   var angularInMemory = gulp.src(['node_modules/angular2-in-memory-web-api/**/*.*']).pipe(gulp.dest('build/lib/angular2-in-memory-web-api'));
   var rxjs = gulp.src(['node_modules/rxjs/**/*.*']).pipe(gulp.dest('build/lib/rxjs'));
   var angular2uuid = gulp.src(['node_modules/angular2-uuid/**/*.*']).pipe(gulp.dest('build/lib/angular2-uuid'));
+  var ng2uploader = gulp.src(['node_modules/ng2-file-upload/**/*.*']).pipe(gulp.dest('build/lib/ng2-file-upload'));
   var immutable = gulp.src(['node_modules/immutable/**/*.*']).pipe(gulp.dest('build/lib/immutable'));
-  return merge(libs, angular, angularInMemory, rxjs, angular2uuid, immutable);
+  return merge(libs, angular, angularInMemory, rxjs, angular2uuid, ng2uploader, immutable);
 });
 
 gulp.task('sass', function () {

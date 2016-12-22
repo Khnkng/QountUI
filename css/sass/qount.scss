@@ -2825,3 +2825,73 @@ tbody{
     }
   }
 }
+
+.file-upload-modal{
+  color: #36404a;
+  padding: 0;
+  border-radius: 5px;
+  .header{
+    padding: 10px;
+    border-bottom: .5px solid #eee;
+    text-align: center;
+    font-size: 1.2em;
+  }
+  .upload-global-actions{
+    padding: 10px 0px;
+  }
+  section{
+    &.upload-area{
+      margin: 10px;
+      .upload-choose-btn{
+        padding: 10px 0px;
+        border: .5px dashed  #36404a;
+        border-radius: 5px;
+        &.popup-file-over{
+          border: 2px solid  #3adb76;
+        }
+      }
+      .files-to-upload-section{
+        padding: 10px 0px;
+        ul{
+          list-style: none;
+          width:100%;
+          margin: 0;
+          li{
+            &:hover{
+              background-color: #eee;
+            }
+            padding: 5px 10px;
+            display: block;
+            &:first-child{
+              border-top: .5px solid #ccc;
+            }
+            border-bottom: .5px solid #ccc;
+            .item-uploaded{
+              color: #2199e8;
+            }
+            i{
+              cursor: pointer;
+              font-size: 1.2em;
+              margin-right: 0.25em;
+              margin-left: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+  .upload-global-actions{
+    border-top: .5px solid #eee;
+    .button-group{
+      margin: 0;
+      .button{
+        margin-left: 20px;
+        i{
+          margin-right: 0.25em;
+          margin-left: 0;
+        }
+      }
+
+    }
+  }
+}

@@ -24,10 +24,11 @@
       // other libraries
       'rxjs':                      'npm:rxjs',
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
-      'qCommon': 'npm:qCommon',
-      'reportsUI': 'npm:reportsUI',
-      'angular2-uuid':'npm:angular2-uuid',
-      'billsUI': 'npm:billsUI'
+        'ng2-file-upload':'npm:ng2-file-upload',
+        'angular2-uuid':'npm:angular2-uuid',
+        'qCommon': 'npm:qCommon',
+        'reportsUI': 'npm:reportsUI',
+        'billsUI': 'npm:billsUI'
 
     },
     // packages tells the System loader how to load when no filename and/or no extension
@@ -53,6 +54,10 @@
       },
       'angular2-uuid':{
         main: './index.js',
+        defaultExtension: 'js'
+      },
+        'ng2-file-upload':{
+        main: './ng2-file-upload.js',
         defaultExtension: 'js'
       },
       'billsUI': {

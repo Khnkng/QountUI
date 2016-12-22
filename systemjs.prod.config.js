@@ -27,6 +27,7 @@
       'qCommon': 'npm:qCommon',
       'reportsUI': 'npm:reportsUI',
       'angular2-uuid':'npm:angular2-uuid',
+        'ng2-file-upload':'npm:ng2-file-upload',
       'billsUI': 'npm:billsUI'
 
     },
@@ -55,6 +56,10 @@
         main: './index.js',
         defaultExtension: 'js'
       },
+        'ng2-file-upload':{
+            main: './ng2-file-upload.js',
+            defaultExtension: 'js'
+        },
       'billsUI': {
         main: './index.js',
         defaultExtension: 'js'
