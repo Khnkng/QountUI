@@ -3,9 +3,18 @@
         <h5>Modules</h5>
     </div>
     <div class="row tools-grids">
-        <div class="column small-12 medium-12 large-12" *ngFor="let checkListItem of modulesList;let index=index;">
+        <div class="column small-12 medium-12 large-12" *ngFor="let module of modulesList;let moduleIndex=index;">
             <div>
-                <label attr.for="moduleId-{{index}}"><input id="modileId-{{index}}" [(ngModel)]="checkListItem.moduleSelect" (change)="onModuleSelect(checkListItem.id)" type="checkbox" required> {{checkListItem.name}}</label>
+                <label attr.for="moduleId-{{moduleIndex}}">
+                    <input id="modileId-{{moduleIndex}}" [(ngModel)]="module.isSelected" (click)="onModuleSelect(moduleIndex)" type="checkbox"/> {{module.name}}
+                </label>
+            </div>
+            <div class="column small-12 medium-12 large-12" *ngFor="let submodule of module.submodule;let subModuleIndex=index;">
+                <div>
+                    <label attr.for="subModuleId-{{subModuleIndex}}">
+                        <input id="subModuleId-{{subModuleIndex}}" [(ngModel)]="submodule.isSelected" (click)="onSubModuleSelect(moduleIndex, subModuleIndex)" type="checkbox" /> {{submodule.name}}
+                    </label>
+                </div>
             </div>
         </div>
     </div>

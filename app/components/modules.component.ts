@@ -21,14 +21,21 @@ declare var _:any;
 export class ModulesComponent {
     companyId:string;
     modulesList:Array<any>;
-    isCreate:boolean=true
+    isCreate:boolean=true;
     isLoaded:boolean=false;
+    selectedModules:Array<any>=[];
+    allSubModules:Array<any>=[];
+
     constructor(private _fb: FormBuilder, private _router: Router, private _toastService: ToastService,
                 private switchBoard: SwitchBoard, private loadingService:LoadingService,private modulesService:ModulesService) {
         this.companyId = Session.getCurrentCompany();
         this.modulesService.modules().subscribe(modules => {
             this.modulesList=modules;
             this.isLoaded=true;
+            this.allSubModules = [];
+            _.each(modules, function(module){
+                // this.allSubModules = this.allSubModules.concat(module.submodule);
+            });
             this.loadData();
         }, error => this.handleError(error));
     }
@@ -39,16 +46,29 @@ export class ModulesComponent {
     loadData(){
         if(this.companyId){
             this.modulesService.getModules(this.companyId).subscribe(modules => {
-                if(modules&&modules.length>0){
+
+                //current sample resp
+                //[{"company_id":"7e9dc88f-660d-4b6f-88a9-3eaf9006153b","module_id":3,"sub_module_id":5},{"company_id":"7e9dc88f-660d-4b6f-88a9-3eaf9006153b","module_id":3,"sub_module_id":6},{"company_id":"7e9dc88f-660d-4b6f-88a9-3eaf9006153b","module_id":3,"sub_module_id":7},{"company_id":"7e9dc88f-660d-4b6f-88a9-3eaf9006153b","module_id":3,"sub_module_id":8}]
+
+                if(modules && modules.length>0){
                     this.isCreate=false;
-                    this.selectedModules=_.map(modules,'module_id');
-                    var base=this;
-                    _.each(this.modulesList,function(item){
-                        if(base.selectedModules&&base.selectedModules.indexOf(item.id)!=-1){
-                            item.moduleSelect=true;
-                        }
-                        else{
-                            item.moduleSelect=false;
+                    let selectedModuleIds = _.map(modules, 'module_id');
+                    let selectedSubModuleIds = _.map(modules, 'sub_module_id');
+                    let allModuleIds = _.map(this.modulesList, 'id');
+                    _.each(this.modulesList, function(m){
+                        //module_id
+                        if(selectedModuleIds.indexOf(m.id) == -1){
+                            m.isSelected = false;
+                        } else{
+                            m.isSelected = true;
+                            _.each(m.submodule, function(sm){
+                                //sub_module_id
+                                if(selectedSubModuleIds.indexOf(sm.id) == -1){
+                                    sm.isSelected = false;
+                                } else{
+                                    sm.isSelected = true;
+                                }
+                            });
                         }
                     });
                 }
@@ -59,17 +79,44 @@ export class ModulesComponent {
     handleError(err){
 
     }
-    selectedModules:Array<any>=[];
-    onModuleSelect(id){
-        if(this.selectedModules.indexOf(id)>-1){
-            this.selectedModules=_.pull(this.selectedModules,id);
-        }else{
-            this.selectedModules.push(id);
-        }
+
+    onModuleSelect(moduleIndex){
+        let parentSelected = false;
+        let currentModule = (this.modulesList[moduleIndex]);
+        currentModule.isSelected = !currentModule.isSelected;
+        parentSelected = currentModule.isSelected;
+        _.each(currentModule.submodule, function(sm){
+            sm.isSelected = parentSelected;
+        });
+
+    }
+
+    onSubModuleSelect(moduleIndex, subModuleIndex){
+        var self = this;
+        setTimeout(function () {
+            let currentModule = self.modulesList[moduleIndex];
+            let parentSelectedSubList = _.every(currentModule.submodule, ['isSelected', true]);
+            currentModule.isSelected = parentSelectedSubList;
+        }, 0);
     }
     submit($event){
         $event && $event.preventDefault();
-        var data={"module_ids":this.selectedModules};
+        //as matten current service
+        let newObj = {};
+        _.each(this.modulesList, function(m){
+            _.each(m.submodule, function(sm){
+                if(sm.isSelected){
+                    if (!(m.id in newObj)){
+                        newObj[m.id] = [];
+                    }
+                    newObj[m.id].push(sm.id);
+                }
+            });
+        });
+
+        console.log("newObj",newObj);
+        var data=newObj;
+        //return;
         if(this.isCreate){
             this.modulesService.saveModules(data,this.companyId).subscribe(modules => {
                 if(modules){
