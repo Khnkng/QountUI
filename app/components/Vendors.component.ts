@@ -72,7 +72,7 @@ export class VendorComponent {
     }, error => this.handleError(error));
     this.coaService.chartOfAccounts(this.companyId)
         .subscribe(chartOfAccounts => {
-          this.chartOfAccounts=chartOfAccounts?chartOfAccounts:[];
+          this.chartOfAccounts=chartOfAccounts?_.filter(chartOfAccounts, {'type': 'accountsPayable'}):[];
         }, error=> this.handleError(error));
   }
 
