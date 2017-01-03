@@ -91,8 +91,8 @@ export class VendorComponent {
     this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
-      /*{"name": "companyID", "title": "Company"},*/
-      {"name": "ein", "title": "Ein"},
+      {"name": "type", "title": "Type"},
+      {"name": "einssn", "title": "EIN/SSN"},
       {"name": "email", "title": "Email"},
       {"name": "address", "title": "Address","visible": false},
       {"name": "phoneNumber", "title": "Phone Number"},
@@ -102,6 +102,7 @@ export class VendorComponent {
       {"name": "zipcode", "title": "Zip code","visible": false},
       {"name": "id", "title": "ID","visible": false},
       {"name": "type", "title": "Vendor Type","visible": false},
+      {"name": "ein", "title": "EIN","visible": false},
       {"name": "ssn", "title": "SSN","visible": false},
       {"name": "has1099", "title": "1099","visible": false},
       {"name": "paymentMethod", "title": "Payment Method","visible": false},
@@ -117,6 +118,11 @@ export class VendorComponent {
       for(let key in base.vendors[0]) {
         row[key] = vendor[key];
         if(key == 'type'){
+          if(vendor[key] == 'Individual'){
+            row['einssn'] = vendor['ssn'];
+          } else if(vendor[key] == 'Company'){
+            row['einssn'] = vendor['ein'];
+          }
           base.setVendorType({
             target: {
               value: row[key]
@@ -304,7 +310,7 @@ export class VendorComponent {
 
   isVendorCompany(form){
     let data = this._vendorForm.getData(form);
-    if(data.type == 'company'){
+    if(data.type == 'Company'){
       return true;
     }
     return false;
