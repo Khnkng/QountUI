@@ -20,7 +20,7 @@ declare var _:any;
 
 export class ModulesComponent {
     companyId:string;
-    modulesList:Array<any>;
+    modulesList:Array<any> = [];
     isCreate:boolean=true;
     isLoaded:boolean=false;
     selectedModules:Array<any>=[];
@@ -80,7 +80,9 @@ export class ModulesComponent {
 
     }
 
-    onModuleSelect(moduleIndex){
+    onModuleSelect(moduleIndex, $event){
+        //$event && $event.preventDefault();
+        $event && $event.stopImmediatePropagation();
         let parentSelected = false;
         let currentModule = (this.modulesList[moduleIndex]);
         currentModule.isSelected = !currentModule.isSelected;
