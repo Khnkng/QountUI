@@ -10,66 +10,107 @@
                 <div class="tabs-panel is-active" id="journalDetails">
                     <div class="bill-form-data">
                         <div class="row collapse">
-                            <div class="small-12 medium-4 columns">
+                            <div class="small-12 medium-8 columns">
+                                <div class="row">
+                                    <div class="small-12 medium-6 columns">
+                                        <div class="row">
+                                            <div class="small-12 medium-12 columns">
+                                                <label>Number
+                                                    <input type="text" formControlName="number" placeholder="Journal Number*">
+                                                    <div class="error" [hidden]="jeForm.controls.number.untouched || jeForm.controls.number.valid"><small>Journal Number is required.</small></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="small-12 medium-6 columns">
+                                        <div class="row">
+                                            <div class="small-12 medium-12 columns">
+                                                <label>Date
+                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*">
+                                                    <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="small-12 medium-6 columns">
+                                        <div class="row">
+                                            <div class="small-12 medium-12 columns">
+                                                <label>Source
+                                                    <select formControlName="source">
+                                                        <option value="manual">Manual</option>
+                                                        <option value="payroll">Payroll</option>
+                                                        <option value="accountsPayable">Accounts Payable</option>
+                                                        <option value="accountsReceivable">Accounts Receivable</option>
+                                                        <option value="inventory">Inventory</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="jeForm.controls.source.untouched || jeForm.controls.source.valid"><small>Journal Source is required.</small></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="small-12 medium-6 columns">
+                                        <div class="row">
+                                            <div class="small-12 medium-12 columns">
+                                                <label>Category
+                                                    <select formControlName="category" placeholder="Category">
+                                                        <option value="depreciation">Depreciation, Tax Adj, Other</option>
+                                                        <option value="payroll">Payroll</option>
+                                                        <option value="apBalance">AP balance</option>
+                                                        <option value="arBalance">AR balance</option>
+                                                        <option value="inventoryBalance">Inventory Balance</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="jeForm.controls.category.untouched || jeForm.controls.category.valid"><small>Please select category.</small></div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
-                                        <label>Number
-                                            <input type="text" formControlName="number" placeholder="Journal Number*">
-                                            <div class="error" [hidden]="jeForm.controls.number.untouched || jeForm.controls.number.valid"><small>Journal Number is required.</small></div>
-                                        </label>
+                                        <div class="row">
+                                            <div class="small-12 medium-2 columns">
+                                                <label>Recurring
+                                                    <div class="switch tiny">
+                                                        <input class="switch-input" id="recurring" type="checkbox" formControlName="recurring" (change)="toggleRecurring($event)"/>
+                                                        <label class="switch-paddle" for="recurring">
+                                                            <span class="show-for-sr">Recurring switch</span>
+                                                        </label>
+                                                    </div>
+                                                    <div class="error" [hidden]="jeForm.controls.recurring.untouched || jeForm.controls.recurring.valid"><small>Recurring is required.</small></div>
+                                                </label>
+                                            </div>
+                                            <div class="small-12 medium-3 columns" [hidden]="disableRecurring">
+                                                <label>Next JE Date
+                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setNextJEDate($event)" formControlName="nextJEDate" placeholder="Next JE Date*">
+                                                    <div class="error" [hidden]="jeForm.controls.nextJEDate.untouched || jeForm.controls.nextJEDate.valid"><small>Next JE Date is required.</small></div>
+                                                </label>
+                                            </div>
+                                            <div class="small-12 medium-3 columns" [hidden]="disableRecurring">
+                                                <label>Frequency
+                                                    <select formControlName="recurringFrequency">
+                                                        <option value="daily">Daily</option>
+                                                        <option value="weekly">Weekly</option>
+                                                        <option value="monthly">Monthly</option>
+                                                        <option value="quarterly">Quarterly</option>
+                                                        <option value="yearly">Yearly</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="jeForm.controls.recurringFrequency.untouched || jeForm.controls.recurringFrequency.valid"><small>Please select Frequency.</small></div>
+                                                </label>
+                                            </div>
+                                            <div class="small-12 medium-3 columns" [hidden]="disableRecurring">
+                                                <label>End Date
+                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setEndDate($event)" formControlName="endDate" placeholder="End Date*">
+                                                    <div class="error" [hidden]="jeForm.controls.endDate.untouched || jeForm.controls.endDate.valid"><small>End Date is required.</small></div>
+                                                </label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="small-12 medium-4 columns">
-                                <div class="row">
-                                    <div class="small-12 medium-12 columns">
-                                        <label>Date
-                                            <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*">
-                                            <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="small-12 medium-4 columns">
-                                <div class="row">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row collapse">
-                            <div class="small-12 medium-4 columns">
-                                <div class="row">
-                                    <div class="small-12 medium-12 columns">
-                                        <label>Source
-                                            <select formControlName="source">
-                                                <option value="manual">Manual</option>
-                                                <option value="payroll">Payroll</option>
-                                                <option value="accountsPayable">Accounts Payable</option>
-                                                <option value="accountsReceivable">Accounts Receivable</option>
-                                                <option value="inventory">Inventory</option>
-                                            </select>
-                                            <div class="error" [hidden]="jeForm.controls.source.untouched || jeForm.controls.source.valid"><small>Journal Source is required.</small></div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="small-12 medium-4 columns">
-                                <div class="row">
-                                    <div class="small-12 medium-12 columns">
-                                        <label>Category
-                                            <select formControlName="category" placeholder="Category">
-                                                <option value="depreciation">Depreciation, Tax Adj, Other</option>
-                                                <option value="payroll">Payroll</option>
-                                                <option value="apBalance">AP balance</option>
-                                                <option value="arBalance">AR balance</option>
-                                                <option value="inventoryBalance">Inventory Balance</option>
-                                            </select>
-                                            <div class="error" [hidden]="jeForm.controls.category.untouched || jeForm.controls.category.valid"><small>Please select category.</small></div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="small-12 medium-4 columns">
-                                <div class="row">
+                                <div class="row" style="height: 60px;">
                                     <div class="small-12 medium-4 columns">
                                         <label>Auto Reverse
                                             <div class="switch tiny">
@@ -88,53 +129,17 @@
                                         </label>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="row collapse">
-                            <div class="small-12 medium-4 columns">
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
                                         <label>Description
-                                            <textarea formControlName="desc" style="height: 100px;"></textarea>
+                                            <textarea formControlName="desc" style="height: 140px;"></textarea>
                                             <div class="error" [hidden]="jeForm.controls.desc.untouched || jeForm.controls.desc.valid"><small>Please enter Description.</small></div>
                                         </label>
                                     </div>
                                 </div>
                             </div>
-                            <div class="small-12 medium-8 columns">
-                                <div class="row">
-                                    <div class="small-12 medium-2 columns">
-                                        <label>Recurring
-                                            <div class="switch tiny">
-                                                <input class="switch-input" id="recurring" type="checkbox" formControlName="recurring" (change)="toggleRecurring($event)"/>
-                                                <label class="switch-paddle" for="recurring">
-                                                    <span class="show-for-sr">Recurring switch</span>
-                                                </label>
-                                            </div>
-                                            <div class="error" [hidden]="jeForm.controls.recurring.untouched || jeForm.controls.recurring.valid"><small>Recurring is required.</small></div>
-                                        </label>
-                                    </div>
-                                    <div class="small-12 medium-4 columns" [hidden]="disableRecurring">
-                                        <label>Next JE Date
-                                            <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setNextJEDate($event)" formControlName="nextJEDate" placeholder="Next JE Date*">
-                                            <div class="error" [hidden]="jeForm.controls.nextJEDate.untouched || jeForm.controls.nextJEDate.valid"><small>Next JE Date is required.</small></div>
-                                        </label>
-                                    </div>
-                                    <div class="small-12 medium-4 columns" [hidden]="disableRecurring">
-                                        <label>Frequency
-                                            <select formControlName="recurringFrequency">
-                                                <option value="daily">Daily</option>
-                                                <option value="weekly">Weekly</option>
-                                                <option value="monthly">Monthly</option>
-                                                <option value="quarterly">Quarterly</option>
-                                                <option value="yearly">Yearly</option>
-                                            </select>
-                                            <div class="error" [hidden]="jeForm.controls.recurringFrequency.untouched || jeForm.controls.recurringFrequency.valid"><small>Please enter Journal date.</small></div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
+
                     </div>
                     <div class="row" *ngIf="!newJournalEntry">
                         <div class="columns">

@@ -24,6 +24,7 @@ export class JournalEntryForm extends abstractForm{
       "reversedFrom": [''],
       "recurring": [false],
       "nextJEDate": [''],
+      "endDate": [''],
       "recurringFrequency": [''],
       "desc": [''],
 

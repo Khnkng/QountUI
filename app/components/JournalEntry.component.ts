@@ -16,9 +16,9 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {Router, ActivatedRoute} from "@angular/router";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 
-declare var _:any;
-declare var jQuery:any;
-declare var moment:any;
+declare let _:any;
+declare let jQuery:any;
+declare let moment:any;
 
 @Component({
     selector: 'books',
@@ -39,21 +39,20 @@ export class JournalEntryComponent{
     @ViewChild('newCoaComboBoxDir') newCoaComboBox: ComboBox;
     @ViewChild('reverseJournalDir') reverseJournalComboBox: ComboBox;
     newTags:Array<string>=[];
-    allCompanies:Array = [];
+    allCompanies:Array<any> = [];
     currentCompany:any;
-    chartOfAccounts:Array = [];
-    filteredChartOfAccounts:Array = [];
+    chartOfAccounts:Array<any> = [];
+    filteredChartOfAccounts:Array<any> = [];
     lines:Array<any> = [];
     routeSub:any;
     newJournalEntry:boolean = true;
     journalID:string;
     journalEntry:any;
-    existingJournals:Array = [];
+    existingJournals:Array<any> = [];
     isReverse:boolean = false;
     dimensions:Array<any> = [];
-    editDimension:boolean = false;
     dimensionFlyoutCSS:any;
-    selectedDimensions:Array = [];
+    selectedDimensions:Array<any> = [];
     editingLine:any;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
@@ -143,8 +142,8 @@ export class JournalEntryComponent{
     resetLineForm(){
         let typeControl:any = this.lineForm.controls['type'];
         typeControl.patchValue('');
-        let typeControl:any = this.lineForm.controls['entryType'];
-        typeControl.patchValue('');
+        let entryTypeControl:any = this.lineForm.controls['entryType'];
+        entryTypeControl.patchValue('');
         let coaControl:any = this.lineForm.controls['coa'];
         coaControl.patchValue('');
         let amountControl:any = this.lineForm.controls['amount'];
@@ -182,7 +181,6 @@ export class JournalEntryComponent{
 
     /*When user clicks on save button in the flyout*/
     saveLine(){
-        let base = this;
         let dimensions = this.lineForm.controls['dimensions'];
         dimensions.patchValue(this.selectedDimensions);
         if(this.editingLine.status == 'NEW'){
@@ -245,7 +243,8 @@ export class JournalEntryComponent{
         let lineListForm = _.cloneDeep(this._fb.group(this._lineListForm.getForm(line)));
         data.journalLines[this.editingLine.index] = line;
         this.journalLinesArray.controls[this.editingLine.index] = lineListForm;
-        this.jeForm.controls['journalLines'].controls[this.editingLine.index].patchValue(line);
+        let linesControl:any = this.jeForm.controls['journalLines'];
+        linesControl.controls[this.editingLine.index].patchValue(line);
     }
 
     //When user double clicks on the line, it toggles and show the fields
@@ -280,6 +279,11 @@ export class JournalEntryComponent{
         nextJEDateControl.patchValue(date);
     }
 
+    setEndDate(date: string){
+        let endDateControl:any = this.jeForm.controls['endDate'];
+        endDateControl.patchValue(date);
+    }
+
     toggleAutoReverse(){
         let base = this;
         setTimeout(function(){
@@ -295,14 +299,14 @@ export class JournalEntryComponent{
     }
 
     setReverseJournal(reverseJournal){
-        let journal;
+        let journal:any;
         _.each(this.existingJournals, function(existingJournal){
             if(existingJournal.number == reverseJournal){
                 journal = existingJournal;
             }
         });
         if(!_.isEmpty(journal)) {
-            var reverseJournalControl = this.jeForm.controls['reversedFrom'];
+            let reverseJournalControl:any = this.jeForm.controls['reversedFrom'];
             reverseJournalControl.patchValue(journal.id);
         }
     }
@@ -488,8 +492,8 @@ export class JournalEntryComponent{
         _form['journalLines'] = this.journalLinesArray;
         this.jeForm = this._fb.group(_form);
 
-        let _form = this._lineListForm.getForm();
-        this.lineForm = this._fb.group(_form);
+        let _lineForm = this._lineListForm.getForm();
+        this.lineForm = this._fb.group(_lineForm);
 
         this.newForm();
         this.loadingService.triggerLoadingEvent(true);
