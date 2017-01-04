@@ -40,7 +40,8 @@
                       <label class="text-right">Number</label>
                     </div>
                     <div class="small-8 columns custom-qount-form-field">
-                      <input type="text" formControlName="number" placeholder="Number*"/>
+                      <input type="text" formControlName="number" placeholder="Number*" *ngIf="editMode" disabled/>
+                      <input type="text" formControlName="number" placeholder="Number*" *ngIf="!editMode"/>
                       <div class="error" [hidden]="coaForm.controls.number.untouched || coaForm.controls.number.valid">Number is required.</div>
                     </div>
                   </div>
@@ -95,7 +96,7 @@
                     <div class="small-8 columns">
                       <div class="subaccount-wrapper">
                         <input type="checkbox" formControlName="subAccount" (change)="changeStatus()"/>
-                        <label class="text-right">Sub Type</label>
+                        <label class="text-right">Sub Account</label>
                       </div>
                       <div [hidden]="!subAccount" *ngIf="combo" >
                         <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentID" [listObject]="parentAccounts" (valueChanged)="updateParent($event)">
