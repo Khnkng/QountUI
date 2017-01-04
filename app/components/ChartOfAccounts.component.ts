@@ -48,6 +48,7 @@ export class ChartOfAccountsComponent{
   combo:boolean = true;
   sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices"];
   hasParentOrChild: boolean = false;
+  showFlyout:boolean = false;
 
   constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard,
               private coaService: ChartOfAccountsService, private loadingService:LoadingService,
@@ -124,7 +125,7 @@ export class ChartOfAccountsComponent{
     this.subAccount = false;
     this.hasParentOrChild = false;
     this.newForm();
-    jQuery(this.addCOA.nativeElement).foundation('open');
+    this.showFlyout = true;
   }
 
   changeStatus(){
@@ -135,6 +136,7 @@ export class ChartOfAccountsComponent{
   showEditCOA(row: any){
     let base = this;
     this.editMode = true;
+    this.showFlyout = true;
     this.newForm();
     this.row = row;
     this.setParents(row.type, row.id);
@@ -152,7 +154,6 @@ export class ChartOfAccountsComponent{
     }
     this.updateCOAStatus();
     this._coaForm.updateForm(this.coaForm, row);
-    jQuery(this.addCOA.nativeElement).foundation('open');
   }
 
   updateCOAStatus(){
@@ -226,22 +227,33 @@ export class ChartOfAccountsComponent{
       data.id = this.row.id;
       this.coaService.updateCOA(data.id, data, this.currentCompany.id)
           .subscribe(coa => {
+            base.showFlyout = false;
             base.loadingService.triggerLoadingEvent(false);
             base.row = {};
             base.toastService.pop(TOAST_TYPE.success, "Chart of Account updated successfully");
             let index = _.findIndex(base.chartOfAccounts, {id: data.id});
             base.chartOfAccounts[index] = coa;
             base.buildTableData(base.chartOfAccounts);
-          }, error => this.handleError(error));
+          }, error => this.handleCOAError(error));
     } else{
       this.coaService.addChartOfAccount(data, this.currentCompany.id)
           .subscribe(newCOA => {
+            base.showFlyout = false;
             this.loadingService.triggerLoadingEvent(false);
             this.handleCOA(newCOA);
-          }, error => this.handleError(error));
+          }, error => this.handleCOAError(error));
     }
     this.buildTableData(this.chartOfAccounts);
     jQuery(this.addCOA.nativeElement).foundation('close');
+  }
+
+  handleCOAError(error){
+    this.loadingService.triggerLoadingEvent(false);
+    if(error && error.message){
+      this.toastService.pop(TOAST_TYPE.error, error.message);
+    } else{
+      this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+    }
   }
 
   handleCOA(newCOA){
