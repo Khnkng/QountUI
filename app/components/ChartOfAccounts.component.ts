@@ -208,10 +208,7 @@ export class ChartOfAccountsComponent{
     }
   }
 
-  updateParent(parent){
-    let parentCoa = _.find(this.chartOfAccounts, function(coa){
-      return coa.name == parent;
-    });
+  updateParent(parentCoa){
     let parentControl:any = this.coaForm.controls['parentID'];
     if(parentCoa){
       parentControl.patchValue(parentCoa.id);
@@ -244,7 +241,6 @@ export class ChartOfAccountsComponent{
           }, error => this.handleCOAError(error));
     }
     this.buildTableData(this.chartOfAccounts);
-    jQuery(this.addCOA.nativeElement).foundation('close');
   }
 
   handleCOAError(error){
@@ -320,7 +316,8 @@ export class ChartOfAccountsComponent{
         } else if(key == 'number'){
           row[key] = coa[key];
           if(coa['parentID']){
-            row['numberHTML'] = '<span style="margin-left: 10px;">'+coa[key]+'</span>';
+            //row['numberHTML'] = '<span style="margin-left: 10px;">'++'</span>';
+            row['numberHTML'] = coa[key];
           } else{
             row['numberHTML'] = coa[key];
           }

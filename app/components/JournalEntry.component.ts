@@ -311,12 +311,9 @@ export class JournalEntryComponent{
         }
     }
 
-    updateChartOfAccount($event){
-        let chartOfAccount = _.find(this.chartOfAccounts, {"name": $event});
-        if(!_.isEmpty(chartOfAccount)){
-            let newCOAControl:any = this.lineForm.controls['coa'];
-            newCOAControl.patchValue(chartOfAccount.id);
-        }
+    updateChartOfAccount(chartOfAccount){
+        let newCOAControl:any = this.lineForm.controls['coa'];
+        newCOAControl.patchValue(chartOfAccount.id);
     }
 
     toggleLineEdit(lineListItem){
@@ -431,12 +428,9 @@ export class JournalEntryComponent{
         return filteredCOA;
     }
 
-    updateLineCOA($event, index){
-        let chartOfAccount = _.find(this.chartOfAccounts, {"name": $event});
-        if(!_.isEmpty(chartOfAccount)){
-            let linesControl:any = this.jeForm.controls['journalLines'];
-            linesControl.controls[index].controls['coa'].patchValue(chartOfAccount.id);
-        }
+    updateLineCOA(chartOfAccount, index){
+        let linesControl:any = this.jeForm.controls['journalLines'];
+        linesControl.controls[index].controls['coa'].patchValue(chartOfAccount.id);
     }
 
     processJournalEntry(journalEntry){

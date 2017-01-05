@@ -52,10 +52,10 @@
         autocompleteselect: function( event, ui ) {
           ui.item.option.selected = true;
           this._trigger( "select", event, {
-            item: ui.item.option
+            item: ui.item.option.value
           });
           if(this.options.onchange) {
-            this.options.onchange(ui.item.value);
+            this.options.onchange(ui.item.option.value);
             if(this.options.clearOnSelect) {
               this.input.val('');
             }

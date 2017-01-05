@@ -299,11 +299,15 @@ export class VendorComponent {
 
   setVendorType($event){
     let vendorType = $event.target.value;
-    if(vendorType == 'company'){
-      this.vendorForm.controls['ein'].setValidators([Validators.required]);
+    if(vendorType == 'Company'){
+      this.vendorForm.controls['ein'].setValidators(function(){
+        return [Validators.required, Validators.pattern];
+      });
       this.vendorForm.controls['ssn'].setValidators([]);
     } else {
-      this.vendorForm.controls['ssn'].setValidators([Validators.required]);
+      this.vendorForm.controls['ssn'].setValidators(function(){
+        return [Validators.required, Validators.pattern];
+      });
       this.vendorForm.controls['ein'].setValidators([]);
     }
   }

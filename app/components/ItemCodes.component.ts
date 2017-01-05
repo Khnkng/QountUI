@@ -15,8 +15,8 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ItemCodeForm} from "../forms/ItemCode.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 
-declare var jQuery:any;
-declare var _:any;
+declare let jQuery:any;
+declare let _:any;
 
 @Component({
   selector: 'itemcodes',
@@ -41,7 +41,7 @@ export class ItemCodesComponent{
   row:any;
   tableColumns:Array<string> = ['name', 'id', 'payment_coa_mapping', 'invoice_coa_mapping', 'desc'];
   combo:boolean = true;
-  allCOAList:Array = [];
+  allCOAList:Array<any> = [];
 
   constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard,
               private codeService: CodesService, private toastService: ToastService, private loadingService:LoadingService,
@@ -118,7 +118,7 @@ export class ItemCodesComponent{
   removeItemCode(row: any){
     let itemCodeId = row.id;
     this.loadingService.triggerLoadingEvent(true);
-    this.codeService.removeItemCode(itemCodeId, this.currentCompany.id)
+    this.codeService.removeItemCode(itemCodeId)
         .subscribe(coa => {
           this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.success, "Deleted Item code successfully");
@@ -131,20 +131,14 @@ export class ItemCodesComponent{
     setTimeout(()=> this.newFormActive=true, 0);
   }
 
-  updatePaymentCOA(paymentCOAName){
-    let paymentCOA = _.find(this.paymentChartOfAccounts, function(coa){
-      return coa.name == paymentCOAName;
-    });
+  updatePaymentCOA(paymentCOA){
     let paymentCOAControl:any = this.itemcodeForm.controls['payment_coa_mapping'];
     if(paymentCOA){
       paymentCOAControl.patchValue(paymentCOA.id);
     }
   }
 
-  updateInvoiceCOA(invoiceCOAName){
-    let invoiceCOA = _.find(this.invoiceChartOfAccounts, function(coa){
-      return coa.name == invoiceCOAName;
-    });
+  updateInvoiceCOA(invoiceCOA){
     let invoiceCOAControl:any = this.itemcodeForm.controls['invoice_coa_mapping'];
     if(invoiceCOA){
       invoiceCOAControl.patchValue(invoiceCOA.id);

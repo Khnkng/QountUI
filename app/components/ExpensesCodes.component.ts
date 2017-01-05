@@ -126,10 +126,7 @@ export class ExpensesCodesComponent {
     setTimeout(()=> this.newFormActive=true, 0);
   }
 
-  updateExpenseCOA(selectedCOAName){
-    let selectedCOA = _.find(this.chartOfAccountsArr, function(coa){
-      return coa.name == selectedCOAName;
-    });
+  updateExpenseCOA(selectedCOA){
     let selectedCOAControl:any = this.expensesForm.controls['coa_mapping_id'];
     if(selectedCOA){
       selectedCOAControl.patchValue(selectedCOA.id);
