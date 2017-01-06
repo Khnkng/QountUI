@@ -106,30 +106,30 @@ gulp.task('serve', ['build'], function () {
 gulp.task('typescript-compile', function () {
 
     var tsProject = ts.createProject('tsconfig.json', {
-        typescript: require('typescript')
+        //typescript: require('typescript')
     });
 
     var tsProject1 = ts.createProject('node_modules/qCommon/tsconfig.json', {
-        typescript: require('typescript')
+        //typescript: require('typescript')
     });
 
     var tsProject2 = ts.createProject('node_modules/reportsUI/tsconfig.json', {
-        typescript: require('typescript')
+        //typescript: require('typescript')
     });
 
     var tsProject3 = ts.createProject('node_modules/billsUI/tsconfig.json', {
-        typescript: require('typescript')
+        //typescript: require('typescript')
     });
 
 
   var tsResult = tsProject.src() // instead of gulp.src(...)
-      .pipe(ts(tsProject));
+      .pipe(tsProject());
   var tsResult1 = tsProject1.src() // instead of gulp.src(...)
-      .pipe(ts(tsProject1));
+      .pipe(tsProject1());
     var tsResult2 = tsProject2.src() // instead of gulp.src(...)
-        .pipe(ts(tsProject2));
+        .pipe(tsProject2());
   var tsResult3 = tsProject3.src() // instead of gulp.src(...)
-      .pipe(ts(tsProject3));
+      .pipe(tsProject3());
   return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/reportsUI')),tsResult3.js.pipe(gulp.dest('build/lib/billsUI'))).pipe(livereload());
   /*return gulp.src(['app/!**!/!*.ts', '!app/bower_components/!**!/!*.ts', '!node_modules/!**!/!*.ts'])
    .pipe(ts(tsProject))
@@ -140,19 +140,19 @@ gulp.task('prod-typescript-compile', function () {
 
 
     var tsProject = ts.createProject('tsconfig.json', {
-        typescript: require('typescript')
+ //       typescript: require('typescript')
     });
 
     var tsProject1 = ts.createProject('node_modules/qCommon/tsconfig.json', {
-        typescript: require('typescript')
+ //       typescript: require('typescript')
     });
 
     var tsProject2 = ts.createProject('node_modules/reportsUI/tsconfig.json', {
-        typescript: require('typescript')
+        //      typescript: require('typescript')
     });
 
     var tsProject3 = ts.createProject('node_modules/billsUI/tsconfig.json', {
-        typescript: require('typescript')
+ //       typescript: require('typescript')
     });
 
   var tsResult = tsProject.src() // instead of gulp.src(...)
@@ -196,7 +196,7 @@ gulp.task('dependencies', function () {
     'node_modules/zone.js/dist/zone.js',
     'node_modules/reflect-metadata/Reflect.js',
     'node_modules/systemjs/dist/system.src.js',
-    'node_modules/socket.io-client/socket.io.js',
+    'node_modules/socket.io-client/dist/socket.io.js',
     'app/assets/**/*.js',
     'app/bower_components/footable/compiled/footable.min.js',
     'app/bower_components/tag-it/js/tag-it.js'
