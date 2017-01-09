@@ -23,7 +23,7 @@
         <div class="flyout-body flyout-shadow-effect">
           <!--here comes actual flyout code-->
           <div #createVendor id="createVendor" class="create-vendor">
-            <form *ngIf="active1" (ngSubmit)="submit($event)" [formGroup]="vendorForm">
+            <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="vendorForm">
 
               <section class="form-section clearfix">
                 <div class="form-section-left">
@@ -44,7 +44,7 @@
                       <label class="text-right">Vendor Type</label>
                     </div>
                     <div class="small-6 columns">
-                      <select formControlName="type" (change)="setVendorType($event)">
+                      <select formControlName="type" (change)="setVendorType($event.target.value)">
                         <option value="Company">Company</option>
                         <option value="Individual">Individual</option>
                       </select>
@@ -69,6 +69,16 @@
                       <div class="error" *ngIf="vendorForm.controls.ein.touched && vendorForm.controls.ein.hasError('pattern')">EIN should have 9 digits only</div>
                     </div>
                   </div>
+                  <div class="row" *ngIf="!isVendorCompany(vendorForm)">
+                    <div class="small-4 columns">
+                      <label class="text-right">SSN</label>
+                    </div>
+                    <div class="small-6 columns">
+                      <input type="text" formControlName="ssn" placeholder="SSN*" pattern="[0-9]{9}$">
+                      <div class="error" *ngIf="vendorForm.controls.ssn.touched && vendorForm.controls.ssn.hasError('required')">Vendor SSN is required</div>
+                      <div class="error" *ngIf="vendorForm.controls.ssn.touched && vendorForm.controls.ssn.hasError('pattern')">SSN should have 9 digits only</div>
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="small-4 columns">
                       <label class="text-right">COA</label>
@@ -80,17 +90,6 @@
                       <div class="error" [hidden]="vendorForm.controls.coa.untouched || vendorForm.controls.coa.valid">COA is required</div>
                     </div>
                   </div>
-                  <div class="row" *ngIf="!isVendorCompany(vendorForm)">
-                    <div class="small-4 columns">
-                      <label class="text-right">SSN</label>
-                    </div>
-                    <div class="small-6 columns">
-                      <input type="text" formControlName="ssn" placeholder="SSN*" pattern="[0-9]{9}$">
-                      <div class="error" *ngIf="vendorForm.controls.ssn.touched && vendorForm.controls.ssn.hasError('required')">Vendor SSN is required</div>
-                      <div class="error" *ngIf="vendorForm.controls.ssn.touched && vendorForm.controls.ssn.hasError('pattern')">SSN should have 9 digits only</div>
-                    </div>
-                  </div>
-
                   <div class="row">
                     <div class="small-4 columns">
                       <label class="text-right">Account Number(s)</label>
@@ -141,14 +140,14 @@
 
                 <div class="row">
                   <div class="small-12 medium-12 columns custom-qount-form-submit">
-                    <button class="button create small float-right" [disabled]="!vendorForm.valid || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
+                    <button class="button create small float-right" [disabled]="!isValid(vendorForm) || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
                   </div>
                 </div>
               </section>
             </form>
           </div>
         </div>
-        <button class="close-flyout" aria-label="Close modal" type="button" (click)="showFlyout = !showFlyout">
+        <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
                 <span aria-hidden="true">
                   <i class="ion-ios-close-empty"></i>
                 </span>

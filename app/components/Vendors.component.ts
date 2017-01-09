@@ -3,7 +3,7 @@
  */
 
 import {Component, ViewChild} from "@angular/core";
-import {FormGroup, FormBuilder, Validators} from "@angular/forms";
+import {FormGroup, FormBuilder, Validators, FormControl} from "@angular/forms";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
@@ -107,6 +107,7 @@ export class VendorComponent {
       {"name": "has1099", "title": "1099","visible": false},
       {"name": "paymentMethod", "title": "Payment Method","visible": false},
       {"name": "accountNumber", "title": "Account Number","visible": false},
+      {"name": "accountNumbers", "title": "Account Numbers","visible": false},
       {"name": "routingNumber", "title": "RoutingNumber","visible": false},
       {"name": "coa", "title": "COA","visible": false},
       {"name": "creditCardNumber", "title": "Credit Card Number","visible": false},
@@ -123,11 +124,6 @@ export class VendorComponent {
           } else if(vendor[key] == 'Company'){
             row['einssn'] = vendor['ein'];
           }
-          base.setVendorType({
-            target: {
-              value: row[key]
-            }
-          });
         }
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       }
@@ -140,14 +136,15 @@ export class VendorComponent {
 
   showCreateVendor() {
     let defaultCountry  = {name:'United States', code:'US'};
-    var self = this;
+    let self = this;
     this.editMode = false;
     this.vendorForm = this._fb.group(this._vendorForm.getForm());
     this.newForm1();
     setTimeout(function () {
       self.vendorCountryComboBox.setValue(defaultCountry, 'name');
     },100);
-    this.showVendorProvince({name:'India', code:'IN'});
+    this.showVendorProvince(defaultCountry);
+    this.editAddress = {};
     this.showFlyout = true;
   }
 
@@ -172,8 +169,6 @@ export class VendorComponent {
         base.addressDir.setData(base.editAddress);
       },500);
     }
-    /*this.showAddress = false;
-    setTimeout(()=> this.showAddress=true, 0);*/
   }
 
   showCOA(coa:any) {
@@ -201,41 +196,24 @@ export class VendorComponent {
   active1:boolean=true;
   newForm1(){
     this.active1 = false;
-    //this.showAddress = false;
     setTimeout(()=> this.active1=true, 0);
   }
 
   showEditVendor(row:any) {
     this.showFlyout = true;
     this.editMode = true;
+    this.vendorForm = this._fb.group(this._vendorForm.getForm());
     this.getVendorDetails(row.id);
-    var base=this;
-    this.row = row;
-    this.newForm1();
-    row.has1099=row.has1099 == 'true';
-    this._vendorForm.updateForm(this.vendorForm, row);
-    /*let countryName = row.country;
-    let country = _.find(PROVINCES.COUNTRIES, function(_country) {
-      return _country.name == countryName;
-    });*/
-    let coa = _.find(this.chartOfAccounts, function(_coa) {
-      return _coa.id==base.row.coa
-    });
-    let stateName = row.state;
-    /*setTimeout(function () {
-      base.vendorCountryComboBox.setValue(country, 'name');
-      base.coaComboBox.setValue(coa, 'name');
-    },100);*/
   }
 
   submit($event) {
     this.loadingService.triggerLoadingEvent(true);
     $event && $event.preventDefault();
-    var data = this._vendorForm.getData(this.vendorForm);
+    let data = this._vendorForm.getData(this.vendorForm);
     this.companyId = Session.getCurrentCompany();
-    var data1 = this.addressDir.getData();
-    data1.country=data.country;
-    data.addresses=[data1];
+    let addressData = this.addressDir.getData();
+    addressData.country=data.country;
+    data.addresses=[addressData];
     if(this.editMode) {
       data.id = this.row.id;
       this.companyService.updateVendor(<VendorModel>data, this.companyId)
@@ -252,6 +230,15 @@ export class VendorComponent {
             this.showFlyout = false;
           }, error =>  this.showMessage(false, error));
     }
+  }
+
+  isValid(vendorForm){
+    return vendorForm.valid;
+  }
+
+  hideFlyout(){
+    this.row = {};
+    this.showFlyout = !this.showFlyout;
   }
 
   addressValid() {
@@ -297,19 +284,23 @@ export class VendorComponent {
 
   }
 
-  setVendorType($event){
-    let vendorType = $event.target.value;
+  setVendorType(vendorType, vendor?){
+    let validator = [Validators.required, Validators.pattern];
+    let tempForm = _.cloneDeep(this._vendorForm.getForm());
     if(vendorType == 'Company'){
-      this.vendorForm.controls['ein'].setValidators(function(){
-        return [Validators.required, Validators.pattern];
-      });
-      this.vendorForm.controls['ssn'].setValidators([]);
+      tempForm.ein = [this.row.ein || '', validator];
+      tempForm.ssn = [this.row.ssn || ''];
     } else {
-      this.vendorForm.controls['ssn'].setValidators(function(){
-        return [Validators.required, Validators.pattern];
-      });
-      this.vendorForm.controls['ein'].setValidators([]);
+      tempForm.ein = [this.row.ein || ''];
+      tempForm.ssn = [this.row.ssn || '', validator];
     }
+    if(!vendor){
+      tempForm.type = [vendorType, [Validators.required]];
+      let tempData = this._vendorForm.getData(this.vendorForm);
+      this.vendorForm = this._fb.group(tempForm);
+      this._vendorForm.updateForm(this.vendorForm, tempData);
+    }
+    return this._fb.group(tempForm);
   }
 
   isVendorCompany(form){
@@ -323,18 +314,30 @@ export class VendorComponent {
   editAddress:any;
 
   getVendorDetails(vendorID){
-    this.companyService.vendor(this.companyId,vendorID).subscribe(vendors => {
-      if(vendors.addresses[0]){
-        let countryName = vendors.addresses[0].country;
-        this.editAddress=vendors.addresses[0];
+    let base=this;
+    this.companyService.vendor(this.companyId,vendorID).subscribe(vendor => {
+      if(vendor.addresses[0]){
+        this.row = vendor;
+        let countryName = vendor.addresses[0].country;
+        this.editAddress=vendor.addresses[0];
         let country = _.find(PROVINCES.COUNTRIES, function(_country) {
           return _country.name == countryName;
         });
-        var base=this;
         setTimeout(function () {
           base.vendorCountryComboBox.setValue(country, 'name');
         },100);
       }
+      let coa = _.find(this.chartOfAccounts, function(_coa) {
+        return _coa.id == vendor.coa
+      });
+      if(!_.isEmpty(coa)){
+        setTimeout(function(){
+          base.coaComboBox.setValue(coa, 'name');
+        });
+      }
+      vendor.has1099 = vendor.has1099 == 'true';
+      this.vendorForm = this.setVendorType(vendor);
+      this._vendorForm.updateForm(this.vendorForm, vendor);
     }, error => this.handleError(error));
   }
 }
