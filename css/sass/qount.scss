@@ -79,7 +79,12 @@ body {
   background: #fff;
   height: auto;
 }
-
+#moduleslist>div>ul>li:nth-of-type(odd){
+  background-color : #E8F2FC;
+}
+#moduleslist>div>ul>li:nth-of-type(even){
+  background-color : white;
+}
 @media print{
   .nz {
     color: darkblue !important;

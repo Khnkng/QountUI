@@ -2,40 +2,37 @@
     <div class="column small-12 medium-6">
         <h5>Modules</h5>
     </div>
-    <div class="row tools-grids">
+    <div class="row tools-grids" id="moduleslist">
         <div class="column small-12 medium-12 large-12">
-            <!--<div>-->
-                <!--<label attr.for="moduleId-{{moduleIndex}}">-->
-                    <!--<input id="modileId-{{moduleIndex}}" [(ngModel)]="module.isSelected" (click)="onModuleSelect(moduleIndex)" type="checkbox"/> {{module.name}}-->
-                <!--</label>-->
-            <!--</div>-->
-            <!--<div class="column small-12 medium-12 large-12" *ngFor="let submodule of module.submodule;let subModuleIndex=index;">-->
-                <!--<div>-->
-                    <!--<label attr.for="subModuleId-{{subModuleIndex}}">-->
-                        <!--<input id="subModuleId-{{subModuleIndex}}" [(ngModel)]="submodule.isSelected" (click)="onSubModuleSelect(moduleIndex, subModuleIndex)" type="checkbox" /> {{submodule.name}}-->
-                    <!--</label>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
             <ul foundation class="accordion" data-accordion *ngIf="modulesList.length != 0" data-allow-all-closed="true" style="background-color: #EFEFEF">
                 <li class="accordion-item" data-accordion-item *ngFor="let module of modulesList;let moduleIndex=index;">
                     <a class="accordion-title">
                         <label attr.for="moduleId-{{moduleIndex}}">
-                        <input id="modileId-{{moduleIndex}}" [(ngModel)]="module.isSelected" (click)="onModuleSelect(moduleIndex, $event)" type="checkbox"/>{{module.name}}
+                            <input style="font-size: 16px" id="modileId-{{moduleIndex}}" [(ngModel)]="module.isSelected" (click)="onModuleSelect(moduleIndex, $event)" type="checkbox"/>{{module.name}}
                         </label>
                     </a>
+
                     <div class="accordion-content" data-tab-content>
-                        <div *ngFor="let submodule of module.submodule;let subModuleIndex=index;" class="content active">
-                            <label attr.for="subModuleId-{{subModuleIndex}}">
-                                <input id="subModuleId-{{subModuleIndex}}" [(ngModel)]="submodule.isSelected" (click)="onSubModuleSelect(moduleIndex, subModuleIndex)" type="checkbox" /> {{submodule.name}}
+                        <div *ngFor="let submodule of module.submodules;let subModuleIndex=index;" class="content active">
+                            <label attr.for="subModuleId-{{submodule.id}}">
+                                <table style="width: 100%;border-color: white">
+                                    <tr style="border-color: white">
+                                        <td align="left" style="width:40%;font-size: 15px;"> <input id="subModuleId-{{submodule.id}}" [(ngModel)]="submodule.isSelected" (click)="onSubModuleSelect(moduleIndex, submodule.id)" type="checkbox" /> {{submodule.name}}</td>
+                                        <td align="left" style="width:10%;font-size: 15px;"><input type="radio" name="companies-{{submodule.id}}" [(ngModel)]="submodule['companies']" [checked]="submodule['companies'] == companyId" [value]="companyId" checked/> {{companyName}}</td>
+                                        <td align="left" style="width:10%;font-size: 15px"><input type="radio" name="companies-{{submodule.id}}" [(ngModel)]="submodule['companies']" [checked]="submodule['companies'] == 'qount'" [value]="'qount'"/> Qount</td>
+                                        <td style="width:30%"></td>
+                                        <!--(click)="setSubModuleCompany(submodule, 'current')"-->
+                                    </tr>
+                                </table>
                             </label>
                         </div>
                     </div>
                 </li>
             </ul>
-    </div>
-    <button class="button create small "
-            type="submit" (click)="submit($event)" *ngIf="isLoaded">Submit</button>
-    <div>
+        </div>
+        <button class="button create small "
+                type="submit" (click)="submit($event)" *ngIf="isLoaded">Submit</button>
+        <div>
+        </div>
     </div>
 </div>

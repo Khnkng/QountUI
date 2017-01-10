@@ -1,4 +1,3 @@
-
 import {Component, ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
 import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
@@ -20,6 +19,7 @@ declare var _:any;
 
 export class ModulesComponent {
     companyId:string;
+    companyName:string;
     modulesList:Array<any> = [];
     isCreate:boolean=true;
     isLoaded:boolean=false;
@@ -29,6 +29,7 @@ export class ModulesComponent {
     constructor(private _fb: FormBuilder, private _router: Router, private _toastService: ToastService,
                 private switchBoard: SwitchBoard, private loadingService:LoadingService,private modulesService:ModulesService) {
         this.companyId = Session.getCurrentCompany();
+        this.companyName = Session.getCurrentCompanyName();
         this.modulesService.modules().subscribe(modules => {
             this.modulesList=modules;
             this.isLoaded=true;
@@ -52,23 +53,35 @@ export class ModulesComponent {
 
                 if(modules && modules.length>0){
                     this.isCreate=false;
-                    let selectedModuleIds = _.map(modules, 'module_id');
-                    let selectedSubModuleIds = _.map(modules, 'sub_module_id');
+                    let selectedModuleIds = _.map(modules, 'id');
+                    //let selectedSubModuleIds = _.map(modules, 'sub_module_id');
                     let allModuleIds = _.map(this.modulesList, 'id');
                     _.each(this.modulesList, function(m){
                         //module_id
                         if(selectedModuleIds.indexOf(m.id) == -1){
                             m.isSelected = false;
                         } else{
-                            m.isSelected = true;
-                            _.each(m.submodule, function(sm){
-                                //sub_module_id
-                                if(selectedSubModuleIds.indexOf(sm.id) == -1){
-                                    sm.isSelected = false;
-                                } else{
-                                    sm.isSelected = true;
-                                }
+
+                            //sub_module_id
+                            _.each(m.submodules, function(sM){
+                                _.each(modules, function(xm){
+                                    if(xm.id === m.id){
+                                        _.each(xm.submodules, function(cSm){
+                                            if(cSm.id === sM.id){
+                                                sM.isSelected = true;
+                                            }else{
+                                                sM.isSelected = false;
+                                            }
+
+                                        });
+                                    }
+
+                                });
+
                             });
+
+                            let parentSelectedSubList = _.every(m.submodules, ['isSelected', true]);
+                            m.isSelected = parentSelectedSubList;
                         }
                     });
                 }
@@ -87,7 +100,7 @@ export class ModulesComponent {
         let currentModule = (this.modulesList[moduleIndex]);
         currentModule.isSelected = !currentModule.isSelected;
         parentSelected = currentModule.isSelected;
-        _.each(currentModule.submodule, function(sm){
+        _.each(currentModule.submodules, function(sm){
             sm.isSelected = parentSelected;
         });
 
@@ -97,26 +110,52 @@ export class ModulesComponent {
         var self = this;
         setTimeout(function () {
             let currentModule = self.modulesList[moduleIndex];
-            let parentSelectedSubList = _.every(currentModule.submodule, ['isSelected', true]);
+            let parentSelectedSubList = _.every(currentModule.submodules, ['isSelected', true]);
             currentModule.isSelected = parentSelectedSubList;
         }, 0);
     }
     submit($event){
+        let base = this;
         $event && $event.preventDefault();
-        //as matten current service
-        let newObj = {};
+        let newObj = [];
         _.each(this.modulesList, function(m){
-            _.each(m.submodule, function(sm){
-                if(sm.isSelected){
-                    if (!(m.id in newObj)){
-                        newObj[m.id] = [];
+            let moduleObject:any = {};
+            moduleObject.id = m.id;
+            moduleObject.name = m.name;
+
+            _.each(m.submodules, function(sm){
+                if(sm.isSelected) {
+                    /*if (!(m.id in newObj)){
+                     newObj[m.id] = [];
+                     }*/
+                    if(sm.companies!='qount'){
+                        let smodules: any = {};
+                        smodules.id = sm.id;
+                        smodules.name = sm.name;
+                        smodules.selected_company_name=base.companyName;
+                        smodules.selected_company_id=base.companyId;
+                        if (!moduleObject.submodules) {
+                            moduleObject.submodules = [];
+                        }
+                        moduleObject.submodules.push(smodules);
                     }
-                    newObj[m.id].push(sm.id);
+                    else{
+                        let smodules: any = {};
+                        smodules.id = sm.id;
+                        smodules.name = sm.name;
+                        smodules.selected_company_name='qount';
+                        smodules.selected_company_id='qount';
+                        if (!moduleObject.submodules) {
+                            moduleObject.submodules = [];
+                        }
+                        moduleObject.submodules.push(smodules);
+                    }
                 }
             });
+            if(!_.isEmpty(moduleObject.submodules)) {
+                newObj.push(moduleObject);
+            }
         });
-
-        console.log("newObj",newObj);
         var data=newObj;
         //return;
         if(this.isCreate){
