@@ -277,7 +277,15 @@ export class ChartOfAccountsComponent{
     this.tableOptions.search = true;
     this.tableOptions.pageSize = 9;
     this.tableData.columns = [
-      {"name": "numberHTML", "title": "Number"},
+      {"name": "numberHTML", "title": "Number", "sortValue": function(element){
+          let parent = jQuery(element)[0].getAttribute('data-parent');
+          if(parent){
+            return parent;
+          } else{
+            return jQuery(element)[0].innerHTML;
+          }
+        }
+      },
       {"name": "nameHTML", "title": "Name"},
       {"name": "type", "title": "Type"},
       {"name": "subType", "title": "Sub type"},
@@ -316,10 +324,9 @@ export class ChartOfAccountsComponent{
         } else if(key == 'number'){
           row[key] = coa[key];
           if(coa['parentID']){
-            //row['numberHTML'] = '<span style="margin-left: 10px;">'++'</span>';
-            row['numberHTML'] = coa[key];
+            row['numberHTML'] = '<span style="margin-left: 10px;" data-parent="'+base.getNumber(coa['id'])+'">'+coa[key]+'</span>';
           } else{
-            row['numberHTML'] = coa[key];
+            row['numberHTML'] = '<span>'+coa[key]+'</span>';
           }
         } else{
           row[key] = coa[key];
@@ -333,6 +340,11 @@ export class ChartOfAccountsComponent{
     }, 0)
   }
 
+  getNumber(coaId){
+    let coa = _.find(this.chartOfAccounts, {id: coaId});
+    return coa.number;
+  }
+
   sortChartOfAccounts(coaList){
     let base = this;
     this.chartOfAccounts = [];
@@ -340,7 +352,7 @@ export class ChartOfAccountsComponent{
       return base.sortingOrder.indexOf(coa.type);
     });
     let parents = _.filter(coaList, function(coa){
-      return coa.parentID == '' && coa.subAccount == false;
+      return !coa.parentID || coa.subAccount == false;
     });
     _.each(parents, function(parent){
       base.chartOfAccounts.push(parent);

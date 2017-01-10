@@ -299,8 +299,9 @@ export class VendorComponent {
       let tempData = this._vendorForm.getData(this.vendorForm);
       this.vendorForm = this._fb.group(tempForm);
       this._vendorForm.updateForm(this.vendorForm, tempData);
+    } else{
+      this.vendorForm = this._fb.group(tempForm);
     }
-    return this._fb.group(tempForm);
   }
 
   isVendorCompany(form){
@@ -335,8 +336,8 @@ export class VendorComponent {
           base.coaComboBox.setValue(coa, 'name');
         });
       }
-      vendor.has1099 = vendor.has1099 == 'true';
-      this.vendorForm = this.setVendorType(vendor);
+      vendor.has1099 = vendor.has1099 == 'true' || vendor.has1099 == true;
+      this.setVendorType(vendor.type, vendor);
       this._vendorForm.updateForm(this.vendorForm, vendor);
     }, error => this.handleError(error));
   }
