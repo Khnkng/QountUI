@@ -17,7 +17,7 @@
                             <tr style="border-color: white" *ngFor="let submodule of module.submodules;let subModuleIndex=index;">
 
                                         <td align="left" style="font-size: 15px;"> <input id="subModuleId-{{submodule.id}}" [(ngModel)]="submodule.isSelected" (click)="onSubModuleSelect(moduleIndex, submodule.id)" type="checkbox" /> {{submodule.name}}</td>
-                                        <td align="left" style="font-size: 15px;"><input type="radio" name="companies-{{submodule.id}}" [(ngModel)]="submodule['companies']" [value]="companyName" checked/> {{companyName}}</td>
+                                        <td align="left" style="font-size: 15px;"><input type="radio" name="companies-{{submodule.id}}" [(ngModel)]="submodule['companies']" [value]="companyName" /> {{companyName}}</td>
                                         <td align="left" style="font-size: 15px"><input type="radio" name="companies-{{submodule.id}}" [(ngModel)]="submodule['companies']"  [value]="'qount'"/> Qount</td>{{submodule.selected_company_name}}
                                         <!--(click)="setSubModuleCompany(submodule, 'current')"-->
 
