@@ -204,14 +204,6 @@
                                 <td [hidden]="!lineListItem.editable">
                                     <textarea [formControl]="lineListItem.controls.memo"></textarea>
                                 </td>
-                                <!--<td [hidden]="lineListItem.editable">
-                                    {{getDimensions(lineListItem.controls.dimensions.value)}}
-                                </td>
-                                <td [hidden]="!lineListItem.editable">
-                                    <div class="dimension-link">
-                                        <a (click)="showFlyout('UPDATE', lineListItem)"><i class="icon ion-android-open"></i></a>
-                                    </div>
-                                </td>-->
                                 <td>
                                     <i class="icon ion-checkmark-circled" (click)="updateLine(lineListItem, index)" *ngIf="lineListItem.editable"></i>
                                     <i class="icon ion-close" *ngIf="lineListItem.editable" (click)="toggleLineEdit(lineListItem)"></i>
@@ -307,7 +299,7 @@
                         <div class="small-12 medium-6 columns">
                             <label>Dimensions
                                 <div class="row dimension-grids">
-                                    <div class="medium-3 column" *ngFor="let dimension of dimensions">
+                                    <div class="medium-4 column" *ngFor="let dimension of dimensions">
                                         <div class="dimension-grid">
                                             <div class="dimension-header">
                                                 <div>
@@ -321,7 +313,7 @@
                                             </div>
                                             <div class="dimension-values" [ngClass]="{'selected': isDimensionSelected(dimension.name)}">
                                                 <div class="dimension-value" *ngFor="let value of dimension.values; let index = index;" (click)="selectValue(dimension, value)">
-                                                    <input type="checkbox" id="checkbox-{{index}}"/><label>{{value}}</label>
+                                                    <input type="checkbox" id="checkbox-{{index}}" [checked]="isValueSelected(dimension, value)"/><label>{{value}}</label>
                                                 </div>
                                             </div>
                                         </div>

@@ -64,6 +64,7 @@ export class DimensionsComponent{
 
   showAddDimension() {
     this.editMode = false;
+    this.tempValues = [];
     this.dimensionForm = this._fb.group(this._dimensionForm.getForm());
     this.newForm();
     jQuery(this.addDimension.nativeElement).foundation('open');

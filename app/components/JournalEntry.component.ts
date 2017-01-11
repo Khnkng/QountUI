@@ -122,6 +122,16 @@ export class JournalEntryComponent{
         return selectedDimensionNames.indexOf(dimensionName) != -1;
     }
 
+    isValueSelected(dimension, value){
+        let currentDimension = _.find(this.selectedDimensions, {'name': dimension.name});
+        if(!_.isEmpty(currentDimension)){
+            if(currentDimension.values.indexOf(value) != -1){
+                return true;
+            }
+            return false;
+        }
+    }
+
     selectDimension(dimensionName){
         let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
         if(selectedDimensionNames.indexOf(dimensionName) == -1){
@@ -156,8 +166,8 @@ export class JournalEntryComponent{
     }
 
     showFlyout(lineStatus, index){
-        let base = this;
         this.dimensionFlyoutCSS = "expanded";
+        this.lineActive = true;
         this.resetLineForm();
         if(lineStatus == 'NEW'){
             this.editingLine = {
@@ -169,14 +179,27 @@ export class JournalEntryComponent{
                 status: 'UPDATE',
                 index: index
             };
-            this.lineForm = _.cloneDeep(lineListItem);
-            this.filteredChartOfAccounts = _.filter(this.chartOfAccounts, {'category': this.lineForm.controls['type'].value});
-            let coa = _.find(this.filteredChartOfAccounts, {'id': this.lineForm.controls['coa'].value});
-            this.selectedDimensions = this.lineForm.controls['dimensions'].value;
-            setTimeout(function(){
-                base.newCoaComboBox.setValue(coa, 'name');
-            },0);
+            let tempLineForm = _.cloneDeep(lineListItem);
+            this.getLineData(tempLineForm);
         }
+    }
+
+    getLineData(lineForm){
+        let base = this;
+        let lineId = lineForm.controls['id'].value;
+        this.journalService.getJournalLine(this.currentCompany.id, this.journalEntry.id, lineId)
+            .subscribe(journalLine => {
+                this._lineListForm.updateForm(this.lineForm, journalLine);
+                this.filteredChartOfAccounts = _.filter(this.chartOfAccounts, {'category': journalLine.type});
+                let coa = _.find(this.filteredChartOfAccounts, {'id': journalLine.coa});
+                this.selectedDimensions = journalLine.dimensions;
+                this.newLineForm();
+                setTimeout(function(){
+                    base.newCoaComboBox.setValue(coa, 'name');
+                },0);
+            }, error => {
+                this.toastService.pop(TOAST_TYPE.error, "Couldn't fetch Line details");
+            });
     }
 
     /*When user clicks on save button in the flyout*/
@@ -506,16 +529,15 @@ export class JournalEntryComponent{
             this.coaService.chartOfAccounts(this.currentCompany.id)
                 .subscribe(chartOfAccounts => {
                     this.chartOfAccounts = chartOfAccounts;
+                    this.toggleAutoReverse();
+                    this.toggleRecurring();
+                    if(!this.newJournalEntry || this.isReverse){
+                        this.journalService.journalEntry(this.journalID, this.currentCompany.id)
+                            .subscribe(journalEntry => this.processJournalEntry(journalEntry), error => this.handleError(error));
+                    } else{
+                        this.stopLoaderAndShowMessage(false);
+                    }
                 }, error=> this.handleError(error));
-            this.toggleAutoReverse();
-            this.toggleRecurring();
-
-            if(!this.newJournalEntry || this.isReverse){
-                this.journalService.journalEntry(this.journalID, this.currentCompany.id)
-                    .subscribe(journalEntry => this.processJournalEntry(journalEntry), error => this.handleError(error));
-            } else{
-                this.stopLoaderAndShowMessage(false);
-            }
         }, error => this.handleError(error));
     }
 }
