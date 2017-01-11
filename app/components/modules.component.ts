@@ -63,27 +63,38 @@ export class ModulesComponent {
                         } else{
 
                             //sub_module_id
-                            _.each(m.submodules, function(sM){
-                                _.each(modules, function(xm){
-                                    if(xm.id === m.id){
-                                        _.each(xm.submodules, function(cSm){
-                                            if(cSm.id === sM.id){
-                                                sM.isSelected = true;
-                                            }else{
-                                                sM.isSelected = false;
-                                            }
+                            let currentSubModules = [];
+                            _.each(modules, function(xm){
+                                if(xm.id === m.id){
+                                    currentSubModules = xm.submodules;
+                                    return false;
+                                }
 
-                                        });
+                            });
+                            _.each(m.submodules, function(sM){
+
+                                _.each(currentSubModules, function(cSm){
+                                    if(cSm.id === sM.id){
+                                        sM.isSelected = true;
+                                        if(cSm.selected_company_name==null  || cSm.selected_company_name=='qount'){
+                                            sM.companies='qount';
+                                        }
+                                        else{
+                                            sM.companies=cSm.selected_company_name;
+                                        }
+                                        return false;
+                                    }else{
+                                        sM.isSelected = false;
                                     }
 
                                 });
-
                             });
 
                             let parentSelectedSubList = _.every(m.submodules, ['isSelected', true]);
                             m.isSelected = parentSelectedSubList;
                         }
                     });
+
                 }
             }, error => this.handleError(error));
         }
