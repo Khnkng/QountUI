@@ -1,10 +1,18 @@
 <div class="row" foundation>
     <div class="column small-12 medium-6">
-        <h5>Modules</h5>
+        <h5>Scope</h5>
+    </div>
+    <div class="columns small-6 small-offset-6  medium-offset-0 medium-6 right">
+
+    </div>
+<div class="row" foundation>
+    <div class="column large-12 medium-12 small-12 foo-container">
+    <div class="foo-toolbar">
+        <button class="button small" style="font-size: 0.95rem;margin-right:17px;min-width: 120px;font-weight: normal" type="submit" (click)="submit($event)" *ngIf="isLoaded" >Submit</button>
     </div>
     <div class="row tools-grids" id="moduleslist">
         <div class="column small-12 medium-12 large-12">
-            <ul foundation class="accordion" data-accordion *ngIf="modulesList.length != 0" data-allow-all-closed="true" style="background-color: #EFEFEF">
+            <ul foundation class="accordion" data-accordion *ngIf="modulesList.length != 0" data-allow-all-closed="true" style="background-color:#CCCCCC;margin-top: 25px;">
                 <li class="accordion-item" data-accordion-item *ngFor="let module of modulesList;let moduleIndex=index;">
                     <a class="accordion-title">
                         <label attr.for="moduleId-{{moduleIndex}}">
@@ -27,9 +35,10 @@
                 </li>
             </ul>
         </div>
-        <button class="button create small "
-                type="submit" (click)="submit($event)" *ngIf="isLoaded">Submit</button>
+
         <div>
         </div>
     </div>
 </div>
+    </div>
+    </div>
