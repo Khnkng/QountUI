@@ -100,17 +100,17 @@ export class ModulesComponent {
                 }
             }, error => this.handleError(error));
         }
-        this.modulesService.modules().subscribe(modules1 => {
-            if(modules1 && modules1.length>0){
-                _.each(this.modulesList, function(m) {
-                    _.each(m.submodules, function(sM) {
-                        if(sM.selected_company_name==null  || sM.selected_company_name==undefined || sM.selected_company_name==""){
-                            sM.companies='qount';
-                        }
-                    })
-                })
-            }
-        })
+        // this.modulesService.modules().subscribe(modules1 => {
+        //     if(modules1 && modules1.length>0){
+        //         _.each(this.modulesList, function(m) {
+        //             _.each(m.submodules, function(sM) {
+        //                 if(sM.selected_company_name==null  || sM.selected_company_name==undefined || sM.selected_company_name==""){
+        //                     sM.companies='qount';
+        //                 }
+        //             })
+        //         })
+        //     }
+        // })
     }
 
     handleError(err){
