@@ -61,12 +61,13 @@ export class ModulesComponent {
                         if(selectedModuleIds.indexOf(m.id) == -1){
                             m.isSelected = false;
                         } else{
-
+                            m.isSelected=true;
                             //sub_module_id
                             let currentSubModules = [];
                             _.each(modules, function(xm){
                                 if(xm.id === m.id){
                                     currentSubModules = xm.submodules;
+                                    m.isSelected=true;
                                     return false;
                                 }
 
@@ -75,6 +76,7 @@ export class ModulesComponent {
 
                                 _.each(currentSubModules, function(cSm){
                                     if(cSm.id === sM.id){
+                                        m.isSelected=true;
                                         sM.isSelected = true;
                                         if(cSm.selected_company_name==null  || cSm.selected_company_name=='qount'){
                                             sM.companies='qount';
@@ -89,9 +91,9 @@ export class ModulesComponent {
 
                                 });
                             });
-
-                            let parentSelectedSubList = _.every(m.submodules, ['isSelected', true]);
-                            m.isSelected = parentSelectedSubList;
+                            //to uncheck modules if one submodules is selected
+                            // let parentSelectedSubList = _.every(m.submodules, ['isSelected', true]);
+                            // m.isSelected = parentSelectedSubList;
                         }
                     });
 
