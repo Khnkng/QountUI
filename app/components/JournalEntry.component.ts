@@ -54,6 +54,7 @@ export class JournalEntryComponent{
     dimensionFlyoutCSS:any;
     selectedDimensions:Array<any> = [];
     editingLine:any;
+    newCOAActive:boolean = true;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -105,6 +106,14 @@ export class JournalEntryComponent{
         }, 0);
     }
 
+    refreshCOA(){
+        let base = this;
+        this.newCOAActive = false;
+        setTimeout(function(){
+            base.newCOAActive=true;
+        }, 0);
+    }
+
     selectValue(dimension, value){
         _.each(this.selectedDimensions, function (selectedDimension) {
             if(selectedDimension.name == dimension.name){
@@ -145,7 +154,6 @@ export class JournalEntryComponent{
     }
 
     hideFlyout(){
-        this.editingLine = {};
         this.dimensionFlyoutCSS = "collapsed";
     }
 
@@ -204,6 +212,7 @@ export class JournalEntryComponent{
 
     /*When user clicks on save button in the flyout*/
     saveLine(){
+        let base = this;
         let dimensions = this.lineForm.controls['dimensions'];
         dimensions.patchValue(this.selectedDimensions);
         if(this.editingLine.status == 'NEW'){
@@ -215,11 +224,11 @@ export class JournalEntryComponent{
                 this.saveLineData(lineData);
             }
         } else{
-            let lineData = this._lineListForm.getData(this.lineForm);
-            if(this.newJournalEntry){
-                this.updateLineInView(lineData);
+            let lineData = base._lineListForm.getData(base.lineForm);
+            if(base.newJournalEntry){
+                base.updateLineInView(lineData);
             } else{
-                this.updateLineData(lineData);
+                base.updateLineData(lineData);
             }
         }
         this.selectedDimensions = [];
@@ -232,6 +241,7 @@ export class JournalEntryComponent{
         this.journalService.addJournalLine(this.currentCompany.id, this.journalEntry.id, lineData)
             .subscribe(line => {
                 this.saveLineInView(line);
+                this.editingLine = {};
                 this.stopLoaderAndShowMessage(false, "New line added successfully");
             }, error => this.stopLoaderAndShowMessage(true, "Failed to save Journal Line"));
     }
@@ -254,6 +264,7 @@ export class JournalEntryComponent{
         this.journalService.updateLineData(this.journalEntry.id, this.currentCompany.id, lineData)
             .subscribe(line => {
                 this.updateLineInView(line);
+                this.editingLine = {};
                 this.stopLoaderAndShowMessage(false, "Line updated successfully");
             }, error => {
                 this.stopLoaderAndShowMessage(true, "Failed to update the line");
@@ -262,12 +273,18 @@ export class JournalEntryComponent{
 
     /*This will just update line details in VIEW*/
     updateLineInView(line){
-        let data = this._jeForm.getData(this.jeForm);
-        let lineListForm = _.cloneDeep(this._fb.group(this._lineListForm.getForm(line)));
-        data.journalLines[this.editingLine.index] = line;
-        this.journalLinesArray.controls[this.editingLine.index] = lineListForm;
         let linesControl:any = this.jeForm.controls['journalLines'];
-        linesControl.controls[this.editingLine.index].patchValue(line);
+        let currentLineControl:any = linesControl.controls[this.editingLine.index];
+        if(currentLineControl.editable){
+            currentLineControl.editable = !currentLineControl.editable;
+        }
+        let journalLines:any = this.jeForm.controls['journalLines'];
+        let lineControl:any = journalLines.controls[this.editingLine.index];
+        lineControl.controls['memo'].patchValue(line.memo);
+        lineControl.controls['type'].patchValue(line.type);
+        lineControl.controls['coa'].patchValue(line.coa);
+        lineControl.controls['entryType'].patchValue(line.entryType);
+        lineControl.controls['amount'].patchValue(line.amount);
     }
 
     //When user double clicks on the line, it toggles and show the fields
@@ -335,8 +352,9 @@ export class JournalEntryComponent{
     }
 
     updateChartOfAccount(chartOfAccount){
-        let newCOAControl:any = this.lineForm.controls['coa'];
-        newCOAControl.patchValue(chartOfAccount.id);
+        let lineData = this._lineListForm.getData(this.lineForm);
+        lineData.coa = chartOfAccount.id;
+        this._lineListForm.updateForm(this.lineForm, lineData);
     }
 
     toggleLineEdit(lineListItem){
@@ -453,7 +471,10 @@ export class JournalEntryComponent{
 
     updateLineCOA(chartOfAccount, index){
         let linesControl:any = this.jeForm.controls['journalLines'];
-        linesControl.controls[index].controls['coa'].patchValue(chartOfAccount.id);
+        let currentLineForm:any = linesControl.controls[index];
+        let currentLineData = this._lineListForm.getData(currentLineForm);
+        currentLineData.coa = chartOfAccount.id;
+        this._lineListForm.updateForm(currentLineForm, currentLineData);
     }
 
     processJournalEntry(journalEntry){
