@@ -24,6 +24,7 @@
                     <!--here comes actual flyout code-->
                     <div #addDimension id="addDimension" class="create-vendor">
                         <form *ngIf="newFormActive" [formGroup]="dimensionForm">
+                            <section class="form-section clearfix">
                             <div class="row">
                                 <div class="small-12 medium-6 columns">
                                     <div class="row">
@@ -56,6 +57,7 @@
                                     <button class="button small float-right" [disabled]="!dimensionForm.valid" (click)="submit($event)">Save</button>
                                 </div>
                             </div>
+                                </section>
                         </form>
                     </div>
                 </div>
