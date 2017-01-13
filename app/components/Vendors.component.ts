@@ -127,6 +127,9 @@ export class VendorComponent {
         }
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       }
+      if(vendor.addresses.length > 0){
+        row['phoneNumber'] = vendor.addresses[0].phone_number;
+      }
       base.tableData.rows.push(row);
     });
     setTimeout(function(){
