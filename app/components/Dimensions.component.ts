@@ -31,6 +31,7 @@ export class DimensionsComponent{
   tableOptions:any = {};
   editMode:boolean = false;
   currentCompany:any;
+  showFlyout:boolean = false;
   allCompanies:Array<any>;
   row:any;
   tempValues:Array<string> = [];
@@ -66,12 +67,14 @@ export class DimensionsComponent{
     this.editMode = false;
     this.tempValues = [];
     this.dimensionForm = this._fb.group(this._dimensionForm.getForm());
+    this.showFlyout = true;
     this.newForm();
-    jQuery(this.addDimension.nativeElement).foundation('open');
+    this.showFlyout = true;
   }
 
   showEditDimension(row: any){
     let base = this;
+    this.showFlyout = true;
     this.editMode = true;
     this.tempValues = row.values.split(',');
     this.newForm();
@@ -111,6 +114,11 @@ export class DimensionsComponent{
       this.removeDimension($event);
     }
   }
+  hideFlyout(){
+    this.row = {};
+    this.showFlyout = !this.showFlyout;
+  }
+
 
   submit($event){
     this.loadingService.triggerLoadingEvent(true);
@@ -131,6 +139,7 @@ export class DimensionsComponent{
           .subscribe(dimension => {
             base.loadingService.triggerLoadingEvent(false);
             base.row = {};
+            this.showFlyout = false;
             base.toastService.pop(TOAST_TYPE.success, "Dimension updated successfully");
             let index = _.findIndex(base.dimensions, {id: data.id});
             base.dimensions[index] = dimension;
@@ -140,6 +149,7 @@ export class DimensionsComponent{
       this.dimensionService.addDimensions(data, this.currentCompany.id)
           .subscribe(newDimension => {
             this.loadingService.triggerLoadingEvent(false);
+            this.showFlyout = false;
             this.handleDimension(newDimension);
           }, error => this.handleError(error));
     }

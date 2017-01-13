@@ -14,48 +14,57 @@
         </div>
         <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasDimensions" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
-    <div>
-        <div class="small reveal" id="addDimension" #addDimension data-reveal data-close-on-click="false">
-            <h6>
-                {{editMode ? "Update Dimension" : "Add Dimension"}}
-            </h6>
-            <form *ngIf="newFormActive" [formGroup]="dimensionForm">
-                <div class="row">
-                    <div class="small-12 medium-6 columns">
-                        <div class="row">
-                            <div class="small-12 medium-12 columns">
-                                <label>Name
-                                    <input type="text" formControlName="name" placeholder="Name*"/>
-                                    <div class="error" [hidden]="dimensionForm.controls.name.untouched || dimensionForm.controls.name.valid">Name is required.</div>
-                                </label>
+    <div class="qount-off-canvas-menu">
+        <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+            <section class="flyout-placeholder">
+                <header class="flyout-header">
+                    <h6> {{editMode ? "Update Dimension" : "Add Dimension"}}</h6>
+                </header>
+                <div class="flyout-body flyout-shadow-effect">
+                    <!--here comes actual flyout code-->
+                    <div #addDimension id="addDimension" class="create-vendor">
+                        <form *ngIf="newFormActive" [formGroup]="dimensionForm">
+                            <div class="row">
+                                <div class="small-12 medium-6 columns">
+                                    <div class="row">
+                                        <div class="small-12 medium-12 columns">
+                                            <label>Name
+                                                <input type="text" formControlName="name" placeholder="Name*"/>
+                                                <div class="error" [hidden]="dimensionForm.controls.name.untouched || dimensionForm.controls.name.valid">Name is required.</div>
+                                            </label>
+                                        </div>
+                                        <div class="small-12 medium-12 columns">
+                                            <label>Description
+                                                <textarea formControlName="desc" style="height: 110px;" placeholder="Description"></textarea>
+                                                <div class="error" [hidden]="dimensionForm.controls.desc.untouched || dimensionForm.controls.desc.valid">Description is required.</div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="small-12 medium-6 columns">
+                                    <div class="row">
+                                        <div class="small-12 medium-12 columns">
+                                            <label>Value
+                                                <ul class="bighalf-tags" id="dimensionValues"  type="text" [tagsList]="tempValues" custom-tags></ul>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="small-12 medium-12 columns">
-                                <label>Description
-                                    <textarea formControlName="desc" style="height: 110px;" placeholder="Description"></textarea>
-                                    <div class="error" [hidden]="dimensionForm.controls.desc.untouched || dimensionForm.controls.desc.valid">Description is required.</div>
-                                </label>
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="small-12 medium-12 columns">
+                                    <button class="button small float-right" [disabled]="!dimensionForm.valid" (click)="submit($event)">Save</button>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="small-12 medium-6 columns">
-                        <div class="row">
-                            <div class="small-12 medium-12 columns">
-                                <label>Value
-                                    <ul class="bighalf-tags" id="dimensionValues"  type="text" [tagsList]="tempValues" custom-tags></ul>
-                                </label>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
-                <div class="row" style="margin-top: 10px;">
-                    <div class="small-12 medium-12 columns">
-                        <button class="button small float-right" [disabled]="!dimensionForm.valid" (click)="submit($event)">Save</button>
-                    </div>
-                </div>
-            </form>
-            <button class="close-button" data-close aria-label="Close reveal" type="button">
-                <span aria-hidden="true">&times;</span>
-            </button>
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+                </button>
+            </section>
         </div>
     </div>
 </div>
