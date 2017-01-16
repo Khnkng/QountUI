@@ -14,7 +14,7 @@
     </div>
     <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCOAList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
   </div>
-  <div class="qount-off-canvas-menu">
+  <div class="qount-off-canvas-menu chart-of-accounts">
     <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
       <section class="flyout-placeholder">
         <header class="flyout-header">
@@ -105,7 +105,7 @@
                             <input type="checkbox" formControlName="subAccount" (change)="changeStatus()"/>
                             <label class="text-right">Sub Account</label>
                           </div>
-                          <div [hidden]="!subAccount" *ngIf="combo" >
+                          <div [hidden]="!subAccount">
                             <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentID" [listObject]="parentAccounts" (valueChanged)="updateParent($event)">
                               <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.id">{{parentAccount.name}}</option>
                             </select>

@@ -229,6 +229,12 @@
       }
     }
   }
+
+  &.chart-of-accounts{
+    .description{
+      font-size: 12px;
+    }
+  }
 }
 
 /*TODO need to move to different scss file, it donnt belong here */

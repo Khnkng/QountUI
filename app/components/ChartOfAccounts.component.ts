@@ -124,32 +124,33 @@ export class ChartOfAccountsComponent{
     this.description = "";
     this.subAccount = false;
     this.hasParentOrChild = false;
-    this.newForm();
     this.showFlyout = true;
   }
 
   changeStatus(){
-    this.subAccount = !this.subAccount;
-    let parentControl:any = this.coaForm.controls['parentID'];
+    let coaData = this._coaForm.getData(this.coaForm);
+    if(coaData.subAccount){
+      this.subAccount = true;
+    } else{
+      this.subAccount = false;
+    }
   }
 
   showEditCOA(row: any){
+    row = _.find(this.chartOfAccounts, {'id': row.id});
+    this.row = row;
     let base = this;
     this.editMode = true;
     this.showFlyout = true;
-    this.newForm();
-    this.row = row;
-    this.setParents(row.type, row.id);
-    row.type = row.categoryType;
-    row.subType = row.subTypeCode;
-    row.subAccount = row.subAccount == "true";
-    this.subAccount = row.subAccount;
+    this.coaForm = this._fb.group(this._coaForm.getForm());
+    this.subAccount = this.row.subAccount = Boolean(row.subAccount);
     this.displaySubtypes = this.allSubTypes[row.type];
-    this.description = this.descriptions[row.subTypeCode];
-    let parentIndex = _.findIndex(this.chartOfAccounts, {id: row.parentID});
+    this.description = this.descriptions[row.subType];
+    this.setParents(row.type, row.id);
+    let parentIndex = _.findIndex(this.parentAccounts, {id: row.parentID});
     if(parentIndex != -1){
       setTimeout(function () {
-        base.parentAccountComboBox.setValue(base.chartOfAccounts[parentIndex], 'name');
+        base.parentAccountComboBox.setValue(base.parentAccounts[parentIndex], 'name');
       },100);
     }
     this.updateCOAStatus();
@@ -162,9 +163,7 @@ export class ChartOfAccountsComponent{
     if(this.row.parentID != "" && this.row.subAccount){
       this.hasParentOrChild = true; //Child of another COA
     } else{
-      let children = _.filter(this.chartOfAccounts, function(coa){
-        return coa.parentID == base.row.id;
-      });
+      let children = _.filter(this.chartOfAccounts, {'parentID': this.row.id});
       if(children.length > 0){
         this.hasParentOrChild = true;
       }
@@ -209,10 +208,9 @@ export class ChartOfAccountsComponent{
   }
 
   updateParent(parentCoa){
-    let parentControl:any = this.coaForm.controls['parentID'];
-    if(parentCoa){
-      parentControl.patchValue(parentCoa.id);
-    }
+    let coaData = this._coaForm.getData(this.coaForm);
+    coaData.parentID = parentCoa.id;
+    this._coaForm.updateForm(this.coaForm, coaData);
   }
 
   saveCOA($event){
@@ -220,6 +218,9 @@ export class ChartOfAccountsComponent{
     let base = this;
     $event && $event.preventDefault();
     let data = this._coaForm.getData(this.coaForm);
+    if(!data.parentID){
+      data.subAccount = false;
+    }
     if(this.editMode){
       data.id = this.row.id;
       this.coaService.updateCOA(data.id, data, this.currentCompany.id)
@@ -287,14 +288,14 @@ export class ChartOfAccountsComponent{
         }
       },
       {"name": "nameHTML", "title": "Name"},
-      {"name": "type", "title": "Type"},
-      {"name": "subType", "title": "Sub type"},
+      {"name": "categoryType", "title": "Type"},
       {"name": "parentName", "title": "Parent"},
+      {"name": "subTypeCode", "title": "Sub Type"},
+      {"name": "type", "title": "Type", "visible": false},
+      {"name": "subType", "title": "Sub type", "visible": false},
       {"name": "number", "title": "Number", "visible": false, "filterable": false},
       {"name": "name", "title": "Name", "visible": false, "filterable": false},
       {"name": "desc", "title": "Description", "visible": false},
-      {"name": "categoryType", "title": "Type", "visible": false},
-      {"name": "subTypeCode", "title": "Sub Type Code", "visible": false},
       {"name": "id", "title": "COA ID","visible": false},
       {"name": "parentID", "title": "Parent", "visible": false},
       {"name": "subAccount", "title": "Sub account","visible": false},
@@ -306,11 +307,11 @@ export class ChartOfAccountsComponent{
       coa.subAccount = coa.subAccount? coa.subAccount : false;
       _.each(base.coaColumns, function(key) {
         if(key == 'type'){
-          row[key] = base.getCategoryName(coa[key]);
-          row['categoryType'] = coa[key];
+          row[key] = coa[key];
+          row['categoryType'] = base.getCategoryName(coa[key]);
         } else if(key == 'subType'){
-          row[key] = base.getSubTypeName(coa.type, coa[key]);
-          row['subTypeCode'] = coa[key];
+          row[key] = coa[key];
+          row['subTypeCode'] = base.getSubTypeName(coa.type, coa[key]);
         } else if(key == 'parentID'){
           row[key] = coa[key];
           row['parentName'] = coa[key]? _.find(base.chartOfAccounts, {id: coa[key]}).name : "";
