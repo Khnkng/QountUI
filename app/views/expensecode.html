@@ -14,53 +14,72 @@
         </div>
         <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
-    <div>
-        <div class="small reveal" id="addItemcode" #addItemcode data-reveal data-close-on-click="false">
-            <h6>
-                {{editMode ? "Update Expense Code" : "Add Expense Code"}}
-            </h6>
-            <form *ngIf="newFormActive" [formGroup]="expensesForm">
-                <div class="row">
-                    <div class="small-12 medium-6 columns">
-                        <label>Name
-                            <input type="text" formControlName="name" placeholder="Name*"/>
-                            <div class="error" [hidden]="expensesForm.controls.name.untouched || expensesForm.controls.name.valid">Name is required.</div>
-                        </label>
-                    </div>
-                    <div class="small-12 medium-6 columns">
-                        <label>Description
-                            <textarea formControlName="desc" style="height: 110px;" placeholder="Description"></textarea>
-                            <div class="error" [hidden]="expensesForm.controls.desc.untouched || expensesForm.controls.desc.valid">Description is required.</div>
-                        </label>
+    <div class="qount-off-canvas-menu">
+        <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+            <section class="flyout-placeholder">
+                <header class="flyout-header">
+                    <h6> {{editMode ? "Update Expense Code" : "Add Expense Code"}} </h6>
+                </header>
+                <div class="flyout-body flyout-shadow-effect">
+                    <!--here comes actual flyout code-->
+                    <div id="addItemcode" #addItemcode class="create-vendor">
+                        <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="expensesForm">
+
+                            <section class="form-section clearfix">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <div class="form-section-left">
+                                            <header class="form-section-header">Basic Info</header>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Name</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="name" placeholder="Name*"/>
+                                                    <div class="error" [hidden]="expensesForm.controls.name.untouched || expensesForm.controls.name.valid">Name is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Description</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <textarea formControlName="desc" rows="3" placeholder="Description"></textarea>
+                                                    <div class="error" [hidden]="expensesForm.controls.desc.untouched || expensesForm.controls.desc.valid">
+                                                        Description is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Expense Code COA</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <select combo-box #selectedCOAComboBoxDir="comboBox" data-placeholder="Enter COA*" formControlName="coa_mapping_id" [listObject]="chartOfAccountsArr" (valueChanged)="updateExpenseCOA($event)">
+                                                        <option *ngFor="let chartOfAccount of chartOfAccountsArr" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="expensesForm.controls.coa_mapping_id.untouched || expensesForm.controls.coa_mapping_id.valid">
+                                                        COA is required.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <button class="button small float-right" [disabled]="!expensesForm.valid" (click)="submit($event)">Save</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="small-12 medium-6 columns">
-                        <label>Expense Code COA
-                            <select combo-box #selectedCOAComboBoxDir="comboBox" data-placeholder="Enter COA*" formControlName="coa_mapping_id" [listObject]="chartOfAccountsArr" (valueChanged)="updateExpenseCOA($event)">
-                                <option *ngFor="let chartOfAccount of chartOfAccountsArr" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
-                            </select>
-                            <div class="error" [hidden]="expensesForm.controls.coa_mapping_id.untouched || expensesForm.controls.coa_mapping_id.valid">COA is required.</div>
-                        </label>
-                    </div>
-                    <!--<div class="small-12 medium-6 columns">
-                        <label>Invoice COA
-                            <select combo-box #invoiceCOAComboBoxDir="comboBox" data-placeholder="Enter Invoice COA" formControlName="invoice_coa_mapping" [listObject]="invoiceChartOfAccounts" (valueChanged)="updateInvoiceCOA($event)">
-                                <option *ngFor="let chartOfAccount of invoiceChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
-                            </select>
-                            <div class="error" [hidden]="accountForm.controls.invoice_coa_mapping.untouched || accountForm.controls.invoice_coa_mapping.valid">Invoice COA is required.</div>
-                        </label>
-                    </div>-->
-                </div>
-                <div class="row" style="margin-top: 10px;">
-                    <div class="small-12 medium-12 columns">
-                        <button class="button small float-right" [disabled]="!expensesForm.valid" (click)="submit($event)">Save</button>
-                    </div>
-                </div>
-            </form>
-            <button class="close-button" data-close aria-label="Close reveal" type="button">
-                <span aria-hidden="true">&times;</span>
-            </button>
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+                </button>
+            </section>
         </div>
     </div>
 </div>

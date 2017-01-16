@@ -18,46 +18,56 @@
         <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
             <section class="flyout-placeholder">
                 <header class="flyout-header">
-                    <h6> {{editMode ? "Update Dimension" : "Add Dimension"}}</h6>
+                    <h6>{{editMode ? "Update Dimension" : "Add Dimension"}}</h6>
                 </header>
                 <div class="flyout-body flyout-shadow-effect">
                     <!--here comes actual flyout code-->
                     <div #addDimension id="addDimension" class="create-vendor">
-                        <form *ngIf="newFormActive" [formGroup]="dimensionForm">
+                        <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="dimensionForm">
+
                             <section class="form-section clearfix">
-                            <div class="row">
-                                <div class="small-12 medium-6 columns">
-                                    <div class="row">
-                                        <div class="small-12 medium-12 columns">
-                                            <label>Name
-                                                <input type="text" formControlName="name" placeholder="Name*"/>
-                                                <div class="error" [hidden]="dimensionForm.controls.name.untouched || dimensionForm.controls.name.valid">Name is required.</div>
-                                            </label>
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <div class="form-section-left">
+                                            <header class="form-section-header">Basic Info</header>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Name</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="name" placeholder="Name*"/>
+                                                    <div class="error" [hidden]="dimensionForm.controls.name.untouched || dimensionForm.controls.name.valid">Name is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Description</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <textarea formControlName="desc" rows="3" placeholder="Description"></textarea>
+                                                    <div class="error" [hidden]="dimensionForm.controls.desc.untouched || dimensionForm.controls.desc.valid">Description is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Value</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <ul class="bighalf-tags" id="dimensionValues"  type="text" [tagsList]="tempValues" custom-tags></ul>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="small-12 medium-12 columns">
-                                            <label>Description
-                                                <textarea formControlName="desc" style="height: 110px;" placeholder="Description"></textarea>
-                                                <div class="error" [hidden]="dimensionForm.controls.desc.untouched || dimensionForm.controls.desc.valid">Description is required.</div>
-                                            </label>
+                                        <div class="form-section-left">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="small-12 medium-6 columns">
-                                    <div class="row">
-                                        <div class="small-12 medium-12 columns">
-                                            <label>Value
-                                                <ul class="bighalf-tags" id="dimensionValues"  type="text" [tagsList]="tempValues" custom-tags></ul>
-                                            </label>
-                                        </div>
+
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <button class="button small float-right" [disabled]="!dimensionForm.valid" (click)="submit($event)">Save</button>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row" style="margin-top: 10px;">
-                                <div class="small-12 medium-12 columns">
-                                    <button class="button small float-right" [disabled]="!dimensionForm.valid" (click)="submit($event)">Save</button>
-                                </div>
-                            </div>
-                                </section>
+                            </section>
                         </form>
                     </div>
                 </div>

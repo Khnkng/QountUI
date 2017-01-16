@@ -36,6 +36,7 @@ export class UsersComponent {
     companyId:string;
     roles:Array<any>;
     canAddUsers:boolean = false;
+    showFlyout:boolean = false;
 
     constructor(private _fb: FormBuilder, private usersService: CompanyUsers, private _usersForm:UsersForm,
                 private _router: Router, private _toastService: ToastService, private loadingService:LoadingService,
@@ -97,7 +98,7 @@ export class UsersComponent {
         this.editMode = false;
         this.userForm = this._fb.group(this._usersForm.getForm());
         this.newForm1();
-        jQuery(this.createUser.nativeElement).foundation('open');
+        this.showFlyout = true;
     }
 
     handleAction($event){
@@ -171,6 +172,7 @@ export class UsersComponent {
                     this.showMessage(true, success);
                 }, error =>  this.showMessage(false, error));
         }
+        this.showFlyout = false;
     }
 
     showMessage(status, obj) {
@@ -199,5 +201,10 @@ export class UsersComponent {
 
     handleError(error) {
 
+    }
+
+    hideFlyout(){
+        this.row = {};
+        this.showFlyout = !this.showFlyout;
     }
 }

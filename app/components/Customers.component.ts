@@ -45,6 +45,7 @@ export class CustomersComponent {
     companyName:string;
     countryCode:string;
     showAddress:boolean;
+    showFlyout:boolean = false;
 
     constructor(private _fb: FormBuilder, private customersService: CustomersService,
                 private _customersForm:CustomersForm, private _router: Router, private _toastService: ToastService,
@@ -97,10 +98,16 @@ export class CustomersComponent {
     }
 
     showCreateVendor() {
+        let self = this;
+        let defaultCountry  = {name:'United States', code:'US'};
         this.editMode = false;
         this.customerForm = this._fb.group(this._customersForm.getForm());
         this.newForm1();
-        jQuery(this.createVendor.nativeElement).foundation('open');
+        setTimeout(function () {
+            self.vendorCountryComboBox.setValue(defaultCountry, 'name');
+        },100);
+        this.showVendorProvince(defaultCountry);
+        this.showFlyout = true;
     }
 
     handleAction($event){
@@ -145,7 +152,7 @@ export class CustomersComponent {
 
     showEditVendor(row:any) {
         this.editMode = true;
-        jQuery(this.createVendor.nativeElement).foundation('open');
+        this.showFlyout = true;
         this.row = row;
         this.newForm1();
         this._customersForm.updateForm(this.customerForm, row);
@@ -176,9 +183,8 @@ export class CustomersComponent {
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
-
                 }, error =>  this.showMessage(false, error));
-            jQuery(this.createVendor.nativeElement).foundation('close');
+            this.showFlyout = false;
         } else {
             this.customersService.addCustomer(<CustomersModel>data, this.companyId)
                 .subscribe(success  => {
@@ -238,5 +244,9 @@ export class CustomersComponent {
 
     handleError(error) {
 
+    }
+    hideFlyout(){
+        this.row = {};
+        this.showFlyout = !this.showFlyout;
     }
 }

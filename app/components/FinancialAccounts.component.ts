@@ -33,9 +33,9 @@ export class FinancialAccountsComponent{
   row:any;
   tempValues:Array<string> = [];
   tableColumns:Array<string> = ['name', 'id', 'starting_balance', 'current_balance', 'no_effect_on_pl', 'is_credit_account', 'starting_balance_date'];
-
   importType:string = 'AUTO';
   banks:Array<any> = [];
+  showFlyout:boolean = false;
 
   constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private switchBoard: SwitchBoard, private loadingService:LoadingService,
               private financialAccountsService: FinancialAccountsService, private toastService: ToastService){
@@ -71,7 +71,7 @@ export class FinancialAccountsComponent{
     this.editMode = false;
     this.accountForm = this._fb.group(this._financialAccountForm.getForm());
     this.newForm();
-    jQuery(this.addAccount.nativeElement).foundation('open');
+    this.showFlyout = true;
   }
 
   showEditAccount(row: any){
@@ -80,7 +80,7 @@ export class FinancialAccountsComponent{
     this.newForm();
     this.row = row;
     this._financialAccountForm.updateForm(this.accountForm, row);
-    jQuery(this.addAccount.nativeElement).foundation('open');
+    this.showFlyout = true;
   }
 
   removeAccount(row: any){
@@ -135,7 +135,7 @@ export class FinancialAccountsComponent{
           });
     }
     this.buildTableData(this.accounts);
-    jQuery(this.addAccount.nativeElement).foundation('close');
+    this.showFlyout = false;
   }
 
   handleAccount(newAccount){
@@ -184,5 +184,10 @@ export class FinancialAccountsComponent{
       }
     }
     return false;
+  }
+
+  hideFlyout(){
+    this.row = {};
+    this.showFlyout = !this.showFlyout;
   }
 }

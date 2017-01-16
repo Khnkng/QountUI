@@ -42,6 +42,7 @@ export class ItemCodesComponent{
   tableColumns:Array<string> = ['name', 'id', 'payment_coa_mapping', 'invoice_coa_mapping', 'desc'];
   combo:boolean = true;
   allCOAList:Array<any> = [];
+  showFlyout:boolean = false;
 
   constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard,
               private codeService: CodesService, private toastService: ToastService, private loadingService:LoadingService,
@@ -93,7 +94,7 @@ export class ItemCodesComponent{
     this.editMode = false;
     this.itemcodeForm = this._fb.group(this._itemCodeForm.getForm());
     this.newForm();
-    jQuery(this.addItemcode.nativeElement).foundation('open');
+    this.showFlyout = true;
   }
 
   showEditItemCode(row: any){
@@ -112,7 +113,7 @@ export class ItemCodesComponent{
       base.invoiceCOAComboBox.setValue(base.invoiceChartOfAccounts[invoiceCOAIndex], 'name');
     },0);
     this._itemCodeForm.updateForm(this.itemcodeForm, row);
-    jQuery(this.addItemcode.nativeElement).foundation('open');
+    this.showFlyout = true;
   }
 
   removeItemCode(row: any){
@@ -176,6 +177,7 @@ export class ItemCodesComponent{
             let index = _.findIndex(base.itemCodes, {id: data.id});
             base.itemCodes[index] = itemCode;
             base.buildTableData(base.itemCodes);
+            this.showFlyout = false;
           }, error => this.handleError(error));
     } else{
       data.companyID = this.currentCompany.id;
@@ -183,10 +185,11 @@ export class ItemCodesComponent{
           .subscribe(newItemcode => {
             this.loadingService.triggerLoadingEvent(false);
             this.handleItemCode(newItemcode);
+            this.showFlyout = false;
           }, error => this.handleError(error));
     }
     this.buildTableData(this.itemCodes);
-    jQuery(this.addItemcode.nativeElement).foundation('close');
+
   }
 
   handleItemCode(newItemCode){
@@ -242,5 +245,9 @@ export class ItemCodesComponent{
       return coa.name;
     }
     return "";
+  }
+  hideFlyout(){
+    this.row = {};
+    this.showFlyout = !this.showFlyout;
   }
 }

@@ -207,3 +207,15 @@
   }
 
 }
+
+.qount-page-icon-bar{
+   position: absolute;
+   right: 25px;
+   .button{
+     border-radius: 25px;
+     margin-left: 10px !important;
+     &:before{
+
+     }
+   }
+}

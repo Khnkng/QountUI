@@ -80,7 +80,6 @@ export class DimensionsComponent{
     this.newForm();
     this.row = row;
     this._dimensionForm.updateForm(this.dimensionForm, row);
-    jQuery(this.addDimension.nativeElement).foundation('open');
   }
 
   removeDimension(row: any){
@@ -154,7 +153,7 @@ export class DimensionsComponent{
           }, error => this.handleError(error));
     }
     this.buildTableData(this.dimensions);
-    jQuery(this.addDimension.nativeElement).foundation('close');
+
   }
 
   handleDimension(newDimension){
