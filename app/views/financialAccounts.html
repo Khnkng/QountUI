@@ -14,82 +14,119 @@
         </div>
         <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasAccounts" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
-    <div>
-        <div class="small reveal" id="addAccount" #addAccount data-reveal data-close-on-click="false">
-            <h6>
-                {{editMode ? "Update Account" : "Add Account"}}
-            </h6>
-            <form *ngIf="newFormActive" [formGroup]="accountForm">
-                <div class="row">
-                    <div class="small-12 medium-8 large-centered columns">
-                        <div class="row">
-                            <div class="small-12 medium-6 columns">
-                                <input type="radio" name="importType" formControlName="importType" value="AUTO" (click)="setImportType('AUTO')"/><label>Auto Import</label>
-                            </div>
-                            <div class="small-12 medium-6 columns">
-                                <input type="radio" name="importType" formControlName="importType" value="MANUAL" (click)="setImportType('MANUAL')"/><label>Manual Import</label>
-                            </div>
-                        </div>
+    <div class="qount-off-canvas-menu">
+        <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+            <section class="flyout-placeholder">
+                <header class="flyout-header">
+                    <h6> {{editMode ? "Update Account" : "Add Account"}}</h6>
+                </header>
+                <div class="flyout-body flyout-shadow-effect">
+                    <!--here comes actual flyout code-->
+                    <div id="addAccount" #addAccount class="create-vendor">
+                        <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="accountForm">
+
+                            <section class="form-section clearfix">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <div class="row">
+                                            <div class="small-12 medium-8 large-centered columns">
+                                                <div class="row">
+                                                    <div class="small-12 medium-6 columns">
+                                                        <input type="radio" name="importType" formControlName="importType" value="AUTO" (click)="setImportType('AUTO')"/><label>Auto Import</label>
+                                                    </div>
+                                                    <div class="small-12 medium-6 columns">
+                                                        <input type="radio" name="importType" formControlName="importType" value="MANUAL" (click)="setImportType('MANUAL')"/><label>Manual Import</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-section-left">
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Name</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="name" placeholder="Name*"/>
+                                                    <div class="error" [hidden]="accountForm.controls.name.untouched || accountForm.controls.name.valid">Name is required.</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Select bank</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <select formControlName="id">
+                                                        <option *ngFor="let bank of banks;" value="{{bank.id}}">{{bank.name}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Password</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" disabled *ngIf="importType != 'AUTO'"/>
+                                                    <input type="password" formControlName="password" *ngIf="importType == 'AUTO'" placeholder="Password"/>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="form-section-left">
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Starting Balance</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="starting_balance" placeholder="Starting Balance"/>
+                                                    <div class="error" [hidden]="accountForm.controls.starting_balance.untouched || accountForm.controls.starting_balance.valid">Starting Balance is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Starting Balance Date</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" custom-datepicker [format]="'DD/MM/YYYY'" [mindate]="'past'" (valueChanged)="setBalanceDate($event)" formControlName="starting_balance_date" placeholder="Starting Balance Date"/>
+                                                    <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Date is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Username</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" disabled *ngIf="importType != 'AUTO'"/>
+                                                    <input type="text" formControlName="user_name" *ngIf="importType == 'AUTO'" placeholder="Username"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+
+                                                </div>
+                                                <div class="small-6 columns custom-qount-form-field">
+                                                    <input type="checkbox" id="credit-account" formControlName="is_credit_account"/><label for="credit-account">Credit Account</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <button class="button small float-right" [disabled]="!accountForm.valid && isValid(accountForm)" (click)="submit($event)">Save</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="small-12 medium-6 columns">
-                        <label>Name
-                            <input type="text" formControlName="name" placeholder="Name*"/>
-                            <div class="error" [hidden]="accountForm.controls.name.untouched || accountForm.controls.name.valid">Name is required.</div>
-                        </label>
-                    </div>
-                    <div class="small-12 medium-6 columns">
-                        <label>Starting Balance
-                            <input type="text" formControlName="starting_balance" placeholder="Starting Balance"/>
-                            <div class="error" [hidden]="accountForm.controls.starting_balance.untouched || accountForm.controls.starting_balance.valid">Starting Balance is required.</div>
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="small-12 medium-6 columns">
-                        <label>Select bank
-                            <select formControlName="id">
-                                <option *ngFor="let bank of banks;" value="{{bank.id}}">{{bank.name}}</option>
-                            </select>
-                        </label>
-                    </div>
-                    <div class="small-12 medium-6 columns">
-                        <label>Starting Balance Date
-                            <input type="text" custom-datepicker [format]="'DD/MM/YYYY'" [mindate]="'past'" (valueChanged)="setBalanceDate($event)" formControlName="starting_balance_date" placeholder="Starting Balance Date"/>
-                            <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Date is required.</div>
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="small-12 medium-6 columns">
-                        <label>Username
-                            <input type="text" disabled *ngIf="importType != 'AUTO'"/>
-                            <input type="text" formControlName="user_name" *ngIf="importType == 'AUTO'" placeholder="Username"/>
-                        </label>
-                    </div>
-                    <div class="small-12 medium-6 columns">
-                        <label>Password
-                            <input type="text" disabled *ngIf="importType != 'AUTO'"/>
-                            <input type="password" formControlName="password" *ngIf="importType == 'AUTO'" placeholder="Password"/>
-                        </label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="small-12 medium-6 columns"></div>
-                    <div class="small-12 medium-6 columns">
-                        <input type="checkbox" id="credit-account" formControlName="is_credit_account"/><label for="credit-account">Credit Account</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="small-12 medium-12 columns">
-                        <button class="button small float-right" [disabled]="!accountForm.valid && isValid(accountForm)" (click)="submit($event)">Save</button>
-                    </div>
-                </div>
-            </form>
-            <button class="close-button" data-close aria-label="Close reveal" type="button">
-                <span aria-hidden="true">&times;</span>
-            </button>
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+                </button>
+            </section>
         </div>
     </div>
 </div>

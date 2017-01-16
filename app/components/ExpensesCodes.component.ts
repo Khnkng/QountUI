@@ -34,7 +34,7 @@ export class ExpensesCodesComponent {
   chartOfAccountsArr:any=[];
   newFormActive:boolean = true;
   @ViewChild('addItemcode') addItemcode;
-  //@ViewChild('selectedCOAComboBoxDir') selectedCOAComboBox: ComboBox;
+  @ViewChild('selectedCOAComboBoxDir') selectedCOAComboBox: ComboBox;
   //@ViewChild('invoiceCOAComboBoxDir') invoiceCOAComboBox: ComboBox;
   hasItemCodes: boolean = false;
   tableData:any = {};
@@ -46,6 +46,7 @@ export class ExpensesCodesComponent {
   tableColumns:Array<string> = ['name', 'id', 'companyID', 'coa_mapping_id', 'desc'];
   combo:boolean = true;
   allCOAList:Array = [];
+  showFlyout:boolean = false;
 
   constructor(private _fb: FormBuilder, private _expensesForm: ExpensesForm, private switchBoard: SwitchBoard,
               private codeService: CodesService, private toastService: ToastService,
@@ -92,7 +93,7 @@ export class ExpensesCodesComponent {
     this.editMode = false;
     this.expensesForm = this._fb.group(this._expensesForm.getForm());
     this.newForm();
-    jQuery(this.addItemcode.nativeElement).foundation('open');
+    this.showFlyout = true;
   }
 
   showEditExpense(row: any){
@@ -107,7 +108,7 @@ export class ExpensesCodesComponent {
       base.selectedCOAComboBox.setValue(base.chartOfAccountsArr[selectedCOAIndex], 'name');
     },0);
     this._expensesForm.updateForm(this.expensesForm, row);
-    jQuery(this.addItemcode.nativeElement).foundation('open');
+    this.showFlyout = true;
   }
 
   removeExpense(row: any){
@@ -164,6 +165,7 @@ export class ExpensesCodesComponent {
             let index = _.findIndex(base.expenses, {id: data.id});
             base.expenses[index] = itemCode;
             base.buildTableData(base.expenses);
+            this.showFlyout = false;
           }, error => this.handleError(error));
     } else{
       //data.companyID = this.currentCompany.id;
@@ -171,10 +173,10 @@ export class ExpensesCodesComponent {
           .subscribe(newItemcode => {
             this.loadingService.triggerLoadingEvent(false);
             this.handleExpense(newItemcode);
+            this.showFlyout = false;
           }, error => this.handleError(error));
     }
     this.buildTableData(this.expenses);
-    jQuery(this.addItemcode.nativeElement).foundation('close');
   }
 
   handleExpense(expense){
@@ -229,5 +231,10 @@ export class ExpensesCodesComponent {
       return coa.name;
     }
     return "";
+  }
+
+  hideFlyout(){
+    this.row = {};
+    this.showFlyout = !this.showFlyout;
   }
 }

@@ -18,53 +18,64 @@
         <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
             <section class="flyout-placeholder">
                 <header class="flyout-header">
-                    <h6> {{editMode ? "Update Dimension" : "Add Dimension"}}</h6>
+                    <h6>{{editMode ? "Update Dimension" : "Add Dimension"}}</h6>
                 </header>
                 <div class="flyout-body flyout-shadow-effect">
                     <!--here comes actual flyout code-->
-                    <form *ngIf="newFormActive" [formGroup]="dimensionForm">
+                    <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="dimensionForm">
                         <section class="form-section clearfix">
                             <div class="row">
-                                <div class="small-12 medium-6 columns">
-                                    <div class="row">
-                                        <div class="small-12 medium-12 columns">
-                                            <label>Name
+                                <div class="small-12 medium-12 columns">
+                                    <div class="form-section-left">
+                                        <header class="form-section-header">Basic Info</header>
+                                        <div class="row">
+                                            <div class="small-4 columns">
+                                                <label class="text-right">Name</label>
+                                            </div>
+                                            <div class="small-6 columns">
                                                 <input type="text" formControlName="name" placeholder="Name*"/>
                                                 <div class="error" [hidden]="dimensionForm.controls.name.untouched || dimensionForm.controls.name.valid">Name is required.</div>
-                                            </label>
+                                            </div>
                                         </div>
-                                        <div class="small-12 medium-12 columns">
-                                            <label>Description
-                                                <textarea formControlName="desc" style="height: 110px;" placeholder="Description"></textarea>
+                                        <div class="row">
+                                            <div class="small-4 columns">
+                                                <label class="text-right">Description</label>
+                                            </div>
+                                            <div class="small-6 columns">
+                                                <textarea formControlName="desc" rows="3" placeholder="Description"></textarea>
                                                 <div class="error" [hidden]="dimensionForm.controls.desc.untouched || dimensionForm.controls.desc.valid">Description is required.</div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="small-12 medium-6 columns dimension-values">
-                                    <div class="row">
-                                        <div class="" *ngFor="let valueObj of values">
-                                            <div class="dimension-value-wrapper label" *ngIf="!valueObj.editing && valueObj.action != 'delete'">
-                                                <div class="dimension-value">{{valueObj.newValue}}</div>
-                                                <div class="edit-wrapper">
-                                                    <i class="icon ion-edit" (click)="editValue(valueObj)"></i>
-                                                    <i class="icon ion-close" (click)="deleteValue(valueObj)"></i>
-                                                </div>
-                                            </div>
-                                            <div class="dimension-value-wrapper label" *ngIf="valueObj.editing && valueObj.action != 'delete'">
-                                                <input type="text" (change)="onValueChange(valueObj, $event)" value="{{valueObj.newValue}}"/>
-                                                <div class="edit-wrapper">
-                                                    <i class="icon ion-checkmark" (click)="updateValue(valueObj)"></i>
-                                                    <i class="icon ion-close" (click)="deleteFromEditing(valueObj)"></i>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="small-12 medium-12 columns">
-                                            <label>Value
-                                                <ul class="bighalf-tags" id="dimensionValues"  type="text" custom-tags></ul>
-                                            </label>
+                                    <div class="form-section-left">
+                                        <header class="form-section-header">Value Info</header>
+                                        <div class="row">
+                                            <div class="small-12 medium-12 columns dimension-values">
+                                                <div *ngFor="let valueObj of values">
+                                                    <div class="dimension-value-wrapper label" *ngIf="!valueObj.editing && valueObj.action != 'delete'">
+                                                        <div class="dimension-value">{{valueObj.newValue}}</div>
+                                                        <div class="edit-wrapper">
+                                                            <i class="icon ion-edit" (click)="editValue(valueObj)"></i>
+                                                            <i class="icon ion-close" (click)="deleteValue(valueObj)"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="dimension-value-wrapper label" *ngIf="valueObj.editing && valueObj.action != 'delete'">
+                                                        <input type="text" (change)="onValueChange(valueObj, $event)" value="{{valueObj.newValue}}"/>
+                                                        <div class="edit-wrapper">
+                                                            <i class="icon ion-checkmark" (click)="updateValue(valueObj)"></i>
+                                                            <i class="icon ion-close" (click)="deleteFromEditing(valueObj)"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="small-4 columns">
+                                                <label class="text-right">{{editMode ? "Enter new values" : "Values"}}</label>
+                                            </div>
+                                            <div class="small-6 columns">
+                                                <ul class="bighalf-tags" id="dimensionValues" type="text" custom-tags></ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
