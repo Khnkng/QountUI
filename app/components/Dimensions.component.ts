@@ -2,7 +2,7 @@
  * Created by Chandu on 28-09-2016.
  */
 
-import {Component,ViewChild} from "@angular/core";
+import {Component} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
@@ -13,8 +13,8 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {DimensionForm} from "../forms/Dimension.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 
-declare var jQuery:any;
-declare var _:any;
+declare let jQuery:any;
+declare let _:any;
 
 @Component({
   selector: 'dimensions',
@@ -25,7 +25,6 @@ export class DimensionsComponent{
   dimensionForm: FormGroup;
   dimensions = [];
   newFormActive:boolean = true;
-  @ViewChild('addDimension') addDimension;
   hasDimensions: boolean = false;
   tableData:any = {};
   tableOptions:any = {};
@@ -34,11 +33,11 @@ export class DimensionsComponent{
   showFlyout:boolean = false;
   allCompanies:Array<any>;
   row:any;
-  tempValues:Array<string> = [];
+  values:Array<any> = [];
   tableColumns:Array<string> = ['name', 'id', 'values', 'desc'];
 
-  constructor(private _fb: FormBuilder, private _dimensionForm: DimensionForm, private switchBoard: SwitchBoard,
-              private dimensionService: DimensionService, private loadingService:LoadingService,
+  constructor(private _fb: FormBuilder, private _dimensionForm: DimensionForm, private dimensionService: DimensionService,
+               private loadingService:LoadingService,
         private toastService: ToastService, private companiesService: CompaniesService){
     this.dimensionForm = this._fb.group(_dimensionForm.getForm());
     let companyId = Session.getCurrentCompany();
@@ -65,10 +64,10 @@ export class DimensionsComponent{
 
   showAddDimension() {
     this.editMode = false;
-    this.tempValues = [];
     this.dimensionForm = this._fb.group(this._dimensionForm.getForm());
     this.showFlyout = true;
     this.newForm();
+    this.values = [];
     this.showFlyout = true;
   }
 
@@ -76,11 +75,41 @@ export class DimensionsComponent{
     let base = this;
     this.showFlyout = true;
     this.editMode = true;
-    this.tempValues = row.values.split(',');
+    let tempValues = row.values.split(',');
     this.newForm();
     this.row = row;
+    this.values = [];
+    _.each(tempValues, function(value){
+      base.values.push({
+        value: value,
+        newValue: value,
+        action: "",
+        editing: false
+      });
+    });
     this._dimensionForm.updateForm(this.dimensionForm, row);
-    jQuery(this.addDimension.nativeElement).foundation('open');
+  }
+
+  editValue(valueObj){
+    valueObj.editing = !valueObj.editing;
+  }
+
+  updateValue(valueObj){
+    valueObj.editing = !valueObj.editing;
+    valueObj.action = 'update';
+  }
+
+  deleteValue(valueObj){
+    valueObj.action = 'delete';
+  }
+
+  deleteFromEditing(valueObj){
+    valueObj.editing = !valueObj.editing;
+    valueObj.newValue = valueObj.value;
+  }
+
+  onValueChange(valueObj, $event){
+    valueObj.newValue = $event.target.value;
   }
 
   removeDimension(row: any){
@@ -121,27 +150,38 @@ export class DimensionsComponent{
 
 
   submit($event){
-    this.loadingService.triggerLoadingEvent(true);
     let base = this;
     $event && $event.preventDefault();
+    this.loadingService.triggerLoadingEvent(true);
     let data = this._dimensionForm.getData(this.dimensionForm);
-    delete data.tempValue;
     let values = jQuery('#dimensionValues').tagit("assignedTags");
-    if(values.length == 0){
-      this.loadingService.triggerLoadingEvent(false);
-      this.toastService.pop(TOAST_TYPE.error, "Dimension should have atleast one value");
-      return false;
+    if(this.editMode){
+      _.each(values, function(value){
+        base.values.push({
+          value: value,
+          action: 'new',
+          newValue: value
+        });
+      });
+      data.values = this.values;
+    } else{
+      if(values.length == 0){
+        this.loadingService.triggerLoadingEvent(false);
+        this.toastService.pop(TOAST_TYPE.error, "Dimension should have atleast one value");
+        return false;
+      } else{
+        data.values = values;
+      }
     }
-    data.values = values;
     if(this.editMode){
       data.id = this.row.id;
-      this.dimensionService.updateDimension(data, this.currentCompany.id)
+      this.dimensionService.updateDimension(this.cleanData(data), this.currentCompany.id)
           .subscribe(dimension => {
-            base.loadingService.triggerLoadingEvent(false);
             base.row = {};
             this.showFlyout = false;
+            base.loadingService.triggerLoadingEvent(false);
             base.toastService.pop(TOAST_TYPE.success, "Dimension updated successfully");
-            let index = _.findIndex(base.dimensions, {id: data.id});
+            let index = _.findIndex(base.dimensions, {name: dimension.name});
             base.dimensions[index] = dimension;
             base.buildTableData(base.dimensions);
           }, error => this.handleError(error));
@@ -154,7 +194,13 @@ export class DimensionsComponent{
           }, error => this.handleError(error));
     }
     this.buildTableData(this.dimensions);
-    jQuery(this.addDimension.nativeElement).foundation('close');
+  }
+
+  cleanData(data){
+    _.each(data.values, function(value){
+      delete value.editing;
+    });
+    return data;
   }
 
   handleDimension(newDimension){
@@ -181,6 +227,9 @@ export class DimensionsComponent{
       let row:any = {};
       _.each(base.tableColumns, function(key) {
         row[key] = dimension[key];
+        if(key == 'id'){
+          row[key] = dimension['name'];
+        }
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       });
       base.tableData.rows.push(row);

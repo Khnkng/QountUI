@@ -22,9 +22,8 @@
                 </header>
                 <div class="flyout-body flyout-shadow-effect">
                     <!--here comes actual flyout code-->
-                    <div #addDimension id="addDimension" class="create-vendor">
-                        <form *ngIf="newFormActive" [formGroup]="dimensionForm">
-                            <section class="form-section clearfix">
+                    <form *ngIf="newFormActive" [formGroup]="dimensionForm">
+                        <section class="form-section clearfix">
                             <div class="row">
                                 <div class="small-12 medium-6 columns">
                                     <div class="row">
@@ -42,11 +41,29 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="small-12 medium-6 columns">
+                                <div class="small-12 medium-6 columns dimension-values">
+                                    <div class="row">
+                                        <div class="" *ngFor="let valueObj of values">
+                                            <div class="dimension-value-wrapper label" *ngIf="!valueObj.editing && valueObj.action != 'delete'">
+                                                <div class="dimension-value">{{valueObj.newValue}}</div>
+                                                <div class="edit-wrapper">
+                                                    <i class="icon ion-edit" (click)="editValue(valueObj)"></i>
+                                                    <i class="icon ion-close" (click)="deleteValue(valueObj)"></i>
+                                                </div>
+                                            </div>
+                                            <div class="dimension-value-wrapper label" *ngIf="valueObj.editing && valueObj.action != 'delete'">
+                                                <input type="text" (change)="onValueChange(valueObj, $event)" value="{{valueObj.newValue}}"/>
+                                                <div class="edit-wrapper">
+                                                    <i class="icon ion-checkmark" (click)="updateValue(valueObj)"></i>
+                                                    <i class="icon ion-close" (click)="deleteFromEditing(valueObj)"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="small-12 medium-12 columns">
                                             <label>Value
-                                                <ul class="bighalf-tags" id="dimensionValues"  type="text" [tagsList]="tempValues" custom-tags></ul>
+                                                <ul class="bighalf-tags" id="dimensionValues"  type="text" custom-tags></ul>
                                             </label>
                                         </div>
                                     </div>
@@ -57,9 +74,8 @@
                                     <button class="button small float-right" [disabled]="!dimensionForm.valid" (click)="submit($event)">Save</button>
                                 </div>
                             </div>
-                                </section>
-                        </form>
-                    </div>
+                        </section>
+                    </form>
                 </div>
                 <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
                 <span aria-hidden="true">

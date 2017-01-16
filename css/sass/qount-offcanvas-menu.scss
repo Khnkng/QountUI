@@ -194,6 +194,36 @@
         }*/
       }
 
+      .dimension-values{
+        .label{
+          background: $qount-brand-grey-light;
+        }
+
+        .dimension-value-wrapper{
+          margin-left: 15px;
+          margin-top: 10px;
+          display: inline-flex;
+          padding: 0.33333rem 0.1rem;
+
+          .icon{
+            font-size: 0.8rem;
+          }
+
+          .edit-wrapper{
+            float: right;
+            margin-left: 9px;
+          }
+
+          .dimension-value, .edit-wrapper{
+            padding: 5px;
+          }
+
+          input{
+            height: 20px;
+            font-size: 12px;
+          }
+        }
+      }
     }
   }
 }

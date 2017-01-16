@@ -16,7 +16,6 @@ export class DimensionForm extends abstractForm{
     return {
       "name": ['', Validators.required],
       "values": [[]],
-      "tempValue": [''],
       "desc": ['']
     }
   }
