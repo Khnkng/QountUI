@@ -2,6 +2,7 @@
     <div class="column small-12 medium-6">
         <h5>Tools</h5>
     </div>
+
     <div class="row tools-grids">
         <div class="column tool-grid" (click)="showPage('companies', $event)">
             <div class="grid-icon companies"></div>
@@ -96,6 +97,14 @@
             <span class="grid-qount" [hidden]="true"></span>
             <div class="clear"></div>
             <div class="thumb-label">Tool</div>
+        </div>
+    </div>
+    <div class="row tools-grids">
+        <div style="width:285px;margin-left:17px;cursor:pointer;" (click)="showPage('taxes', $event)">
+            <div class="grid-icon companies"></div>
+            <span class="grid-qount"></span>
+            <div class="clear"></div>
+            <div class="thumb-label" style="text-align:center" onmouseover="this.style.background='#00B0F0';this.style.color='white'" onmouseleave="this.style.background='white';this.style.color='black'">Taxes</div>
         </div>
     </div>
 </div>

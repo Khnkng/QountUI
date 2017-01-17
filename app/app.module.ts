@@ -9,6 +9,7 @@ import {ReportsModule} from "reportsUI/app/reports.module";
 import {LoggedInActivator} from "qCommon/app/services/CheckSessionActivator";
 import {AddCompanyComponent} from "qCommon/app/components/AddCompany.component";
 import {CompaniesComponent} from "qCommon/app/components/Companies.component";
+import {TaxesComponent} from "./components/taxes.component"
 import {CompanyComponent} from "qCommon/app/components/Company.component";
 import {BrowserModule} from "@angular/platform-browser";
 import {AppComponent} from "./components/app.component";
@@ -102,6 +103,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'taxes',
+            component: TaxesComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'books/:tabId',
             component: BooksComponent,
             canActivate: [LoggedInActivator]
@@ -185,7 +191,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     ]), PaymentsModule, ReportsModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
-        VendorComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
+        VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent,ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,ResetPasswordComponent],
     exports: [RouterModule],
