@@ -278,23 +278,13 @@ export class ChartOfAccountsComponent{
     this.tableOptions.search = true;
     this.tableOptions.pageSize = 9;
     this.tableData.columns = [
-      {"name": "numberHTML", "title": "Number", "sortValue": function(element){
-          let parent = jQuery(element)[0].getAttribute('data-parent');
-          if(parent){
-            return parent;
-          } else{
-            return jQuery(element)[0].innerHTML;
-          }
-        }
-      },
-      {"name": "nameHTML", "title": "Name"},
+      {"name": "number", "title": "Number"},
+      {"name": "name", "title": "Name"},
       {"name": "categoryType", "title": "Type"},
-      {"name": "parentName", "title": "Parent"},
       {"name": "subTypeCode", "title": "Sub Type"},
+      {"name": "parentName", "title": "Parent"},
       {"name": "type", "title": "Type", "visible": false},
       {"name": "subType", "title": "Sub type", "visible": false},
-      {"name": "number", "title": "Number", "visible": false, "filterable": false},
-      {"name": "name", "title": "Name", "visible": false, "filterable": false},
       {"name": "desc", "title": "Description", "visible": false},
       {"name": "id", "title": "COA ID","visible": false},
       {"name": "parentID", "title": "Parent", "visible": false},
@@ -318,16 +308,22 @@ export class ChartOfAccountsComponent{
         } else if(key == 'name'){
           row[key] = coa[key];
           if(coa['parentID']){
-            row['nameHTML'] = '<span style="margin-left: 10px;">'+coa[key]+'</span>';
+            row[key] = {options:{
+                classes: "coa-child",
+                sortValue: base.getName(coa['parentID'])
+              }, value: coa[key]}
           } else{
-            row['nameHTML'] = coa[key];
+            row[key] = coa[key];
           }
         } else if(key == 'number'){
-          row[key] = coa[key];
           if(coa['parentID']){
-            row['numberHTML'] = '<span style="margin-left: 10px;" data-parent="'+base.getNumber(coa['id'])+'">'+coa[key]+'</span>';
+            row[key] = {options:{
+                classes: "coa-child",
+                sortValue: base.getNumber(coa['parentID'])
+              }, value: coa[key]
+            }
           } else{
-            row['numberHTML'] = '<span>'+coa[key]+'</span>';
+            row[key] = coa[key];
           }
         } else{
           row[key] = coa[key];
@@ -344,6 +340,11 @@ export class ChartOfAccountsComponent{
   getNumber(coaId){
     let coa = _.find(this.chartOfAccounts, {id: coaId});
     return coa.number;
+  }
+
+  getName(coaId){
+    let coa = _.find(this.chartOfAccounts, {id: coaId});
+    return coa.name;
   }
 
   sortChartOfAccounts(coaList){

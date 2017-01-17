@@ -2898,3 +2898,11 @@ tbody{
     }
   }
 }
+
+
+/* Indentation for child chart of account */
+.footable{
+  td.coa-child{
+    padding-left: 20px !important;
+  }
+}
