@@ -258,3 +258,40 @@
      }
    }
 }
+
+.rule-flyout{
+  .rule-row{
+    label, select, input{
+      float: left;
+      width: auto;
+      margin: 0px 5px;
+      height: 30px;
+    }
+  }
+  .action-row{
+    label, select, input{
+      float: left;
+      width: auto;
+      margin: 0px 5px;
+      height: 30px;
+    }
+  }
+  .source{
+
+  }
+  .column-condition{
+
+  }
+  .condition{
+
+  }
+  .condition-value{
+
+  }
+  .action-value{
+
+  }
+  .action{
+
+  }
+}

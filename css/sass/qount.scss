@@ -2333,7 +2333,12 @@ table.footable-editing-right tr.footable-editing td {
       background-size: 60px 60px;
       background-position: center center;
     }
-    &.tool {
+    &.rules {
+      background: url("../images/SVG/Payments_Workflow.svg") no-repeat;
+      background-size: 60px 60px;
+      background-position: center center;
+    }
+    &.payment-workflow {
       background: url("../images/SVG/Payments_Workflow.svg") no-repeat;
       background-size: 60px 60px;
       background-position: center center;
