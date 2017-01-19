@@ -25,6 +25,7 @@ import {CommonModule, APP_BASE_HREF} from "@angular/common";
 import {SignUpService} from "./services/SignUp.service";
 import {LoginForm} from "./forms/Login.form";
 import {SignUpForm} from "./forms/SignUp.form";
+import {TaxesForm} from "./forms/Taxes.form"
 import {ForgotPassword} from "./forms/ForgotPassword.form";
 import {VendorComponent} from "./components/Vendors.component";
 import {UserProfileComponent} from "qCommon/app/components/UserProfile.component";
@@ -196,7 +197,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         OffCanvasMenuComponent, LoadingComponent,ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,ResetPasswordComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
+    providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm,TaxesForm, JournalEntryForm, JournalLineForm,
         ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService,ModulesService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
