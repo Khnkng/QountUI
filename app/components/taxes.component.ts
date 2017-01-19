@@ -296,8 +296,14 @@ export class TaxesComponent {
             taxAuthorityName.patchValue(tax.taxAuthorityName);
             let taxAuthorityId:any = this.TaxesForm.controls['taxAuthorityId'];
             taxAuthorityId.patchValue(tax.taxAuthorityId);
-            let taxLiabilityCoa:any = this.TaxesForm.controls['taxLiabilityCoa'];
-            taxLiabilityCoa.patchValue(tax.taxLiabilityCoa);
+            let coa = _.find(this.chartOfAccounts, function(_coa) {
+                return _coa.id == tax.taxLiabilityCoa;
+            });
+            if(!_.isEmpty(coa)){
+                setTimeout(function(){
+                    base.coaComboBox.setValue(coa, 'name');
+                });
+            }
             let description:any = this.TaxesForm.controls['description'];
             description.patchValue(tax.description);
             let taxRate:any = this.TaxesForm.controls['taxRate'];
@@ -308,14 +314,7 @@ export class TaxesComponent {
             recoverableTax.patchValue(tax.recoverableTax);
             let visibleOnInvoices:any = this.TaxesForm.controls['visibleOnInvoices'];
             visibleOnInvoices.patchValue(tax.visibleOnInvoices);
-            let coa = _.find(this.chartOfAccounts, function(_coa) {
-                return _coa.id == tax.taxLiabilityCoa;
-            });
-            if(!_.isEmpty(coa)){
-                setTimeout(function(){
-                    base.coaComboBox.setValue(taxLiabilityCoa, 'name');
-                });
-            }
+
             this._taxesForm.updateForm(this.TaxesForm, tax);
 
         }, error => this.handleError(error));
