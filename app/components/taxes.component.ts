@@ -173,7 +173,7 @@ export class TaxesComponent {
         this.loadingService.triggerLoadingEvent(true);
         this.companyService.removeTax(row.id, this.companyId)
             .subscribe(success  => {
-                this._toastService.pop(TOAST_TYPE.success, "Vendor deleted successfully");
+                this._toastService.pop(TOAST_TYPE.success, "Tax deleted successfully");
                 this.companyService.getTaxofCompany(this.companyId)
                     .subscribe(taxesList  => {
                         this.buildTableData(taxesList);

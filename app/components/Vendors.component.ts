@@ -184,7 +184,7 @@ export class VendorComponent {
     this.loadingService.triggerLoadingEvent(true);
     this.companyService.removeVendor(vendor.id, this.companyId)
         .subscribe(success  => {
-          this._toastService.pop(TOAST_TYPE.success, "Tax Deleted successfully");
+          this._toastService.pop(TOAST_TYPE.success, "Vendor deleted successfully");
           this.companyService.vendors(this.companyId)
               .subscribe(vendors  => {
                 this.buildTableData(vendors);
@@ -260,12 +260,12 @@ export class VendorComponent {
         this.companyService.vendors(this.companyId)
             .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
         this.newForm1();
-        this._toastService.pop(TOAST_TYPE.success, "Tax updated successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Vendor updated successfully.");
       } else {
         this.newForm1();
         this.companyService.vendors(this.companyId)
             .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
-        this._toastService.pop(TOAST_TYPE.success, "Tax created successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Vendor created successfully.");
       }
     } else {
       this.status = {};
