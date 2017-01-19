@@ -59,6 +59,8 @@ import {ModulesService} from "./services/Modules.service";
 import {ChangePasswordComponent} from "./components/changePassword.component";
 import {TermsAndConditionsComponent} from "./components/TermsAndConditions.component";
 import {ResetPasswordComponent} from "./components/resetpassword.component";
+import {RulesComponent} from "./components/Rules.component";
+import {RuleForm, RuleActionForm} from "./forms/Rule.form";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -180,6 +182,10 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: ModulesComponent,
             canActivate: [LoggedInActivator]
         },{
+            path: 'rules',
+            component: RulesComponent,
+            canActivate: [LoggedInActivator]
+        },{
             path: 'activate',
             component: ChangePasswordComponent,
             canActivate: [LoggedInActivator]
@@ -192,12 +198,12 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
-        CustomersComponent, DimensionsComponent,UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
-        OffCanvasMenuComponent, LoadingComponent,ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,ResetPasswordComponent],
+        CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
+        OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent, ResetPasswordComponent, RulesComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, JournalEntryForm, JournalLineForm,
-        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService,ModulesService],
+        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
