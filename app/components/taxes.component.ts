@@ -132,7 +132,7 @@ export class TaxesComponent {
         let defaultCountry  = {name:'United States', code:'US'};
         let self = this;
         this.editMode = false;
-        this.newForm1();
+        this.TaxesForm.reset();
         // setTimeout(function () {
         //     self.vendorCountryComboBox.setValue(defaultCountry, 'name');
         // },100);
@@ -250,7 +250,7 @@ export class TaxesComponent {
                         this.loadingService.triggerLoadingEvent(false);
                         this.taxesList=taxesList;
                     }, error =>  this.handleError(error));
-                this.newForm1();
+                this.TaxesForm.reset();
                 this._toastService.pop(TOAST_TYPE.success, "Tax updated successfully.");
             } else {
                 this.companyService.getTaxofCompany(this.companyId)
