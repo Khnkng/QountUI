@@ -33,6 +33,7 @@ export class TaxesComponent {
     tableOptions:any = {};
     status:any;
     vendors:Array<any>;
+    hasItemCodes: boolean = false;
     editMode:boolean = false;
     @ViewChild('createtaxes') createtaxes;
     @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
@@ -40,7 +41,6 @@ export class TaxesComponent {
     TaxesForm: FormGroup;
     countries:Array<any> = PROVINCES.COUNTRIES;
     @ViewChild('fooTableDir') fooTableDir:FTable;
-    hasVendorsList:boolean = false;
     message:string;
     companyId:string;
     companies:Array<CompanyModel> = [];
@@ -84,7 +84,7 @@ export class TaxesComponent {
             }, error =>  this.handleError(error));
     }
     buildTableData(taxesList) {
-        // this.hasItemCodes = false;
+        this.hasItemCodes = false;
         this.taxesList = taxesList;
         this.tableData.rows = [];
         this.tableOptions.search = true;
@@ -115,7 +115,9 @@ export class TaxesComponent {
             });
             base.tableData.rows.push(row);
         });
+        base.hasItemCodes = false;
         setTimeout(function(){
+
             base.hasItemCodes = true;
         }, 0)
     }
@@ -126,7 +128,7 @@ export class TaxesComponent {
         }
     }
 
-    showCreateVendor() {
+    showCreateTax() {
         let defaultCountry  = {name:'United States', code:'US'};
         let self = this;
         this.editMode = false;
@@ -145,30 +147,19 @@ export class TaxesComponent {
         delete $event.actions;
         if(action == 'edit') {
             console.log("dmsnfbjhf");
-            this.showEditVendor($event);
+            this.showEditTax($event);
         } else if(action == 'delete'){
-            this.removeVendor($event);
+            this.removeTax($event);
         }
     }
 
-    showVendorProvince(country:any) {
-        let countryControl:any = this.TaxesForm.controls['country'];
-        countryControl.patchValue(country.name);
-        this.countryCode = country.code;
-        var base=this;
-        if(this.editAddress&&this.editAddress.country==country.name){
-            setTimeout(function () {
-                base.addressDir.setData(base.editAddress);
-            },500);
-        }
+
+    showCOA(coa:any) {
+        let coaControl:any = this.TaxesForm.controls['taxLiabilityCoa'];
+        coaControl.patchValue(coa.id);
     }
 
-    // // showCOA(coa:any) {
-    // //     let coaControl:any = this.vendorForm.controls['coa'];
-    // //     coaControl.patchValue(coa.id);
-    // }
-
-    removeVendor(row:any) {
+    removeTax(row:any) {
         let vendor:VendorModel = row;
         this.loadingService.triggerLoadingEvent(true);
         this.companyService.removeTax(row.id, this.companyId)
@@ -191,11 +182,11 @@ export class TaxesComponent {
         setTimeout(()=> this.active1=true, 0);
     }
 
-    showEditVendor(row:any) {
+    showEditTax(row:any) {
         this.showFlyout = true;
         this.editMode = true;
         this.TaxesForm = this._fb.group(this._taxesForm.getTax());
-        this.getVendorDetails(row.id);
+        this.getTaxDetails(row.id);
     }
 
     submit($event) {
@@ -224,36 +215,28 @@ export class TaxesComponent {
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
         }
-        }
+    }
 
 
-    isValid(vendorForm){
-        return vendorForm.valid;
+    isValid(TaxesForm){
+        return TaxesForm.valid;
     }
     showCOA(coa:any) {
         let coaControl:any = this.TaxesForm.controls['taxLiabilityCoa'];
         coaControl.patchValue(coa.id);
     }
-getCoa(){
-    console.log("this.currentCompany.id",this.companyId);
-    this.coaService.chartOfAccounts(this.companyId)
-        .subscribe(chartOfAccounts => {
-            console.log("chartOfAccounts",chartOfAccounts);
-            this.loadingService.triggerLoadingEvent(false);
-            // this.buildTableData(chartOfAccounts);
-        }, error=> this.handleError(error));
-}
+    getCoa(){
+        this.coaService.chartOfAccounts(this.companyId)
+            .subscribe(chartOfAccounts => {
+                this.loadingService.triggerLoadingEvent(false);
+                // this.buildTableData(chartOfAccounts);
+            }, error=> this.handleError(error));
+    }
     hideFlyout(){
         this.row = {};
         this.showFlyout = !this.showFlyout;
     }
 
-    addressValid() {
-        if(this.addressDir) {
-            return this.addressDir.isValid();
-
-        } return false;
-    }
 
     showMessage(status, obj) {
         if(status) {
@@ -270,13 +253,14 @@ getCoa(){
                 this.newForm1();
                 this._toastService.pop(TOAST_TYPE.success, "Tax updated successfully.");
             } else {
-                this.newForm1();
                 this.companyService.getTaxofCompany(this.companyId)
                     .subscribe(taxesList  => {
                         this.buildTableData(taxesList);
                         this.loadingService.triggerLoadingEvent(false);
                         this.taxesList=taxesList;
                     }, error =>  this.handleError(error));
+
+                this.TaxesForm.reset();
                 this._toastService.pop(TOAST_TYPE.success, "Tax created successfully.");
             }
         } else {
@@ -299,62 +283,41 @@ getCoa(){
 
     }
 
-    setVendorType(vendorType, vendor?){
-        let validator = [Validators.required, Validators.pattern];
-        let tempForm = _.cloneDeep(this._taxesForm.getTax());
-        if(vendorType == 'Company'){
-            tempForm.ein = [this.row.ein || '', validator];
-            tempForm.ssn = [this.row.ssn || ''];
-        } else {
-            tempForm.ein = [this.row.ein || ''];
-            tempForm.ssn = [this.row.ssn || '', validator];
-        }
-        if(!vendor){
-            tempForm.type = [vendorType, [Validators.required]];
-            let tempData = this._vendorForm.getData(this.vendorForm);
-            this.vendorForm = this._fb.group(tempForm);
-            this._vendorForm.updateForm(this.vendorForm, tempData);
-        } else{
-            this.vendorForm = this._fb.group(tempForm);
-        }
-    }
 
-    isVendorCompany(form){
-        let data = this._vendorForm.getData(form);
-        if(data.type == 'Company'){
-            return true;
-        }
-        return false;
-    }
-
-    editAddress:any;
-
-    getVendorDetails(vendorID){
+    getTaxDetails(vendorID){
         let base=this;
-        this.companyService.tax(this.companyId,vendorID).subscribe(vendor => {
-            console.log("vendorvendor",vendor);
-                this.row = vendor;
+        this.companyService.tax(this.companyId,vendorID).subscribe(tax => {
+            this.row = tax;
             let selectedCOAControl:any = this.TaxesForm.controls['name'];
-            selectedCOAControl.patchValue(vendor.name);
-                let tin:any=this.TaxesForm.controls['tin'];
-            tin.patchValue(vendor.tin);
-                let taxAuthorityName:any=this.TaxesForm.controls['taxAuthorityName'];
-            taxAuthorityName.patchValue(vendor.taxAuthorityName);
+            selectedCOAControl.patchValue(tax.name);
+            let tin:any=this.TaxesForm.controls['tin'];
+            tin.patchValue(tax.tin);
+            let taxAuthorityName:any=this.TaxesForm.controls['taxAuthorityName'];
+            taxAuthorityName.patchValue(tax.taxAuthorityName);
             let taxAuthorityId:any = this.TaxesForm.controls['taxAuthorityId'];
-            taxAuthorityId.patchValue(vendor.taxAuthorityId);
+            taxAuthorityId.patchValue(tax.taxAuthorityId);
             let taxLiabilityCoa:any = this.TaxesForm.controls['taxLiabilityCoa'];
-            taxLiabilityCoa.patchValue(vendor.taxLiabilityCoa);
+            taxLiabilityCoa.patchValue(tax.taxLiabilityCoa);
             let description:any = this.TaxesForm.controls['description'];
-            description.patchValue(vendor.description);
+            description.patchValue(tax.description);
             let taxRate:any = this.TaxesForm.controls['taxRate'];
-            taxRate.patchValue(vendor.taxRate);
+            taxRate.patchValue(tax.taxRate);
             let compoundTax:any = this.TaxesForm.controls['compoundTax'];
-            compoundTax.patchValue(vendor.compoundTax);
+            compoundTax.patchValue(tax.compoundTax);
             let recoverableTax:any = this.TaxesForm.controls['recoverableTax'];
-            recoverableTax.patchValue(vendor.recoverableTax);
+            recoverableTax.patchValue(tax.recoverableTax);
             let visibleOnInvoices:any = this.TaxesForm.controls['visibleOnInvoices'];
-            visibleOnInvoices.patchValue(vendor.visibleOnInvoices);
-            this._taxesForm.updateForm(this.TaxesForm, vendor);
+            visibleOnInvoices.patchValue(tax.visibleOnInvoices);
+            let coa = _.find(this.chartOfAccounts, function(_coa) {
+                return _coa.id == tax.taxLiabilityCoa;
+            });
+            if(!_.isEmpty(coa)){
+                setTimeout(function(){
+                    base.coaComboBox.setValue(taxLiabilityCoa, 'name');
+                });
+            }
+            this._taxesForm.updateForm(this.TaxesForm, tax);
+
         }, error => this.handleError(error));
     }
 }

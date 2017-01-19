@@ -8,7 +8,7 @@
     </header>
     <div class="column large-12 medium-12 small-12 foo-container">
         <div class="foo-toolbar">
-            <button class="button small" (click)="showCreateVendor()"><i class="icon ion-plus-round"></i>Taxes</button>
+            <button class="button small" (click)="showCreateTax()"><i class="icon ion-plus-round"></i>Taxes</button>
         </div>
         <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
