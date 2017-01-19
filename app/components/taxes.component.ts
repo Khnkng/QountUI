@@ -206,7 +206,15 @@ export class TaxesComponent {
         this.companyId = Session.getCurrentCompany();
 
         if(this.editMode){
-            console.log("editmode");
+            data.id = this.row.id;
+            console.log("<VendorModel>data",<VendorModel>data);
+            console.log("this.row.id",this.row.id);
+            this.companyService.updateTax(<VendorModel>data, this.companyId)
+                .subscribe(success  => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.showMessage(true, success);
+                    this.showFlyout = false;
+                }, error =>  this.showMessage(false, error));
         } else{
             //data.companyID = this.currentCompany.id;
             this.companyService.addTax(<VendorModel>data, this.companyId)
@@ -322,28 +330,30 @@ getCoa(){
     editAddress:any;
 
     getVendorDetails(vendorID){
-        console.log("vendorIDvendorID",vendorID);
         let base=this;
         this.companyService.tax(this.companyId,vendorID).subscribe(vendor => {
             console.log("vendorvendor",vendor);
                 this.row = vendor;
-                let countryName = vendor.addresses[0].country;
-                this.editAddress=vendor.addresses[0];
-                let country = _.find(PROVINCES.COUNTRIES, function(_country) {
-                    return _country.name == countryName;
-                });
-
-
-            let coa = _.find(this.chartOfAccounts, function(_coa) {
-                return _coa.id == vendor.coa
-            });
-            if(!_.isEmpty(coa)){
-                setTimeout(function(){
-                    base.coaComboBox.setValue(coa, 'name');
-                });
-            }
-            vendor.has1099 = vendor.has1099 == 'true' || vendor.has1099 == true;
-            this.setVendorType(vendor.type, vendor);
+            let selectedCOAControl:any = this.TaxesForm.controls['name'];
+            selectedCOAControl.patchValue(vendor.name);
+                let tin:any=this.TaxesForm.controls['tin'];
+            tin.patchValue(vendor.tin);
+                let taxAuthorityName:any=this.TaxesForm.controls['taxAuthorityName'];
+            taxAuthorityName.patchValue(vendor.taxAuthorityName);
+            let taxAuthorityId:any = this.TaxesForm.controls['taxAuthorityId'];
+            taxAuthorityId.patchValue(vendor.taxAuthorityId);
+            let taxLiabilityCoa:any = this.TaxesForm.controls['taxLiabilityCoa'];
+            taxLiabilityCoa.patchValue(vendor.taxLiabilityCoa);
+            let description:any = this.TaxesForm.controls['description'];
+            description.patchValue(vendor.description);
+            let taxRate:any = this.TaxesForm.controls['taxRate'];
+            taxRate.patchValue(vendor.taxRate);
+            let compoundTax:any = this.TaxesForm.controls['compoundTax'];
+            compoundTax.patchValue(vendor.compoundTax);
+            let recoverableTax:any = this.TaxesForm.controls['recoverableTax'];
+            recoverableTax.patchValue(vendor.recoverableTax);
+            let visibleOnInvoices:any = this.TaxesForm.controls['visibleOnInvoices'];
+            visibleOnInvoices.patchValue(vendor.visibleOnInvoices);
             this._taxesForm.updateForm(this.TaxesForm, vendor);
         }, error => this.handleError(error));
     }
