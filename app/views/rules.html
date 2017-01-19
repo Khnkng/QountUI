@@ -1,0 +1,104 @@
+
+<div class="row" foundation>
+    <div class="column small-12 medium-6">
+        <h5>Rules</h5>
+    </div>
+    <div class="columns small-6 small-offset-6 right">
+
+    </div>
+</div>
+<div class="row chart-of-accounts" foundation>
+    <div class="column large-12 medium-12 small-12 foo-container">
+        <div class="foo-toolbar">
+            <button class="button small" (click)="showAddRule()"><i class="icon ion-plus-round"></i> Rule</button>
+        </div>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasRuleList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    </div>
+    <div class="qount-off-canvas-menu rule-flyout">
+        <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+            <section class="flyout-placeholder">
+                <header class="flyout-header">
+                    <h6>{{editMode ? "Update Rule" : "Add Rule"}}</h6>
+                </header>
+                <div class="flyout-body flyout-shadow-effect">
+                    <!--here comes actual flyout code-->
+                    <section class="form-section clearfix">
+                        <form *ngIf="showFlyout" novalidate [formGroup]="ruleForm">
+                            <div class="row">
+                                <div class="small-12 medium-12 columns">
+                                    <header class="form-section-header">Rule</header>
+                                    <div class="row">
+                                        <div class="small-12 medium-12 columns rule-row">
+                                            <label>When a</label>
+                                            <select class="source" formControlName="sourceType">
+                                                <option>Expense</option>
+                                                <option>Deposit</option>
+                                            </select>
+                                            <label>is created and the</label>
+                                            <select class="column-condition" formControlName="attributeName">
+                                                <option value="TITLE">title</option>
+                                                <option value="AMOUNT">amount</option>
+                                            </select>
+                                            <select class="condition" formControlName="comparisionType">
+                                                <option value="BEGINS_WITH">begins with</option>
+                                                <option value="CONTAINS">contains</option>
+                                                <option value="EQUALS_TO">equals to</option>
+                                                <option value="GREATER_THAN">greater than</option>
+                                                <option value="LESS_THAN">less than</option>
+                                            </select>
+                                            <input type="text" class="condition-value" formControlName="comparisionValue"/>
+                                        </div>
+                                    </div>
+                                    <header class="form-section-header">Actions:</header>
+                                    <div class="actions-form" formArrayName="actions">
+                                        <div class="row action-row" *ngFor="let actionForm of ruleForm.controls.actions.controls;let index=index;">
+                                            <div class="small-12 medium-6 columns">
+                                                <label>Then add</label>
+                                                <select class="action" [formControl]="actionForm.controls.action">
+                                                    <option value="chartOfAccount">Chart of account</option>
+                                                    <option value="dimension">Dimension</option>
+                                                </select>
+                                                <label *ngIf="isActionCOA(actionForm)" class="combo-box">
+                                                    <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Chart of account" [formControl]="actionForm.controls.actionValue" [listObject]="chartOfAccounts" (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
+                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                                                    </select>
+                                                </label>
+                                                <label *ngIf="isActionDimension(actionForm)" class="combo-box">
+                                                    <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Dimension" [formControl]="actionForm.controls.actionValue" [listObject]="dimensions" (valueChanged)="updateActionValue($event, index, 'dimension')">
+                                                        <option *ngFor="let dimension of dimensions" [value]="dimension.name">{{dimension.name}}</option>
+                                                    </select>
+                                                </label>
+                                            </div>
+                                            <div class="small-12 medium-1 columns">
+                                                <i class="icon ion-close" *ngIf="actions.length != 1" (click)="deleteAction(idx)"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row add-action">
+                                        <div class="small-2 medium-3 columns">
+                                            <a (click)="addNewAction()"><i class="icon ion-plus-round"></i> Action</a>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="small-2 medium-6 columns">
+                                            <button type="submit" class="button small float-left" (click)="submit($event, 'NO_DATE')">Save</button>
+                                            <div class="date-wrapper float-left" (click)="submit($event, 'WITH_DATE')">
+                                                <a class="button small float-left">Save and apply to all {{getSourceName()}}s since</a>
+                                                <input class="float-left" type="text" formControlName="effectiveDate"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                    <span aria-hidden="true">
+                      <i class="ion-ios-close-empty"></i>
+                    </span>
+                </button>
+            </section>
+        </div>
+    </div>
+</div>

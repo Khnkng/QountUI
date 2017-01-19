@@ -29,6 +29,7 @@ export class ToolsComponent {
   dimensionCount: number = 0;
   usersCount:number=0;
   accountsCount:number = 0;
+  ruleCount:number = 0;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private usersService:CompanyUsers) {
     let currentCompany = Session.getCurrentCompany();
@@ -55,7 +56,7 @@ export class ToolsComponent {
 
   }
 
-  showPage(page:PAGES, $event) {
+  showPage(page, $event) {
     $event && $event.stopImmediatePropagation();
     switch (page) {
       case 'companies': {
@@ -122,7 +123,11 @@ export class ToolsComponent {
         let link = ['modules'];
         this._router.navigate(link);
       }
-        break;
+      break;
+      case 'rules': {
+        let link = ['rules'];
+        this._router.navigate(link);
+      }
     }
   }
 }

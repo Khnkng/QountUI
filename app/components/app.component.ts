@@ -23,7 +23,6 @@ declare var _:any;
     templateUrl: '/app/views/qountApp.html'
 })
 export class AppComponent  implements OnInit{
-
     isSideMenuExpanded : boolean;
     hasLoggedIn : boolean;
     showSearch : boolean;
@@ -37,17 +36,16 @@ export class AppComponent  implements OnInit{
     switchBoard:SwitchBoard
     confirmClass = "";
     isOffCanvasMenuExpanded:boolean=false;
-
     mainCanvasCss = {
         'main-canvas': true,
         'expanded': false
-    }
+    };
 
     sMenuCss = {
         'small-2': false,
         'sidebar' : true,
         'shrink' : true
-    }
+    };
 
     constructor(_switchBoard:SwitchBoard, private _router:Router, private toastService: ToastService, private socketService: SocketService) {
         if(Session.hasSession()) {

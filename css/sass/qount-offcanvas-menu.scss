@@ -260,38 +260,39 @@
 }
 
 .rule-flyout{
-  .rule-row{
+  .rule-row, .action-row{
     label, select, input{
       float: left;
       width: auto;
       margin: 0px 5px;
-      height: 30px;
     }
   }
   .action-row{
-    label, select, input{
-      float: left;
-      width: auto;
-      margin: 0px 5px;
-      height: 30px;
+    margin-top: 10px;
+  }
+  input{
+    width: auto;
+  }
+  select, input{
+    font-size: 12px;
+  }
+  .actions-form{
+    border: none !important;
+  }
+  label.combo-box{
+    width: 175px;
+  }
+  .date-wrapper{
+    margin-left: 5px;
+    .button{
+      border-radius: 3px 0px 0px 3px;
+    }
+    input{
+      border-radius: 0px 3px 3px 0px;
+      height: 34px;
     }
   }
-  .source{
-
-  }
-  .column-condition{
-
-  }
-  .condition{
-
-  }
-  .condition-value{
-
-  }
-  .action-value{
-
-  }
-  .action{
-
+  .add-action{
+    margin: 10px 0px;
   }
 }

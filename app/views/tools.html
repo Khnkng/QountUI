@@ -22,11 +22,11 @@
             <div class="clear"></div>
             <div class="thumb-label">Customers</div>
         </div>
-        <div class="column tool-grid" (click)="showPage('employees', $event)">
-            <div class="grid-icon employees"></div>
+        <div class="column tool-grid" (click)="showPage('taxes', $event)">
+            <div class="grid-icon billing"></div>
             <span class="grid-qount" [hidden]="employeeCount == 0">{{employeeCount}}</span>
             <div class="clear"></div>
-            <div class="thumb-label">Employees</div>
+            <div class="thumb-label">Taxes</div>
         </div>
         <div class="column tool-grid" (click)="showPage('items', $event)">
             <div class="grid-icon items"></div>
@@ -97,14 +97,6 @@
             <span class="grid-qount" [hidden]="ruleCount == 0">{{ruleCount}}></span>
             <div class="clear"></div>
             <div class="thumb-label">Rules</div>
-        </div>
-    </div>
-    <div class="row tools-grids">
-        <div style="width:285px;margin-left:17px;cursor:pointer;" (click)="showPage('taxes', $event)">
-            <div class="grid-icon companies"></div>
-            <span class="grid-qount"></span>
-            <div class="clear"></div>
-            <div class="thumb-label" style="text-align:center" onmouseover="this.style.background='#00B0F0';this.style.color='white'" onmouseleave="this.style.background='white';this.style.color='black'">Taxes</div>
         </div>
     </div>
 </div>
