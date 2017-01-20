@@ -105,9 +105,10 @@ export class TaxesComponent {
         taxesList.forEach(function(expense) {
             let row:any = {};
             _.each(base.tableColumns, function(key) {
-                if(key == 'coa_mapping_id'){
-                    row['selectedCOAName'] = base.getCOAName(expense[key]);
-                    row[key] = expense[key];
+                if(key == 'taxRate'){
+                    debugger;
+                    console.log("taxRate");
+                    row[key] = expense[key]+"%";
                 }  else{
                     row[key] = expense[key];
                 }
@@ -197,9 +198,13 @@ export class TaxesComponent {
         this.companyId = Session.getCurrentCompany();
 
         if(this.editMode){
+
             data.id = this.row.id;
-            console.log("<VendorModel>data",<VendorModel>data);
-            console.log("this.row.id",this.row.id);
+           if(data.taxRate.includes("%")){
+               data.taxRate.split('%')
+               var res = data.taxRate.split("");
+               data.taxRate=res[0];
+            };
             this.companyService.updateTax(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
@@ -207,7 +212,11 @@ export class TaxesComponent {
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
         } else{
-            //data.companyID = this.currentCompany.id;
+            if(data.taxRate.includes("%")){
+                data.taxRate.split('%')
+                var res = data.taxRate.split("");
+                data.taxRate=res[0];
+            };
             this.companyService.addTax(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
@@ -307,6 +316,7 @@ export class TaxesComponent {
             let description:any = this.TaxesForm.controls['description'];
             description.patchValue(tax.description);
             let taxRate:any = this.TaxesForm.controls['taxRate'];
+            tax.taxRate=tax.taxRate+"%";
             taxRate.patchValue(tax.taxRate);
             let compoundTax:any = this.TaxesForm.controls['compoundTax'];
             compoundTax.patchValue(tax.compoundTax);
