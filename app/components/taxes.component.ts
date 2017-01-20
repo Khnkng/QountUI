@@ -93,7 +93,7 @@ export class TaxesComponent {
             {"name":"id","title":"id","visible": false},
             {"name": "name", "title": "Tax Name"},
             {"name": "tin", "title": "Tax Number"},
-            {"name": "visibleOnInvoices", "title": "Display Tax ID on Invoices"},
+            {"name": "visibleOnInvoices", "title": "Display Invoices"},
             {"name": "taxAuthorityName", "title": "Tax Authority Name"},
             {"name": "taxRate", "title": "Tax Rate"},
             {"name": "taxLiabilityCoa", "title": "Tax Liability COA"},
