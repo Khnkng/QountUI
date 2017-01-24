@@ -93,6 +93,10 @@ export class ToolsComponent {
         let link = ['payments/workflow'];
         this._router.navigate(link);
       }
+      case 'invoice_settings': {
+        let link = ['invoices/invoiceSettings'];
+        this._router.navigate(link);
+      }
       break;
       case 'items': {
         let link = ['itemCodes'];
