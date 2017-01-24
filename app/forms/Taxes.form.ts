@@ -14,13 +14,13 @@ export class TaxesForm extends abstractForm{
 
         return {
             "name": ['', Validators.required],
-            "tin": [''],
-            "taxAuthorityName": [''],
-            "taxAuthorityId":[''],
-            "taxLiabilityCoa":[''],
-            "description":[''],
-            "taxRate":[''],
-            "compoundTax":[''],
+            "tin": ['',Validators.required],
+            "taxAuthorityName": ['',Validators.required],
+            "taxAuthorityId":['',Validators.required],
+            "taxLiabilityCoa":['',Validators.required],
+            "description":['',Validators.required],
+            "taxRate":['',Validators.required],
+            "compoundTax":['',],
             "recoverableTax":[''],
             "visibleOnInvoices":['']
         }
