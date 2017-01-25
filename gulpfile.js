@@ -1,6 +1,5 @@
 var gulp = require('gulp'),
     runSequence = require('run-sequence'),
-//print = require('gulp-print'),
     connect = require('gulp-connect'),
     rename = require('gulp-rename'),
     traceur = require('gulp-traceur'),
@@ -82,88 +81,48 @@ gulp.task('serve', ['build'], function () {
       }));
 });
 
-/*gulp.task('print', function() {
- gulp.src('build/!**!/!*')
- .pipe(print(function(filepath) {
- return "built: " + filepath;
- }))
- });*/
-
-/*
- gulp.task('serve', ['build'], function() {
- ranBower = true;
- ranWiredep = true;
- connect.server({
- root: 'build',
- port:8000,
- livereload: true,
- fallback: 'index.html'
- });
- });
- */
-
-
 gulp.task('typescript-compile', function () {
+    var tsProject = ts.createProject('tsconfig.json');
+    var qCommonProject = ts.createProject('node_modules/qCommon/tsconfig.json');
+    var reportsProject = ts.createProject('node_modules/reportsUI/tsconfig.json');
+    var billsProject = ts.createProject('node_modules/billsUI/tsconfig.json');
+    var invoiceProject = ts.createProject('node_modules/invoicesUI/tsconfig.json');
 
-    var tsProject = ts.createProject('tsconfig.json', {
-        //typescript: require('typescript')
-    });
-
-    var tsProject1 = ts.createProject('node_modules/qCommon/tsconfig.json', {
-        //typescript: require('typescript')
-    });
-
-    var tsProject2 = ts.createProject('node_modules/reportsUI/tsconfig.json', {
-        //typescript: require('typescript')
-    });
-
-    var tsProject3 = ts.createProject('node_modules/billsUI/tsconfig.json', {
-        //typescript: require('typescript')
-    });
-
-
-  var tsResult = tsProject.src() // instead of gulp.src(...)
+    var tsResult = tsProject.src() // instead of gulp.src(...)
       .pipe(tsProject());
-  var tsResult1 = tsProject1.src() // instead of gulp.src(...)
-      .pipe(tsProject1());
-    var tsResult2 = tsProject2.src() // instead of gulp.src(...)
-        .pipe(tsProject2());
-  var tsResult3 = tsProject3.src() // instead of gulp.src(...)
-      .pipe(tsProject3());
-  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/reportsUI')),tsResult3.js.pipe(gulp.dest('build/lib/billsUI'))).pipe(livereload());
-  /*return gulp.src(['app/!**!/!*.ts', '!app/bower_components/!**!/!*.ts', '!node_modules/!**!/!*.ts'])
-   .pipe(ts(tsProject))
-   .pipe(gulp.dest('build/app/'));*/
+    var qCommonProjectResult = qCommonProject.src() // instead of gulp.src(...)
+      .pipe(qCommonProject());
+    var reportsProjectResult = reportsProject.src() // instead of gulp.src(...)
+        .pipe(reportsProject());
+    var billsProjectResult = billsProject.src() // instead of gulp.src(...)
+      .pipe(billsProject());
+    var invoiceProjectResult = invoiceProject.src()
+        .pipe(invoiceProject());
+    return merge(tsResult.js.pipe(gulp.dest('build/app/')), qCommonProjectResult.js.pipe(gulp.dest('build/lib/qCommon')),
+        reportsProjectResult.js.pipe(gulp.dest('build/lib/reportsUI')),billsProjectResult.js.pipe(gulp.dest('build/lib/billsUI')),
+        invoiceProjectResult.js.pipe(gulp.dest('build/lib/invoicesUI'))).pipe(livereload());
 });
 
 gulp.task('prod-typescript-compile', function () {
+    var tsProject = ts.createProject('tsconfig.json');
+    var qCommonProject = ts.createProject('node_modules/qCommon/tsconfig.json');
+    var reportsProject = ts.createProject('node_modules/reportsUI/tsconfig.json');
+    var billsProject = ts.createProject('node_modules/billsUI/tsconfig.json');
+    var invoiceProject = ts.createProject('node_modules/invoicesUI/tsconfig.json');
 
-
-    var tsProject = ts.createProject('tsconfig.json', {
- //       typescript: require('typescript')
-    });
-
-    var tsProject1 = ts.createProject('node_modules/qCommon/tsconfig.json', {
- //       typescript: require('typescript')
-    });
-
-    var tsProject2 = ts.createProject('node_modules/reportsUI/tsconfig.json', {
-        //      typescript: require('typescript')
-    });
-
-    var tsProject3 = ts.createProject('node_modules/billsUI/tsconfig.json', {
- //       typescript: require('typescript')
-    });
-
-  var tsResult = tsProject.src() // instead of gulp.src(...)
-      .pipe(ts(tsProject));
-  var tsResult1 = tsProject1.src() // instead of gulp.src(...)
-   .pipe(ts(tsProject1));
-    var tsResult2 = tsProject2.src() // instead of gulp.src(...)
-        .pipe(ts(tsProject2));
-  var tsResult3 = tsProject3.src() // instead of gulp.src(...)
-      .pipe(ts(tsProject3));
-  return merge(tsResult.js.pipe(gulp.dest('build/app/')), tsResult1.js.pipe(gulp.dest('build/lib/qCommon')), tsResult2.js.pipe(gulp.dest('build/lib/reportsUI')),tsResult3.js.pipe(gulp.dest('build/lib/billsUI'))).pipe(livereload());
+    var tsResult = tsProject.src() // instead of gulp.src(...)
+        .pipe(tsProject());
+    var qCommonProjectResult = qCommonProject.src() // instead of gulp.src(...)
+        .pipe(qCommonProject());
+    var reportsProjectResult = reportsProject.src() // instead of gulp.src(...)
+        .pipe(reportsProject());
+    var billsProjectResult = billsProject.src() // instead of gulp.src(...)
+        .pipe(billsProject());
+    var invoiceProjectResult = invoiceProject.src()
+        .pipe(invoiceProject());
+    return merge(tsResult.js.pipe(gulp.dest('build/app/')), qCommonProjectResult.js.pipe(gulp.dest('build/lib/qCommon')),
+        reportsProjectResult.js.pipe(gulp.dest('build/lib/reportsUI')),billsProjectResult.js.pipe(gulp.dest('build/lib/billsUI')),
+        invoiceProjectResult.js.pipe(gulp.dest('build/lib/invoicesUI'))).pipe(livereload());
 });
 
 // watch for changes and run the relevant task
@@ -173,12 +132,11 @@ gulp.task('watch', ['serve'], function () {
   gulp.watch('app/**/*.ts', ['typescript-compile']);
   gulp.watch('node_modules/reportsUI/app/**/*.*', ['typescript-compile']);
   gulp.watch('node_modules/billsUI/app/**/*.*', ['typescript-compile']);
+  gulp.watch('node_modules/invoicesUI/app/**/*.*', ['typescript-compile']);
   gulp.watch(['./index.html', './app/views/*.html'], ['html']);
   gulp.watch('app/**/*.css', ['css']);
   gulp.watch('images/**/*.*', ['images']);
   gulp.watch('css/**/*.scss', ['sass']);
-  //gulp.watch('node_modules/qCommon/**/*.*', ['generate-umd']);
-  //gulp.watch(['build/**']).on('change', livereload.changed);
 });
 
 gulp.task('generate-umd', ['typescript-compile'], function(){
@@ -233,11 +191,13 @@ gulp.task('js', function () {
 gulp.task('html', ['wiredep'], function () {
   var html = gulp.src(['./index.html', './app/**/*.html'], {base: '.'})
       .pipe(gulp.dest('build/'));
-    var reportsHtml = gulp.src(['./node_modules/reportsUI/app/views/*.html'])
+  var reportsHtml = gulp.src(['./node_modules/reportsUI/app/views/*.html'])
         .pipe(gulp.dest('build/app/views/'));
   var paymentsHtml = gulp.src(['./node_modules/billsUI/app/views/*.html'])
       .pipe(gulp.dest('build/app/views/'));
-  return merge(html, reportsHtml,paymentsHtml).pipe(livereload());
+  var invoicesHtml = gulp.src(['./node_modules/invoicesUI/app/views/*.html'])
+        .pipe(gulp.dest('build/app/views/'));
+  return merge(html, reportsHtml, paymentsHtml, invoicesHtml).pipe(livereload());
 });
 
 // move css
@@ -321,10 +281,12 @@ gulp.task('copy-to-prod', ['prod-images', 'copy-misc-prod', 'copy-fonts-prod', '
   var reportsJs = gulp.src(['build/lib/reportsUI/**/*.js'])
       .pipe(gulp.dest('build/prod/lib/reportsUI/'));
   var reportsHtml = gulp.src(['./node_modules/reportsUI/app/views/*.html'])
-        .pipe(gulp.dest('build/prod/app/views/'));
+      .pipe(gulp.dest('build/prod/app/views/'));
   var paymentsHtml = gulp.src(['./node_modules/billsUI/app/views/*.html'])
       .pipe(gulp.dest('build/prod/app/views/'));
-  return merge(views, reportsJs, reportsHtml,paymentsHtml);
+  var invoicesHtml = gulp.src(['./node_modules/invoicesUI/app/views/*.html'])
+      .pipe(gulp.dest('build/prod/app/views/'));
+  return merge(views, reportsJs, reportsHtml, paymentsHtml, invoicesHtml);
 });
 
 gulp.task('gzipfiles', function(){
@@ -343,9 +305,6 @@ gulp.task('bundle', ['copy-to-prod'], function (cb) {
 
   builder.buildStatic("app", "./build/prod/js/app.min.js", {})
       .then(function (output) {
-        /* gulp.src("build/prod/js/app.min.js")
-         .pipe(inlineNg2Template({ base: "./", css: false}))
-         .pipe(gulp.dest('dist/'));*/
         cb();
       })
       .catch(function (err) {

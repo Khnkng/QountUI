@@ -29,8 +29,8 @@
         'angular2-uuid':'npm:angular2-uuid',
         'qCommon': 'npm:qCommon',
         'reportsUI': 'npm:reportsUI',
-        'billsUI': 'npm:billsUI'
-
+        'billsUI': 'npm:billsUI',
+        'invoicesUI': 'npm:invoicesUI'
     },
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
@@ -57,13 +57,17 @@
         main: './index.js',
         defaultExtension: 'js'
       },
-        'ng2-file-upload':{
-            main: './ng2-file-upload.js',
-            defaultExtension: 'js'
-        },
+      'ng2-file-upload':{
+        main: './ng2-file-upload.js',
+        defaultExtension: 'js'
+      },
       'billsUI': {
         main: './index.js',
         defaultExtension: 'js'
+      },
+      'invoicesUI': {
+          main: './index.js',
+          defaultExtension: 'js'
       }
     }
   });

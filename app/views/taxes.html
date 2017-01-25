@@ -90,16 +90,21 @@
                                                     <label class="text-right">Tax Rate</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" formControlName="taxRate" placeholder="TaxRate*">
+                                                    <input type="text" formControlName="taxRate" placeholder="TaxRate*" (change)="ratetax()">
                                                     <div class="error" [hidden]="TaxesForm.controls.taxRate.untouched || TaxesForm.controls.taxRate.valid">TaxRate is required</div>
                                                 </div>
                                             </div>
+
+                                        </div>
+                                        <div class="form-section-left">
+                                            <header class="form-section-header">Taxes Info</header>
+
                                             <div class="row">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Compound Tax</label>
                                                 </div>
                                                 <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="checkbox" formControlName="compoundTax" />
+                                                    <input type="checkbox" formControlName="compoundTax" style="margin-top:6px;" />
                                                     <div class="error" [hidden]="TaxesForm.controls.compoundTax.untouched || TaxesForm.controls.compoundTax.valid">CompoundTax is required</div>
                                                 </div>
                                             </div>
@@ -108,27 +113,25 @@
                                                     <label class="text-right">Recoverable Tax</label>
                                                 </div>
                                                 <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="checkbox" formControlName="recoverableTax" />
+                                                    <input type="checkbox" formControlName="recoverableTax" style="margin-top:6px;" />
                                                     <div class="error" [hidden]="TaxesForm.controls.recoverableTax.untouched || TaxesForm.controls.recoverableTax.valid">RecoverableTax is required</div>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="small-4 columns">
-                                                    <label class="text-right">Visible On Invoices</label>
+                                                    <label class="text-right">On Invoices</label>
                                                 </div>
                                                 <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="checkbox" formControlName="visibleOnInvoices" />
+                                                    <input type="checkbox" formControlName="visibleOnInvoices" style="margin-top:6px;" />
                                                     <div class="error" [hidden]="TaxesForm.controls.visibleOnInvoices.untouched || TaxesForm.controls.visibleOnInvoices.valid">visibleOnInvoices is required</div>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="small-12 medium-12 columns">
-                                                    <button class="button create small float-right" [disabled]="!isValid(TaxesForm)" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
-                                                </div>
                                             </div>
-
-                                        </div>
-
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <button class="button create small float-right" [disabled]="!isValid(TaxesForm)" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
                                     </div>
                                 </div>
                             </section>

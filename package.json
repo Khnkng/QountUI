@@ -23,6 +23,7 @@
     "angular2-localstorage": "^0.2.0",
     "angular2-uuid": "^1.0.7",
     "billsUI": "git+https://Qount:b2da10194989666d043efdd95d7302dd85bc1cd1@github.com/Qount/BillsUI.git",
+    "invoicesUI": "git+https://Qount:b2da10194989666d043efdd95d7302dd85bc1cd1@github.com/Qount/invoicesUI.git",
     "bootstrap": "^3.3.7",
     "ng2-file-upload": "^1.0.3",
     "qCommon": "git+https://Qount:b2da10194989666d043efdd95d7302dd85bc1cd1@github.com/Qount/qCommon.git",

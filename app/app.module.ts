@@ -41,6 +41,8 @@ import {JournalEntryForm, JournalLineForm} from "./forms/JournalEntry.form";
 import {ExpensesForm} from "./forms/Expenses.form";
 import {ExpensesSerice} from "./services/Expenses.service";
 import {PaymentsModule} from "billsUI/app/payments.module";
+import {InvoicesModule} from "invoicesUI/app/invoices.module";
+import {RulesService} from "qCommon/app/services/Rules.service";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 import {CustomersComponent} from "./components/Customers.component";
 import {CustomersService} from "./services/Customers.service";
@@ -195,7 +197,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: TermsAndConditionsComponent,
             canActivate: [LoggedInActivator]
         }
-    ]), PaymentsModule, ReportsModule
+    ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
@@ -204,7 +206,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, TaxesForm, JournalEntryForm, JournalLineForm,
-        ExpensesSerice, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm],
+        ExpensesSerice,RulesService, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

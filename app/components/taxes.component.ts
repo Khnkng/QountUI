@@ -292,7 +292,10 @@ export class TaxesComponent {
 
     }
 
-
+    ratetax(){
+        let taxRate:any = this.TaxesForm.controls['taxRate'];
+        taxRate.patchValue(taxRate.value+"%");
+    }
     getTaxDetails(vendorID){
         let base=this;
         this.companyService.tax(this.companyId,vendorID).subscribe(tax => {
