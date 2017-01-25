@@ -131,7 +131,7 @@ export class RulesComponent {
         let base = this;
         _.each(RulesList, function(RulesList) {
             let row:any = {};
-            row['rule']="when a "+RulesList.sourceType+" is created and the "+RulesList.attributeName+" " +RulesList.comparisonType +" "+RulesList.comparisonValue;
+            row['rule']="when a "+RulesList.sourceType+" is created and the "+RulesList.attributeName+" " +RulesList.comparisionType +" "+RulesList.comparisionValue;
             row['id']=RulesList.id;
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.tableData.rows.push(row);
@@ -167,25 +167,54 @@ export class RulesComponent {
             return vendor.id == _vendor.id;
         });
     }
+    deleteAction(index){
+        let indexValue=this.actions.controls.splice(index,1);
+        let actionsControl:any = this.ruleForm.controls['actions'];
+        console.log("actionsControl",actionsControl);
+        let nz=actionsControl.controls.splice(index, 1);
+        console.log("nz",nz);
+        let yy=actionsControl.controls;
+        console.log("yy",yy);
+    }
+
     showEditRule(row:any) {
+        let base=this;
+        console.log(row);
         this.showFlyout = true;
         this.editMode = true;
         // this.ruleForm = this._fb.group(this._ruleForm.getForm());
         this.actions = new FormArray([]);
-        let _form = this._ruleForm.getForm();
-        _form['actions'] = this.actions;
-        this.ruleForm = this._fb.group(_form);
+        this.ruleservice.rule(this.companyId,row.id).subscribe(rule => {
+            console.log("rule",rule.actions);
+
+            rule.actions.forEach(function(action, index){
+                // let coa = _.find(base.chartOfAccounts, {id: action.actionValue});
+                // if(coa){
+                //     console.log("coa",coa);
+                //     return coa.name;
+                // }
+                // return "";
+                let actionForm = base._fb.group(base._actionForm.getForm(action));
+                base.actions.push(actionForm);
+            });
+            let _form = this._ruleForm.getForm();
+            _form['actions'] = this.actions;
+            console.log("this.actions",this.actions);
+            this.ruleForm = this._fb.group(_form);
+        });
         this.getRowDetails(row.id);
+
     }
     getRowDetails(RuleID){
         let base=this;
         this.ruleservice.rule(this.companyId,RuleID).subscribe(rule => {
+            console.log(rule);
             this.row = rule;
             let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
             selectedCOAControl.patchValue(rule.sourceType);
             let attributeName:any = this.ruleForm.controls['attributeName'];
             attributeName.patchValue(rule.attributeName);
-            let selectedAmountControl:any = this.ruleForm.controls['comparisonType'];
+            let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
             selectedAmountControl.patchValue(rule.comparisionType);
             let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
             selectedValueControl.patchValue(rule.comparisionValue);
@@ -240,6 +269,8 @@ export class RulesComponent {
         }
         if(this.editMode){
             data.id = this.row.id;
+            // let actionsControled:any = this.ruleForm.controls['actions'];
+            // data.actions=actionsControled.controls;
             this.ruleservice.updateRule(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
