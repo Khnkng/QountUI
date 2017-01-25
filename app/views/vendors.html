@@ -108,8 +108,8 @@
                         <div class="small-6 columns">
                           <select placeholder="Payment Method" formControlName="paymentMethod">
                             <option [value]="'ach'">ACH</option>
-                            <option [value]="'digitalCheque'">Digital Cheque</option>
-                            <option [value]="'mailCheque'">Mail Cheque</option>
+                            <option [value]="'digitalCheque'">Digital Check</option>
+                            <option [value]="'mailCheque'">Check</option>
                           </select>
                           <div class="error" [hidden]="vendorForm.controls.paymentMethod.untouched || vendorForm.controls.paymentMethod.valid">Payment method required</div>
                         </div>
