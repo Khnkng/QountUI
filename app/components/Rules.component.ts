@@ -49,8 +49,6 @@ export class RulesComponent {
                 this.loadingService.triggerLoadingEvent(false);
                 this.RulesList=RulesList;
                 this.buildTableData(RulesList);
-                console.log("taxesListtaxesList",RulesList);
-                //this.showMessage(true, success);
                 this.showFlyout = false;
             }, error =>  this.handleError(error));
     }
@@ -75,7 +73,6 @@ export class RulesComponent {
                         this.loadingService.triggerLoadingEvent(false);
                         this.RulesList=RulesList;
                         this.buildTableData(RulesList);
-                        this.showMessage(true, success);
                         this.showFlyout = false;
                     }, error =>  this.handleError(error));
 
@@ -149,10 +146,8 @@ export class RulesComponent {
         delete $event.action;
         delete $event.actions;
         if(action == 'edit') {
-            console.log("edit");
             this.showEditRule($event);
         } else if(action == 'delete'){
-            console.log("delete");
             this.removeRule($event);
         }
     }
@@ -173,18 +168,27 @@ export class RulesComponent {
         });
     }
     showEditRule(row:any) {
-        debugger;
         this.showFlyout = true;
         this.editMode = true;
-        this.ruleForm = this._fb.group(this._ruleForm.getForm());
+        // this.ruleForm = this._fb.group(this._ruleForm.getForm());
+        this.actions = new FormArray([]);
+        let _form = this._ruleForm.getForm();
+        _form['actions'] = this.actions;
+        this.ruleForm = this._fb.group(_form);
         this.getRowDetails(row.id);
     }
     getRowDetails(RuleID){
         let base=this;
         this.ruleservice.rule(this.companyId,RuleID).subscribe(rule => {
             this.row = rule;
-            let selectedCOAControl:any = this.ruleForm.controls['attributeName'];
-            selectedCOAControl.patchValue(rule.attributeName);
+            let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
+            selectedCOAControl.patchValue(rule.sourceType);
+            let attributeName:any = this.ruleForm.controls['attributeName'];
+            attributeName.patchValue(rule.attributeName);
+            let selectedAmountControl:any = this.ruleForm.controls['comparisonType'];
+            selectedAmountControl.patchValue(rule.comparisionType);
+            let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
+            selectedValueControl.patchValue(rule.comparisionValue);
 
             this._ruleForm.updateForm(this.ruleForm, rule);
 
@@ -235,9 +239,14 @@ export class RulesComponent {
             delete data.effectiveDate;
         }
         if(this.editMode){
-
+            data.id = this.row.id;
+            this.ruleservice.updateRule(<VendorModel>data, this.companyId)
+                .subscribe(success  => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.showMessage(true, success);
+                    this.showFlyout = false;
+                }, error =>  this.showMessage(false, error));
         } else{
-            console.log(this.companyId);
             this.ruleservice.addRule(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
