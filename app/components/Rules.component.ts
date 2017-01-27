@@ -170,11 +170,8 @@ export class RulesComponent {
     deleteAction(index){
         let indexValue=this.actions.controls.splice(index,1);
         let actionsControl:any = this.ruleForm.controls['actions'];
-        console.log("actionsControl",actionsControl);
-        let nz=actionsControl.controls.splice(index, 1);
-        console.log("nz",nz);
-        let yy=actionsControl.controls;
-        console.log("yy",yy);
+        let actionsControlform=actionsControl.controls.splice(index, 1);
+
     }
 
     updateActionValueInUI(field, index, value){
@@ -197,7 +194,6 @@ export class RulesComponent {
 
     showEditRule(row:any) {
         let base=this;
-        console.log(row);
         this.showFlyout = true;
         this.editMode = true;
         this.actions = new FormArray([]);
@@ -209,7 +205,6 @@ export class RulesComponent {
             });
             let _form = this._ruleForm.getForm();
             _form['actions'] = this.actions;
-            console.log("this.actions",this.actions);
             this.ruleForm = this._fb.group(_form);
         });
         this.getRowDetails(row.id);
@@ -218,7 +213,6 @@ export class RulesComponent {
     getRowDetails(RuleID){
         let base=this;
         this.ruleservice.rule(this.companyId,RuleID).subscribe(rule => {
-            console.log(rule);
             this.row = rule;
             let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
             selectedCOAControl.patchValue(rule.sourceType);
@@ -279,10 +273,9 @@ export class RulesComponent {
         }
         if(this.editMode){
             data.id = this.row.id;
-            // let actionsControled:any = this.ruleForm.controls['actions'];
-            // data.actions=actionsControled.controls;
             this.ruleservice.updateRule(data, this.companyId)
                 .subscribe(success  => {
+                    console.log("vendorodeldata",<VendorModel>data);
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                     this.showFlyout = false;
