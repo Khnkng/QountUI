@@ -170,36 +170,27 @@ export class RulesComponent {
     deleteAction(index){
         let indexValue=this.actions.controls.splice(index,1);
         let actionsControl:any = this.ruleForm.controls['actions'];
-        console.log("actionsControl",actionsControl);
-        let nz=actionsControl.controls.splice(index, 1);
-        console.log("nz",nz);
-        let yy=actionsControl.controls;
-        console.log("yy",yy);
+        let actionsControlform=actionsControl.controls.splice(index, 1);
+
     }
 
     showEditRule(row:any) {
         let base=this;
-        console.log(row);
         this.showFlyout = true;
         this.editMode = true;
         // this.ruleForm = this._fb.group(this._ruleForm.getForm());
         this.actions = new FormArray([]);
         this.ruleservice.rule(this.companyId,row.id).subscribe(rule => {
-            console.log("rule",rule.actions);
-
             rule.actions.forEach(function(action, index){
-                // let coa = _.find(base.chartOfAccounts, {id: action.actionValue});
-                // if(coa){
-                //     console.log("coa",coa);
-                //     return coa.name;
-                // }
-                // return "";
+                let coa = _.find(base.chartOfAccounts, {id: action.actionValue});
+                if(coa){
+                    action.actionValue=coa.name;
+                }
                 let actionForm = base._fb.group(base._actionForm.getForm(action));
                 base.actions.push(actionForm);
             });
             let _form = this._ruleForm.getForm();
             _form['actions'] = this.actions;
-            console.log("this.actions",this.actions);
             this.ruleForm = this._fb.group(_form);
         });
         this.getRowDetails(row.id);
@@ -208,7 +199,6 @@ export class RulesComponent {
     getRowDetails(RuleID){
         let base=this;
         this.ruleservice.rule(this.companyId,RuleID).subscribe(rule => {
-            console.log(rule);
             this.row = rule;
             let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
             selectedCOAControl.patchValue(rule.sourceType);
@@ -269,10 +259,9 @@ export class RulesComponent {
         }
         if(this.editMode){
             data.id = this.row.id;
-            // let actionsControled:any = this.ruleForm.controls['actions'];
-            // data.actions=actionsControled.controls;
             this.ruleservice.updateRule(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
+                    console.log("vendorodeldata",<VendorModel>data);
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                     this.showFlyout = false;
