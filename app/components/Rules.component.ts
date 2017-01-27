@@ -222,7 +222,8 @@ export class RulesComponent {
             selectedAmountControl.patchValue(rule.comparisionType);
             let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
             selectedValueControl.patchValue(rule.comparisionValue);
-
+let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
+            effectiveDate.patchValue(rule.effectiveDate);
             this._ruleForm.updateForm(this.ruleForm, rule);
 
         }, error => this.handleError(error));
