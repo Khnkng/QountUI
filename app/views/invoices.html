@@ -1,0 +1,126 @@
+<div>
+    <header>
+        <div class="header">
+            <div class="row">
+                <div class="small-6"><h5>Invoices</h5></div>
+                <div class="small-6 text-right"><i [ngClass]="{'ion-arrow-up-b': !hideBoxes, 'ion-arrow-down-b':hideBoxes}"  (click)="hideBoxes = !hideBoxes"></i></div>
+            </div>
+        </div>
+    </header>
+    <div class="row" [hidden]="hideBoxes">
+        <div class="column small-3 medium-3 large-3">
+            <div class="box-notifier">
+                <div class="box-border blue centered">
+                    <div class="box-icon categorize"></div>
+                    <div class="box-notification-circle">
+                        3
+                    </div>
+                </div>
+                <div class="box-label">
+                    Categorize
+                </div>
+            </div>
+        </div>
+        <div class="column small-3 large-3">
+            <div class="box-notifier">
+                <div class="box-border blue centered">
+                    <div class="box-icon duplicates"></div>
+                    <div class="box-notification-circle">
+                        3
+                    </div>
+                </div>
+                <div class="box-label">
+                    Duplicates
+                </div>
+            </div>
+        </div>
+        <div class="column small-3 large-3">
+            <div class="box-notifier">
+                <div class="box-border blue centered">
+                    <div class="box-icon flagged"></div>
+                    <div class="box-notification-circle">
+                        3
+                    </div>
+                </div>
+                <div class="box-label">
+                    Flagged
+                </div>
+            </div>
+        </div>
+        <div class="column small-3 large-3">
+            <div class="box-notifier">
+                <div class="box-border blue centered">
+                    <div class="box-icon reconcile"></div>
+                    <div class="box-notification-circle">
+                        3
+                    </div>
+                </div>
+                <div class="box-label">
+                    Reconcile
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-container" foundation>
+        <div class="row tabber ">
+            <div class="column tab red-tab" (click)="reRoutePage(0)" [ngClass]="{'selected': tabDisplay[0].display == 'block'}">
+                <label>Proposals</label>
+                <span class="badge">{{badges.proposals ? badges.proposals : localBadges ? localBadges.proposals: 0 }}</span>
+            </div>
+            <div class="column tab orange-tab" (click)="reRoutePage(1)" [ngClass]="{'selected': tabDisplay[1].display == 'block'}">
+                <label>Expenses</label>
+                <span class="badge">{{badges.expenses ? badges.expenses : localBadges ? localBadges.expenses: 0 }}</span>
+            </div>
+            <div class="column tab blue-tab" (click)="reRoutePage(2)" [ngClass]="{'selected': tabDisplay[2].display == 'block'}">
+                <label>Invoices</label>
+                <span class="badge">{{badges.invoices ? badges.invoices : localBadges ? localBadges.invoices: 0 }}</span>
+            </div>
+        </div>
+        <div class="row collapse tab-content ">
+            <div *ngIf="tabDisplay[0].display == 'block'" class="column small-12 medium-12 large-12" id="proposals">
+                <div class="row">
+                    <div class="column">
+                        <div class="row">
+                            <div class="column">
+                                <button class="button small float-right" (click)="addNewProposal()"><i class="icon ion-plus-round"></i>Proposal</button>
+                            </div>
+                        </div>
+                        <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasProposals" [data]="proposalsTableData" [options]="proposalsTableOptions" (onRowAction)="handleProposalAction($event)"></foo-table>
+                        <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasProposals">
+                            <div class="woo-woo">Woot Woot!</div>
+                            <p>There are no Proposals.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="tabDisplay[1].display == 'block'" class="column small-12 medium-12 large-12" id="expenses">
+                <div class="row">
+                    <div class="column">
+                        <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasExpenses" [data]="expensesTableData" [options]="expensesTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+                        <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasExpenses">
+                            <div class="woo-woo">Woot Woot!</div>
+                            <p>There are no Expenses.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf="tabDisplay[2].display == 'block'" class="column small-12 medium-12 large-12" id="invoices">
+                <div class="row">
+                    <div class="column">
+                        <div class="row">
+                            <div class="column">
+                                <button class="button small float-right" (click)="addNewInvoice()"><i class="icon ion-plus-round"></i>Invoice</button>
+                            </div>
+                        </div>
+                        <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasInvoices" [data]="invoiceTableData" [options]="invoiceTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+                        <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasInvoices">
+                            <div class="woo-woo">Woot Woot!</div>
+                            <p>There are no Invoices.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -177,23 +177,33 @@ export class RulesComponent {
         console.log("yy",yy);
     }
 
+    updateActionValueInUI(field, index, value){
+        let base = this;
+        if(field == 'chartOfAccount'){
+            setTimeout(function(){
+                jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(value));
+            }, 10);
+        } else if(field == 'dimension'){
+            setTimeout(function(){
+                jQuery('#dimension-'+index).siblings().children('input').val(value);
+            }, 10);
+        }
+    }
+
+    getCOAName(chartOfAccountId){
+        let coa = _.find(this.chartOfAccounts, {'id': chartOfAccountId});
+        return coa? coa.name : '';
+    }
+
     showEditRule(row:any) {
         let base=this;
         console.log(row);
         this.showFlyout = true;
         this.editMode = true;
-        // this.ruleForm = this._fb.group(this._ruleForm.getForm());
         this.actions = new FormArray([]);
         this.ruleservice.rule(this.companyId,row.id).subscribe(rule => {
-            console.log("rule",rule.actions);
-
             rule.actions.forEach(function(action, index){
-                // let coa = _.find(base.chartOfAccounts, {id: action.actionValue});
-                // if(coa){
-                //     console.log("coa",coa);
-                //     return coa.name;
-                // }
-                // return "";
+                base.updateActionValueInUI(action.action, index, action.actionValue);
                 let actionForm = base._fb.group(base._actionForm.getForm(action));
                 base.actions.push(actionForm);
             });
@@ -271,7 +281,7 @@ export class RulesComponent {
             data.id = this.row.id;
             // let actionsControled:any = this.ruleForm.controls['actions'];
             // data.actions=actionsControled.controls;
-            this.ruleservice.updateRule(<VendorModel>data, this.companyId)
+            this.ruleservice.updateRule(data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);

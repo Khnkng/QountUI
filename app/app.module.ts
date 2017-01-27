@@ -64,6 +64,7 @@ import {TermsAndConditionsComponent} from "./components/TermsAndConditions.compo
 import {ResetPasswordComponent} from "./components/resetpassword.component";
 import {RulesComponent} from "./components/Rules.component";
 import {RuleForm, RuleActionForm} from "./forms/Rule.form";
+import {InvoicesComponent} from "./components/Invoices.component";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -196,13 +197,18 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             path: 'termsAndConditions',
             component: TermsAndConditionsComponent,
             canActivate: [LoggedInActivator]
+        }, {
+            path: 'invoices/:tablId',
+            component: InvoicesComponent,
+            canActivate: [LoggedInActivator]
         }
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
-        OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent, ResetPasswordComponent, RulesComponent],
+        OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent, ResetPasswordComponent, RulesComponent,
+        InvoicesComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, TaxesForm, JournalEntryForm, JournalLineForm,
