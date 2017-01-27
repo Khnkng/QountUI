@@ -2942,4 +2942,16 @@ tbody{
       margin-left: 5px;
     }
   }
+
+  .image-wrapper{
+    margin-left: 25px;
+    margin-top: 10px;
+    img{
+      border: 1px solid $qount-form-border;
+    }
+  }
+
+  .color-field{
+    width: 75px;
+  }
 }
