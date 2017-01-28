@@ -25,7 +25,7 @@ export class RuleActionForm extends abstractForm{
         return {
             action: [model? model.action: 'chartOfAccount'],
             actionValue: [model? model.actionValue: '', Validators.required],
-            actions:[model ? model.actions:'']
+            id:[model? model.id: '', Validators.required]
         };
     }
 }

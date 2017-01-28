@@ -126,12 +126,14 @@ export class RulesComponent {
             {"name": "rule", "title": "Rule"},
             {"name": "action", "title": "action","visible": false},
             {"name": "actionValue", "title": "actionValue","visible": false},
-            {"name": "actions", "title": ""}
+            {"name": "actions", "title": ""},
+            {"name": "id", "title": "","visible": false}
+
         ];
         let base = this;
         _.each(RulesList, function(RulesList) {
             let row:any = {};
-            row['rule']="when a "+RulesList.sourceType+" is created and the "+RulesList.attributeName+" " +RulesList.comparisonType +" "+RulesList.comparisonValue;
+            row['rule']="when a "+RulesList.sourceType+" is created and the "+RulesList.attributeName+" " +RulesList.comparisionType +" "+RulesList.comparisionValue;
             row['id']=RulesList.id;
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.tableData.rows.push(row);
@@ -167,15 +169,49 @@ export class RulesComponent {
             return vendor.id == _vendor.id;
         });
     }
+    deleteAction(index){
+        let indexValue=this.actions.controls.splice(index,1);
+        let actionsControl:any = this.ruleForm.controls['actions'];
+        let actionsControlform=actionsControl.controls.splice(index, 1);
+
+    }
+
+    updateActionValueInUI(field, index, value,id){
+        let base = this;
+        if(field == 'chartOfAccount'){
+            setTimeout(function(){
+                jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(value));
+            }, 10);
+        } else if(field == 'dimension'){
+            setTimeout(function(){
+                jQuery('#dimension-'+index).siblings().children('input').val(value);
+            }, 10);
+        }
+    }
+
+    getCOAName(chartOfAccountId){
+        let coa = _.find(this.chartOfAccounts, {'id': chartOfAccountId});
+        return coa? coa.name : '';
+    }
+
     showEditRule(row:any) {
+        let base=this;
         this.showFlyout = true;
         this.editMode = true;
-        // this.ruleForm = this._fb.group(this._ruleForm.getForm());
         this.actions = new FormArray([]);
-        let _form = this._ruleForm.getForm();
-        _form['actions'] = this.actions;
-        this.ruleForm = this._fb.group(_form);
+        this.ruleservice.rule(this.companyId,row.id).subscribe(rule => {
+            rule.actions.forEach(function(action, index){
+                debugger;
+                base.updateActionValueInUI(action.action, index, action.actionValue,action.id);
+                let actionForm = base._fb.group(base._actionForm.getForm(action));
+                base.actions.push(actionForm);
+            });
+            let _form = this._ruleForm.getForm();
+            _form['actions'] = this.actions;
+            this.ruleForm = this._fb.group(_form);
+        });
         this.getRowDetails(row.id);
+
     }
     getRowDetails(RuleID){
         let base=this;
@@ -185,11 +221,12 @@ export class RulesComponent {
             selectedCOAControl.patchValue(rule.sourceType);
             let attributeName:any = this.ruleForm.controls['attributeName'];
             attributeName.patchValue(rule.attributeName);
-            let selectedAmountControl:any = this.ruleForm.controls['comparisonType'];
+            let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
             selectedAmountControl.patchValue(rule.comparisionType);
             let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
             selectedValueControl.patchValue(rule.comparisionValue);
-
+let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
+            effectiveDate.patchValue(rule.effectiveDate);
             this._ruleForm.updateForm(this.ruleForm, rule);
 
         }, error => this.handleError(error));
@@ -239,9 +276,11 @@ export class RulesComponent {
             delete data.effectiveDate;
         }
         if(this.editMode){
+
             data.id = this.row.id;
-            this.ruleservice.updateRule(<VendorModel>data, this.companyId)
+            this.ruleservice.updateRule(data, this.companyId)
                 .subscribe(success  => {
+                    console.log("vendorodeldata",<VendorModel>data);
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                     this.showFlyout = false;

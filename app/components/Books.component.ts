@@ -190,9 +190,7 @@ export class BooksComponent{
             {"name": "recurringFrequency", "title": "Recurring Frequency","visible": false},
             {"name": "actions", "title": "", "type": "html"},
             {"name": "reverse", "title": "", "type": "html"}];
-
         this.jeTableData.rows = [];
-        let base = this;
         data.forEach(function(journalEntry) {
             let row: any = {};
             _.each(Object.keys(journalEntry), function (key) {

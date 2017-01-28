@@ -59,18 +59,18 @@
                                                     <option value="dimension">Dimension</option>
                                                 </select>
                                                 <label *ngIf="isActionCOA(actionForm)" class="combo-box">
-                                                    <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Chart of account" [formControl]="actionForm.controls.actionValue" [listObject]="chartOfAccounts" (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
+                                                    <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Chart of account" [formControl]="actionForm.controls.actionValue" [listObject]="chartOfAccounts" (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
                                                     </select>
                                                 </label>
                                                 <label *ngIf="isActionDimension(actionForm)" class="combo-box">
-                                                    <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Dimension" [formControl]="actionForm.controls.actionValue" [listObject]="dimensions" (valueChanged)="updateActionValue($event, index, 'dimension')">
+                                                    <select id="dimension-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Dimension" [formControl]="actionForm.controls.actionValue" [listObject]="dimensions" (valueChanged)="updateActionValue($event, index, 'dimension')">
                                                         <option *ngFor="let dimension of dimensions" [value]="dimension.name">{{dimension.name}}</option>
                                                     </select>
                                                 </label>
                                             </div>
                                             <div class="small-12 medium-1 columns">
-                                                <i class="icon ion-close" *ngIf="actions.length != 1" (click)="deleteAction(idx)"></i>
+                                                <i class="icon ion-close" *ngIf="actions.length != 1" (click)="deleteAction(index)"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -84,8 +84,8 @@
                                             <button type="submit" class="button small float-left" (click)="submit($event, 'NO_DATE')">Save</button>
                                             <div class="date-wrapper float-left" (click)="submit($event, 'WITH_DATE')">
                                                 <a class="button small float-left">Save and apply to all {{getSourceName()}}s since</a>
-                                                <input class="float-left" type="text" formControlName="effectiveDate"/>
                                             </div>
+                                            <input class="float-left" type="text" formControlName="effectiveDate"/>
                                         </div>
                                     </div>
                                 </div>

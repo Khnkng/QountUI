@@ -523,6 +523,12 @@ export class JournalEntryComponent{
         return result;
     }
 
+    ngOnDestroy(){
+        jQuery('.pika-single').remove();
+        jQuery('.ui-helper-hidden-accessible').remove();
+        jQuery('.ui-menu').remove();
+    }
+
     ngOnInit() {
         let base = this;
         let companyId = Session.getCurrentCompany();

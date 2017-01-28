@@ -68,6 +68,12 @@ export class SideBarComponent {
         this.isBooks = true;
       }
         break;
+      case PAGES.INVOICES: {
+        let link = ['invoices/dashboard', 0];
+        this._router.navigate(link);
+        this.isBooks = true;
+      }
+      break;
       case PAGES.PAYROL: {
         let link = ['payrol'];
         this._router.navigate(link);
