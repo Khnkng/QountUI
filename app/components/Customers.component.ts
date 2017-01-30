@@ -1,7 +1,6 @@
 
 import {Component, ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
-import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {Address} from "qCommon/app/directives/address.directive";
 import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
@@ -12,7 +11,7 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {CompanyModel} from "../models/Company.model";
-import {CustomersService} from "../services/Customers.service";
+import {CustomersService} from "qCommon/app/services/Customers.service";
 import {CustomersModel} from "../models/Customers.model";
 import {CustomersForm} from "../forms/Customers.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";

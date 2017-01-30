@@ -14,7 +14,7 @@ import {CodesService} from "qCommon/app/services/CodesService.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ExpensesForm} from "../forms/Expenses.form";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
-import {ExpensesSerice} from "../services/Expenses.service";
+import {ExpensesService} from "qCommon/app/services/Expenses.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 
 declare var jQuery:any;
@@ -45,12 +45,12 @@ export class ExpensesCodesComponent {
   row:any;
   tableColumns:Array<string> = ['name', 'id', 'companyID', 'coa_mapping_id', 'desc'];
   combo:boolean = true;
-  allCOAList:Array = [];
+  allCOAList:Array<any> = [];
   showFlyout:boolean = false;
 
   constructor(private _fb: FormBuilder, private _expensesForm: ExpensesForm, private switchBoard: SwitchBoard,
               private codeService: CodesService, private toastService: ToastService,
-              private coaService: ChartOfAccountsService, private expensesSerice:ExpensesSerice,
+              private coaService: ChartOfAccountsService, private expensesSerice:ExpensesService,
               private companiesService: CompaniesService, private loadingService:LoadingService){
     this.expensesForm = this._fb.group(_expensesForm.getForm());
     let companyId = Session.getCurrentCompany();

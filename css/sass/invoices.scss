@@ -2,5 +2,22 @@
 @import "settings";
 
 .new-invoice{
+  .button-wrapper{
+    .button{
+      float: left;
+      margin-left: 15px;
+    }
+  }
 
+  .logo{
+    height: 100px;
+    width: 100px;
+    background-color: #2B91AF;
+  }
+
+  .biz-data{
+    input{
+      text-align: right;
+    }
+  }
 }
