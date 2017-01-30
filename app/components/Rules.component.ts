@@ -126,7 +126,9 @@ export class RulesComponent {
             {"name": "rule", "title": "Rule"},
             {"name": "action", "title": "action","visible": false},
             {"name": "actionValue", "title": "actionValue","visible": false},
-            {"name": "actions", "title": ""}
+            {"name": "actions", "title": ""},
+            {"name": "id", "title": "","visible": false}
+
         ];
         let base = this;
         _.each(RulesList, function(RulesList) {
@@ -174,7 +176,7 @@ export class RulesComponent {
 
     }
 
-    updateActionValueInUI(field, index, value){
+    updateActionValueInUI(field, index, value,id){
         let base = this;
         if(field == 'chartOfAccount'){
             setTimeout(function(){
@@ -199,7 +201,8 @@ export class RulesComponent {
         this.actions = new FormArray([]);
         this.ruleservice.rule(this.companyId,row.id).subscribe(rule => {
             rule.actions.forEach(function(action, index){
-                base.updateActionValueInUI(action.action, index, action.actionValue);
+                debugger;
+                base.updateActionValueInUI(action.action, index, action.actionValue,action.id);
                 let actionForm = base._fb.group(base._actionForm.getForm(action));
                 base.actions.push(actionForm);
             });
@@ -273,6 +276,7 @@ let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
             delete data.effectiveDate;
         }
         if(this.editMode){
+
             data.id = this.row.id;
             this.ruleservice.updateRule(data, this.companyId)
                 .subscribe(success  => {

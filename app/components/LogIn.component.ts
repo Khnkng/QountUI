@@ -81,6 +81,7 @@ export class LogInComponent implements OnInit {
       if(!_.isEmpty(defaultCompany)){
         Session.setCurrentCompany(defaultCompany.id);
         Session.setCurrentCompanyName(defaultCompany.name);
+        Session.setCurrentCompanyCurrency(defaultCompany.defaultCurrency);
       }
     } else{
       if(Session.getUser().isAdmin){
