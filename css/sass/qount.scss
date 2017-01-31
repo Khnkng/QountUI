@@ -2956,3 +2956,50 @@ tbody{
     width: 75px;
   }
 }
+
+.new-invoice {
+  .addCustomerLogo {
+    border: 1pt solid #ccc;
+    width: 330px;
+    height: 150px;
+    position: relative;
+    .addCustomerLink {
+      position: absolute;
+      top: 30%;
+      text-align: center;
+      width: 100%;
+      i.icon {
+        font-size: 2.5em;
+        position: relative;
+        top:8px;
+        margin-right: 10px;
+      }
+    }
+  }
+  label {
+    text-align: right;
+  }
+
+  .row.header {
+    background: #eee;
+    padding: 15px 0px 10px 0px;
+    border-bottom:1pt solid #3c3c3c;
+    margin-bottom: 20px;
+    label {
+      text-align: left;
+      display: inline-block;
+    }
+  }
+
+  .row.items-table {
+    background: #EBF9FE;
+  }
+
+  .add-item {
+    border-top: 1pt solid #ccc;
+    border-bottom: 1pt solid #ccc;
+    padding: 10px;
+  }
+
+
+}
