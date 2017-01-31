@@ -28,7 +28,7 @@
                             <section class="form-section clearfix">
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
-                                        <div class="row">
+                                        <!--<div class="row">
                                             <div class="small-12 medium-8 large-centered columns">
                                                 <div class="row">
                                                     <div class="small-12 medium-6 columns">
@@ -39,7 +39,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>-->
                                         <div class="form-section-left">
                                             <div class="row">
                                                 <div class="small-4 columns">
@@ -53,24 +53,50 @@
 
                                             <div class="row">
                                                 <div class="small-4 columns">
+                                                    <label class="text-right">Type</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <select formControlName="type">
+                                                        <option value="1">Paypal</option>
+                                                        <option value="2">Stripe</option>
+                                                        <option value="3">Credit</option>
+                                                        <option value="4">Checking</option>
+                                                        <option value="5">Savings</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="accountForm.controls.type.untouched || accountForm.controls.type.valid">Type is required.</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="small-4 columns">
                                                     <label class="text-right">Select bank</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <select formControlName="id">
+                                                    <select formControlName="bank_id">
                                                         <option *ngFor="let bank of banks;" value="{{bank.id}}">{{bank.name}}</option>
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="small-4 columns">
-                                                    <label class="text-right">Password</label>
+                                                    <label class="text-right">Username</label>
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" disabled *ngIf="importType != 'AUTO'"/>
-                                                    <input type="password" formControlName="password" *ngIf="importType == 'AUTO'" placeholder="Password"/>
+                                                    <input type="text" formControlName="user_name" *ngIf="importType == 'AUTO'" placeholder="Username"/>
                                                 </div>
                                             </div>
-
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Chart of Account</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="chart_of_account_id" [listObject]="chartOfAccounts" (valueChanged)="updateChartOfAccount($event)">
+                                                        <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.name}}</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="accountForm.controls.chart_of_account_id.untouched || accountForm.controls.chart_of_account_id.valid">COA is required</div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="form-section-left">
                                             <div class="row">
@@ -93,19 +119,11 @@
                                             </div>
                                             <div class="row">
                                                 <div class="small-4 columns">
-                                                    <label class="text-right">Username</label>
+                                                    <label class="text-right">Password</label>
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" disabled *ngIf="importType != 'AUTO'"/>
-                                                    <input type="text" formControlName="user_name" *ngIf="importType == 'AUTO'" placeholder="Username"/>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="small-4 columns">
-
-                                                </div>
-                                                <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="checkbox" id="credit-account" formControlName="is_credit_account"/><label for="credit-account">Credit Account</label>
+                                                    <input type="password" formControlName="password" *ngIf="importType == 'AUTO'" placeholder="Password"/>
                                                 </div>
                                             </div>
                                         </div>

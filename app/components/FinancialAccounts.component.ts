@@ -4,8 +4,9 @@
 
 import {Component,ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
-import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {Session} from "qCommon/app/services/Session";
+import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
@@ -25,6 +26,7 @@ export class FinancialAccountsComponent{
   accounts = [];
   newFormActive:boolean = true;
   @ViewChild('addAccount') addAccount;
+  @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
   hasAccounts: boolean = false;
   tableData:any = {};
   tableOptions:any = {};
@@ -36,22 +38,25 @@ export class FinancialAccountsComponent{
   importType:string = 'AUTO';
   banks:Array<any> = [];
   showFlyout:boolean = false;
+  chartOfAccounts:Array<any>=[];
 
-  constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private switchBoard: SwitchBoard, private loadingService:LoadingService,
+  constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private financialAccountsService: FinancialAccountsService, private toastService: ToastService){
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
     if(this.currentCompany){
       this.loadingService.triggerLoadingEvent(true);
+      this.coaService.chartOfAccounts(this.currentCompany)
+          .subscribe(chartOfAccounts => {
+            this.chartOfAccounts = _.filter(chartOfAccounts, {'type': 'bank'});
+          }, error =>{
+            this.toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
+          });
       this.financialAccountsService.financialInstitutions()
           .subscribe(banks => {
             this.banks = banks;
           }, error => this.handleError(error));
-      this.financialAccountsService.financialAccounts(this.currentCompany)
-          .subscribe(response => {
-            this.loadingService.triggerLoadingEvent(false);
-            this.buildTableData(response.accounts);
-          }, error => this.handleError(error));
+      this.getFinancialAccounts(this.currentCompany);
     } else{
       this.toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
     }
@@ -75,12 +80,26 @@ export class FinancialAccountsComponent{
   }
 
   showEditAccount(row: any){
-    let base = this;
     this.editMode = true;
     this.newForm();
-    this.row = row;
-    this._financialAccountForm.updateForm(this.accountForm, row);
-    this.showFlyout = true;
+    this.getAccountDetails(row.id);
+  }
+
+  getAccountDetails(accountId){
+    let base = this;
+    this.loadingService.triggerLoadingEvent(true);
+    this.financialAccountsService.financialAccount(accountId, this.currentCompany)
+        .subscribe(account => {
+          this.showFlyout = true;
+          this.loadingService.triggerLoadingEvent(false);
+          this._financialAccountForm.updateForm(this.accountForm, account);
+          let coa = _.find(this.chartOfAccounts, {'id': account.chart_of_account_id});
+          setTimeout(function(){
+            base.coaComboBox.setValue(coa, 'name');
+          },0);
+        }, error => {
+          this.toastService.pop(TOAST_TYPE.error, "Failed to load financial account details");
+        });
   }
 
   removeAccount(row: any){
@@ -106,6 +125,14 @@ export class FinancialAccountsComponent{
 
   }
 
+  updateChartOfAccount(coa){
+    if(coa && coa.id){
+      let data = this._financialAccountForm.getData(this.accountForm);
+      data.chart_of_account_id = coa.id;
+      this._financialAccountForm.updateForm(this.accountForm, data);
+    }
+  }
+
   handleAction($event){
     let action = $event.action;
     delete $event.action;
@@ -124,12 +151,18 @@ export class FinancialAccountsComponent{
     delete data.importType;
     if(this.editMode){
       data.id = this.row.id;
-
+      this.financialAccountsService.updateAccount(data, this.currentCompany)
+          .subscribe(response => {
+            this.toastService.pop(TOAST_TYPE.success, "Updated Financial account successfully");
+            this.getFinancialAccounts(this.currentCompany);
+          }, error =>{
+            this.toastService.pop(TOAST_TYPE.error, "Failed to update financial account");
+          });
     } else{
       this.financialAccountsService.addAccount(data, this.currentCompany)
           .subscribe(response => {
-            this.accounts.push(response.account);
-            this.buildTableData(this.accounts);
+            this.toastService.pop(TOAST_TYPE.success, "Financial account created successfully");
+            this.getFinancialAccounts(this.currentCompany);
           }, error => {
             this.toastService.pop(TOAST_TYPE.error, "Failed to create Account");
           });
@@ -142,6 +175,14 @@ export class FinancialAccountsComponent{
     this.toastService.pop(TOAST_TYPE.success, "Financial Account created successfully");
     this.accounts.push(newAccount);
     this.buildTableData(this.accounts);
+  }
+
+  getFinancialAccounts(companyId){
+    this.financialAccountsService.financialAccounts(companyId)
+        .subscribe(response => {
+          this.loadingService.triggerLoadingEvent(false);
+          this.buildTableData(response.accounts);
+        }, error => this.handleError(error));
   }
 
   buildTableData(accounts) {

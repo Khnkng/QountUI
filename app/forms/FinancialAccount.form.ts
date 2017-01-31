@@ -17,11 +17,12 @@ export class FinancialAccountForm extends abstractForm{
       "name": ['', Validators.required],
       "starting_balance": [''],
       "starting_balance_date": [''],
-      "is_credit_account": [false],
-      "id": [''],
+      "bank_id": [''],
       "user_name": [''],
       "password": [''],
-      "importType":['AUTO']
+      "type":[1],
+      "importType":['AUTO'],
+      "chart_of_account_id": ['']
     }
   }
 }
