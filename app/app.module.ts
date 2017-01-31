@@ -39,13 +39,11 @@ import {BooksComponent} from "./components/Books.component";
 import {JournalEntryComponent} from "./components/JournalEntry.component";
 import {JournalEntryForm, JournalLineForm} from "./forms/JournalEntry.form";
 import {ExpensesForm} from "./forms/Expenses.form";
-import {ExpensesSerice} from "./services/Expenses.service";
 import {PaymentsModule} from "billsUI/app/payments.module";
 import {InvoicesModule} from "invoicesUI/app/invoices.module";
 import {RulesService} from "qCommon/app/services/Rules.service";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 import {CustomersComponent} from "./components/Customers.component";
-import {CustomersService} from "./services/Customers.service";
 import {CustomersForm} from "./forms/Customers.form";
 import {DimensionsComponent} from "./components/Dimensions.component";
 import {DimensionForm} from "./forms/Dimension.form";
@@ -206,7 +204,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, TaxesForm, JournalEntryForm, JournalLineForm,
-        ExpensesSerice,RulesService, CustomersService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm],
+        RulesService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
