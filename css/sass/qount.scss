@@ -1754,6 +1754,8 @@ table.footable-editing-right tr.footable-editing td {
 
 
 
+
+
 .bighalf-footable {
   &.bigpay-dashboard {
     /*thead{
@@ -1790,6 +1792,7 @@ table.footable-editing-right tr.footable-editing td {
       color: #36404a;
       &:hover {
         background-color: #f4faff;
+        cursor: hand;
         a {
           &.action {
             visibility: visible;
