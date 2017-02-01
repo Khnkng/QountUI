@@ -55,7 +55,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <select combo-box #selectedCOAComboBoxDir="comboBox" data-placeholder="Enter COA*" formControlName="coa_mapping_id" [listObject]="chartOfAccountsArr" (valueChanged)="updateExpenseCOA($event)">
-                                                        <option *ngFor="let chartOfAccount of chartOfAccountsArr" [value]="chartOfAccount.name">{{chartOfAccount.name}}</option>
+                                                        <option *ngFor="let chartOfAccount of chartOfAccountsArr" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
                                                     <div class="error" [hidden]="expensesForm.controls.coa_mapping_id.untouched || expensesForm.controls.coa_mapping_id.valid">
                                                         COA is required.</div>

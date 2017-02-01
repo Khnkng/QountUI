@@ -34,8 +34,8 @@ export class FinancialAccountsComponent{
   currentCompany:any;
   row:any;
   tempValues:Array<string> = [];
-  tableColumns:Array<string> = ['name', 'id', 'starting_balance', 'current_balance', 'no_effect_on_pl', 'is_credit_account', 'starting_balance_date'];
-  importType:string = 'AUTO';
+  tableColumns:Array<string> = ['name', 'id', 'starting_balance', 'current_balance', 'no_effect_on_pl', 'is_credit_account', 'starting_balance_date', 'chart_of_account_id'];
+  importType:string = 'MANUAL';
   banks:Array<any> = [];
   showFlyout:boolean = false;
   chartOfAccounts:Array<any>=[];
@@ -49,6 +49,7 @@ export class FinancialAccountsComponent{
       this.coaService.chartOfAccounts(this.currentCompany)
           .subscribe(chartOfAccounts => {
             this.chartOfAccounts = _.filter(chartOfAccounts, {'type': 'bank'});
+            this.getFinancialAccounts(this.currentCompany);
           }, error =>{
             this.toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
           });
@@ -56,7 +57,6 @@ export class FinancialAccountsComponent{
           .subscribe(banks => {
             this.banks = banks;
           }, error => this.handleError(error));
-      this.getFinancialAccounts(this.currentCompany);
     } else{
       this.toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
     }
@@ -74,8 +74,8 @@ export class FinancialAccountsComponent{
 
   showAddAccount() {
     this.editMode = false;
-    this.accountForm = this._fb.group(this._financialAccountForm.getForm());
     this.newForm();
+    this.accountForm = this._fb.group(this._financialAccountForm.getForm());
     this.showFlyout = true;
   }
 
@@ -90,6 +90,7 @@ export class FinancialAccountsComponent{
     this.loadingService.triggerLoadingEvent(true);
     this.financialAccountsService.financialAccount(accountId, this.currentCompany)
         .subscribe(account => {
+          account = account.account || {};
           this.showFlyout = true;
           this.loadingService.triggerLoadingEvent(false);
           this._financialAccountForm.updateForm(this.accountForm, account);
@@ -150,9 +151,9 @@ export class FinancialAccountsComponent{
     let data = this._financialAccountForm.getData(this.accountForm);
     delete data.importType;
     if(this.editMode){
-      data.id = this.row.id;
       this.financialAccountsService.updateAccount(data, this.currentCompany)
           .subscribe(response => {
+            console.log(response);
             this.toastService.pop(TOAST_TYPE.success, "Updated Financial account successfully");
             this.getFinancialAccounts(this.currentCompany);
           }, error =>{
@@ -185,6 +186,11 @@ export class FinancialAccountsComponent{
         }, error => this.handleError(error));
   }
 
+  getCOAName(id){
+    let coa = _.find(this.chartOfAccounts, {'id': id});
+    return (coa && coa.name) ? coa.name : "";
+  }
+
   buildTableData(accounts) {
     this.hasAccounts = false;
     this.accounts = accounts;
@@ -193,6 +199,7 @@ export class FinancialAccountsComponent{
     this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
+      {"name": "chart_of_account", "title": "Chart of Account"},
       {"name": "starting_balance", "title": "Starting Balance"},
       {"name": "starting_balance_date", "title": "Start Balance Date"},
       {"name": "current_balance", "title": "Current Balance"},
@@ -204,6 +211,9 @@ export class FinancialAccountsComponent{
       let row:any = {};
       _.each(base.tableColumns, function(key) {
         row[key] = account[key];
+        if(key == 'chart_of_account_id'){
+          row['chart_of_account'] = base.getCOAName(account[key]);
+        }
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       });
       base.tableData.rows.push(row);

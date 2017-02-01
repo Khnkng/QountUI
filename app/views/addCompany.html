@@ -33,8 +33,8 @@
                     </div>
                   </label>
                 </div>
-                <div class="small-12 medium-4 columns">
-                  <label>Company Type
+                <div class="small-12 medium-4 columns" [hidden]="countryCode != 'US'">
+                  <label>Tax Type
                     <div class="">
                       <select formControlName="companyType" placeholder="Company type">
                         <option *ngFor="let companyType of companyTypes" value="{{companyType.value}}">{{companyType.name}}</option>

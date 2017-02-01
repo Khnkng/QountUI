@@ -47,7 +47,7 @@
                         </div>
                         <div class="small-6 columns">
                           <select formControlName="type" (change)="setVendorType($event.target.value)">
-                            <option value="Company">Company</option>
+                            <option value="Business">Business</option>
                             <option value="Individual">Individual</option>
                           </select>
                         </div>
@@ -87,26 +87,26 @@
                         </div>
                         <div class="small-6 columns custom-qount-form-field">
                           <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="coa" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
-                            <option *ngFor="let coa1 of chartOfAccounts" [value]="coa1.name">{{coa1.name}}</option>
+                            <option *ngFor="let coa of chartOfAccounts" [value]="coa.name">{{coa.number}} - {{coa.name}}</option>
                           </select>
                           <div class="error" [hidden]="vendorForm.controls.coa.untouched || vendorForm.controls.coa.valid">COA is required</div>
                         </div>
                       </div>
                       <div class="row">
                         <div class="small-4 columns">
-                          <label class="text-right">Account Number(s)</label>
+                          <label class="text-right">Reference Number(s)</label>
                         </div>
                         <div class="small-6 columns custom-qount-form-field">
                           <custom-tag [controlName]="'accountNumbers'" [group]="vendorForm" [inputType]="'text'"
-                                      [height]="'80px'" [placeholder]="'Account number'">loading</custom-tag>
+                                      [height]="'80px'" [placeholder]="'Enter number and hit enter'">loading</custom-tag>
                         </div>
                       </div>
                       <div class="row">
                         <div class="small-4 columns">
-                          <label class="text-right">Payment method</label>
+                          <label class="text-right">Default Payment method</label>
                         </div>
                         <div class="small-6 columns">
-                          <select placeholder="Payment Method" formControlName="paymentMethod">
+                          <select placeholder="Default Payment Method" formControlName="paymentMethod">
                             <option [value]="'ach'">ACH</option>
                             <option [value]="'digitalCheque'">Digital Check</option>
                             <option [value]="'mailCheque'">Check</option>
@@ -117,10 +117,10 @@
 
                       <div class="row">
                         <div class="small-4 columns">
-                          <label class="text-right">Tax Forms</label>
+                          <label class="text-right"></label>
                         </div>
                         <div class="small-6 columns custom-qount-form-field">
-                          <input type="checkbox" formControlName="has1099" /> 1099
+                          <input type="checkbox" formControlName="has1099" /> 1099 Reportable
                           <div class="error" [hidden]="vendorForm.controls.has1099.untouched || vendorForm.controls.has1099.valid">Eligible for 1099 is required</div>
                         </div>
                       </div>

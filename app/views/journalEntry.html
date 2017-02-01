@@ -182,7 +182,7 @@
                                 <td [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
                                 <td class="coa-field" [hidden]="!lineListItem.editable">
                                     <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="getFilteredCOA(lineListItem.controls.type.value)" (valueChanged)="updateLineCOA($event, index)">
-                                        <option *ngFor="let chartOfAccount of getFilteredCOA(lineListItem.controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                                        <option *ngFor="let chartOfAccount of getFilteredCOA(lineListItem.controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                     </select>
                                 </td>
                                 <td [hidden]="lineListItem.editable">
@@ -268,7 +268,7 @@
                                 <div class="small-12 medium-6 column">
                                     <label>Chart of Account
                                         <select combo-box #newCoaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="filteredChartOfAccounts"  formControlName="coa" (valueChanged)="updateChartOfAccount($event)">
-                                            <option *ngFor="let chartOfAccount of filteredChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                                            <option *ngFor="let chartOfAccount of filteredChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                         </select>
                                     </label>
                                 </div>

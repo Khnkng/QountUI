@@ -60,7 +60,7 @@
                                                 </select>
                                                 <label *ngIf="isActionCOA(actionForm)" class="combo-box">
                                                     <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Chart of account" [formControl]="actionForm.controls.actionValue" [listObject]="chartOfAccounts" (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
-                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
                                                 </label>
                                                 <label *ngIf="isActionDimension(actionForm)" class="combo-box">

@@ -177,6 +177,8 @@ export class JournalEntryComponent{
         this.dimensionFlyoutCSS = "expanded";
         this.lineActive = true;
         this.resetLineForm();
+        this.selectedDimensions = [];
+
         if(lineStatus == 'NEW'){
             this.editingLine = {
                 status: 'NEW'
@@ -194,20 +196,30 @@ export class JournalEntryComponent{
 
     getLineData(lineForm){
         let base = this;
-        let lineId = lineForm.controls['id'].value;
-        this.journalService.getJournalLine(this.currentCompany.id, this.journalEntry.id, lineId)
-            .subscribe(journalLine => {
-                this._lineListForm.updateForm(this.lineForm, journalLine);
-                this.filteredChartOfAccounts = _.filter(this.chartOfAccounts, {'category': journalLine.type});
-                let coa = _.find(this.filteredChartOfAccounts, {'id': journalLine.coa});
-                this.selectedDimensions = journalLine.dimensions;
-                this.newLineForm();
-                setTimeout(function(){
-                    base.newCoaComboBox.setValue(coa, 'name');
-                },0);
-            }, error => {
-                this.toastService.pop(TOAST_TYPE.error, "Couldn't fetch Line details");
-            });
+        if(this.newJournalEntry){
+            let lineData = this._lineListForm.getData(lineForm);
+            this.updateLineFormForEdit(lineData);
+        } else{
+            let lineId = lineForm.controls['id'].value;
+            this.journalService.getJournalLine(this.currentCompany.id, this.journalEntry.id, lineId)
+                .subscribe(journalLine => {
+                    this.updateLineFormForEdit(journalLine);
+                }, error => {
+                    this.toastService.pop(TOAST_TYPE.error, "Couldn't fetch Line details");
+                });
+        }
+    }
+
+    updateLineFormForEdit(lineData){
+        let base = this;
+        this._lineListForm.updateForm(this.lineForm, lineData);
+        this.filteredChartOfAccounts = _.filter(this.chartOfAccounts, {'category': lineData.type});
+        let coa = _.find(this.filteredChartOfAccounts, {'id': lineData.coa});
+        this.selectedDimensions = lineData.dimensions;
+        this.newLineForm();
+        setTimeout(function(){
+            base.newCoaComboBox.setValue(coa, 'name');
+        },0);
     }
 
     /*When user clicks on save button in the flyout*/
