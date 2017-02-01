@@ -30,23 +30,34 @@
                                     <div class="row">
                                         <div class="small-12 medium-12 columns rule-row">
                                             <label>When a</label>
-                                            <select class="source" formControlName="sourceType">
-                                                <option>Expense</option>
-                                                <option>Deposit</option>
+                                            <select class="source" formControlName="sourceType" (change)="expesevalue()">
+                                               <option *ngFor="let deposit of depositlist;" value="{{deposit}}">{{deposit}}</option>
                                             </select>
                                             <label>is created and the</label>
-                                            <select class="column-condition" formControlName="attributeName">
-                                                <option value="TITLE">title</option>
-                                                <option value="AMOUNT">amount</option>
+                                            <label>source</label>
+                                            <select>
+                                                <option *ngFor="let bank of banks;" value="{{bank.id}}">{{bank.name}}</option>
+                                            </select>
+                                            <select class="column-condition" formControlName="attributeName" (change)="selectChange()">
+                                                <option *ngFor="let exp of expenxeArrayvalue;" value="{{exp}}" >{{exp}}</option>
+
                                             </select>
                                             <select class="condition" formControlName="comparisionType">
-                                                <option value="BEGINS_WITH">begins with</option>
-                                                <option value="CONTAINS">contains</option>
-                                                <option value="EQUALS_TO">equals to</option>
-                                                <option value="GREATER_THAN">greater than</option>
-                                                <option value="LESS_THAN">less than</option>
+                                                <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype" >{{comparisiontype}}</option>
                                             </select>
-                                            <input type="text" class="condition-value" formControlName="comparisionValue"/>
+                                            <input type="text" class="condition-value" value="comparisionValue" formControlName="comparisionValue" />
+                                            <select class="column-condition" formControlName="attributeName">
+                                                <option value="TITLE">AND</option>
+                                                <option value="AMOUNT">OR</option>
+                                            </select>
+                                            <select class="column-condition" formControlName="attributeName" (change)="selectChange()">
+                                                <option *ngFor="let exp of expenxeArrayvalue;" value="{{exp}}" >{{exp}}</option>
+
+                                            </select>
+                                            <select class="condition" formControlName="comparisionType">
+                                                <option *ngFor="let comparisiontype of conparisionArray;" value="comparisiontype" >{{comparisiontype}}</option>
+                                            </select>
+                                            <input type="text" class="condition-value"/>
                                         </div>
                                     </div>
                                     <header class="form-section-header">Actions:</header>
@@ -85,7 +96,7 @@
                                             <div class="date-wrapper float-left" (click)="submit($event, 'WITH_DATE')">
                                                 <a class="button small float-left">Save and apply to all {{getSourceName()}}s since</a>
                                             </div>
-                                            <input class="float-left" type="text" formControlName="effectiveDate"/>
+                                            <input class="float-left" custom-datepicker [mindate]="'past'" [format]="'MM/DD/YYYY'" type="text" formControlName="effectiveDate" placeholder="Deposits Date*"/>
                                         </div>
                                     </div>
                                 </div>
