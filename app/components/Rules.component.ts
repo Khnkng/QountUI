@@ -14,6 +14,7 @@ import {VendorModel} from "../models/Vendor.model";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 
 
 declare let jQuery:any;
@@ -30,8 +31,16 @@ export class RulesComponent {
     ruleForm:FormGroup;
     editMode:boolean = false;
     RulesList:any;
+    AttributeList:any;
     hasRuleList:boolean = false;
     actions: FormArray = new FormArray([]);
+    depositlist:Array<any> = [];
+    expenxeArray:Array<any>=[];
+    expenxeArraylist:Array<any>=[];
+    expenxeArrayvalue:any;
+    depositAarray:Array<any>=[];
+    depositAarraylist:Array<any>=[];
+    banks:Array<any> = [];
     rules:Array<any> = [];
     tableData:any = {};
     row:any;
@@ -40,10 +49,11 @@ export class RulesComponent {
     dimensions:Array<any> = [];
     companyId:string;
     vendors:Array<any>;
-
+    conparisionArray:Array<any>;
     constructor(private _router:Router,private _toastService: ToastService, private _fb: FormBuilder,private ruleservice:RulesService,private _ruleForm: RuleForm, private coaService: ChartOfAccountsService,
-        private dimensionService: DimensionService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
+        private dimensionService: DimensionService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
         this.companyId = Session.getCurrentCompany();
+        this.conparisionArray=['begins with','contains','equals to','greater than','less than'];
         this.ruleservice.getRulesofCompany(this.companyId)
             .subscribe(RulesList  => {
                 this.loadingService.triggerLoadingEvent(false);
@@ -51,8 +61,56 @@ export class RulesComponent {
                 this.buildTableData(RulesList);
                 this.showFlyout = false;
             }, error =>  this.handleError(error));
+        this.financialAccountsService.financialInstitutions()
+            .subscribe(banks => {
+                this.banks = banks;
+            }, error => this.handleError(error));
+        this.ruleservice.getattributes(this.companyId)
+            .subscribe(AttributeList  => {
+                this.loadingService.triggerLoadingEvent(false);
+                 this.AttributeList=AttributeList;
+                for(let key in AttributeList){
+                    this.depositlist.push(key);
+                    let exparray=AttributeList[key];
+                    this.expenxeArray.push(exparray);
+
+                }
+
+                for(var key in this.expenxeArray[0]){
+                   this.expenxeArraylist.push(key);
+                    this.expenxeArrayvalue=this.expenxeArraylist;
+                }
+                console.log(this.expenxeArraylist);
+                for(var key in this.expenxeArray[1]){
+                    this.depositAarraylist.push(key);
+                }
+                console.log(this.depositAarraylist);
+            }, error =>  this.handleError(error));
     }
     handleError(error) {
+
+    }
+    expesevalue(){
+        let expRate:any = this.ruleForm.controls['sourceType'];
+        console.log("expRate",expRate.value);
+        if(expRate.value=='Expense'){
+            let expense:any = this.ruleForm.controls['attributeName'];
+            this.expenxeArrayvalue=this.expenxeArraylist;
+        }
+        else{
+            let expense:any = this.ruleForm.controls['attributeName'];
+            this.expenxeArrayvalue= this.depositAarraylist;
+        }
+
+    }
+    selectChange(){
+        let attributeRate:any = this.ruleForm.controls['attributeName'];
+        if(attributeRate.value=='Title' ||attributeRate.value=='Notes' ){
+            this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO'];
+        }
+        else{
+            this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO','GREATER_THAN_OR_EQUALS_TO','LESS_THAN','GREATER_THAN','LESS_THAN_OR_EQUALS_TO'];
+        }
 
     }
     showAddRule(){
