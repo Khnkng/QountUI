@@ -201,6 +201,10 @@ export class VendorComponent {
     });
   }
 
+  ngOnDestroy(){
+    jQuery('.ui-autocomplete').remove();
+  }
+
   active1:boolean=true;
   newForm1(){
     this.active1 = false;

@@ -1750,6 +1750,13 @@ table.footable-editing-right tr.footable-editing td {
     }
 
   }
+
+  .coa-description{
+    font-size: 13px;
+    span{
+      font-weight: bold;
+    }
+  }
 }
 
 
@@ -3004,5 +3011,7 @@ tbody{
     padding: 10px;
   }
 
-
+  .ui-menu .ui-menu-item{
+    text-align: left;
+  }
 }
