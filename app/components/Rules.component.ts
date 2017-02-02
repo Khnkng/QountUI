@@ -283,7 +283,7 @@ export class RulesComponent {
             selectedAmountControl.patchValue(rule.comparisionType);
             let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
             selectedValueControl.patchValue(rule.comparisionValue);
-let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
+            let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
             effectiveDate.patchValue(rule.effectiveDate);
             this._ruleForm.updateForm(this.ruleForm, rule);
 
@@ -319,9 +319,10 @@ let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
         let currentActionForm:any = actionsControl.controls[index];
         let currentActionData = this._actionForm.getData(currentActionForm);
         if(action == 'chartOfAccount'){
+            debugger;
             currentActionData.actionValue = actionValueObj.id;
         } else{
-            currentActionData.actionValue = actionValueObj.name;
+            currentActionData.actionValue = actionValueObj.id;
         }
         this._actionForm.updateForm(currentActionForm, currentActionData);
     }
@@ -338,7 +339,6 @@ let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
             data.id = this.row.id;
             this.ruleservice.updateRule(data, this.companyId)
                 .subscribe(success  => {
-                    console.log("vendorodeldata",<VendorModel>data);
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                     this.showFlyout = false;
@@ -362,10 +362,12 @@ let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
         this.coaService.chartOfAccounts(companyId)
             .subscribe(chartOfAccounts => {
                 this.chartOfAccounts = chartOfAccounts;
+                console.log("chartOfAccounts",chartOfAccounts);
             });
         this.dimensionService.dimensions(companyId)
             .subscribe(dimensions => {
                 this.dimensions = dimensions;
+                console.log("dimensions",dimensions);
             });
     }
 }
