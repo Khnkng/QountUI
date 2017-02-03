@@ -368,9 +368,9 @@ export class RulesComponent {
             selectedAmountControl1.patchValue(selectedAmountControl1.value);
             let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
             selectedValueControl1.patchValue(selectedValueControl1.value);
-            condition2['attributeName1']=attributeName1.value;
-            condition2['comparisionType1']=selectedAmountControl1.value;
-            condition2['comparisionValue1']=selectedValueControl1.value;
+            condition2['attributeName']=attributeName1.value;
+            condition2['comparisionType']=selectedAmountControl1.value;
+            condition2['comparisionValue']=selectedValueControl1.value;
             var conditionrow2=data.conditions.push(condition2);
             data.id = this.row.id;
             this.ruleservice.updateRule(data, this.companyId)
@@ -411,11 +411,10 @@ export class RulesComponent {
             selectedAmountControl1.patchValue(selectedAmountControl1.value);
             let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
             selectedValueControl1.patchValue(selectedValueControl1.value);
-            condition2['attributeName1']=attributeName1.value;
-            condition2['comparisionType1']=selectedAmountControl1.value;
-            condition2['comparisionValue1']=selectedValueControl1.value;
+            condition2['attributeName']=attributeName1.value;
+            condition2['comparisionType']=selectedAmountControl1.value;
+            condition2['comparisionValue']=selectedValueControl1.value;
             var conditionrow2=data.conditions.push(condition2);
-            data.id = this.row.id;
             this.ruleservice.addRule(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
