@@ -114,7 +114,9 @@ export class JournalEntryComponent{
         }, 0);
     }
 
-    selectValue(dimension, value){
+    selectValue($event, dimension, value){
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
         _.each(this.selectedDimensions, function (selectedDimension) {
             if(selectedDimension.name == dimension.name){
                 if(selectedDimension.values.indexOf(value) == -1){
@@ -139,9 +141,13 @@ export class JournalEntryComponent{
             }
             return false;
         }
+        return false;
     }
 
-    selectDimension(dimensionName){
+    selectDimension($event, dimensionName){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
         let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
         if(selectedDimensionNames.indexOf(dimensionName) == -1){
             this.selectedDimensions.push({
@@ -297,6 +303,7 @@ export class JournalEntryComponent{
         lineControl.controls['coa'].patchValue(line.coa);
         lineControl.controls['entryType'].patchValue(line.entryType);
         lineControl.controls['amount'].patchValue(line.amount);
+        lineControl.controls['dimensions'].patchValue(line.dimensions);
     }
 
     //When user double clicks on the line, it toggles and show the fields
@@ -568,6 +575,7 @@ export class JournalEntryComponent{
             this.coaService.chartOfAccounts(this.currentCompany.id)
                 .subscribe(chartOfAccounts => {
                     this.chartOfAccounts = chartOfAccounts;
+                    _.sortBy(this.chartOfAccounts, ['number', 'name']);
                     this.toggleAutoReverse();
                     this.toggleRecurring();
                     if(!this.newJournalEntry || this.isReverse){

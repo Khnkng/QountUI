@@ -78,6 +78,8 @@ export class ItemCodesComponent{
     this.invoiceChartOfAccounts = _.filter(chartOfAccounts, function(coa){
       return coa.category == 'Income';
     });
+    _.sortBy(this.paymentChartOfAccounts, ['number', 'name']);
+    _.sortBy(this.invoiceChartOfAccounts, ['number', 'name']);
     this.codeService.itemCodes(this.currentCompany.id)
         .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));
   }

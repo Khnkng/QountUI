@@ -3,8 +3,12 @@
     <div class="column small-12 medium-6">
         <h5>Expense Code</h5>
     </div>
-    <div class="columns small-6 small-offset-6 right">
-
+    <div class="columns small-12 medium-6 text-right">
+        <button class="close-flyout close-page-button" aria-label="Close modal" type="button" (click)="routeToToolsPage()">
+            <span aria-hidden="true">
+              <i class="ion-ios-close-empty"></i>
+            </span>
+        </button>
     </div>
 </div>
 <div class="row chart-of-accounts" foundation>
@@ -75,9 +79,9 @@
                     </div>
                 </div>
                 <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
-                <span aria-hidden="true">
-                  <i class="ion-ios-close-empty"></i>
-                </span>
+                    <span aria-hidden="true">
+                      <i class="ion-ios-close-empty"></i>
+                    </span>
                 </button>
             </section>
         </div>

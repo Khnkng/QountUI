@@ -109,6 +109,7 @@ export class ChartOfAccountsComponent{
       if(coaId){
         _.remove(this.parentAccounts, {id: coaId});
       }
+      _.sortBy(this.parentAccounts, ['number', 'name']);
       this.refreshComboBox();
     }
   }

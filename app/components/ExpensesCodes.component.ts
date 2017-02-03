@@ -16,6 +16,7 @@ import {ExpensesForm} from "../forms/Expenses.form";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ExpensesService} from "qCommon/app/services/Expenses.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {Router} from "@angular/router";
 
 declare var jQuery:any;
 declare var _:any;
@@ -49,7 +50,7 @@ export class ExpensesCodesComponent {
   showFlyout:boolean = false;
 
   constructor(private _fb: FormBuilder, private _expensesForm: ExpensesForm, private switchBoard: SwitchBoard,
-              private codeService: CodesService, private toastService: ToastService,
+              private codeService: CodesService, private toastService: ToastService, private _router:Router,
               private coaService: ChartOfAccountsService, private expensesSerice:ExpensesService,
               private companiesService: CompaniesService, private loadingService:LoadingService){
     this.expensesForm = this._fb.group(_expensesForm.getForm());
@@ -77,14 +78,10 @@ export class ExpensesCodesComponent {
 
   filterChartOfAccounts(chartOfAccounts){
     this.allCOAList = chartOfAccounts;
-    //this.paymentChartOfAccounts = _.filter(chartOfAccounts, function(coa){
-    //  return coa.type != '';
-    //});
-    //this.invoiceChartOfAccounts = _.filter(chartOfAccounts, function(coa){
-    //  return coa.type != '';
     this.chartOfAccountsArr = _.filter(chartOfAccounts, function(coa){
       return coa.type != '';
     });
+    _.sortBy(this.chartOfAccountsArr, ['number', 'name']);
     this.expensesSerice.getAllExpenses(this.currentCompany.id)
         .subscribe(expenseCodes => this.buildTableData(expenseCodes), error=> this.handleError(error));
   }
@@ -194,10 +191,6 @@ export class ExpensesCodesComponent {
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
       {"name": "desc", "title": "Description"},
-      //{"name": "paymentCOAName", "title": "Payment COA"},
-      //{"name": "payment_coa_mapping", "title": "payment COA id", "visible": false},
-      //{"name": "invoiceCOAName", "title": "Invoice COA"},
-      //{"name": "invoice_coa_mapping", "title": "invoice COA id", "visible": false},
       {"name": "selectedCOAName", "title": "COA"},
       {"name": "coa_mapping_id", "title": "COA id", "visible": false},
       {"name": "companyID", "title": "Company ID", "visible": false},
@@ -231,6 +224,11 @@ export class ExpensesCodesComponent {
       return coa.name;
     }
     return "";
+  }
+
+  routeToToolsPage(){
+    let link = ['tools'];
+    this._router.navigate(link);
   }
 
   hideFlyout(){

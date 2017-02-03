@@ -2923,95 +2923,17 @@ tbody{
   }
 }
 
-.invoice-settings{
-  .template-type{
-    width: 150px;
-    float: left;
-    border: 1px solid $qount-table-border;
-    height: 150px;
-    position: relative;
-    margin-left: 10px;
-    label{
-      cursor: pointer;
-    }
-  }
-
-  .template-text{
-    position: absolute;
-    bottom: 0px;
-    text-align: center;
-    width: 100%;
-  }
-
-  textarea{
-    height: 80px;
-  }
-
-  .other{
-    input{
-      width: auto;
-      margin-left: 5px;
-    }
-  }
-
-  .image-wrapper{
-    margin-left: 25px;
-    margin-top: 10px;
-    img{
-      border: 1px solid $qount-form-border;
-    }
-  }
-
-  .color-field{
-    width: 75px;
-  }
+.ui-menu .ui-menu-item{
+  text-align: left;
 }
 
-.new-invoice {
-  .addCustomerLogo {
-    border: 1pt solid #ccc;
-    width: 330px;
-    height: 150px;
-    position: relative;
-    .addCustomerLink {
-      position: absolute;
-      top: 30%;
-      text-align: center;
-      width: 100%;
-      i.icon {
-        font-size: 2.5em;
-        position: relative;
-        top:8px;
-        margin-right: 10px;
-      }
-    }
-  }
-  label {
-    text-align: right;
-  }
-
-  .row.header {
-    background: #eee;
-    padding: 15px 0px 10px 0px;
-    border-bottom:1pt solid #3c3c3c;
-    margin-bottom: 20px;
-    label {
-      text-align: left;
-      display: inline-block;
-    }
-  }
-
-  .row.items-table {
-    background: #EBF9FE;
-  }
-
-  .add-item {
-    border-top: 1pt solid #ccc;
-    border-bottom: 1pt solid #ccc;
-    padding: 10px;
-  }
-
-  .ui-menu .ui-menu-item{
-    text-align: left;
+.close-page-button{
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+  &:hover{
+    background: $qount-table-border;
   }
 }

@@ -77,6 +77,7 @@ export class VendorComponent {
     this.coaService.chartOfAccounts(this.companyId)
         .subscribe(chartOfAccounts => {
           this.chartOfAccounts=chartOfAccounts?_.filter(chartOfAccounts, {'type': 'accountsPayable'}):[];
+          _.sortBy(this.chartOfAccounts, ['number', 'name']);
         }, error=> this.handleError(error));
   }
 

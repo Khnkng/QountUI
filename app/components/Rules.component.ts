@@ -362,7 +362,7 @@ export class RulesComponent {
         this.coaService.chartOfAccounts(companyId)
             .subscribe(chartOfAccounts => {
                 this.chartOfAccounts = chartOfAccounts;
-                console.log("chartOfAccounts",chartOfAccounts);
+                _.sortBy(this.chartOfAccounts, ['number', 'name']);
             });
         this.dimensionService.dimensions(companyId)
             .subscribe(dimensions => {
