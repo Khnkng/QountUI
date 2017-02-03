@@ -11,10 +11,17 @@ export class RuleForm extends abstractForm{
     getForm() {
         return {
             "sourceType": ['Expense', Validators.required],
+            "source":['', Validators.required],
             "attributeName": ['TITLE', Validators.required],
             "comparisionType": ['BEGINS_WITH', Validators.required],
             "comparisionValue": ['', Validators.required],
-            "effectiveDate": ['']
+            "logicalOperator":[''],
+            "effectiveDate": [''],
+            "conditions":[''],
+            "attributeName1": ['TITLE', Validators.required],
+            "comparisionType1": ['BEGINS_WITH', Validators.required],
+            "comparisionValue1": ['', Validators.required]
+
         }
     }
 }

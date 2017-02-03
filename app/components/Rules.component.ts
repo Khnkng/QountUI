@@ -277,6 +277,8 @@ export class RulesComponent {
             this.row = rule;
             let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
             selectedCOAControl.patchValue(rule.sourceType);
+            let selectedSource:any = this.ruleForm.controls['source'];
+            selectedSource.patchValue(rule.source);
             let attributeName:any = this.ruleForm.controls['attributeName'];
             attributeName.patchValue(rule.attributeName);
             let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
@@ -335,7 +337,41 @@ export class RulesComponent {
             delete data.effectiveDate;
         }
         if(this.editMode){
-
+            if(data.attributeName || data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1 ){
+                delete data.attributeName;
+                delete data.comparisionType;
+                delete data.comparisionValue;
+                delete data.logicalOperator;
+                delete data.attributeName1;
+                delete data.comparisionType1;
+                delete data.comparisionValue1;
+            }
+            data.conditions=[];
+            var condition1={};
+            var condition2={};
+            let attributeName:any = this.ruleForm.controls['attributeName'];
+            attributeName.patchValue(attributeName.value);
+            let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
+            selectedAmountControl.patchValue(selectedAmountControl.value);
+            let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
+            selectedValueControl.patchValue(selectedValueControl.value);
+            let logicalOperator:any = this.ruleForm.controls['logicalOperator'];
+            logicalOperator.patchValue(logicalOperator.value);
+            condition1['attributeName']=attributeName.value;
+            condition1['comparisionType']=selectedAmountControl.value;
+            condition1['comparisionValue']=selectedValueControl.value;
+            condition1['logicalOperator']=logicalOperator.value;
+            var conditionrow=data.conditions.push(condition1);
+            let attributeName1:any = this.ruleForm.controls['attributeName1'];
+            attributeName1.patchValue(attributeName1.value);
+            let selectedAmountControl1:any = this.ruleForm.controls['comparisionType1'];
+            selectedAmountControl1.patchValue(selectedAmountControl1.value);
+            let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
+            selectedValueControl1.patchValue(selectedValueControl1.value);
+            condition2['attributeName1']=attributeName1.value;
+            condition2['comparisionType1']=selectedAmountControl1.value;
+            condition2['comparisionValue1']=selectedValueControl1.value;
+            var conditionrow2=data.conditions.push(condition2);
             data.id = this.row.id;
             this.ruleservice.updateRule(data, this.companyId)
                 .subscribe(success  => {
@@ -344,6 +380,42 @@ export class RulesComponent {
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
         } else{
+            if(data.attributeName || data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1 ){
+                delete data.attributeName;
+                delete data.comparisionType;
+                delete data.comparisionValue;
+                delete data.logicalOperator;
+                delete data.attributeName1;
+                delete data.comparisionType1;
+                delete data.comparisionValue1;
+            }
+            data.conditions=[];
+            var condition1={};
+            var condition2={};
+            let attributeName:any = this.ruleForm.controls['attributeName'];
+            attributeName.patchValue(attributeName.value);
+            let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
+            selectedAmountControl.patchValue(selectedAmountControl.value);
+            let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
+            selectedValueControl.patchValue(selectedValueControl.value);
+            let logicalOperator:any = this.ruleForm.controls['logicalOperator'];
+            logicalOperator.patchValue(logicalOperator.value);
+            condition1['attributeName']=attributeName.value;
+            condition1['comparisionType']=selectedAmountControl.value;
+            condition1['comparisionValue']=selectedValueControl.value;
+            condition1['logicalOperator']=logicalOperator.value;
+            var conditionrow=data.conditions.push(condition1);
+            let attributeName1:any = this.ruleForm.controls['attributeName1'];
+            attributeName1.patchValue(attributeName1.value);
+            let selectedAmountControl1:any = this.ruleForm.controls['comparisionType1'];
+            selectedAmountControl1.patchValue(selectedAmountControl1.value);
+            let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
+            selectedValueControl1.patchValue(selectedValueControl1.value);
+            condition2['attributeName1']=attributeName1.value;
+            condition2['comparisionType1']=selectedAmountControl1.value;
+            condition2['comparisionValue1']=selectedValueControl1.value;
+            var conditionrow2=data.conditions.push(condition2);
+            data.id = this.row.id;
             this.ruleservice.addRule(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
