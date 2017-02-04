@@ -182,6 +182,7 @@ export class RulesComponent {
         this.tableData.columns = [
             {"name":"id","title":"id","visible": false},
             {"name": "rule", "title": "Rule"},
+            {"name": "conditions", "title": "conditions","visible": false},
             {"name": "action", "title": "action","visible": false},
             {"name": "actionValue", "title": "actionValue","visible": false},
             {"name": "actions", "title": ""},
@@ -258,6 +259,7 @@ export class RulesComponent {
         this.editMode = true;
         this.actions = new FormArray([]);
         this.ruleservice.rule(this.companyId,row.id).subscribe(rule => {
+            this.getRowDetails(row.id);
             rule.actions.forEach(function(action, index){
                 base.updateActionValueInUI(action.action, index, action.actionValue,action.id);
                 let actionForm = base._fb.group(base._actionForm.getForm(action));
@@ -267,7 +269,7 @@ export class RulesComponent {
             _form['actions'] = this.actions;
             this.ruleForm = this._fb.group(_form);
         });
-        this.getRowDetails(row.id);
+        // this.getRowDetails(row.id);
 
     }
     getRowDetails(RuleID){
