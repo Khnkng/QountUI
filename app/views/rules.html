@@ -36,7 +36,7 @@
                                             <label style="margin-top: 21px;">is created and the</label>
                                             <label style="margin-top: 21px;">source</label>
                                             <select style="margin-top: 15px;" formControlName="source">
-                                                <option *ngFor="let bank of banks;"  value="{{bank.id}}">{{bank.name}}</option>
+                                                <option *ngFor="let bank of banks;"  value="{{bank.name}}">{{bank.name}}</option>
                                             </select>
                                             <select style="margin-top: 15px;" class="column-condition" formControlName="attributeName" (change)="selectChange()">
                                                 <option *ngFor="let exp of expenxeArrayvalue;" value="{{exp}}" >{{exp}}</option>
@@ -70,7 +70,7 @@
                                                 </select>
                                                 <label *ngIf="isActionCOA(actionForm)" class="combo-box">
                                                     <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Chart of account" [formControl]="actionForm.controls.actionValue" [listObject]="chartOfAccounts" (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
-                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
                                                 </label>
                                                 <label *ngIf="isActionDimension(actionForm)" class="combo-box">

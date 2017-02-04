@@ -191,7 +191,7 @@ export class RulesComponent {
         let base = this;
         _.each(RulesList, function(RulesList) {
             let row:any = {};
-            row['rule']="when a "+RulesList.sourceType+" is created and the "+RulesList.attributeName+" " +RulesList.comparisionType +" "+RulesList.comparisionValue;
+            row['rule']="when a "+RulesList.sourceType+" is created and the "+RulesList.source +" "+RulesList.conditions[0].attributeName+" " +RulesList.conditions[0].comparisionType +" "+RulesList.conditions[0].comparisionValue+" " + "AND"+" " + RulesList.conditions[1].attributeName+" " +RulesList.conditions[1].comparisionType +" "+RulesList.conditions[1].comparisionValue;
             row['id']=RulesList.id;
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.tableData.rows.push(row);
@@ -259,7 +259,6 @@ export class RulesComponent {
         this.actions = new FormArray([]);
         this.ruleservice.rule(this.companyId,row.id).subscribe(rule => {
             rule.actions.forEach(function(action, index){
-                debugger;
                 base.updateActionValueInUI(action.action, index, action.actionValue,action.id);
                 let actionForm = base._fb.group(base._actionForm.getForm(action));
                 base.actions.push(actionForm);
@@ -280,11 +279,22 @@ export class RulesComponent {
             let selectedSource:any = this.ruleForm.controls['source'];
             selectedSource.patchValue(rule.source);
             let attributeName:any = this.ruleForm.controls['attributeName'];
-            attributeName.patchValue(rule.attributeName);
+            let ruleattribute=rule.conditions[0].attributeName;
+            attributeName.patchValue(ruleattribute);
             let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
-            selectedAmountControl.patchValue(rule.comparisionType);
+            let rulecoparisionrype=rule.conditions[0].comparisionType;
+            selectedAmountControl.patchValue(rulecoparisionrype);
             let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
-            selectedValueControl.patchValue(rule.comparisionValue);
+            let rulecoparisionvalue=rule.conditions[0].comparisionValue;
+            selectedValueControl.patchValue(rulecoparisionvalue);
+            let logicalOperator:any = this.ruleForm.controls['logicalOperator'];
+            logicalOperator.patchValue(rule.conditions[0].logicalOperator);
+            let attributeName1:any = this.ruleForm.controls['attributeName1'];
+            attributeName1.patchValue(rule.conditions[1].attributeName);
+            let comparisionType1:any = this.ruleForm.controls['comparisionType1'];
+            comparisionType1.patchValue(rule.conditions[1].comparisionType);
+            let comparisionValue1:any = this.ruleForm.controls['comparisionValue1'];
+            comparisionValue1.patchValue(rule.conditions[1].comparisionValue);
             let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
             effectiveDate.patchValue(rule.effectiveDate);
             this._ruleForm.updateForm(this.ruleForm, rule);
@@ -321,10 +331,9 @@ export class RulesComponent {
         let currentActionForm:any = actionsControl.controls[index];
         let currentActionData = this._actionForm.getData(currentActionForm);
         if(action == 'chartOfAccount'){
-            debugger;
-            currentActionData.actionValue = actionValueObj.id;
+            currentActionData.actionValue = actionValueObj.name;
         } else{
-            currentActionData.actionValue = actionValueObj.id;
+            currentActionData.actionValue = actionValueObj.name;
         }
         this._actionForm.updateForm(currentActionForm, currentActionData);
     }
