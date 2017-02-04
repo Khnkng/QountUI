@@ -95,7 +95,7 @@
                                             <div class="date-wrapper float-left" (click)="submit($event, 'WITH_DATE')">
                                                 <a class="button small float-left">Save and apply to all {{getSourceName()}}s since</a>
                                             </div>
-                                            <input class="float-left" (valueChanged)="setJournalDate($event)" custom-datepicker [mindate]="'past'" [format]="'MM/DD/YYYY'" type="text" formControlName="effectiveDate" placeholder="Deposits Date*"/>
+                                            <input class="float-left"   type="text" formControlName="effectiveDate" placeholder="Deposits Date*"/>
                                         </div>
                                     </div>
                                 </div>

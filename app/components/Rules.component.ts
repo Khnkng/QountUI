@@ -243,7 +243,7 @@ export class RulesComponent {
         let base = this;
         if(field == 'chartOfAccount'){
             setTimeout(function(){
-                jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(value));
+                jQuery('#coa-'+index).siblings().children('input').val(value);
             }, 10);
         } else if(field == 'dimension'){
             setTimeout(function(){
@@ -294,7 +294,7 @@ export class RulesComponent {
             let rulecoparisionvalue=rule.conditions[0].comparisionValue;
             selectedValueControl.patchValue(rulecoparisionvalue);
             let logicalOperator:any = this.ruleForm.controls['logicalOperator'];
-            logicalOperator.patchValue(rule.conditions[0].logicalOperator);
+            logicalOperator.patchValue("AND");
             let attributeName1:any = this.ruleForm.controls['attributeName1'];
             attributeName1.patchValue(rule.conditions[1].attributeName);
             let comparisionType1:any = this.ruleForm.controls['comparisionType1'];
