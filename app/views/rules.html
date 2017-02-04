@@ -35,29 +35,28 @@
                                             </select>
                                             <label style="margin-top: 21px;">is created and the</label>
                                             <label style="margin-top: 21px;">source</label>
-                                            <select style="margin-top: 15px;">
-                                                <option *ngFor="let bank of banks;" value="{{bank.id}}">{{bank.name}}</option>
+                                            <select style="margin-top: 15px;" formControlName="source">
+                                                <option *ngFor="let bank of banks;"  value="{{bank.name}}">{{bank.name}}</option>
                                             </select>
                                             <select style="margin-top: 15px;" class="column-condition" formControlName="attributeName" (change)="selectChange()">
                                                 <option *ngFor="let exp of expenxeArrayvalue;" value="{{exp}}" >{{exp}}</option>
 
                                             </select>
                                             <select style="margin-top: 15px;" class="condition" formControlName="comparisionType">
-                                                <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype" >{{comparisiontype}}</option>
+                                                <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                             </select>
-                                            <input style="margin-top: 15px;" type="text" class="condition-value" value="comparisionValue" formControlName="comparisionValue" />
-                                            <select style="margin-top: 15px;" class="column-condition" formControlName="attributeName">
-                                                <option value="TITLE">AND</option>
-                                                <option value="AMOUNT">OR</option>
-                                            </select>
-                                            <select style="margin-top: 15px;" class="column-condition" formControlName="attributeName" (change)="selectChange()">
-                                                <option *ngFor="let exp of expenxeArrayvalue;" value="{{exp}}" >{{exp}}</option>
+                                            <input style="margin-top: 15px;" type="text" class="condition-value" formControlName="comparisionValue" />
 
+                                            <select style="margin-top: 15px;" class="column-condition" formControlName="logicalOperator">
+                                                <option value="AND">AND</option>
                                             </select>
-                                            <select style="margin-top: 15px;" class="condition" formControlName="comparisionType">
-                                                <option *ngFor="let comparisiontype of conparisionArray;" value="comparisiontype" >{{comparisiontype}}</option>
+                                            <select style="margin-top: 15px;" class="column-condition" formControlName="attributeName1" (change)="selectChange()">
+                                                <option *ngFor="let exp of expenxeArrayvalue;" value="{{exp}}" >{{exp}}</option>
                                             </select>
-                                            <input style="margin-top: 15px;" type="text" class="condition-value"/>
+                                            <select style="margin-top: 15px;" class="condition" formControlName="comparisionType1">
+                                                <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
+                                            </select>
+                                            <input style="margin-top: 15px;" type="text" formControlName="comparisionValue1" class="condition-value"/>
                                         </div>
                                     </div>
                                     <header class="form-section-header">Actions:</header>
@@ -71,7 +70,7 @@
                                                 </select>
                                                 <label *ngIf="isActionCOA(actionForm)" class="combo-box">
                                                     <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Chart of account" [formControl]="actionForm.controls.actionValue" [listObject]="chartOfAccounts" (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
-                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
                                                 </label>
                                                 <label *ngIf="isActionDimension(actionForm)" class="combo-box">
@@ -96,7 +95,7 @@
                                             <div class="date-wrapper float-left" (click)="submit($event, 'WITH_DATE')">
                                                 <a class="button small float-left">Save and apply to all {{getSourceName()}}s since</a>
                                             </div>
-                                            <input class="float-left" custom-datepicker [mindate]="'past'" [format]="'MM/DD/YYYY'" type="text" formControlName="effectiveDate" placeholder="Deposits Date*"/>
+                                            <input class="float-left" (valueChanged)="setJournalDate($event)" custom-datepicker [mindate]="'past'" [format]="'MM/DD/YYYY'" type="text" formControlName="effectiveDate" placeholder="Deposits Date*"/>
                                         </div>
                                     </div>
                                 </div>

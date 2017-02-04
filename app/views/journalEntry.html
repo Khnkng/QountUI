@@ -298,7 +298,7 @@
                         </div>
                         <div class="small-12 medium-6 columns">
                             <label>Dimensions
-                                <div class="row dimension-grids">
+                                <div class="row dimension-grids" (click)="doNothing($event)">
                                     <div class="small-12 medium-4 columns dimension-grid" *ngFor="let dimension of dimensions">
                                         <div class="dimension-header">
                                             <div>

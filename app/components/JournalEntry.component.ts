@@ -159,6 +159,13 @@ export class JournalEntryComponent{
         }
     }
 
+    /*This function will stop event bubbling to avoid default selection of first value in first dimension*/
+    doNothing($event){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+    }
+
     hideFlyout(){
         this.dimensionFlyoutCSS = "collapsed";
     }
@@ -320,7 +327,11 @@ export class JournalEntryComponent{
             index: index
         };
         let data = this._lineListForm.getData(lineListItem);
-        this.updateLineData(data);
+        if(this.newJournalEntry){
+            this.updateLineInView(data);
+        } else{
+            this.updateLineData(data);
+        }
     }
 
     setJournalDate(date: string){
