@@ -192,7 +192,11 @@ export class RulesComponent {
         let base = this;
         _.each(RulesList, function(RulesList) {
             let row:any = {};
-            row['rule']="when a "+RulesList.sourceType+" is created and the "+RulesList.source +" "+RulesList.conditions[0].attributeName+" " +RulesList.conditions[0].comparisionType +" "+RulesList.conditions[0].comparisionValue+" " + "AND"+" " + RulesList.conditions[1].attributeName+" " +RulesList.conditions[1].comparisionType +" "+RulesList.conditions[1].comparisionValue;
+            if(RulesList.conditions[0]) {
+                row['rule'] = "when a " + RulesList.sourceType + " is created and the " + RulesList.source + " " + RulesList.conditions[0].attributeName + " " + RulesList.conditions[0].comparisionType + " " + RulesList.conditions[0].comparisionValue + " " + "AND" + " " + RulesList.conditions[1].attributeName + " " + RulesList.conditions[1].comparisionType + " " + RulesList.conditions[1].comparisionValue;
+            }else{
+                row['rule'] = "when a " + RulesList.sourceType + " is created and the " + RulesList.source + " " ;
+            }
             row['id']=RulesList.id;
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.tableData.rows.push(row);
