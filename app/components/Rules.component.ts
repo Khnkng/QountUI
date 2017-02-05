@@ -276,6 +276,14 @@ export class RulesComponent {
         // this.getRowDetails(row.id);
 
     }
+    isValid(ruleForm){
+        if(ruleForm.value.comparisionType!="" && ruleForm.value.comparisionType1!="" && ruleForm.value.comparisionValue!="" && ruleForm.value.comparisionValue!="" && ruleForm.value.comparisionValue1!=""){
+            return false;
+        }
+else{
+            return true;
+        }
+    }
     getRowDetails(RuleID){
         let base=this;
         this.ruleservice.rule(this.companyId,RuleID).subscribe(rule => {
@@ -348,9 +356,7 @@ export class RulesComponent {
         $event && $event.preventDefault();
         let data = this._ruleForm.getData(this.ruleForm);
         this.companyId = Session.getCurrentCompany();
-        if(dateFlag == 'NO_DATE'){
-            delete data.effectiveDate;
-        }
+
         if(this.editMode){
             if(data.attributeName || data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1 ){
                 delete data.attributeName;
@@ -364,26 +370,22 @@ export class RulesComponent {
             data.conditions=[];
             var condition1={};
             var condition2={};
-            let attributeName:any = this.ruleForm.controls['attributeName'];
-            attributeName.patchValue(attributeName.value);
             let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
             selectedAmountControl.patchValue(selectedAmountControl.value);
             let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
             selectedValueControl.patchValue(selectedValueControl.value);
             let logicalOperator:any = this.ruleForm.controls['logicalOperator'];
             logicalOperator.patchValue(logicalOperator.value);
-            condition1['attributeName']=attributeName.value;
+            condition1['attributeName']="Title";
             condition1['comparisionType']=selectedAmountControl.value;
             condition1['comparisionValue']=selectedValueControl.value;
             condition1['logicalOperator']=logicalOperator.value;
             var conditionrow=data.conditions.push(condition1);
-            let attributeName1:any = this.ruleForm.controls['attributeName1'];
-            attributeName1.patchValue(attributeName1.value);
             let selectedAmountControl1:any = this.ruleForm.controls['comparisionType1'];
             selectedAmountControl1.patchValue(selectedAmountControl1.value);
             let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
             selectedValueControl1.patchValue(selectedValueControl1.value);
-            condition2['attributeName']=attributeName1.value;
+            condition2['attributeName']="Amount";
             condition2['comparisionType']=selectedAmountControl1.value;
             condition2['comparisionValue']=selectedValueControl1.value;
             var conditionrow2=data.conditions.push(condition2);
@@ -415,7 +417,7 @@ export class RulesComponent {
             selectedValueControl.patchValue(selectedValueControl.value);
             let logicalOperator:any = this.ruleForm.controls['logicalOperator'];
             logicalOperator.patchValue(logicalOperator.value);
-            condition1['attributeName']=attributeName.value;
+            condition1['attributeName']="Title";
             condition1['comparisionType']=selectedAmountControl.value;
             condition1['comparisionValue']=selectedValueControl.value;
             condition1['logicalOperator']=logicalOperator.value;
@@ -426,7 +428,7 @@ export class RulesComponent {
             selectedAmountControl1.patchValue(selectedAmountControl1.value);
             let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
             selectedValueControl1.patchValue(selectedValueControl1.value);
-            condition2['attributeName']=attributeName1.value;
+            condition2['attributeName']="Amount";
             condition2['comparisionType']=selectedAmountControl1.value;
             condition2['comparisionValue']=selectedValueControl1.value;
             var conditionrow2=data.conditions.push(condition2);

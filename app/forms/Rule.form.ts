@@ -12,13 +12,12 @@ export class RuleForm extends abstractForm{
         return {
             "sourceType": ['Expense', Validators.required],
             "source":['', Validators.required],
-            "attributeName": ['', Validators.required],
+            "attributeName": [''],
             "comparisionType": ['', Validators.required],
             "comparisionValue": ['', Validators.required],
             "logicalOperator":[''],
             "effectiveDate": [''],
-            "conditions":[''],
-            "attributeName1": ['', Validators.required],
+            "attributeName1": [''],
             "comparisionType1": ['', Validators.required],
             "comparisionValue1": ['', Validators.required]
 
@@ -31,7 +30,7 @@ export class RuleActionForm extends abstractForm{
     getForm(model?:any) {
         return {
             action: [model? model.action: 'chartOfAccount'],
-            actionValue: [model? model.actionValue: '', Validators.required],
+            actionValue: [model? model.actionValue: ''],
             id:[model? model.id: '', Validators.required]
         };
     }

@@ -26,44 +26,57 @@
                         <form *ngIf="showFlyout" novalidate [formGroup]="ruleForm">
                             <div class="row">
                                 <div class="small-12 medium-12 columns">
+                                    <div class="form-section-left">
                                     <header class="form-section-header">Rule</header>
                                     <div class="row">
                                         <div class="small-12 medium-12 columns rule-row">
-                                            <label style="margin-top: 21px;">When a</label>
-                                            <select style="margin-top: 15px;" class="source" formControlName="sourceType" (change)="expesevalue()">
-                                               <option *ngFor="let deposit of depositlist;" value="{{deposit}}">{{deposit}}</option>
-                                            </select>
-                                            <label style="margin-top: 21px;">is created and the</label>
-                                            <label style="margin-top: 21px;">source</label>
-                                            <select style="margin-top: 15px;" formControlName="source">
-                                                <option *ngFor="let bank of banks;"  value="{{bank.name}}">{{bank.name}}</option>
-                                            </select>
-                                            <select style="margin-top: 15px;" class="column-condition" formControlName="attributeName" (change)="selectChange()">
-                                                <option *ngFor="let exp of expenxeArrayvalue;" value="{{exp}}" >{{exp}}</option>
 
-                                            </select>
-                                            <select style="margin-top: 15px;" class="condition" formControlName="comparisionType">
-                                                <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
-                                            </select>
-                                            <input style="margin-top: 15px;" type="text" class="condition-value" formControlName="comparisionValue" />
+                                            <table style="width:40%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
+                                                <tbody style="border-color: white">
+                                                <tr style="border:0px;border-color:white">
+                                                    <td><label>Type</label></td>
+                                                    <td><span><input  style="margin-top:5px;" value="Expense" type="radio" formControlName="sourceType" name="sourceType"  type="radio" checked/>Expense</span></td>
+                                                    <td><span><input style="margin-top:5px;"  value="Deposit" type="radio" formControlName="sourceType" name="sourceType"  type="radio" />Deposit</span></td>
+                                                </tr>
+                                                <tr style="border:0px;border-color:white">
+                                                    <td><label style="margin-top: 21px;">source</label></td>
+                                                    <td><select style="margin-top: 15px;" formControlName="source">
+                                                        <option *ngFor="let bank of banks;"  value="{{bank.name}}">{{bank.name}}</option>
+                                                    </select></td>
+                                                </tr>
+                                                <tr style="border:0px;border-color:white">
+                                                    <td><label>Title</label></td>
+                                                    <td>
+                                                    <select style="margin-top: 15px;" class="condition" formControlName="comparisionType">
+                                                        <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
+                                                    </select>
+                                                    </td>
+                                                    <td>
+                                                    <input style="margin-top: 15px;" type="text" class="condition-value" formControlName="comparisionValue" />
+                                                    </td>
+                                                </tr>
+                                                <tr style="border:0px;border-color:white">
+                                                    <td><label>Amount</label></td>
+                                                    <td><select style="margin-top: 15px;" class="condition" formControlName="comparisionType1">
+                                                        <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
+                                                    </select></td>
+                                                    <td><input style="margin-top: 15px;" type="text" formControlName="comparisionValue1" class="condition-value"/>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
 
-                                            <select style="margin-top: 15px;" class="column-condition" formControlName="logicalOperator">
-                                                <option value="AND">AND</option>
-                                            </select>
-                                            <select style="margin-top: 15px;" class="column-condition" formControlName="attributeName1" (change)="selectChange()">
-                                                <option *ngFor="let exp of expenxeArrayvalue;" value="{{exp}}" >{{exp}}</option>
-                                            </select>
-                                            <select style="margin-top: 15px;" class="condition" formControlName="comparisionType1">
-                                                <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
-                                            </select>
-                                            <input style="margin-top: 15px;" type="text" formControlName="comparisionValue1" class="condition-value"/>
                                         </div>
                                     </div>
+                                        </div>
+                                    <div class="form-section-left">
                                     <header class="form-section-header">Actions:</header>
+                                        <input class="float-left" style="margin-left:20px;margin-top:10px;"   type="text" formControlName="effectiveDate" placeholder="Deposits Date*"/>
                                     <div class="actions-form" formArrayName="actions">
                                         <div class="row action-row" *ngFor="let actionForm of ruleForm.controls.actions.controls;let index=index;">
-                                            <div class="small-12 medium-6 columns">
+                                            <div class="small-12 medium-12 columns">
                                                 <label>Then add</label>
+                                                <br/>
                                                 <select class="action" [formControl]="actionForm.controls.action">
                                                     <option value="chartOfAccount">Chart of account</option>
                                                     <option value="dimension">Dimension</option>
@@ -78,10 +91,11 @@
                                                         <option *ngFor="let dimension of dimensions" [value]="dimension.name">{{dimension.name}}</option>
                                                     </select>
                                                 </label>
+                                                <div >
+                                                <i style="margin-left:90px;" class="icon ion-close" *ngIf="actions.length != 1" (click)="deleteAction(index)"></i>
+                                                </div>
                                             </div>
-                                            <div class="small-12 medium-1 columns">
-                                                <i class="icon ion-close" *ngIf="actions.length != 1" (click)="deleteAction(index)"></i>
-                                            </div>
+
                                         </div>
                                     </div>
                                     <div class="row add-action">
@@ -90,14 +104,12 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="small-2 medium-6 columns">
-                                            <button type="submit" class="button small float-left" (click)="submit($event, 'NO_DATE')">Save</button>
-                                            <div class="date-wrapper float-left" (click)="submit($event, 'WITH_DATE')">
-                                                <a class="button small float-left">Save and apply to all {{getSourceName()}}s since</a>
-                                            </div>
-                                            <input class="float-left"   type="text" formControlName="effectiveDate" placeholder="Deposits Date*"/>
-                                        </div>
+
                                     </div>
+                                        </div>
+                                </div>
+                                <div class="small-2 medium-12 columns">
+                                    <button type="submit" class="button create small float-right" [disabled]="isValid(ruleForm)" (click)="submit($event)">Save</button>
                                 </div>
                             </div>
                         </form>
