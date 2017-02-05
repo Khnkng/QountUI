@@ -71,7 +71,6 @@
                                         </div>
                                     <div class="form-section-left">
                                     <header class="form-section-header">Actions:</header>
-                                        <input class="float-left" style="margin-left:20px;margin-top:10px;"   type="text" formControlName="effectiveDate" placeholder="Deposits Date*"/>
                                     <div class="actions-form" formArrayName="actions">
                                         <div class="row action-row" *ngFor="let actionForm of ruleForm.controls.actions.controls;let index=index;">
                                             <div class="small-12 medium-12 columns">
@@ -92,7 +91,7 @@
                                                     </select>
                                                 </label>
                                                 <div >
-                                                <i style="margin-left:90px;" class="icon ion-close" *ngIf="actions.length != 1" (click)="deleteAction(index)"></i>
+                                                <i style="margin-left:90px;" class="icon ion-trash-b" *ngIf="actions.length != 1" (click)="deleteAction(index)"></i>
                                                 </div>
                                             </div>
 
@@ -104,10 +103,11 @@
                                         </div>
                                     </div>
                                     <div class="row">
-
+                                        <input class="float-left" style="margin-left:20px;margin-top:10px;"   type="text" formControlName="effectiveDate" placeholder="Deposits Date*"/>
                                     </div>
                                         </div>
                                 </div>
+
                                 <div class="small-2 medium-12 columns">
                                     <button type="submit" class="button create small float-right" [disabled]="isValid(ruleForm)" (click)="submit($event)">Save</button>
                                 </div>
