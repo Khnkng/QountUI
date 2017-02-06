@@ -18,6 +18,7 @@ export class RuleForm extends abstractForm{
             "logicalOperator":[''],
             "effectiveDate": [''],
             "attributeName1": [''],
+            "chartOfAccount":[''],
             "comparisionType1": ['', Validators.required],
             "comparisionValue1": ['', Validators.required]
 
@@ -29,7 +30,7 @@ export class RuleForm extends abstractForm{
 export class RuleActionForm extends abstractForm{
     getForm(model?:any) {
         return {
-            action: [model? model.action: 'chartOfAccount'],
+            action: [model? model.action: 'Dimension'],
             actionValue: [model? model.actionValue: ''],
             id:[model? model.id: '', Validators.required]
         };

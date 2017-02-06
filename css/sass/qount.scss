@@ -2079,7 +2079,13 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
-
+#ruletable, #coa, #coa1, #coa2{
+  tbody{
+    tr:hover {
+      background-color: white;
+    }
+  }
+}
 .report-table {
 
   thead{

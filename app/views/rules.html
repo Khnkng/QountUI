@@ -31,15 +31,15 @@
                                     <div class="row">
                                         <div class="small-12 medium-12 columns rule-row">
 
-                                            <table style="width:40%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
+                                            <table id="ruletable" style="width:40%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
                                                 <tbody style="border-color: white">
-                                                <tr style="border:0px;border-color:white">
+                                                <tr style="border:0px;border-color:white;">
                                                     <td><label>Type</label></td>
                                                     <td><span><input  style="margin-top:5px;" value="Expense" type="radio" formControlName="sourceType" name="sourceType"  type="radio" checked/>Expense</span></td>
                                                     <td><span><input style="margin-top:5px;"  value="Deposit" type="radio" formControlName="sourceType" name="sourceType"  type="radio" />Deposit</span></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
-                                                    <td><label style="margin-top: 21px;">source</label></td>
+                                                    <td><label style="margin-top: 21px;">Source</label></td>
                                                     <td><select style="margin-top: 15px;" formControlName="source">
                                                         <option *ngFor="let bank of banks;"  value="{{bank.name}}">{{bank.name}}</option>
                                                     </select></td>
@@ -69,41 +69,71 @@
                                         </div>
                                     </div>
                                         </div>
-                                    <div class="form-section-left">
-                                    <header class="form-section-header">Actions:</header>
+                                    <div class="form-section-left"><div class="small-12 medium-12 columns rule-row">
+
+                                        <table id="coa" style="width:40%;border-color:white;border:0px;border-color:white;margin-top: 34px;">
+                                            <tbody style="border-color: white">
+                                            <tr style="border:0px;border-color:white;">
+                                                <td><label><select class="action">
+                                                    <option value="chartOfAccount">Chart of account</option>
+                                                </select></label></td>
+                                                <td> <label>
+                                                    <select  title="" data-placeholder="Enter Chart of account" formControlName="chartOfAccount"  (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
+                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                                    </select>
+                                                </label></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
                                     <div class="actions-form" formArrayName="actions">
                                         <div class="row action-row" *ngFor="let actionForm of ruleForm.controls.actions.controls;let index=index;">
                                             <div class="small-12 medium-12 columns">
-                                                <label>Then add</label>
-                                                <br/>
-                                                <select class="action" [formControl]="actionForm.controls.action">
-                                                    <option value="chartOfAccount">Chart of account</option>
+                                                <table id="coa2" style="width:60%;border-color:white;border:0px;border-color:white;">
+                                                    <tbody style="border-color: white">
+                                                    <tr style="border:0px;border-color:white;">
+                                                        <td>
+                                                <label><select class="action" [formControl]="actionForm.controls.action">
                                                     <option value="dimension">Dimension</option>
-                                                </select>
-                                                <label *ngIf="isActionCOA(actionForm)" class="combo-box">
-                                                    <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Chart of account" [formControl]="actionForm.controls.actionValue" [listObject]="chartOfAccounts" (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
-                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
-                                                    </select>
-                                                </label>
-                                                <label *ngIf="isActionDimension(actionForm)" class="combo-box">
+                                                </select></label></td>
+                                               <td></td>
+                                               <td><label *ngIf="isActionDimension(actionForm)" class="combo-box">
                                                     <select id="dimension-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Dimension" [formControl]="actionForm.controls.actionValue" [listObject]="dimensions" (valueChanged)="updateActionValue($event, index, 'dimension')">
                                                         <option *ngFor="let dimension of dimensions" [value]="dimension.name">{{dimension.name}}</option>
                                                     </select>
-                                                </label>
-                                                <div >
+                                                </label></td>
+                                                    <td>
+                                                <div>
                                                 <i style="margin-left:90px;" class="icon ion-trash-b" *ngIf="actions.length != 1" (click)="deleteAction(index)"></i>
-                                                </div>
+                                                </div></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
 
                                         </div>
                                     </div>
+                                        <div class="small-12 medium-12 columns">
                                     <div class="row add-action">
                                         <div class="small-2 medium-3 columns">
                                             <a (click)="addNewAction()"><i class="icon ion-plus-round"></i> Action</a>
                                         </div>
                                     </div>
+                                            <table id="coa1" style="width:50%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
+                                                <tbody style="border-color: white">
+                                                <tr style="border:0px;border-color:white;">
+                                                    <td><label style="margin-top: -14px;">Rule Date</label></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td><input class="float-left" custom-datepicker (valueChanged)="setDate($event)" [format]="'YYYY-MM-DD'" [mindate]="'past'" style="margin-left:36px;"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                            </div>
                                     <div class="row">
-                                        <input class="float-left" style="margin-left:20px;margin-top:10px;"   type="text" formControlName="effectiveDate" placeholder="Deposits Date*"/>
+
                                     </div>
                                         </div>
                                 </div>

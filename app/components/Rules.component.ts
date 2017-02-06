@@ -319,7 +319,10 @@ else{
         let data = this._ruleForm.getData(this.ruleForm);
         return data.sourceType;
     }
-
+    setDate(date: string){
+        let jeDateControl:any = this.ruleForm.controls['effectiveDate'];
+        jeDateControl.patchValue(date);
+    }
     isActionCOA(actionForm){
         if(actionForm){
             let data = this._actionForm.getData(actionForm);
@@ -370,6 +373,8 @@ else{
             data.conditions=[];
             var condition1={};
             var condition2={};
+            let chartOfAccount:any = this.ruleForm.controls['chartOfAccount'];
+            chartOfAccount.patchValue(chartOfAccount.value);
             let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
             selectedAmountControl.patchValue(selectedAmountControl.value);
             let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
@@ -409,6 +414,8 @@ else{
             data.conditions=[];
             var condition1={};
             var condition2={};
+            let chartOfAccount:any = this.ruleForm.controls['chartOfAccount'];
+            chartOfAccount.patchValue(chartOfAccount.value);
             let attributeName:any = this.ruleForm.controls['attributeName'];
             attributeName.patchValue(attributeName.value);
             let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
