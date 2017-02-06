@@ -71,8 +71,12 @@
                                         </div>
                                     <div class="form-section-left"><div class="small-12 medium-12 columns rule-row">
 
-                                        <table id="coa" style="width:40%;border-color:white;border:0px;border-color:white;margin-top: 34px;">
+                                        <table id="coa" style="width:40%;border-color:white;border:0px;border-color:white;margin-top:100px;">
                                             <tbody style="border-color: white">
+                                            <tr>
+                                            </tr>
+                                            <tr></tr>
+                                            <tr></tr>
                                             <tr style="border:0px;border-color:white;">
                                                 <td><label><select class="action">
                                                     <option value="chartOfAccount">Chart of account</option>
@@ -94,11 +98,12 @@
                                                     <tbody style="border-color: white">
                                                     <tr style="border:0px;border-color:white;">
                                                         <td>
-                                                <label><select class="action" [formControl]="actionForm.controls.action">
-                                                    <option value="dimension">Dimension</option>
+                                                <label><select class="action" >
+                                                    <option value="dimension" >Dimension</option>
                                                 </select></label></td>
                                                <td></td>
-                                               <td><label *ngIf="isActionDimension(actionForm)" class="combo-box">
+                                                        <td></td>
+                                               <td><label  class="combo-box" style="margin-right:31px;">
                                                     <select id="dimension-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Dimension" [formControl]="actionForm.controls.actionValue" [listObject]="dimensions" (valueChanged)="updateActionValue($event, index, 'dimension')">
                                                         <option *ngFor="let dimension of dimensions" [value]="dimension.name">{{dimension.name}}</option>
                                                     </select>
@@ -123,7 +128,7 @@
                                             <table id="coa1" style="width:50%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
                                                 <tbody style="border-color: white">
                                                 <tr style="border:0px;border-color:white;">
-                                                    <td><label style="margin-top: -14px;">Rule Date</label></td>
+                                                    <td><label style="margin-top: -14px;margin-left:9px;">Rule Date</label></td>
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>

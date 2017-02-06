@@ -30,7 +30,7 @@ export class RuleForm extends abstractForm{
 export class RuleActionForm extends abstractForm{
     getForm(model?:any) {
         return {
-            action: [model? model.action: 'Dimension'],
+            action: [model? model.action: ''],
             actionValue: [model? model.actionValue: ''],
             id:[model? model.id: '', Validators.required]
         };

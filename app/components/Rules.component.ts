@@ -235,8 +235,7 @@ export class RulesComponent {
     deleteAction(index){
         let indexValue=this.actions.controls.splice(index,1);
         let actionsControl:any = this.ruleForm.controls['actions'];
-        let actionsControlform=actionsControl.controls.splice(index, 1);
-
+        let actionsControlform=actionsControl.value.splice(index, 1);
     }
 
     updateActionValueInUI(field, index, value,id){
@@ -359,7 +358,15 @@ else{
         $event && $event.preventDefault();
         let data = this._ruleForm.getData(this.ruleForm);
         this.companyId = Session.getCurrentCompany();
-
+for(var i=0;i<data.actions.length ;i++){
+    console.log("asas",data.actions[i]);
+    if(data.actions[i].action==""){
+        data.actions[i].action="dimension";
+    }
+    else{
+        data.actions[i].action="dimension";
+    }
+}
         if(this.editMode){
             if(data.attributeName || data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1 ){
                 delete data.attributeName;
