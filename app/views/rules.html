@@ -71,17 +71,17 @@
                                         </div>
                                     <div class="form-section-left"><div class="small-12 medium-12 columns rule-row">
 
-                                        <table id="coa" style="width:40%;border-color:white;border:0px;border-color:white;margin-top:100px;">
+                                        <table id="coa" style="width:60%;border-color:white;border:0px;border-color:white;margin-top:100px;">
                                             <tbody style="border-color: white">
                                             <tr>
                                             </tr>
                                             <tr></tr>
                                             <tr></tr>
                                             <tr style="border:0px;border-color:white;">
-                                                <td><label><select class="action">
-                                                    <option value="chartOfAccount">Chart of account</option>
-                                                </select></label></td>
-                                                <td> <label>
+                                                <td>
+                                                    <label value="chartOfAccount">Chart Of Account</label>
+                                               </td>
+                                                <td> <label style="margin-left: -3px;">
                                                     <select  title="" data-placeholder="Enter Chart of account" formControlName="chartOfAccount"  (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
@@ -98,12 +98,11 @@
                                                     <tbody style="border-color: white">
                                                     <tr style="border:0px;border-color:white;">
                                                         <td>
-                                                <label><select class="action" >
-                                                    <option value="dimension" >Dimension</option>
-                                                </select></label></td>
+                                                    <label value="dimension" >Dimension</label>
+                                                </td>
                                                <td></td>
                                                         <td></td>
-                                               <td><label  class="combo-box" style="margin-right:31px;">
+                                               <td><label  class="combo-box" style="margin-right:56px;">
                                                     <select id="dimension-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Dimension" [formControl]="actionForm.controls.actionValue" [listObject]="dimensions" (valueChanged)="updateActionValue($event, index, 'dimension')">
                                                         <option *ngFor="let dimension of dimensions" [value]="dimension.name">{{dimension.name}}</option>
                                                     </select>
@@ -128,11 +127,11 @@
                                             <table id="coa1" style="width:50%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
                                                 <tbody style="border-color: white">
                                                 <tr style="border:0px;border-color:white;">
-                                                    <td><label style="margin-top: -14px;margin-left:9px;">Rule Date</label></td>
+                                                    <td><label style="margin-top: -14px;margin-left:6px;">Rule Date</label></td>
                                                     <td></td>
                                                     <td></td>
                                                     <td></td>
-                                                    <td><input class="float-left" custom-datepicker (valueChanged)="setDate($event)" [format]="'YYYY-MM-DD'" [mindate]="'past'" style="margin-left:36px;"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
+                                                    <td><input class="float-left" custom-datepicker (valueChanged)="setDate($event)" [format]="'YYYY-MM-DD'" [mindate]="'past'" style="margin-left:-27px;"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
                                                 </tr>
                                                 </tbody>
                                             </table>

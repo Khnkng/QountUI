@@ -43,6 +43,7 @@ export class RulesComponent {
     banks:Array<any> = [];
     rules:Array<any> = [];
     tableData:any = {};
+    todaysDate:any;
     row:any;
     tableOptions:any = {};
     chartOfAccounts:Array<any>= [];
@@ -54,6 +55,11 @@ export class RulesComponent {
         private dimensionService: DimensionService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
         this.companyId = Session.getCurrentCompany();
         this.conparisionArray=['begins with','contains','equals to','greater than','less than'];
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        this.todaysDate=yyyy +"-"+mm+"-"+dd;
         this.ruleservice.getRulesofCompany(this.companyId)
             .subscribe(RulesList  => {
                 this.loadingService.triggerLoadingEvent(false);
@@ -355,9 +361,19 @@ else{
     }
 
     submit($event, dateFlag){
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        var todaysDate=yyyy +"-"+mm+"-"+dd;
         $event && $event.preventDefault();
         let data = this._ruleForm.getData(this.ruleForm);
         this.companyId = Session.getCurrentCompany();
+        if(data.effectiveDate==""){
+            data.effectiveDate=todaysDate;
+        }else{
+            console.log("data.effectiveDate",data.effectiveDate);
+        }
 for(var i=0;i<data.actions.length ;i++){
     console.log("asas",data.actions[i]);
     if(data.actions[i].action==""){
