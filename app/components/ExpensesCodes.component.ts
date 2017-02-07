@@ -12,9 +12,9 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {CodesService} from "qCommon/app/services/CodesService.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
-import {ExpensesForm} from "../forms/Expenses.form";
+import {ExpenseCodesForm} from "../forms/ExpenseCodes.form";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
-import {ExpensesService} from "qCommon/app/services/Expenses.service";
+import {ExpensesService} from "qCommon/app/services/ExpenseCodes.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {Router} from "@angular/router";
 
@@ -36,7 +36,6 @@ export class ExpensesCodesComponent {
   newFormActive:boolean = true;
   @ViewChild('addItemcode') addItemcode;
   @ViewChild('selectedCOAComboBoxDir') selectedCOAComboBox: ComboBox;
-  //@ViewChild('invoiceCOAComboBoxDir') invoiceCOAComboBox: ComboBox;
   hasItemCodes: boolean = false;
   tableData:any = {};
   tableOptions:any = {};
@@ -49,7 +48,7 @@ export class ExpensesCodesComponent {
   allCOAList:Array<any> = [];
   showFlyout:boolean = false;
 
-  constructor(private _fb: FormBuilder, private _expensesForm: ExpensesForm, private switchBoard: SwitchBoard,
+  constructor(private _fb: FormBuilder, private _expensesForm: ExpenseCodesForm, private switchBoard: SwitchBoard,
               private codeService: CodesService, private toastService: ToastService, private _router:Router,
               private coaService: ChartOfAccountsService, private expensesSerice:ExpensesService,
               private companiesService: CompaniesService, private loadingService:LoadingService){
@@ -125,10 +124,9 @@ export class ExpensesCodesComponent {
   }
 
   updateExpenseCOA(selectedCOA){
-    let selectedCOAControl:any = this.expensesForm.controls['coa_mapping_id'];
-    if(selectedCOA){
-      selectedCOAControl.patchValue(selectedCOA.id);
-    }
+    let data = this._expensesForm.getData(this.expensesForm);
+    data.coa_mapping_id = selectedCOA.id;
+    this._expensesForm.updateForm(this.expensesForm, data);
   }
 
   ngOnInit(){

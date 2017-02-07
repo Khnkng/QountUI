@@ -135,17 +135,15 @@ export class ItemCodesComponent{
   }
 
   updatePaymentCOA(paymentCOA){
-    let paymentCOAControl:any = this.itemcodeForm.controls['payment_coa_mapping'];
-    if(paymentCOA){
-      paymentCOAControl.patchValue(paymentCOA.id);
-    }
+    let data = this._itemCodeForm.getData(this.itemcodeForm);
+    data.payment_coa_mapping = paymentCOA.id;
+    this._itemCodeForm.updateForm(this.itemcodeForm, data);
   }
 
   updateInvoiceCOA(invoiceCOA){
-    let invoiceCOAControl:any = this.itemcodeForm.controls['invoice_coa_mapping'];
-    if(invoiceCOA){
-      invoiceCOAControl.patchValue(invoiceCOA.id);
-    }
+    let data = this._itemCodeForm.getData(this.itemcodeForm);
+    data.invoice_coa_mapping = invoiceCOA.id;
+    this._itemCodeForm.updateForm(this.itemcodeForm, data);
   }
 
   ngOnInit(){

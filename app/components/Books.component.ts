@@ -10,6 +10,8 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {ExpenseService} from "qCommon/app/services/Expense.service";
+import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 
 declare var _:any;
 declare var jQuery:any;
@@ -52,10 +54,11 @@ export class BooksComponent{
     hasDeposits:boolean = false;
     allCompanies:Array<any>;
     currentCompany:any;
+    accounts:Array<any>;
 
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
-                private toastService: ToastService, private loadingService:LoadingService,
-        private companiesService: CompaniesService) {
+                private toastService: ToastService, private loadingService:LoadingService, private companiesService: CompaniesService,
+                private expenseService: ExpenseService, private accountsService: FinancialAccountsService) {
         let companyId = Session.getCurrentCompany();
         this.companiesService.companies().subscribe(companies => {
             this.allCompanies = companies;
@@ -64,6 +67,13 @@ export class BooksComponent{
             } else if(this.allCompanies.length> 0){
                 this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
             }
+
+            this.accountsService.financialAccounts(companyId)
+                .subscribe(accounts => {
+                    this.accounts = accounts;
+                }, error=> {
+
+                });
             this.routeSub = this._route.params.subscribe(params => {
                 this.selectedTab=params['tabId'];
                 this.selectTab(this.selectedTab,"");
@@ -112,7 +122,13 @@ export class BooksComponent{
         if(this.selectedTab == 0){
             this.isLoading = false;
         } else if(this.selectedTab == 1){
-            this.isLoading = false;
+            this.isLoading = true;
+            this.loadingService.triggerLoadingEvent(true);
+            this.expenseService.expenses(this.currentCompany.id)
+                .subscribe(expenses => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.buildExpenseTableData(expenses.expenses);
+                }, error => this.handleError(error));
         } else if(this.selectedTab == 2){
             this.isLoading = true;
             this.loadingService.triggerLoadingEvent(true);
@@ -162,18 +178,59 @@ export class BooksComponent{
     }
 
     handleBadges(length, selectedTab){
-        if(selectedTab == 2){
+        if(selectedTab == 1){
+            this.badges.expenses = length;
+            this.localBadges['expenses'] = length;
+            sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+        } else if(selectedTab == 2){
             this.badges.journalEntries = length;
             this.localBadges['journalEntries'] = length;
             sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
         }
     }
 
+    getBankAccountName(accountId){
+        let account = _.find(this.accounts, {'id': accountId});
+        return account? account.name: "";
+    }
+
+    buildExpenseTableData(data){
+        let base = this;
+        this.isLoading = false;
+        this.handleBadges(data.length, 1);
+        this.expensesTableData.columns = [
+            {"name": "title", "title": "Title"},
+            {"name": "amount", "title": "Amount"},
+            {"name": "status", "title": "Status", "type": "html", "sortable": false},
+            {"name": "paid_date", "title": "Paid Date"},
+            {"name": "due_date", "title": "Due Date"},
+            {"name": "bank_account_id", "title": "Bank Account"},
+            {"name": "id", "title": "id", 'visible': false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false}];
+        this.expensesTableData.rows = [];
+        data.forEach(function(expense){
+            let row:any = {};
+            _.each(Object.keys(expense), function(key){
+                if(key == 'bank_account_id'){
+                    row[key] = base.getBankAccountName(expense[key]);
+                } else if(key == 'status'){
+                    if(expense.is_paid){
+                        row[key]= "<button class='hollow button success'>Paid</button>";
+                    } else{
+                        row[key]= "<button class='hollow button alert'>Not Paid</button>";
+                    }
+                    row[key] = expense.is_paid? "PAID": "UNPAID";
+                } else{
+                    row[key] = expense[key];
+                }
+            });
+        });
+    }
+
     buildTableData(data){
         let base = this;
         this.isLoading = false;
         this.handleBadges(data.length, 2);
-        let tableColumns = {};
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
             {"name": "date", "title": "Date"},
@@ -272,6 +329,11 @@ export class BooksComponent{
 
     addNewJE(){
         let link = ['JournalEntry'];
+        this._router.navigate(link);
+    }
+
+    createNewExpense(){
+        let link = ['Expense'];
         this._router.navigate(link);
     }
 }

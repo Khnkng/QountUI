@@ -91,6 +91,11 @@
       <div *ngIf="tabDisplay[1].display == 'block'" class="column small-12 medium-12 large-12" id="expenses">
         <div class="row">
           <div class="column">
+            <div class="row">
+              <div class="column">
+                <button class="button small float-right" (click)="createNewExpense()"><i class="icon ion-plus-round"></i>Expense</button>
+              </div>
+            </div>
             <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasExpenses" [data]="expensesTableData" [options]="expensesTableOptions" (onRowAction)="handleAction($event)"></foo-table>
             <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasExpenses">
               <div class="woo-woo">Woot Woot!</div>
