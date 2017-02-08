@@ -1,8 +1,9 @@
 
-import {Component} from "@angular/core";
+import {Component, ViewChild} from "@angular/core";
 import {Session} from "qCommon/app/services/Session";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, FormArray} from "@angular/forms";
+import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {ExpenseForm, ExpenseItemForm} from "../forms/Expenses.form";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
@@ -22,7 +23,7 @@ declare let _:any;
 
 export class ExpenseComponent{
     expenseForm: FormGroup;
-    newLineForm: FormGroup;
+    newItemForm: FormGroup;
     expenseItemsArray: FormArray = new FormArray([]);
     routeSub:any;
     expenseID:string;
@@ -33,6 +34,10 @@ export class ExpenseComponent{
     chartOfAccounts:Array<any> = [];
     isExpensePaid:boolean = false;
     addNewItemFlag:boolean = false;
+    editingItem:any;
+
+    @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
+    @ViewChild("newVendorComboBoxDir") newVendorComboBox: ComboBox;
 
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _expenseForm: ExpenseForm,
             private _expenseItemForm: ExpenseItemForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
@@ -59,7 +64,7 @@ export class ExpenseComponent{
     togglePaidStatus(){
         let base = this;
         setTimeout(function(){
-            base.isExpensePaid = !Boolean(base.expenseForm.controls['is_paid'].value);
+            base.isExpensePaid = Boolean(base.expenseForm.controls['is_paid'].value);
         }, 0);
     }
 
@@ -77,18 +82,44 @@ export class ExpenseComponent{
 
     }
 
-    editItem(itemForm){
-        itemForm.editable = !itemForm.editable;
+    editItem(index){
+        let base = this;
+        this.editingItem = {
+          "index": index
+        };
+        this.showNewItem();
+        let itemControl:any = this.expenseItemsArray.controls[index];
+        let itemData = this._expenseItemForm.getData(itemControl);
+        let coa = _.find(this.chartOfAccounts, {'id': itemData.chart_of_account_id});
+        let vendor = _.find(this.vendors, {'id': itemData.vendor_id});
+        setTimeout(function(){
+            base.newCOAComboBox.setValue(coa, 'name');
+            base.newVendorComboBox.setValue(vendor, 'name');
+        });
+        this._expenseItemForm.updateForm(this.newItemForm, itemData);
     }
 
-    addNewItem(){
+    showNewItem(){
         this.addNewItemFlag = true;
+        this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
+    }
+
+    hideNewItem(){
+        this.addNewItemFlag = false;
+        this.editingItem = null;
+    }
+
+    saveNewItem(){
+        this.addNewItemFlag = !this.addNewItemFlag;
+        let tempItemForm = _.cloneDeep(this.newItemForm);
+        this.expenseItemsArray.push(tempItemForm);
+        this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
     }
 
     setCOAForNewItem(coa){
-        let data = this._expenseItemForm.getData(this.newLineForm);
+        let data = this._expenseItemForm.getData(this.newItemForm);
         data.chart_of_account_id = coa.id;
-        this._expenseItemForm.updateForm(this.newLineForm, data);
+        this._expenseItemForm.updateForm(this.newItemForm, data);
     }
 
     setCOA(coa, index){
@@ -106,13 +137,32 @@ export class ExpenseComponent{
     }
 
     setVendorForNewItem(vendor){
-        let data = this._expenseItemForm.getData(this.newLineForm);
+        let data = this._expenseItemForm.getData(this.newItemForm);
         data.vendor_id = vendor.id;
-        this._expenseItemForm.updateForm(this.newLineForm, data);
+        this._expenseItemForm.updateForm(this.newItemForm, data);
     }
 
-    updateItem(itemForm){
-        itemForm.editable = !itemForm.editable;
+    getCOAName(chartOfAccountId){
+        let coa = _.find(this.chartOfAccounts, {'id': chartOfAccountId});
+        return coa? coa.name: '';
+    }
+
+    getVendorName(vendorId){
+        let vendor = _.find(this.vendors, {'id': vendorId});
+        return vendor? vendor.name: '';
+    }
+
+    updateItem(){
+        this.hideNewItem();
+        let data = this._expenseItemForm.getData(this.newItemForm);
+        this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
+        let itemsControl:any = this.expenseForm.controls['expense_items'];
+        let itemControl = itemsControl.controls[this.editingItem.index];
+        itemControl.controls['title'].patchValue(data.title);
+        itemControl.controls['chart_of_account_id'].patchValue(data.title);
+        itemControl.controls['amount'].patchValue(data.title);
+        itemControl.controls['vendor_id'].patchValue(data.title);
+        itemControl.controls['notes'].patchValue(data.title);
     }
 
     ngOnInit(){
@@ -121,7 +171,7 @@ export class ExpenseComponent{
         this.expenseForm = this._fb.group(_form);
 
         let _itemForm = this._expenseItemForm.getForm();
-        this.newLineForm = this._fb.group(_itemForm);
+        this.newItemForm = this._fb.group(_itemForm);
 
         this.currentCompanyId = Session.getCurrentCompany();
         this.loadingService.triggerLoadingEvent(true);

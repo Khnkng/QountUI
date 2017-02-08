@@ -371,14 +371,10 @@ form {
     border: 1px solid $qount-brand-red;
     box-shadow: none;
   }
-  .ng-dirty.ng-valid {
-    border: 1px solid $qount-brand-green;
-    box-shadow: none;
-  }
   .ng-dirty.ng-invalid, .ng-touched.ng-invalid {
     border: 1px solid $qount-form-ele-border-error;
     box-shadow: none;
-    &.address-component{
+    &.address-component, &.expense-item-info{
       border: none;
     }
   }
@@ -2920,7 +2916,6 @@ tbody{
     }
   }
 }
-
 
 /* Indentation for child chart of account */
 .footable{
