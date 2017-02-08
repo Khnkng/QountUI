@@ -24,7 +24,7 @@ declare let _:any;
 export class ExpenseComponent{
     expenseForm: FormGroup;
     newItemForm: FormGroup;
-    expenseItemsArray: FormArray = new FormArray([]);
+    //expenseItemsArray: FormArray = new FormArray([]);
     routeSub:any;
     expenseID:string;
     newExpense: boolean = true;
@@ -88,7 +88,8 @@ export class ExpenseComponent{
           "index": index
         };
         this.showNewItem();
-        let itemControl:any = this.expenseItemsArray.controls[index];
+        let itemsControl:any = this.expenseForm.controls['expense_items'];
+        let itemControl:any = itemsControl.controls[index];
         let itemData = this._expenseItemForm.getData(itemControl);
         let coa = _.find(this.chartOfAccounts, {'id': itemData.chart_of_account_id});
         let vendor = _.find(this.vendors, {'id': itemData.vendor_id});
@@ -99,6 +100,12 @@ export class ExpenseComponent{
         this._expenseItemForm.updateForm(this.newItemForm, itemData);
     }
 
+    deleteItem(index){
+        let itemsList:any = this.expenseForm.controls['expense_items'];
+        itemsList.controls.splice(index, 1);
+        //this.expenseItemsArray.controls.splice(index, 1);
+    }
+
     showNewItem(){
         this.addNewItemFlag = true;
         this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
@@ -106,14 +113,13 @@ export class ExpenseComponent{
 
     hideNewItem(){
         this.addNewItemFlag = false;
-        this.editingItem = null;
     }
 
     saveNewItem(){
         this.addNewItemFlag = !this.addNewItemFlag;
         let tempItemForm = _.cloneDeep(this.newItemForm);
-        this.expenseItemsArray.push(tempItemForm);
-        this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
+        let itemsControl:any = this.expenseForm.controls['expense_items'];
+        itemsControl.controls.push(tempItemForm);
     }
 
     setCOAForNewItem(coa){
@@ -154,20 +160,32 @@ export class ExpenseComponent{
 
     updateItem(){
         this.hideNewItem();
-        let data = this._expenseItemForm.getData(this.newItemForm);
-        this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
-        let itemsControl:any = this.expenseForm.controls['expense_items'];
-        let itemControl = itemsControl.controls[this.editingItem.index];
+        let data = _.cloneDeep(this._expenseItemForm.getData(this.newItemForm));
+        let expenseItems:any = this.expenseForm.controls['expense_items'];
+        let itemControl:any = expenseItems.controls[this.editingItem.index];
         itemControl.controls['title'].patchValue(data.title);
-        itemControl.controls['chart_of_account_id'].patchValue(data.title);
-        itemControl.controls['amount'].patchValue(data.title);
-        itemControl.controls['vendor_id'].patchValue(data.title);
-        itemControl.controls['notes'].patchValue(data.title);
+        itemControl.controls['amount'].patchValue(data.amount);
+        itemControl.controls['chart_of_account_id'].patchValue(data.chart_of_account_id);
+        itemControl.controls['vendor_id'].patchValue(data.vendor_id);
+        itemControl.controls['notes'].patchValue(data.notes);
+        this.editingItem = null;
+    }
+
+    submit($event){
+        $event && $event.preventDefault();
+        let data = this._expenseForm.getData(this.expenseForm);
+        this.expenseService.addExpense(data, this.currentCompanyId)
+            .subscribe(response=>{
+               console.log("Created expense");
+               this.showExpensesPage();
+            }, error => {
+                console.log("expense creation failed");
+            });
     }
 
     ngOnInit(){
         let _form = this._expenseForm.getForm();
-        _form['expense_items'] = this.expenseItemsArray;
+        _form['expense_items'] = new FormArray([]); //this.expenseItemsArray;
         this.expenseForm = this._fb.group(_form);
 
         let _itemForm = this._expenseItemForm.getForm();

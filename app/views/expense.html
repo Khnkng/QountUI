@@ -83,28 +83,31 @@
                                     <div formArrayName="expense_items" *ngIf="expenseForm.controls.expense_items.controls.length != 0" [hidden]="addNewItemFlag">
                                         <table>
                                             <thead>
-                                                <tr>
-                                                    <th>Title</th>
-                                                    <th>Amount</th>
-                                                    <th>COA</th>
-                                                    <th>Vendor</th>
-                                                    <th>Notes</th>
-                                                    <th></th>
-                                                </tr>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Amount</th>
+                                                <th>COA</th>
+                                                <th>Vendor</th>
+                                                <th>Notes</th>
+                                                <th></th>
+                                            </tr>
                                             </thead>
                                             <tbody>
-                                                <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;">
-                                                    <td>{{itemForm.controls.title.value}}</td>
-                                                    <td>{{itemForm.controls.amount.value}}</td>
-                                                    <td>{{itemForm.controls.chart_of_account_id.value}}</td>
-                                                    <td>{{itemForm.controls.vendor_id.value}}</td>
-                                                    <td>{{itemForm.controls.notes.value}}</td>
-                                                    <td>
+                                            <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;">
+                                                <td>{{itemForm.controls.title.value}}</td>
+                                                <td>{{itemForm.controls.amount.value}}</td>
+                                                <td>{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
+                                                <td>{{getVendorName(itemForm.controls.vendor_id.value)}}</td>
+                                                <td>{{itemForm.controls.notes.value}}</td>
+                                                <td>
                                                         <span (click)="editItem(index)">
                                                             <i class="icon ion-edit"></i>
                                                         </span>
-                                                    </td>
-                                                </tr>
+                                                    <span (click)="deleteItem(index)">
+                                                            <i class="icon ion-ios-trash-outline"></i>
+                                                        </span>
+                                                </td>
+                                            </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -164,6 +167,11 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-12 columns">
+                                <button class="button create small float-right" [disabled]="!expenseForm.valid" type="submit" (click)="submit($event)" data-close>{{newExpense?"Add":"Update"}}</button>
                             </div>
                         </div>
                     </section>
