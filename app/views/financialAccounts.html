@@ -68,6 +68,26 @@
 
                                             <div class="row">
                                                 <div class="small-4 columns">
+                                                    <label class="text-right"></label>
+                                                </div>
+                                                <div class="small-6 columns custom-qount-form-field">
+                                                    <input type="checkbox" formControlName="is_payment_type" /> Payment Type Account
+                                                    <div class="error" [hidden]="accountForm.controls.is_payment_type.untouched || accountForm.controls.is_payment_type.valid">Payment type is required</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" *ngIf="accountForm.controls.is_payment_type.value">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Account Number</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="account_number" placeholder="Account Number*"/>
+                                                    <div class="error" [hidden]="accountForm.controls.account_number.untouched || accountForm.controls.account_number.valid">Account number is required.</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="small-4 columns">
                                                     <label class="text-right">Select bank</label>
                                                 </div>
                                                 <div class="small-6 columns">
@@ -106,6 +126,24 @@
                                                 <div class="small-6 columns">
                                                     <input type="text" custom-datepicker [format]="'DD/MM/YYYY'" [mindate]="'past'" (valueChanged)="setBalanceDate($event)" formControlName="starting_balance_date" placeholder="Starting Balance Date"/>
                                                     <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Starting balance date is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row" *ngIf="accountForm.controls.is_payment_type.value">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Signatory</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="signatory" placeholder="Signatory*"/>
+                                                    <div class="error" [hidden]="accountForm.controls.signatory.untouched || accountForm.controls.signatory.valid">Signatory is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row" *ngIf="accountForm.controls.is_payment_type.value">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Routing Number</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="routing_number" placeholder="Routing Number*"/>
+                                                    <div class="error" [hidden]="accountForm.controls.routing_number.untouched || accountForm.controls.routing_number.valid">Routing number is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row" *ngIf="importType == 'AUTO'">
