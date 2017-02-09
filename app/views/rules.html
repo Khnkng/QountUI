@@ -35,32 +35,32 @@
                                                 <tbody style="border-color: white">
                                                 <tr style="border:0px;border-color:white;">
                                                     <td><label>Type</label></td>
-                                                    <td><span><input  style="margin-top:5px;" value="Expense" type="radio" formControlName="sourceType" name="sourceType"  type="radio" checked/>Expense</span></td>
-                                                    <td><span><input style="margin-top:5px;"  value="Deposit" type="radio" formControlName="sourceType" name="sourceType"  type="radio" />Deposit</span></td>
+                                                    <td><span style="margin-top:5px;font-size: 0.875rem;color:black"><input style="margin-top:3px;" value="Expense" type="radio" formControlName="sourceType" name="sourceType"  type="radio" checked/>Expense</span></td>
+                                                    <td><span style="margin-top:5px;font-size: 0.875rem;color:black"><input style="margin-top:3px;" value="Deposit" type="radio" formControlName="sourceType" name="sourceType"  type="radio" />Deposit</span></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label style="margin-top: 21px;">Source</label></td>
-                                                    <td><select style="margin-top: 15px;" formControlName="source">
+                                                    <td><select style="margin-top: 15px;width:250px;" formControlName="source">
                                                         <option *ngFor="let bank of banks;"  value="{{bank.name}}">{{bank.name}}</option>
                                                     </select></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Title</label></td>
                                                     <td>
-                                                    <select style="margin-top: 15px;" class="condition" formControlName="comparisionType">
+                                                    <select style="margin-top: 15px;width:250px;" class="condition" formControlName="comparisionType">
                                                         <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                     </select>
                                                     </td>
                                                     <td>
-                                                    <input style="margin-top: 15px;" type="text" class="condition-value" formControlName="comparisionValue" />
+                                                    <input style="margin-top: 15px; width:250px;" type="text" class="condition-value" formControlName="comparisionValue" />
                                                     </td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Amount</label></td>
-                                                    <td><select style="margin-top: 15px;" class="condition" formControlName="comparisionType1">
+                                                    <td><select style="margin-top: 15px; width:250px;" class="condition" formControlName="comparisionType1">
                                                         <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                     </select></td>
-                                                    <td><input style="margin-top: 15px;" type="text" formControlName="comparisionValue1" class="condition-value"/>
+                                                    <td><input style="margin-top:15px;width:250px;" type="text" formControlName="comparisionValue1" class="condition-value"/>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -79,9 +79,9 @@
                                             <tr></tr>
                                             <tr style="border:0px;border-color:white;">
                                                 <td>
-                                                    <label value="chartOfAccount">Chart Of Account</label>
+                                                    <label value="chartOfAccount" style="margin-left:7px;">COA</label>
                                                </td>
-                                                <td> <label style="margin-left: -3px;">
+                                                <td> <label style="margin-left:38px;width: 250px;">
                                                     <select  title="" data-placeholder="Enter Chart of account" formControlName="chartOfAccount"  (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
@@ -90,55 +90,45 @@
                                             </tbody>
                                         </table>
                                     </div>
-
-                                    <div class="actions-form" formArrayName="actions">
-                                        <div class="row action-row" *ngFor="let actionForm of ruleForm.controls.actions.controls;let index=index;">
-                                            <div class="small-12 medium-12 columns">
-                                                <table id="coa2" style="width:60%;border-color:white;border:0px;border-color:white;">
-                                                    <tbody style="border-color: white">
-                                                    <tr style="border:0px;border-color:white;">
-                                                        <td>
-                                                    <label value="dimension" >Dimension</label>
-                                                </td>
-                                               <td></td>
-                                                        <td></td>
-                                               <td><label  class="combo-box" style="margin-right:56px;">
-                                                    <select id="dimension-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Dimension" [formControl]="actionForm.controls.actionValue" [listObject]="dimensions" (valueChanged)="updateActionValue($event, index, 'dimension')">
-                                                        <option *ngFor="let dimension of dimensions" [value]="dimension.name">{{dimension.name}}</option>
-                                                    </select>
-                                                </label></td>
-                                                    <td>
-                                                <div>
-                                                <i style="margin-left:90px;" class="icon ion-trash-b" *ngIf="actions.length != 1" (click)="deleteAction(index)"></i>
-                                                </div></td>
-                                                    </tr>
-                                                    </tbody>
-                                                </table>
+                                        <div class="row collapse dimension-flyout">
+                                            <div class="row">
+                                                <div class="small-12 medium-12 columns">
+                                                    <label>Dimensions</label>
+                                                        <div class="row dimension-grids" (click)="doNothing($event)">
+                                                            <div class="small-12 medium-6 columns dimension-grid" *ngFor="let dimension of dimensions">
+                                                                <div class="dimension-header">
+                                                                    <div>
+                                                                        <span class="float-left" style="font-size: 0.875rem">{{dimension.name}}</span>
+                                                                        <span class="float-right">
+                                                    <i class="icon ion-checkmark-circled" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"
+                                                       (click)="selectDimension($event, dimension.name)"></i>
+                                                </span>
+                                                                    </div>
+                                                                    <div class="bottom" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"></div>
+                                                                </div>
+                                                                <div class="dimension-values" [ngClass]="{'selected': isDimensionSelected(dimension.name)}">
+                                                                    <div class="dimension-value" *ngFor="let value of dimension.values; let index = index;">
+                                                                        <label style="font-size: 0.875rem" (click)="selectValue($event, dimension, value)">
+                                                                            <input type="checkbox" [checked]="isValueSelected(dimension, value)"/>{{value}}
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </div>
                                             </div>
-
                                         </div>
-                                    </div>
-                                        <div class="small-12 medium-12 columns">
-                                    <div class="row add-action">
-                                        <div class="small-2 medium-3 columns">
-                                            <a (click)="addNewAction()"><i class="icon ion-plus-round"></i> Action</a>
-                                        </div>
-                                    </div>
-                                            <table id="coa1" style="width:50%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
-                                                <tbody style="border-color: white">
-                                                <tr style="border:0px;border-color:white;">
-                                                    <td><label style="margin-top: -14px;margin-left:6px;">Rule Date</label></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td><input class="float-left" custom-datepicker (valueChanged)="setDate($event)" [format]="'YYYY-MM-DD'" [mindate]="'past'" style="margin-left:-27px;" value="{{todaysDate}}"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                            </div>
-                                    <div class="row">
-
-                                    </div>
+                                        <table id="coa1" style="width:50%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
+                                            <tbody style="border-color: white">
+                                            <tr style="border:0px;border-color:white;">
+                                                <td><label style="margin-top: -14px;margin-left:34px;">Rule Date</label></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td><input class="float-left" custom-datepicker (valueChanged)="setDate($event)" [format]="'YYYY-MM-DD'" [mindate]="'past'" style="margin-left:-27px;" value="{{todaysDate}}"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                         </div>
                                 </div>
 
@@ -154,7 +144,9 @@
                       <i class="ion-ios-close-empty"></i>
                     </span>
                 </button>
+
             </section>
+
         </div>
     </div>
 </div>
