@@ -388,16 +388,11 @@ else{
     }
 
     submit($event, dateFlag){
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        var todaysDate=yyyy +"-"+mm+"-"+dd;
         $event && $event.preventDefault();
         let data = this._ruleForm.getData(this.ruleForm);
         this.companyId = Session.getCurrentCompany();
-        if(data.effectiveDate==""){
-            data.effectiveDate=todaysDate;
+        if(data.effectiveDate=="" || data.effectiveDate==null){
+            data.effectiveDate=this.todaysDate;
         }else{
             console.log("data.effectiveDate",data.effectiveDate);
         }

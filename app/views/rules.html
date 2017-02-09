@@ -40,27 +40,27 @@
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label style="margin-top: 21px;">Source</label></td>
-                                                    <td><select style="margin-top: 15px;width:250px;" formControlName="source">
+                                                    <td><select style="margin-top: 15px;" formControlName="source">
                                                         <option *ngFor="let bank of banks;"  value="{{bank.name}}">{{bank.name}}</option>
                                                     </select></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Title</label></td>
                                                     <td>
-                                                    <select style="margin-top: 15px;width:250px;" class="condition" formControlName="comparisionType">
+                                                    <select style="margin-top: 15px;" class="condition" formControlName="comparisionType">
                                                         <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                     </select>
                                                     </td>
                                                     <td>
-                                                    <input style="margin-top: 15px; width:250px;" type="text" class="condition-value" formControlName="comparisionValue" />
+                                                    <input style="margin-top: 15px;" type="text" class="condition-value" formControlName="comparisionValue" />
                                                     </td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Amount</label></td>
-                                                    <td><select style="margin-top: 15px; width:250px;" class="condition" formControlName="comparisionType1">
+                                                    <td><select style="margin-top: 15px;" class="condition" formControlName="comparisionType1">
                                                         <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                     </select></td>
-                                                    <td><input style="margin-top:15px;width:250px;" type="text" formControlName="comparisionValue1" class="condition-value"/>
+                                                    <td><input style="margin-top:15px;" type="text" formControlName="comparisionValue1" class="condition-value"/>
                                                     </td>
                                                 </tr>
                                                 </tbody>
@@ -81,7 +81,7 @@
                                                 <td>
                                                     <label value="chartOfAccount" style="margin-left:7px;">COA</label>
                                                </td>
-                                                <td> <label style="margin-left:38px;width: 250px;">
+                                                <td> <label style="margin-left:38px;">
                                                     <select  title="" data-placeholder="Enter Chart of account" formControlName="chartOfAccount"  (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
