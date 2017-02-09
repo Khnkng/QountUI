@@ -71,12 +71,12 @@
                                                     <label class="text-right"></label>
                                                 </div>
                                                 <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="checkbox" formControlName="is_payment_type" /> Payment Type Account
-                                                    <div class="error" [hidden]="accountForm.controls.is_payment_type.untouched || accountForm.controls.is_payment_type.valid">Payment type is required</div>
+                                                    <input type="checkbox" formControlName="is_payment_accout_type" /> Payment Type Account
+                                                    <div class="error" [hidden]="accountForm.controls.is_payment_accout_type.untouched || accountForm.controls.is_payment_accout_type.valid">Payment type is required</div>
                                                 </div>
                                             </div>
 
-                                            <div class="row" *ngIf="accountForm.controls.is_payment_type.value">
+                                            <div class="row" *ngIf="accountForm.controls.is_payment_accout_type.value">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Account Number</label>
                                                 </div>
@@ -128,7 +128,7 @@
                                                     <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Starting balance date is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row" *ngIf="accountForm.controls.is_payment_type.value">
+                                            <div class="row" *ngIf="accountForm.controls.is_payment_accout_type.value">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Signatory</label>
                                                 </div>
@@ -137,7 +137,7 @@
                                                     <div class="error" [hidden]="accountForm.controls.signatory.untouched || accountForm.controls.signatory.valid">Signatory is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row" *ngIf="accountForm.controls.is_payment_type.value">
+                                            <div class="row" *ngIf="accountForm.controls.is_payment_accout_type.value">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Routing Number</label>
                                                 </div>

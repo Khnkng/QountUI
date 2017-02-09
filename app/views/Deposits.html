@@ -1,0 +1,183 @@
+<div class="qount-off-canvas-menu">
+    <div class="flyout expanded" [ngClass]="{'expanded':true}">
+        <section class="flyout-placeholder">
+            <header class="flyout-header">
+                <h6> {{depositForm ? "Create Deposit" : "Update Deposit"}}</h6>
+            </header>
+            <div class="flyout-body flyout-shadow-effect">
+                <form (ngSubmit)="submit($event)" [formGroup]="depositForm">
+                    <section class="form-section clearfix">
+                        <div class="row">
+                            <div class="small-12 medium-12 columns">
+                                <div class="form-section-left" style="width: 35%">
+                                    <header class="form-section-header">Deposit Info</header>
+                                    <div class="row">
+                                        <div class="small-4 columns">
+                                            <label class="text-right">Title</label>
+                                        </div>
+                                        <div class="small-6 columns">
+                                            <input type="text" formControlName="title" placeholder="Title*"/>
+                                            <div class="error" [hidden]="depositForm.controls.title.untouched || depositForm.controls.title.valid">Deposit Title is required</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="small-4 columns">
+                                            <label class="text-right">Date</label>
+                                        </div>
+                                        <div class="small-6 columns">
+                                            <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" (valueChanged)="setDate($event)" formControlName="date" placeholder="Date*">
+                                            <div class="error" [hidden]="depositForm.controls.date.untouched || depositForm.controls.date.valid">Date is required</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="small-4 columns">
+                                            <label class="text-right">Amount</label>
+                                        </div>
+                                        <div class="small-6 columns">
+                                            <input type="text" formControlName="amount" placeholder="Amount*"/>
+                                            <div class="error" [hidden]="depositForm.controls.amount.untouched || depositForm.controls.amount.valid">Amount is required</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="small-4 columns">
+                                            <label class="text-right">Bank Account</label>
+                                        </div>
+                                        <div class="small-6 columns custom-qount-form-field">
+                                            <select combo-box #accountComboBoxDir="comboBox" data-placeholder="Select Account" [listObject]="accounts" formControlName="bank_account_id" (valueChanged)="setBankAccount($event)">
+                                                <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
+                                            </select>
+                                            <div class="error" [hidden]="depositForm.controls.bank_account_id.untouched || depositForm.controls.bank_account_id.valid">Please select bank account</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="small-4 columns">
+                                            <label class="text-right" >Notes</label>
+                                        </div>
+                                        <div class="small-6 columns">
+                                            <textarea rows="3" formControlName="notes" placeholder="Notes*"></textarea>
+                                            <div class="error" [hidden]="depositForm.controls.notes.untouched || depositForm.controls.notes.valid">Notes is required</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-section-left expense-item-info" style="width: 65%">
+                                    <header class="form-section-header">Payments</header>
+                                    <div class="text-right">
+                                        <span (click)="showNewItem()">
+                                            <i class="icon ion-ios-plus-outline"></i> Item
+                                        </span>
+                                    </div>
+                                    <div formArrayName="payments" *ngIf="depositForm.controls.payments.controls.length != 0" [hidden]="addNewItemFlag">
+                                        <table>
+                                            <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Amount</th>
+                                                <th>COA</th>
+                                                <th>Customer</th>
+                                                <th>Date</th>
+                                                <th>Invoice</th>
+                                                <th>Notes</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngFor="let itemForm of depositForm.controls.payments.controls;let index=index;">
+                                                <td>{{itemForm.controls.title.value}}</td>
+                                                <td>{{itemForm.controls.amount.value}}</td>
+                                                <td>{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
+                                                <td>{{getCustomerName(itemForm.controls.customer_id.value)}}</td>
+                                                <td>{{itemForm.controls.date.value}}</td>
+                                                <td>{{itemForm.controls.invoice_id.value}}</td>
+                                                <td>{{itemForm.controls.notes.value}}</td>
+                                                <td>
+                                                        <span (click)="editItem(index)">
+                                                            <i class="icon ion-edit"></i>
+                                                        </span>
+                                                    <span (click)="deleteItem(index)">
+                                                            <i class="icon ion-ios-trash-outline"></i>
+                                                        </span>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div *ngIf="addNewItemFlag">
+                                        <form class="expense-item-info" [formGroup]="newItemForm">
+                                            <div class="row">
+                                                <div class="small-12 medium-4 columns">
+                                                    <label>Title
+                                                        <input type="text" formControlName="title"/>
+                                                    </label>
+                                                    <div class="error" [hidden]="newItemForm.controls.title.untouched || newItemForm.controls.title.valid">Title is required</div>
+                                                </div>
+                                                <div class="small-12 medium-4 columns">
+                                                    <label>Chart Of account
+                                                        <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" formControlName="chart_of_account_id" (valueChanged)="setCOAForNewItem($event)">
+                                                            <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                                        </select>
+                                                        <div class="error" [hidden]="newItemForm.controls.chart_of_account_id.untouched || newItemForm.controls.chart_of_account_id.valid">Chart Of Account is required</div>
+                                                    </label>
+                                                </div>
+                                                <div class="small-12 medium-4 columns">
+                                                    <label>Customer
+                                                        <select combo-box #newCustomersComboBoxDir="comboBox" data-placeholder="Select Customer" [listObject]="customers" formControlName="customer_id" (valueChanged)="setNewCustomer($event)">
+                                                            <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
+                                                        </select>
+                                                        <div class="error" [hidden]="newItemForm.controls.customer_id.untouched || newItemForm.controls.customer_id.valid">Customer is required</div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-12 medium-4 columns">
+                                                    <label>Amount
+                                                        <input type="text" formControlName="amount"/>
+                                                        <div class="error" [hidden]="newItemForm.controls.amount.untouched || newItemForm.controls.amount.valid">Amount is required</div>
+                                                    </label>
+                                                </div>
+                                                <div class="small-6 medium-4 columns">
+                                                    <label>Date
+                                                        <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" (valueChanged)="setItemDate($event)" formControlName="date" placeholder="Date*">
+                                                        <div class="error" [hidden]="newItemForm.controls.date.untouched || newItemForm.controls.date.valid">Date is required</div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-12 medium-12 columns">
+                                                    <label>Notes
+                                                        <textarea formControlName="notes"></textarea>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-12 medium-12 columns text-right">
+                                                    <button class="small button" *ngIf="!editingItem" (click)="saveNewItem()">Add</button>
+                                                    <button class="small button" *ngIf="editingItem" (click)="updateItem()">Update</button>
+                                                    <button class="small button" (click)="hideNewItem()">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div *ngIf="depositForm.controls.payments.controls.length == 0" [hidden]="addNewItemFlag">
+                                        <div class="text-center">
+                                            No Payments items
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-12 columns">
+                                <button class="button create small float-right" [disabled]="!depositForm.valid" type="submit" (click)="submit($event)" data-close>{{depositForm?"Add":"Update"}}</button>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="showDepositPage()">
+                    <span aria-hidden="true">
+                      <i class="ion-ios-close-empty"></i>
+                    </span>
+                </button>
+            </div>
+        </section>
+    </div>
+</div>

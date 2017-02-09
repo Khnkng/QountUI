@@ -27,7 +27,7 @@ export class FinancialAccountForm extends abstractForm{
       "account_number":[''],
       "routing_number":[''],
       "signatory":[''],
-      "is_payment_type":[false]
+      "is_payment_accout_type":[false]
     }
   }
 }
