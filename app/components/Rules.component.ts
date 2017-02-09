@@ -44,6 +44,7 @@ export class RulesComponent {
     rules:Array<any> = [];
     tableData:any = {};
     todaysDate:any;
+    selectedDimensions:Array<any> = [];
     row:any;
     tableOptions:any = {};
     chartOfAccounts:Array<any>= [];
@@ -86,11 +87,9 @@ export class RulesComponent {
                    this.expenxeArraylist.push(key);
                     this.expenxeArrayvalue=this.expenxeArraylist;
                 }
-                console.log(this.expenxeArraylist);
                 for(var key in this.expenxeArray[1]){
                     this.depositAarraylist.push(key);
                 }
-                console.log(this.depositAarraylist);
             }, error =>  this.handleError(error));
     }
     handleError(error) {
@@ -98,7 +97,6 @@ export class RulesComponent {
     }
     expesevalue(){
         let expRate:any = this.ruleForm.controls['sourceType'];
-        console.log("expRate",expRate.value);
         if(expRate.value=='Expense'){
             let expense:any = this.ruleForm.controls['attributeName'];
             this.expenxeArrayvalue=this.expenxeArraylist;
@@ -122,10 +120,12 @@ export class RulesComponent {
     showAddRule(){
         this.editMode = false;
         this.showFlyout = true;
+        this.selectedDimensions==[];
         this.actions = new FormArray([]);
         let _form = this._ruleForm.getForm();
-        _form['actions'] = this.actions;
         this.ruleForm = this._fb.group(_form);
+        this.selectedDimensions==[];
+        this.ruleForm.reset();
     }
     showMessage(status, obj) {
         if(status) {
@@ -167,9 +167,14 @@ export class RulesComponent {
             }
         }
     }
-
+    doNothing($event){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+    }
     hideFlyout(){
         this.row = {};
+        this.selectedDimensions=[];
         this.showFlyout = !this.showFlyout;
     }
 
@@ -293,6 +298,27 @@ else{
         let base=this;
         this.ruleservice.rule(this.companyId,RuleID).subscribe(rule => {
             this.row = rule;
+            this.selectedDimensions= [
+                {
+                    "name": "Counrty",
+                    "values": [
+                        "North"
+                    ]
+                },
+                {
+                    "name": "Hospitals",
+                    "values": [
+                        "SaveSam",
+                        "Lorenges"
+                    ]
+                },
+                {
+                    "name": "Regions",
+                    "values": [
+                        "UK"
+                    ]
+                }
+            ];
             let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
             selectedCOAControl.patchValue(rule.sourceType);
             let selectedSource:any = this.ruleForm.controls['source'];
@@ -317,6 +343,7 @@ else{
             let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
             effectiveDate.patchValue(rule.effectiveDate);
             this._ruleForm.updateForm(this.ruleForm, rule);
+
 
         }, error => this.handleError(error));
     }
@@ -361,28 +388,15 @@ else{
     }
 
     submit($event, dateFlag){
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        var todaysDate=yyyy +"-"+mm+"-"+dd;
         $event && $event.preventDefault();
         let data = this._ruleForm.getData(this.ruleForm);
         this.companyId = Session.getCurrentCompany();
-        if(data.effectiveDate==""){
-            data.effectiveDate=todaysDate;
+        if(data.effectiveDate=="" || data.effectiveDate==null){
+            data.effectiveDate=this.todaysDate;
         }else{
             console.log("data.effectiveDate",data.effectiveDate);
         }
-for(var i=0;i<data.actions.length ;i++){
-    console.log("asas",data.actions[i]);
-    if(data.actions[i].action==""){
-        data.actions[i].action="dimension";
-    }
-    else{
-        data.actions[i].action="dimension";
-    }
-}
+
         if(this.editMode){
             if(data.attributeName || data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1 ){
                 delete data.attributeName;
@@ -394,6 +408,7 @@ for(var i=0;i<data.actions.length ;i++){
                 delete data.comparisionValue1;
             }
             data.conditions=[];
+            data.actions=this.selectedDimensions;
             var condition1={};
             var condition2={};
             let chartOfAccount:any = this.ruleForm.controls['chartOfAccount'];
@@ -437,6 +452,7 @@ for(var i=0;i<data.actions.length ;i++){
             data.conditions=[];
             var condition1={};
             var condition2={};
+            data.actions=this.selectedDimensions;
             let chartOfAccount:any = this.ruleForm.controls['chartOfAccount'];
             chartOfAccount.patchValue(chartOfAccount.value);
             let attributeName:any = this.ruleForm.controls['attributeName'];
@@ -471,6 +487,47 @@ for(var i=0;i<data.actions.length ;i++){
         }
     }
 
+    isDimensionSelected(dimensionName){
+        let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
+        return selectedDimensionNames.indexOf(dimensionName) != -1;
+    }
+    selectDimension($event, dimensionName){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+        let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
+        if(selectedDimensionNames.indexOf(dimensionName) == -1){
+            this.selectedDimensions.push({
+                "name": dimensionName,
+                "values": []
+            });
+        } else{
+            this.selectedDimensions.splice(selectedDimensionNames.indexOf(dimensionName), 1);
+        }
+    }
+    selectValue($event, dimension, value){
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+        _.each(this.selectedDimensions, function (selectedDimension) {
+            if(selectedDimension.name == dimension.name){
+                if(selectedDimension.values.indexOf(value) == -1){
+                    selectedDimension.values.push(value);
+                } else{
+                    selectedDimension.values.splice(selectedDimension.values.indexOf(value), 1);
+                }
+            }
+        });
+    }
+    isValueSelected(dimension, value){
+        let currentDimension = _.find(this.selectedDimensions, {'name': dimension.name});
+        if(!_.isEmpty(currentDimension)){
+            if(currentDimension.values.indexOf(value) != -1){
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
     ngOnInit(){
         let companyId = Session.getCurrentCompany();
         let _form = this._ruleForm.getForm();
@@ -485,7 +542,6 @@ for(var i=0;i<data.actions.length ;i++){
         this.dimensionService.dimensions(companyId)
             .subscribe(dimensions => {
                 this.dimensions = dimensions;
-                console.log("dimensions",dimensions);
             });
     }
 }
