@@ -298,27 +298,7 @@ else{
         let base=this;
         this.ruleservice.rule(this.companyId,RuleID).subscribe(rule => {
             this.row = rule;
-            this.selectedDimensions= [
-                {
-                    "name": "Counrty",
-                    "values": [
-                        "North"
-                    ]
-                },
-                {
-                    "name": "Hospitals",
-                    "values": [
-                        "SaveSam",
-                        "Lorenges"
-                    ]
-                },
-                {
-                    "name": "Regions",
-                    "values": [
-                        "UK"
-                    ]
-                }
-            ];
+            this.selectedDimensions=rule.actions;
             let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
             selectedCOAControl.patchValue(rule.sourceType);
             let selectedSource:any = this.ruleForm.controls['source'];
