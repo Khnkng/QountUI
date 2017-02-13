@@ -15,6 +15,7 @@ export class CustomersForm extends abstractForm{
             "customer_ein": ['', Validators.required],
             "customer_country": ['', Validators.required],
             "email_id": ['', Validators.required],
+             "coa":['', Validators.required],
             "customer_address":['', Validators.required],
             "customer_city":['', Validators.required],
             "customer_state":['', Validators.required],

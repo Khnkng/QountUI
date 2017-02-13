@@ -67,6 +67,17 @@
                                                     <div class="error" *ngIf="customerForm.controls.email_id.touched && customerForm.controls.email_id.hasError('pattern')">Please check email format</div>
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">COA</label>
+                                                </div>
+                                                <div class="small-6 columns custom-qount-form-field">
+                                                    <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="coa" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
+                                                        <option *ngFor="let coa of chartOfAccounts" [value]="coa.name">{{coa.number}} - {{coa.name}}</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="customerForm.controls.coa.untouched || customerForm.controls.coa.valid">COA is required</div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="form-section-left">
                                             <header class="form-section-header">Contact Info</header>

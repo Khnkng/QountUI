@@ -15,6 +15,7 @@ import {CustomersService} from "qCommon/app/services/Customers.service";
 import {CustomersModel} from "../models/Customers.model";
 import {CustomersForm} from "../forms/Customers.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -33,6 +34,7 @@ export class CustomersComponent {
     @ViewChild('createVendor') createVendor;
     @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
     @ViewChild('addressDir') addressDir: Address;
+    @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     row:any;
     customerForm: FormGroup;
     countries:Array<any> = PROVINCES.COUNTRIES;
@@ -45,12 +47,18 @@ export class CustomersComponent {
     countryCode:string;
     showAddress:boolean;
     showFlyout:boolean = false;
+    chartOfAccounts:any;
 
     constructor(private _fb: FormBuilder, private customersService: CustomersService,
                 private _customersForm:CustomersForm, private _router: Router, private _toastService: ToastService,
-                private switchBoard: SwitchBoard, private loadingService:LoadingService) {
+                private switchBoard: SwitchBoard, private loadingService:LoadingService,private coaService: ChartOfAccountsService) {
         this.customerForm = this._fb.group(_customersForm.getForm());
         this.companyId = Session.getCurrentCompany();
+        this.coaService.chartOfAccounts(this.companyId)
+            .subscribe(chartOfAccounts => {
+                this.chartOfAccounts=chartOfAccounts?_.filter(chartOfAccounts, {'type': 'accountsPayable'}):[];
+                _.sortBy(this.chartOfAccounts, ['number', 'name']);
+            }, error=> this.handleError(error));
         if(this.companyId){
             this.loadingService.triggerLoadingEvent(true);
             this.customersService.customers(this.companyId).subscribe(customers => {
@@ -148,7 +156,11 @@ export class CustomersComponent {
         this.active1 = false;
         setTimeout(()=> this.active1=true, 0);
     }
-
+    showCOA(coa:any) {
+        let data= this._customersForm.getData(this.customerForm);
+        data.coa = coa.id;
+        this._customersForm.updateForm(this.customerForm, data);
+    }
     showEditVendor(row:any) {
         this.editMode = true;
         this.showFlyout = true;
@@ -168,6 +180,13 @@ export class CustomersComponent {
                 customer_zipcode.patchValue(customer.customer_zipcode);
                 let phone_number:any = this.customerForm.controls['phone_number'];
                 phone_number.patchValue(customer.phone_number);
+                let coa = _.find(this.chartOfAccounts, function(_coa) {
+                    return _coa.id == customer.coa;
+                });
+                if(!_.isEmpty(coa)){
+                    setTimeout(function(){
+                        base.coaComboBox.setValue(coa, 'name');
+                    });
             }, error =>  this.handleError(error));
         this.newForm1();
         this._customersForm.updateForm(this.customerForm, row);
