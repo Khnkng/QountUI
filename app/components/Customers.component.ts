@@ -153,11 +153,25 @@ export class CustomersComponent {
         this.editMode = true;
         this.showFlyout = true;
         this.row = row;
+        this.customersService.customer(row.customer_id, this.companyId)
+            .subscribe(customer  => {
+                this.row = customer;
+                let email_id:any = this.customerForm.controls['email_id'];
+                email_id.patchValue(customer.email_id);
+                let customer_address:any = this.customerForm.controls['customer_address'];
+                customer_address.patchValue(customer.customer_address);
+                let customer_city:any = this.customerForm.controls['customer_city'];
+                customer_city.patchValue(customer.customer_city);
+                let customer_state:any = this.customerForm.controls['customer_state'];
+                customer_state.patchValue(customer.customer_state);
+                let customer_zipcode:any = this.customerForm.controls['customer_zipcode'];
+                customer_zipcode.patchValue(customer.customer_zipcode);
+                let phone_number:any = this.customerForm.controls['phone_number'];
+                phone_number.patchValue(customer.phone_number);
+            }, error =>  this.handleError(error));
         this.newForm1();
         this._customersForm.updateForm(this.customerForm, row);
         let countryName = row.customer_country;
-        let email:any = this.customerForm.controls['emai_id'];
-        email.patchValue(row.emai_id);
         let country = _.find(PROVINCES.COUNTRIES, function(_country) {
             return _country.name == countryName;
         });
@@ -174,10 +188,6 @@ export class CustomersComponent {
         $event && $event.preventDefault();
         var data = this._customersForm.getData(this.customerForm);
         this.companyId = Session.getCurrentCompany();
-        var data1 = this.addressDir.getData();
-        for(var prop in data1) {
-            data[prop] = data1[prop];
-        }
         if(this.editMode) {
             data.customer_id=this.row.customer_id;
             this.customersService.updateCustomer(<CustomersModel>data, this.companyId)
@@ -193,6 +203,7 @@ export class CustomersComponent {
                     this.showMessage(true, success);
 
                 }, error =>  this.showMessage(false, error));
+            this.showFlyout = false;
         }
 
     }
