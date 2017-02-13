@@ -72,6 +72,7 @@ export class TaxesComponent {
                 this.loadingService.triggerLoadingEvent(false);
                 // this.buildTableData(chartOfAccounts);
                 this.chartOfAccounts=chartOfAccounts;
+                console.log("chartOfAccounts",chartOfAccounts);
             }, error=> this.handleError(error));
         this.companyService.getTaxofCompany(this.companyId)
             .subscribe(taxesList  => {
@@ -212,6 +213,7 @@ export class TaxesComponent {
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
         } else{
+            let taxLiabilityCoa:any = this.TaxesForm.controls['taxLiabilityCoa'];
             if(data.taxRate.includes("%")){
                 data.taxRate.split('%')
                 var res = data.taxRate.split("");
@@ -228,11 +230,19 @@ export class TaxesComponent {
 
 
     isValid(TaxesForm){
-        return TaxesForm.valid;
+        if(TaxesForm.value.name=="" || TaxesForm.value.name==null && TaxesForm.value.tin=="" || TaxesForm.value.tin==null
+            && TaxesForm.value.taxAuthorityName=="" || TaxesForm.value.taxAuthorityName==null && TaxesForm.value.taxAuthorityId=="" || TaxesForm.value.taxAuthorityId==null
+            && TaxesForm.value.taxLiabilityCoa=="" || TaxesForm.value.taxLiabilityCoa==null
+            && TaxesForm.value.description=="" || TaxesForm.value.description==null
+            && TaxesForm.value.taxRate=="" || TaxesForm.value.taxRate==null){
+            return false;
+        }
+        return true;
     }
     showCOA(coa:any) {
-        let coaControl:any = this.TaxesForm.controls['taxLiabilityCoa'];
-        coaControl.patchValue(coa.id);
+        let data= this._taxesForm.getData(this.TaxesForm);
+        data.taxLiabilityCoa = coa.id;
+        this._taxesForm.updateForm(this.TaxesForm, data);
     }
     getCoa(){
         this.coaService.chartOfAccounts(this.companyId)
