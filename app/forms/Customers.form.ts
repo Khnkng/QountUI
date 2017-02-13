@@ -13,7 +13,8 @@ export class CustomersForm extends abstractForm{
         return {
             "customer_name": ['', Validators.required],
             "customer_ein": ['', Validators.required],
-            "customer_country": ['', Validators.required]
+            "customer_country": ['', Validators.required],
+            "emai_id": ['', Validators.required]
         }
     }
 }

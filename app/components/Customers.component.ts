@@ -156,6 +156,8 @@ export class CustomersComponent {
         this.newForm1();
         this._customersForm.updateForm(this.customerForm, row);
         let countryName = row.customer_country;
+        let email:any = this.customerForm.controls['emai_id'];
+        email.patchValue(row.emai_id);
         let country = _.find(PROVINCES.COUNTRIES, function(_country) {
             return _country.name == countryName;
         });

@@ -57,7 +57,16 @@
                                                     <div class="error" [hidden]="customerForm.controls.customer_country.untouched || customerForm.controls.customer_country.valid">Country is required.</div>
                                                 </div>
                                             </div>
-
+                                            <div class="row" style="margin-top:14px">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Email</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="emai_id" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
+                                                    <div class="error" *ngIf="customerForm.controls.emai_id.touched && customerForm.controls.emai_id.hasError('required')">Customer email is required</div>
+                                                    <div class="error" *ngIf="customerForm.controls.emai_id.touched && customerForm.controls.emai_id.hasError('pattern')">Please check email format</div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="form-section-left">
                                             <header class="form-section-header">Contact Info</header>
