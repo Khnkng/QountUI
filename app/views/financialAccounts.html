@@ -121,7 +121,6 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="chart_of_account_id" [listObject]="chartOfAccounts" (valueChanged)="updateChartOfAccount($event)">
-                                                        <option [value]="">-None-</option>
                                                         <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.number}} - {{coa.name}}</option>
                                                     </select>
                                                     <div class="error" [hidden]="accountForm.controls.chart_of_account_id.untouched || accountForm.controls.chart_of_account_id.valid">COA is required</div>
