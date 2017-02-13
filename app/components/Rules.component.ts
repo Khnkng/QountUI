@@ -173,6 +173,7 @@ export class RulesComponent {
         $event && $event.stopImmediatePropagation();
     }
     hideFlyout(){
+        this.selectedDimensions=[];
         this.row = {};
         this.selectedDimensions=[];
         this.showFlyout = !this.showFlyout;
@@ -204,9 +205,9 @@ export class RulesComponent {
         _.each(RulesList, function(RulesList) {
             let row:any = {};
             if(RulesList.conditions[0]) {
-                row['rule'] = "when a " + RulesList.sourceType + " is created and the " + RulesList.source + " " + RulesList.conditions[0].attributeName + " " + RulesList.conditions[0].comparisionType + " " + RulesList.conditions[0].comparisionValue + " " + "AND" + " " + RulesList.conditions[1].attributeName + " " + RulesList.conditions[1].comparisionType + " " + RulesList.conditions[1].comparisionValue;
+                row['rule'] = "When a " + RulesList.sourceType + " is created and the source is" +" "+ RulesList.source + " ," + RulesList.conditions[0].attributeName + " " + RulesList.conditions[0].comparisionType + " " + RulesList.conditions[0].comparisionValue + " " + "AND" + " " + RulesList.conditions[1].attributeName + " " + RulesList.conditions[1].comparisionType + " " + RulesList.conditions[1].comparisionValue;
             }else{
-                row['rule'] = "when a " + RulesList.sourceType + " is created and the " + RulesList.source + " " ;
+                row['rule'] = "When a " + RulesList.sourceType + " is created and the " + RulesList.source + " " ;
             }
             row['id']=RulesList.id;
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
@@ -287,12 +288,12 @@ export class RulesComponent {
 
     }
     isValid(ruleForm){
-        if(ruleForm.value.comparisionType!="" && ruleForm.value.comparisionType1!="" && ruleForm.value.comparisionValue!="" && ruleForm.value.comparisionValue!="" && ruleForm.value.comparisionValue1!=""){
+        if(ruleForm.value.comparisionType=="" || ruleForm.value.comparisionType==null && ruleForm.value.comparisionType1=="" || ruleForm.value.comparisionType1==null
+            && ruleForm.value.comparisionValue=="" || ruleForm.value.comparisionValue==null && ruleForm.value.comparisionValue=="" || ruleForm.value.comparisionValue==null
+            && ruleForm.value.comparisionValue1=="" || ruleForm.value.comparisionValue1==null){
             return false;
         }
-else{
             return true;
-        }
     }
     getRowDetails(RuleID){
         let base=this;
