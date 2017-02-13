@@ -95,7 +95,7 @@ export class TaxesComponent {
             {"name": "name", "title": "Tax Name"},
             {"name": "tin", "title": "Tax Number"},
             {"name": "visibleOnInvoices", "title": "Display Invoices"},
-            {"name": "taxAuthorityName", "title": "Tax Authority Name"},
+            // {"name": "taxAuthorityName", "title": "Tax Authority Name"},
             {"name": "taxRate", "title": "Tax Rate"},
             {"name": "taxLiabilityCoa", "title": "Tax Liability COA"},
             {"name": "recoverableTax", "title": "Recoverable Tax"},
@@ -201,11 +201,10 @@ export class TaxesComponent {
         if(this.editMode){
 
             data.id = this.row.id;
-           if(data.taxRate.includes("%")){
-               data.taxRate.split('%')
-               var res = data.taxRate.split("");
-               data.taxRate=res[0];
-            };
+            if(data.taxRate.includes("%")){
+                var res=data.taxRate.split('%')
+                data.taxRate=res[0];
+            }
             this.companyService.updateTax(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
@@ -213,10 +212,8 @@ export class TaxesComponent {
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
         } else{
-            let taxLiabilityCoa:any = this.TaxesForm.controls['taxLiabilityCoa'];
             if(data.taxRate.includes("%")){
-                data.taxRate.split('%')
-                var res = data.taxRate.split("");
+                var res=data.taxRate.split('%')
                 data.taxRate=res[0];
             };
             this.companyService.addTax(<VendorModel>data, this.companyId)
@@ -314,10 +311,10 @@ export class TaxesComponent {
             selectedCOAControl.patchValue(tax.name);
             let tin:any=this.TaxesForm.controls['tin'];
             tin.patchValue(tax.tin);
-            let taxAuthorityName:any=this.TaxesForm.controls['taxAuthorityName'];
-            taxAuthorityName.patchValue(tax.taxAuthorityName);
-            let taxAuthorityId:any = this.TaxesForm.controls['taxAuthorityId'];
-            taxAuthorityId.patchValue(tax.taxAuthorityId);
+            // let taxAuthorityName:any=this.TaxesForm.controls['taxAuthorityName'];
+            // taxAuthorityName.patchValue(tax.taxAuthorityName);
+            // let taxAuthorityId:any = this.TaxesForm.controls['taxAuthorityId'];
+            // taxAuthorityId.patchValue(tax.taxAuthorityId);
             let coa = _.find(this.chartOfAccounts, function(_coa) {
                 return _coa.id == tax.taxLiabilityCoa;
             });
