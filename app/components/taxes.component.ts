@@ -49,13 +49,14 @@ export class TaxesComponent {
     tableColumns:Array<string> = ['id','name', 'tin', 'visibleOnInvoices', 'taxAuthorityName', 'taxRate','taxLiabilityCoa','recoverableTax','compoundTax'];
     taxesList:any;
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
+    @ViewChild("newVendorComboBoxDir") newVendorComboBox: ComboBox;
     @ViewChild('addressDir') addressDir: Address;
     countryCode:string;
     showAddress:boolean;
     showFlyout:boolean = false;
 
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _taxesForm:TaxesForm,
-                private _router: Router, private loadingService:LoadingService,
+                private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
                 private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
         this.TaxesForm = this._fb.group(_taxesForm.getTax());
         this.companyId = Session.getCurrentCompany();
@@ -67,6 +68,12 @@ export class TaxesComponent {
         //     } else if(this.companies.length> 0){
         //         this.currentCompany = _.find(this.companies, {id: this.companies[0].id});
         //     }
+        this.vendorService.vendors(this.companyId)
+            .subscribe(vendors=> {
+                this.vendors = vendors;
+            }, error => {
+
+            });
         this.coaService.chartOfAccounts(this.companyId)
             .subscribe(chartOfAccounts => {
                 this.loadingService.triggerLoadingEvent(false);
@@ -95,7 +102,7 @@ export class TaxesComponent {
             {"name": "name", "title": "Tax Name"},
             {"name": "tin", "title": "Tax Number"},
             {"name": "visibleOnInvoices", "title": "Display Invoices"},
-            // {"name": "taxAuthorityName", "title": "Tax Authority Name"},
+            {"name": "taxAuthorityName", "title": "Tax Authority Name"},
             {"name": "taxRate", "title": "Tax Rate"},
             {"name": "taxLiabilityCoa", "title": "Tax Liability COA"},
             {"name": "recoverableTax", "title": "Recoverable Tax"},
@@ -129,7 +136,11 @@ export class TaxesComponent {
             return company.name;
         }
     }
-
+    setVendorForitem(vendor){
+            let data= this._taxesForm.getData(this.TaxesForm);
+            data.taxAuthorityName = vendor.id;
+            this._taxesForm.updateForm(this.TaxesForm, data);
+    }
     showCreateTax() {
         let defaultCountry  = {name:'United States', code:'US'};
         let self = this;
@@ -311,10 +322,10 @@ export class TaxesComponent {
             selectedCOAControl.patchValue(tax.name);
             let tin:any=this.TaxesForm.controls['tin'];
             tin.patchValue(tax.tin);
-            // let taxAuthorityName:any=this.TaxesForm.controls['taxAuthorityName'];
-            // taxAuthorityName.patchValue(tax.taxAuthorityName);
-            // let taxAuthorityId:any = this.TaxesForm.controls['taxAuthorityId'];
-            // taxAuthorityId.patchValue(tax.taxAuthorityId);
+            let taxAuthorityName:any=this.TaxesForm.controls['taxAuthorityName'];
+            taxAuthorityName.patchValue(tax.taxAuthorityName);
+            let taxAuthorityId:any = this.TaxesForm.controls['taxAuthorityId'];
+            taxAuthorityId.patchValue(tax.taxAuthorityId);
             let coa = _.find(this.chartOfAccounts, function(_coa) {
                 return _coa.id == tax.taxLiabilityCoa;
             });

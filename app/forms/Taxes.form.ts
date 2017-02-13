@@ -15,8 +15,8 @@ export class TaxesForm extends abstractForm{
         return {
             "name": ['', Validators.required],
             "tin": ['',Validators.required],
-            // "taxAuthorityName": ['',Validators.required],
-            // "taxAuthorityId":['',Validators.required],
+            "taxAuthorityName": ['',Validators.required],
+            "taxAuthorityId":['',Validators.required],
             "taxLiabilityCoa":['',Validators.required],
             "description":['',Validators.required],
             "taxRate":['',Validators.required],
