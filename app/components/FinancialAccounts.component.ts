@@ -27,6 +27,7 @@ export class FinancialAccountsComponent{
   newFormActive:boolean = true;
   @ViewChild('addAccount') addAccount;
   @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
+  @ViewChild('transitCOAComboBoxDir') transitCOAComboBox: ComboBox;
   hasAccounts: boolean = false;
   tableData:any = {};
   tableOptions:any = {};
@@ -95,8 +96,10 @@ export class FinancialAccountsComponent{
           this.loadingService.triggerLoadingEvent(false);
           this._financialAccountForm.updateForm(this.accountForm, account);
           let coa = _.find(this.chartOfAccounts, {'id': account.chart_of_account_id});
+          let transitCOA=_.find(this.chartOfAccounts, {'id': account.transit_COA});//
           setTimeout(function(){
             base.coaComboBox.setValue(coa, 'name');
+            transitCOA.coaComboBox.setValue(coa, 'name');
           },0);
         }, error => {
           this.toastService.pop(TOAST_TYPE.error, "Failed to load financial account details");
@@ -130,6 +133,14 @@ export class FinancialAccountsComponent{
     if(coa && coa.id){
       let data = this._financialAccountForm.getData(this.accountForm);
       data.chart_of_account_id = coa.id;
+      this._financialAccountForm.updateForm(this.accountForm, data);
+    }
+  }
+
+  updateTransitChartOfAccount(transitCOA){
+    if(transitCOA && transitCOA.id){
+      let data = this._financialAccountForm.getData(this.accountForm);
+      data.transit_COA = transitCOA.id;
       this._financialAccountForm.updateForm(this.accountForm, data);
     }
   }

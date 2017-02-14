@@ -65,8 +65,18 @@
                                                     <div class="error" [hidden]="accountForm.controls.type.untouched || accountForm.controls.type.valid">Type is required.</div>
                                                 </div>
                                             </div>
-
                                             <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Transit COA</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <select combo-box #transitCOAComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="transit_COA" [listObject]="chartOfAccounts" (valueChanged)="updateTransitChartOfAccount($event)">
+                                                        <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.number}} - {{coa.name}}</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="accountForm.controls.transit_COA.untouched || accountForm.controls.transit_COA.valid">Transit COA is required</div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top: 15px">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Starting Balance</label>
                                                 </div>
