@@ -76,8 +76,17 @@
                                                     <label class="text-right">Unit Price</label>
                                                 </div>
                                                 <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="text" formControlName="unit_price" placeholder="Unit Price"/>
-                                                    <div class="error" [hidden]="itemcodeForm.controls.unit_price.untouched || itemcodeForm.controls.unit_price.valid">Unit price is required.</div>
+                                                    <input type="text" formControlName="purchase_price" placeholder="Unit Price"/>
+                                                    <div class="error" [hidden]="itemcodeForm.controls.purchase_price.untouched || itemcodeForm.controls.purchase_price.valid">Unit price is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top:-16px;">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Sales Price</label>
+                                                </div>
+                                                <div class="small-6 columns custom-qount-form-field">
+                                                    <input type="text" formControlName="sales_price" placeholder="Sales Price"/>
+                                                    <div class="error" [hidden]="itemcodeForm.controls.sales_price.untouched || itemcodeForm.controls.sales_price.valid">Unit price is required.</div>
                                                 </div>
                                             </div>
                                         </div>

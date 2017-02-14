@@ -49,13 +49,14 @@ export class TaxesComponent {
     tableColumns:Array<string> = ['id','name', 'tin', 'visibleOnInvoices', 'taxAuthorityName', 'taxRate','taxLiabilityCoa','recoverableTax','compoundTax'];
     taxesList:any;
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
+    @ViewChild("newVendorComboBoxDir") newVendorComboBox: ComboBox;
     @ViewChild('addressDir') addressDir: Address;
     countryCode:string;
     showAddress:boolean;
     showFlyout:boolean = false;
 
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _taxesForm:TaxesForm,
-                private _router: Router, private loadingService:LoadingService,
+                private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
                 private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
         this.TaxesForm = this._fb.group(_taxesForm.getTax());
         this.companyId = Session.getCurrentCompany();
@@ -67,11 +68,18 @@ export class TaxesComponent {
         //     } else if(this.companies.length> 0){
         //         this.currentCompany = _.find(this.companies, {id: this.companies[0].id});
         //     }
+        this.vendorService.vendors(this.companyId)
+            .subscribe(vendors=> {
+                this.vendors = vendors;
+            }, error => {
+
+            });
         this.coaService.chartOfAccounts(this.companyId)
             .subscribe(chartOfAccounts => {
                 this.loadingService.triggerLoadingEvent(false);
                 // this.buildTableData(chartOfAccounts);
                 this.chartOfAccounts=chartOfAccounts;
+                console.log("chartOfAccounts",chartOfAccounts);
             }, error=> this.handleError(error));
         this.companyService.getTaxofCompany(this.companyId)
             .subscribe(taxesList  => {
@@ -128,7 +136,11 @@ export class TaxesComponent {
             return company.name;
         }
     }
-
+    setVendorForitem(vendor){
+            let data= this._taxesForm.getData(this.TaxesForm);
+            data.taxAuthorityName = vendor.id;
+            this._taxesForm.updateForm(this.TaxesForm, data);
+    }
     showCreateTax() {
         let defaultCountry  = {name:'United States', code:'US'};
         let self = this;
@@ -200,11 +212,10 @@ export class TaxesComponent {
         if(this.editMode){
 
             data.id = this.row.id;
-           if(data.taxRate.includes("%")){
-               data.taxRate.split('%')
-               var res = data.taxRate.split("");
-               data.taxRate=res[0];
-            };
+            if(data.taxRate.includes("%")){
+                var res=data.taxRate.split('%')
+                data.taxRate=res[0];
+            }
             this.companyService.updateTax(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
@@ -213,8 +224,7 @@ export class TaxesComponent {
                 }, error =>  this.showMessage(false, error));
         } else{
             if(data.taxRate.includes("%")){
-                data.taxRate.split('%')
-                var res = data.taxRate.split("");
+                var res=data.taxRate.split('%')
                 data.taxRate=res[0];
             };
             this.companyService.addTax(<VendorModel>data, this.companyId)
@@ -228,11 +238,19 @@ export class TaxesComponent {
 
 
     isValid(TaxesForm){
-        return TaxesForm.valid;
+        if(TaxesForm.value.name=="" || TaxesForm.value.name==null && TaxesForm.value.tin=="" || TaxesForm.value.tin==null
+            && TaxesForm.value.taxAuthorityName=="" || TaxesForm.value.taxAuthorityName==null && TaxesForm.value.taxAuthorityId=="" || TaxesForm.value.taxAuthorityId==null
+            && TaxesForm.value.taxLiabilityCoa=="" || TaxesForm.value.taxLiabilityCoa==null
+            && TaxesForm.value.description=="" || TaxesForm.value.description==null
+            && TaxesForm.value.taxRate=="" || TaxesForm.value.taxRate==null){
+            return false;
+        }
+        return true;
     }
     showCOA(coa:any) {
-        let coaControl:any = this.TaxesForm.controls['taxLiabilityCoa'];
-        coaControl.patchValue(coa.id);
+        let data= this._taxesForm.getData(this.TaxesForm);
+        data.taxLiabilityCoa = coa.id;
+        this._taxesForm.updateForm(this.TaxesForm, data);
     }
     getCoa(){
         this.coaService.chartOfAccounts(this.companyId)

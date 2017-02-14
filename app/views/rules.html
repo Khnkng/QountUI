@@ -35,32 +35,32 @@
                                                 <tbody style="border-color: white">
                                                 <tr style="border:0px;border-color:white;">
                                                     <td><label>Type</label></td>
-                                                    <td><span style="margin-top:5px;font-size: 0.875rem;color:black"><input checked style="margin-top:3px;" value="Expense" type="radio" formControlName="sourceType" name="sourceType"  type="radio" />Expense</span></td>
-                                                    <td><span style="margin-top:5px;font-size: 0.875rem;color:black"><input style="margin-top:3px;" value="Deposit" type="radio" formControlName="sourceType" name="sourceType"  type="radio" />Deposit</span></td>
+                                                    <td><span style="font-size: 0.875rem;color:black"><input checked style="margin-top:3px;" value="Expense" type="radio" formControlName="sourceType" name="sourceType"  type="radio" />Expense</span></td>
+                                                    <td><span style="font-size: 0.875rem;color:black"><input style="margin-top:3px;" value="Deposit" type="radio" formControlName="sourceType" name="sourceType"  type="radio" />Deposit</span></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
-                                                    <td><label style="margin-top: 21px;">Source</label></td>
-                                                    <td><select style="margin-top: 15px;" formControlName="source">
+                                                    <td><label >Source</label></td>
+                                                    <td><select style="height: 2.4375rem;width: 100%" formControlName="source">
                                                         <option *ngFor="let bank of banks;"  value="{{bank.name}}">{{bank.name}}</option>
                                                     </select></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Title</label></td>
                                                     <td>
-                                                    <select style="margin-top: 15px;" class="condition" formControlName="comparisionType">
+                                                    <select style="height: 2.4375rem;width: 100%" class="condition" formControlName="comparisionType">
                                                         <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                     </select>
                                                     </td>
                                                     <td>
-                                                    <input style="margin-top: 15px;" type="text" class="condition-value" formControlName="comparisionValue" />
+                                                    <input type="text" class="condition-value" formControlName="comparisionValue" placeholder="Title*" />
                                                     </td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Amount</label></td>
-                                                    <td><select style="margin-top: 15px;" class="condition" formControlName="comparisionType1">
+                                                    <td><select style="height: 2.4375rem;width: 100%" class="condition" formControlName="comparisionType1">
                                                         <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                     </select></td>
-                                                    <td><input style="margin-top:15px;" type="text" formControlName="comparisionValue1" class="condition-value"/>
+                                                    <td><input  type="text" formControlName="comparisionValue1" placeholder="Amount*" class="condition-value"/>
                                                     </td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white;">
@@ -68,14 +68,14 @@
                                                         <label value="chartOfAccount">COA</label>
                                                     </td>
                                                     <td> <label>
-                                                        <select style="margin-top: 15px;margin-left:-2px;"  title="" data-placeholder="Enter Chart of account" formControlName="chartOfAccount"  (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
+                                                        <select style="margin-left:0px;height: 2.4375rem;"  title="" data-placeholder="Enter Chart of account" formControlName="chartOfAccount"  (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
                                                             <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                         </select>
                                                     </label></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white;">
                                                     <td><label>Effective Date</label></td>
-                                                    <td><input style="margin-top:15px;"  custom-datepicker (valueChanged)="setDate($event)" [format]="'YYYY-MM-DD'" [mindate]="'past'"  value="{{todaysDate}}"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
+                                                    <td><input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event)" [format]="'YYYY-MM-DD'" [mindate]="'past'"  value="{{todaysDate}}"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
                                                 </tr>
                                                 </tbody>
                                             </table>

@@ -52,7 +52,7 @@
                                                     <label class="text-right">Tax Authority Name</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" formControlName="taxAuthorityName" placeholder="taxAuthorityName*">
+                                                    <input type="text" formControlName="taxAuthorityName" placeholder="Tax Authority Name*">
                                                     <div class="error" [hidden]="TaxesForm.controls.taxAuthorityName.untouched || TaxesForm.controls.taxAuthorityName.valid">TaxAuthority Name is required</div>
                                                 </div>
                                             </div>
@@ -61,7 +61,7 @@
                                                     <label class="text-right">Tax Authority Id</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" formControlName="taxAuthorityId" placeholder="TaxAuthorityId*">
+                                                    <input type="text" formControlName="taxAuthorityId" placeholder="Tax Authority Id*">
                                                     <div class="error" [hidden]="TaxesForm.controls.taxAuthorityId.untouched || TaxesForm.controls.taxAuthorityId.valid">TaxAuthorityId is required</div>
                                                 </div>
                                             </div>
@@ -90,7 +90,7 @@
                                                     <label class="text-right">Tax Rate</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" formControlName="taxRate" placeholder="TaxRate*" (change)="ratetax()">
+                                                    <input type="text" formControlName="taxRate" placeholder="Tax Rate*" (change)="ratetax()">
                                                     <div class="error" [hidden]="TaxesForm.controls.taxRate.untouched || TaxesForm.controls.taxRate.valid">TaxRate is required</div>
                                                 </div>
                                             </div>
