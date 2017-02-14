@@ -34,11 +34,11 @@ export class BooksComponent{
     ];
 
     depositsTableData:any = {};
-    depositsTableOptions:any = {search:false, pageSize:10};
+    depositsTableOptions:any = {search:false, pageSize:7};
     expensesTableData:any = {};
-    expensesTableOptions:any = {search:false, pageSize:10};
+    expensesTableOptions:any = {search:false, pageSize:7};
     jeTableData:any = {};
-    jeTableOptions:any = {search:false, pageSize:10};
+    jeTableOptions:any = {search:false, pageSize:7};
 
     tabHeight:string;
     badges:any = [];
@@ -224,7 +224,11 @@ export class BooksComponent{
                     row[key] = expense[key];
                 }
             });
+            base.expensesTableData.rows.push(row);
         });
+        if(this.expensesTableData.rows.length > 0){
+            this.hasExpenses = true;
+        }
     }
 
     buildTableData(data){
