@@ -80,9 +80,11 @@ export class CustomersComponent {
         this.tableOptions.pageSize = 9;
         this.tableData.rows = [];
         this.tableData.columns = [
-            {"name": "customer_id", "title": "ID"},
+            {"name": "customer_id", "title": "ID","visible": false},
             {"name": "customer_name", "title": "Name"},
             {"name": "customer_ein", "title": "Ein"},
+            {"name": "email_id", "title": "Email"},
+            {"name": "phone_number", "title": "Phone Number"},
             {"name": "customer_address", "title": "Address","visible": false},
             {"name": "customer_country", "title": "Country","visible": false},
             {"name": "customer_state", "title": "State","visible": false},
@@ -165,6 +167,7 @@ export class CustomersComponent {
         this.editMode = true;
         this.showFlyout = true;
         this.row = row;
+        console.log("ererer",row);
         this.customersService.customer(row.customer_id, this.companyId)
             .subscribe(customer  => {
                 this.row = customer;

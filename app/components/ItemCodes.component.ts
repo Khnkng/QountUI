@@ -107,7 +107,7 @@ export class ItemCodesComponent{
     let paymentCOAIndex = _.findIndex(this.paymentChartOfAccounts, function(coa){
       return coa.id == row.payment_coa_mapping;
     });
-    let invoiceCOAIndex = _.findIndex(this.paymentChartOfAccounts, function(coa){
+    let invoiceCOAIndex = _.findIndex(this.invoiceChartOfAccounts, function(coa){
       return coa.id == row.invoice_coa_mapping;
     });
     setTimeout(function(){
@@ -205,8 +205,8 @@ export class ItemCodesComponent{
     this.tableOptions.search = true;
     this.tableOptions.pageSize = 9;
     this.tableData.columns = [
+      {"name": "name", "title": "Name", "visible": false},
       {"name": "name", "title": "Name"},
-      {"name": "desc", "title": "Description"},
       {"name": "paymentCOAName", "title": "Payment COA"},
       {"name": "payment_coa_mapping", "title": "payment COA id", "visible": false},
       {"name": "invoiceCOAName", "title": "Invoice COA"},
