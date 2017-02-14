@@ -104,7 +104,7 @@ export class TaxesComponent {
             {"name": "visibleOnInvoices", "title": "Display Invoices"},
             {"name": "taxAuthorityName", "title": "Tax Authority Name"},
             {"name": "taxRate", "title": "Tax Rate"},
-            {"name": "coa_name", "title": "coa Name"},
+            {"name": "coa_name", "title": "Coa Name"},
             {"name": "recoverableTax", "title": "Recoverable Tax"},
             {"name": "compoundTax", "title": "Compound Tax"},
             {"name": "actions", "title": ""}
