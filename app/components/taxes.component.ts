@@ -105,6 +105,7 @@ export class TaxesComponent {
             {"name": "taxAuthorityName", "title": "Tax Authority Name"},
             {"name": "taxRate", "title": "Tax Rate"},
             {"name": "coa_name", "title": "COA"},
+            
             {"name": "recoverableTax", "title": "Recoverable Tax"},
             {"name": "compoundTax", "title": "Compound Tax"},
             {"name": "actions", "title": ""}
