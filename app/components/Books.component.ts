@@ -340,4 +340,8 @@ export class BooksComponent{
         let link = ['Expense'];
         this._router.navigate(link);
     }
+    createDeposit(){
+        let link = ['deposit'];
+        this._router.navigate(link);
+    }
 }

@@ -17,7 +17,8 @@ export class ItemCodeForm extends abstractForm{
       "name": ['', Validators.required],
       "payment_coa_mapping": [''],
       "invoice_coa_mapping": [''],
-      "unit_price": [''],
+      "purchase_price": [''],
+      "sales_price": [''],
       "desc": ['']
     }
   }

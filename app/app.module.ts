@@ -64,6 +64,9 @@ import {RulesComponent} from "./components/Rules.component";
 import {RuleForm, RuleActionForm} from "./forms/Rule.form";
 import {ExpenseComponent} from "./components/Expense.component";
 import {ExpenseForm, ExpenseItemForm} from "./forms/Expenses.form";
+import {DepositComponent} from "./components/Deposit.component";
+import {DepositsForm} from "./forms/Deposits.form";
+import {DepositsLineForm} from "./forms/Deposits.form";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -206,19 +209,29 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             path: 'termsAndConditions',
             component: TermsAndConditionsComponent,
             canActivate: [LoggedInActivator]
-        }
+        },
+        {
+            path: 'deposit',
+            component: DepositComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'deposit/:depositID',
+            component: DepositComponent,
+            canActivate: [LoggedInActivator]
+        },
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
-        ResetPasswordComponent, RulesComponent, ExpenseComponent],
+        ResetPasswordComponent, RulesComponent, ExpenseComponent,DepositComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
         TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm,
-        FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm],
+        FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

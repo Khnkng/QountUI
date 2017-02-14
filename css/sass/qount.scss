@@ -86,6 +86,8 @@ body {
 #moduleslist>div>ul>li:nth-of-type(even){
   background-color : white;
 }
+
+
 @media print{
   .nz {
     color: darkblue !important;
@@ -832,7 +834,7 @@ ul.side-nav a {
     transition: all 0.5s;
     top: 0px;
     z-index: 100;
-    right: -200%;
+    right: -250%;
     overflow-x: hidden;
     padding: 50px 5px 0 0;
   }
@@ -1434,7 +1436,9 @@ dashboard{
     }
   }
 }
-
+.qount-off-canvas-menu .flyout .flyout-placeholder .dimension-values{
+  display: block;
+}
 /*end box*/
 
 i {
@@ -1788,6 +1792,12 @@ table.footable-editing-right tr.footable-editing td {
   }*/
 
   tbody {
+    tr:nth-of-type(even) {
+      background-color: white;
+    }
+    tr:nth-of-type(odd) {
+      background-color: white;
+    }
     tr {
       td{
         vertical-align: middle !important;
@@ -2075,10 +2085,17 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
-#ruletable, #coa, #coa1, #coa2{
+#ruletable, #coa, #coa1, #coa2, #ruletable1{
   tbody{
     tr:hover {
       background-color: white;
+    }
+    tr{
+      td{
+        label{
+          width:91px;
+        }
+      }
     }
   }
 }
