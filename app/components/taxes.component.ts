@@ -46,7 +46,7 @@ export class TaxesComponent {
     companies:Array<CompanyModel> = [];
     currentCompany:any = {};
     chartOfAccounts:any;
-    tableColumns:Array<string> = ['id','name', 'tin', 'visibleOnInvoices', 'taxAuthorityName', 'taxRate','taxLiabilityCoa','recoverableTax','compoundTax'];
+    tableColumns:Array<string> = ['id','name', 'tin', 'visibleOnInvoices', 'taxAuthorityName', 'taxRate','coa_name','recoverableTax','compoundTax'];
     taxesList:any;
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     @ViewChild("newVendorComboBoxDir") newVendorComboBox: ComboBox;
@@ -104,7 +104,7 @@ export class TaxesComponent {
             {"name": "visibleOnInvoices", "title": "Display Invoices"},
             {"name": "taxAuthorityName", "title": "Tax Authority Name"},
             {"name": "taxRate", "title": "Tax Rate"},
-            {"name": "taxLiabilityCoa", "title": "Tax Liability COA"},
+            {"name": "coa_name", "title": "coa Name"},
             {"name": "recoverableTax", "title": "Recoverable Tax"},
             {"name": "compoundTax", "title": "Compound Tax"},
             {"name": "actions", "title": ""}

@@ -56,12 +56,13 @@ export class CustomersComponent {
         this.companyId = Session.getCurrentCompany();
         this.coaService.chartOfAccounts(this.companyId)
             .subscribe(chartOfAccounts => {
-                this.chartOfAccounts=chartOfAccounts?_.filter(chartOfAccounts, {'type': 'accountsPayable'}):[];
+                this.chartOfAccounts=chartOfAccounts?_.filter(chartOfAccounts, {'type': 'accountsReceivable'}):[];
                 _.sortBy(this.chartOfAccounts, ['number', 'name']);
             }, error=> this.handleError(error));
         if(this.companyId){
             this.loadingService.triggerLoadingEvent(true);
             this.customersService.customers(this.companyId).subscribe(customers => {
+
                 this.buildTableData(customers);
                 this.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
@@ -167,9 +168,8 @@ export class CustomersComponent {
         this.editMode = true;
         this.showFlyout = true;
         this.row = row;
-        console.log("ererer",row);
         this.customersService.customer(row.customer_id, this.companyId)
-            .subscribe(customer  => {
+            .subscribe(customer => {
                 this.row = customer;
                 let email_id:any = this.customerForm.controls['email_id'];
                 email_id.patchValue(customer.email_id);
@@ -190,19 +190,20 @@ export class CustomersComponent {
                     setTimeout(function(){
                         base.coaComboBox.setValue(coa, 'name');
                     });
-            }, error =>  this.handleError(error));
-        this.newForm1();
-        this._customersForm.updateForm(this.customerForm, row);
-        let countryName = row.customer_country;
-        let country = _.find(PROVINCES.COUNTRIES, function(_country) {
-            return _country.name == countryName;
-        });
-        let stateName = row.state;
-        var base=this;
+                }
 
-        setTimeout(function () {
-            base.vendorCountryComboBox.setValue(country, 'name');
-        },100);
+                let countryName = row.customer_country;
+                let country = _.find(PROVINCES.COUNTRIES, function(_country) {
+                    return _country.name == countryName;
+                });
+                let stateName = row.state;
+                var base=this;
+
+                setTimeout(function () {
+                    base.vendorCountryComboBox.setValue(country, 'name');
+                },100);
+                this._customersForm.updateForm(this.customerForm, row);
+            }, error => this.handleError(error));
     }
 
     submit($event) {

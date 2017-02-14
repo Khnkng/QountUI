@@ -100,6 +100,19 @@ export class ItemCodesComponent{
   }
 
   showEditItemCode(row: any){
+    this.codeService.getItemCode(row.id)
+        .subscribe(item => {
+         this.row=item;
+          let name:any = this.itemcodeForm.controls['name'];
+          name.patchValue(item.name);
+
+          let purchase_price:any = this.itemcodeForm.controls['purchase_price'];
+          purchase_price.patchValue(item.purchase_price);
+          let sales_price:any = this.itemcodeForm.controls['sales_price'];
+          sales_price.patchValue(item.sales_price);
+          let desc:any = this.itemcodeForm.controls['desc'];
+          desc.patchValue(item.desc);
+        }, error => this.handleError(error));
     let base = this;
     this.editMode = true;
     this.newForm();
