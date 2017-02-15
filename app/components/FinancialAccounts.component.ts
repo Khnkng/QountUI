@@ -99,7 +99,7 @@ export class FinancialAccountsComponent{
           let transitCOA=_.find(this.chartOfAccounts, {'id': account.transit_chart_of_account_id});//
           setTimeout(function(){
             base.coaComboBox.setValue(coa, 'name');
-            base.transitCOAComboBox.setValue(coa, 'name');
+            base.transitCOAComboBox.setValue(transitCOA, 'name');
           },0);
         }, error => {
           this.toastService.pop(TOAST_TYPE.error, "Failed to load financial account details");
