@@ -28,7 +28,7 @@ export class FinancialAccountForm extends abstractForm{
       "routing_number":[''],
       "signatory":[''],
       "is_payment_accout_type":[false],
-      "transit_COA":['']
+      "transit_chart_of_account_id":['']
     }
   }
 }

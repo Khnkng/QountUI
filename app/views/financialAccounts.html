@@ -70,10 +70,10 @@
                                                     <label class="text-right">Transit COA</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <select combo-box #transitCOAComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="transit_COA" [listObject]="chartOfAccounts" (valueChanged)="updateTransitChartOfAccount($event)">
+                                                    <select combo-box #transitCOAComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="transit_chart_of_account_id" [listObject]="chartOfAccounts" (valueChanged)="updateTransitChartOfAccount($event)">
                                                         <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.number}} - {{coa.name}}</option>
                                                     </select>
-                                                    <div class="error" [hidden]="accountForm.controls.transit_COA.untouched || accountForm.controls.transit_COA.valid">Transit COA is required</div>
+                                                    <div class="error" [hidden]="accountForm.controls.transit_chart_of_account_id.untouched || accountForm.controls.transit_chart_of_account_id.valid">Transit COA is required</div>
                                                 </div>
                                             </div>
                                             <div class="row" style="margin-top: 15px">

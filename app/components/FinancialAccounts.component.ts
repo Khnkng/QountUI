@@ -35,7 +35,7 @@ export class FinancialAccountsComponent{
   currentCompany:any;
   row:any;
   tempValues:Array<string> = [];
-  tableColumns:Array<string> = ['name', 'id', 'starting_balance', 'current_balance', 'no_effect_on_pl', 'is_credit_account', 'starting_balance_date', 'chart_of_account_id'];
+  tableColumns:Array<string> = ['name', 'id', 'starting_balance', 'current_balance', 'no_effect_on_pl', 'is_credit_account', 'starting_balance_date', 'chart_of_account_id','transit_chart_of_account_id'];
   importType:string = 'MANUAL';
   banks:Array<any> = [];
   showFlyout:boolean = false;
@@ -96,10 +96,10 @@ export class FinancialAccountsComponent{
           this.loadingService.triggerLoadingEvent(false);
           this._financialAccountForm.updateForm(this.accountForm, account);
           let coa = _.find(this.chartOfAccounts, {'id': account.chart_of_account_id});
-          let transitCOA=_.find(this.chartOfAccounts, {'id': account.transit_COA});//
+          let transitCOA=_.find(this.chartOfAccounts, {'id': account.transit_chart_of_account_id});//
           setTimeout(function(){
             base.coaComboBox.setValue(coa, 'name');
-            transitCOA.coaComboBox.setValue(coa, 'name');
+            base.transitCOAComboBox.setValue(coa, 'name');
           },0);
         }, error => {
           this.toastService.pop(TOAST_TYPE.error, "Failed to load financial account details");
@@ -140,7 +140,7 @@ export class FinancialAccountsComponent{
   updateTransitChartOfAccount(transitCOA){
     if(transitCOA && transitCOA.id){
       let data = this._financialAccountForm.getData(this.accountForm);
-      data.transit_COA = transitCOA.id;
+      data.transit_chart_of_account_id = transitCOA.id;
       this._financialAccountForm.updateForm(this.accountForm, data);
     }
   }
@@ -224,6 +224,8 @@ export class FinancialAccountsComponent{
         row[key] = account[key];
         if(key == 'chart_of_account_id'){
           row['chart_of_account'] = base.getCOAName(account[key]);
+        }if(key=='transit_chart_of_account_id'){
+          row['transit_chart_of_account_id'] = base.getCOAName(account[key]);
         }
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       });
