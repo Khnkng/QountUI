@@ -131,12 +131,16 @@ export class BooksComponent{
         } else if(this.selectedTab == 2){
             this.isLoading = true;
             this.loadingService.triggerLoadingEvent(true);
-            this.journalService.journalEntries(this.currentCompany.id)
-                .subscribe(journalEntries => {
-                    this.loadingService.triggerLoadingEvent(false);
-                    this.buildTableData(journalEntries);
-                }, error => this.handleError(error));
+            this.fetchJournalEntries();
         }
+    }
+
+    fetchJournalEntries(){
+        this.journalService.journalEntries(this.currentCompany.id)
+            .subscribe(journalEntries => {
+                this.loadingService.triggerLoadingEvent(false);
+                this.buildTableData(journalEntries);
+            }, error => this.handleError(error));
     }
 
     handleAction($event){
@@ -159,12 +163,15 @@ export class BooksComponent{
 
     removeJournalEntry(journalEntry){
         let base = this;
+        this.loadingService.triggerLoadingEvent(true);
         this.journalService.removeJournalEntry(journalEntry.id, this.currentCompany.id)
             .subscribe(response => {
-                base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully.");
-                _.remove(base.jeTableData.rows, {id: journalEntry.id});
-                base.buildTableData(base.jeTableData.rows);
-            }, error => this.handleError(error));
+                this.loadingService.triggerLoadingEvent(false);
+                base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully");
+                this.fetchJournalEntries();
+            }, error => {
+                base.toastService.pop(TOAST_TYPE.error, "Failed to delete Journal Entry");
+            });
     }
 
     showJournalEntry(journalEntry){
@@ -213,7 +220,7 @@ export class BooksComponent{
                 if(key == 'bank_account_id'){
                     row[key] = base.getBankAccountName(expense[key]);
                 } else if(key == 'is_paid'){
-                    if(expense.is_paid){
+                    if(expense.is_paid || expense.paid_date){
                         row['status']= "<button class='hollow button success'>Paid</button>";
                     } else{
                         row['status']= "<button class='hollow button alert'>Not Paid</button>";
@@ -269,6 +276,10 @@ export class BooksComponent{
         if(this.jeTableData.rows.length > 0){
             this.hasJournalEntries = true;
         }
+        this.hasJournalEntries = false;
+        setTimeout(function(){
+           base.hasJournalEntries = true;
+        });
     }
 
     onRowDblClick($event){

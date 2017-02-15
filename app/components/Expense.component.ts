@@ -112,7 +112,8 @@ export class ExpenseComponent{
 
     deleteItem(index){
         let itemsList:any = this.expenseForm.controls['expense_items'];
-        itemsList.controls.splice(index, 1);
+        let itemControl = itemsList.controls[index];
+        itemControl.controls['destroy'].patchValue(true);
     }
 
     showNewItem(){
