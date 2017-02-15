@@ -3026,10 +3026,67 @@ tbody{
   }
 
   .add-item {
-    border-top: 1pt solid #ccc;
     border-bottom: 1pt solid #ccc;
     padding: 10px;
   }
 
+  .items-table {
+    padding: 10px 0px 10px 0px;
+    border-bottom: 1pt solid #ccc;
+  }
+
+  .items-table:first-child {
+    padding-top:0px;
+  }
+
+  .items-table > div {
+    padding: 0px;
+  }
+
 
 }
+
+form .ng-dirty.ng-invalid, form .ng-touched.ng-invalid {
+  border: none;
+}
+
+form .ng-dirty.ng-valid {
+  border: none;
+}
+
+form input.ng-dirty.ng-invalid, form input.ng-touched.ng-invalid {
+  border: 1px solid #cacaca;
+}
+
+form input.ng-dirty.ng-valid {
+  border: 1px solid #cacaca;
+}
+
+form select.ng-dirty.ng-invalid, form select.ng-touched.ng-invalid {
+  border: 1px solid #cacaca;
+}
+
+form select.ng-dirty.ng-valid {
+  border: 1px solid #cacaca;
+}
+
+form input.ng-dirty.ng-valid {
+  border: 1px solid #cacaca;
+}
+
+form select.ng-dirty.ng-valid {
+  border: 1px solid #cacaca;
+}
+
+
+.close-page-button{
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+  &:hover{
+    background: $qount-table-border;
+  }
+}
+
