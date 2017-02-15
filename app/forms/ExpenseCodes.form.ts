@@ -7,7 +7,7 @@ import {abstractForm} from "qCommon/app/forms/abstractForm";
 import {Validators} from "@angular/forms";
 
 @Injectable()
-export class ItemCodeForm extends abstractForm{
+export class ExpenseCodesForm extends abstractForm{
 
   getForm() {
     var numberValidator = [];
@@ -15,10 +15,7 @@ export class ItemCodeForm extends abstractForm{
     numberValidator.push(Validators.required);
     return {
       "name": ['', Validators.required],
-      "payment_coa_mapping": [''],
-      "invoice_coa_mapping": [''],
-      "purchase_price": [''],
-      "sales_price": [''],
+      "coa_mapping_id": ['', Validators.required],
       "desc": ['']
     }
   }

@@ -78,6 +78,8 @@ export class ItemCodesComponent{
     this.invoiceChartOfAccounts = _.filter(chartOfAccounts, function(coa){
       return coa.category == 'Income';
     });
+    _.sortBy(this.paymentChartOfAccounts, ['number', 'name']);
+    _.sortBy(this.invoiceChartOfAccounts, ['number', 'name']);
     this.codeService.itemCodes(this.currentCompany.id)
         .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));
   }
@@ -98,6 +100,19 @@ export class ItemCodesComponent{
   }
 
   showEditItemCode(row: any){
+    this.codeService.getItemCode(row.id)
+        .subscribe(item => {
+         this.row=item;
+          let name:any = this.itemcodeForm.controls['name'];
+          name.patchValue(item.name);
+
+          let purchase_price:any = this.itemcodeForm.controls['purchase_price'];
+          purchase_price.patchValue(item.purchase_price);
+          let sales_price:any = this.itemcodeForm.controls['sales_price'];
+          sales_price.patchValue(item.sales_price);
+          let desc:any = this.itemcodeForm.controls['desc'];
+          desc.patchValue(item.desc);
+        }, error => this.handleError(error));
     let base = this;
     this.editMode = true;
     this.newForm();
@@ -105,7 +120,7 @@ export class ItemCodesComponent{
     let paymentCOAIndex = _.findIndex(this.paymentChartOfAccounts, function(coa){
       return coa.id == row.payment_coa_mapping;
     });
-    let invoiceCOAIndex = _.findIndex(this.paymentChartOfAccounts, function(coa){
+    let invoiceCOAIndex = _.findIndex(this.invoiceChartOfAccounts, function(coa){
       return coa.id == row.invoice_coa_mapping;
     });
     setTimeout(function(){
@@ -133,17 +148,15 @@ export class ItemCodesComponent{
   }
 
   updatePaymentCOA(paymentCOA){
-    let paymentCOAControl:any = this.itemcodeForm.controls['payment_coa_mapping'];
-    if(paymentCOA){
-      paymentCOAControl.patchValue(paymentCOA.id);
-    }
+    let data = this._itemCodeForm.getData(this.itemcodeForm);
+    data.payment_coa_mapping = paymentCOA.id;
+    this._itemCodeForm.updateForm(this.itemcodeForm, data);
   }
 
   updateInvoiceCOA(invoiceCOA){
-    let invoiceCOAControl:any = this.itemcodeForm.controls['invoice_coa_mapping'];
-    if(invoiceCOA){
-      invoiceCOAControl.patchValue(invoiceCOA.id);
-    }
+    let data = this._itemCodeForm.getData(this.itemcodeForm);
+    data.invoice_coa_mapping = invoiceCOA.id;
+    this._itemCodeForm.updateForm(this.itemcodeForm, data);
   }
 
   ngOnInit(){
@@ -205,8 +218,8 @@ export class ItemCodesComponent{
     this.tableOptions.search = true;
     this.tableOptions.pageSize = 9;
     this.tableData.columns = [
+      {"name": "name", "title": "Name", "visible": false},
       {"name": "name", "title": "Name"},
-      {"name": "desc", "title": "Description"},
       {"name": "paymentCOAName", "title": "Payment COA"},
       {"name": "payment_coa_mapping", "title": "payment COA id", "visible": false},
       {"name": "invoiceCOAName", "title": "Invoice COA"},

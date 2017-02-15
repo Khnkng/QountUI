@@ -371,14 +371,10 @@ form {
     border: 1px solid $qount-brand-red;
     box-shadow: none;
   }
-  .ng-dirty.ng-valid {
-    border: 1px solid $qount-brand-green;
-    box-shadow: none;
-  }
   .ng-dirty.ng-invalid, .ng-touched.ng-invalid {
     border: 1px solid $qount-form-ele-border-error;
     box-shadow: none;
-    &.address-component{
+    &.address-component, &.expense-item-info{
       border: none;
     }
   }
@@ -836,7 +832,7 @@ ul.side-nav a {
     transition: all 0.5s;
     top: 0px;
     z-index: 100;
-    right: -200%;
+    right: -250%;
     overflow-x: hidden;
     padding: 50px 5px 0 0;
   }
@@ -1438,7 +1434,9 @@ dashboard{
     }
   }
 }
-
+.qount-off-canvas-menu .flyout .flyout-placeholder .dimension-values{
+  display: block;
+}
 /*end box*/
 
 i {
@@ -1750,7 +1748,16 @@ table.footable-editing-right tr.footable-editing td {
     }
 
   }
+
+  .coa-description{
+    font-size: 13px;
+    span{
+      font-weight: bold;
+    }
+  }
 }
+
+
 
 
 
@@ -1783,6 +1790,12 @@ table.footable-editing-right tr.footable-editing td {
   }*/
 
   tbody {
+    tr:nth-of-type(even) {
+      background-color: white;
+    }
+    tr:nth-of-type(odd) {
+      background-color: white;
+    }
     tr {
       td{
         vertical-align: middle !important;
@@ -1790,6 +1803,7 @@ table.footable-editing-right tr.footable-editing td {
       color: #36404a;
       &:hover {
         background-color: #f4faff;
+        cursor: hand;
         a {
           &.action {
             visibility: visible;
@@ -2069,7 +2083,20 @@ table.footable-editing-right tr.footable-editing td {
   }
 }
 
-
+#ruletable, #coa, #coa1, #coa2, #ruletable1{
+  tbody{
+    tr:hover {
+      background-color: white;
+    }
+    tr{
+      td{
+        label{
+          width:91px;
+        }
+      }
+    }
+  }
+}
 .report-table {
 
   thead{
@@ -2905,7 +2932,6 @@ tbody{
   }
 }
 
-
 /* Indentation for child chart of account */
 .footable{
   td.coa-child{
@@ -2913,6 +2939,9 @@ tbody{
   }
 }
 
+.ui-menu .ui-menu-item{
+  text-align: left;
+}
 .invoice-settings{
   .template-type{
     width: 150px;
@@ -2997,55 +3026,10 @@ tbody{
   }
 
   .add-item {
+    border-top: 1pt solid #ccc;
     border-bottom: 1pt solid #ccc;
     padding: 10px;
   }
 
-  .items-table {
-    padding: 10px 0px 10px 0px;
-    border-bottom: 1pt solid #ccc;
-  }
-
-  .items-table:first-child {
-    padding-top:0px;
-  }
-
-  .items-table > div {
-    padding: 0px;
-  }
-
 
 }
-
-form .ng-dirty.ng-invalid, form .ng-touched.ng-invalid {
-  border: none;
-}
-
-form .ng-dirty.ng-valid {
-  border: none;
-}
-
-form input.ng-dirty.ng-invalid, form input.ng-touched.ng-invalid {
-  border: 1px solid #cacaca;
-}
-
-form input.ng-dirty.ng-valid {
-  border: 1px solid #cacaca;
-}
-
-form select.ng-dirty.ng-invalid, form select.ng-touched.ng-invalid {
-  border: 1px solid #cacaca;
-}
-
-form select.ng-dirty.ng-valid {
-  border: 1px solid #cacaca;
-}
-
-form input.ng-dirty.ng-valid {
-  border: 1px solid #cacaca;
-}
-
-form select.ng-dirty.ng-valid {
-  border: 1px solid #cacaca;
-}
-

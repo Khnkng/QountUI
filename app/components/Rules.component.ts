@@ -14,6 +14,7 @@ import {VendorModel} from "../models/Vendor.model";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 
 
 declare let jQuery:any;
@@ -30,20 +31,36 @@ export class RulesComponent {
     ruleForm:FormGroup;
     editMode:boolean = false;
     RulesList:any;
+    AttributeList:any;
     hasRuleList:boolean = false;
     actions: FormArray = new FormArray([]);
+    depositlist:Array<any> = [];
+    expenxeArray:Array<any>=[];
+    expenxeArraylist:Array<any>=[];
+    expenxeArrayvalue:any;
+    depositAarray:Array<any>=[];
+    depositAarraylist:Array<any>=[];
+    banks:Array<any> = [];
     rules:Array<any> = [];
     tableData:any = {};
+    todaysDate:any;
+    selectedDimensions:Array<any> = [];
     row:any;
     tableOptions:any = {};
     chartOfAccounts:Array<any>= [];
     dimensions:Array<any> = [];
     companyId:string;
     vendors:Array<any>;
-
+    conparisionArray:Array<any>;
     constructor(private _router:Router,private _toastService: ToastService, private _fb: FormBuilder,private ruleservice:RulesService,private _ruleForm: RuleForm, private coaService: ChartOfAccountsService,
-        private dimensionService: DimensionService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
+        private dimensionService: DimensionService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
         this.companyId = Session.getCurrentCompany();
+        this.conparisionArray=['begins with','contains','equals to','greater than','less than'];
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        this.todaysDate=yyyy +"-"+mm+"-"+dd;
         this.ruleservice.getRulesofCompany(this.companyId)
             .subscribe(RulesList  => {
                 this.loadingService.triggerLoadingEvent(false);
@@ -51,17 +68,64 @@ export class RulesComponent {
                 this.buildTableData(RulesList);
                 this.showFlyout = false;
             }, error =>  this.handleError(error));
+        this.financialAccountsService.financialInstitutions()
+            .subscribe(banks => {
+                this.banks = banks;
+            }, error => this.handleError(error));
+        this.ruleservice.getattributes(this.companyId)
+            .subscribe(AttributeList  => {
+                this.loadingService.triggerLoadingEvent(false);
+                 this.AttributeList=AttributeList;
+                for(let key in AttributeList){
+                    this.depositlist.push(key);
+                    let exparray=AttributeList[key];
+                    this.expenxeArray.push(exparray);
+
+                }
+
+                for(var key in this.expenxeArray[0]){
+                   this.expenxeArraylist.push(key);
+                    this.expenxeArrayvalue=this.expenxeArraylist;
+                }
+                for(var key in this.expenxeArray[1]){
+                    this.depositAarraylist.push(key);
+                }
+            }, error =>  this.handleError(error));
     }
     handleError(error) {
+
+    }
+    expesevalue(){
+        let expRate:any = this.ruleForm.controls['sourceType'];
+        if(expRate.value=='Expense'){
+            let expense:any = this.ruleForm.controls['attributeName'];
+            this.expenxeArrayvalue=this.expenxeArraylist;
+        }
+        else{
+            let expense:any = this.ruleForm.controls['attributeName'];
+            this.expenxeArrayvalue= this.depositAarraylist;
+        }
+
+    }
+    selectChange(){
+        let attributeRate:any = this.ruleForm.controls['attributeName'];
+        if(attributeRate.value=='Title' ||attributeRate.value=='Notes' ){
+            this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO'];
+        }
+        else{
+            this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO','GREATER_THAN_OR_EQUALS_TO','LESS_THAN','GREATER_THAN','LESS_THAN_OR_EQUALS_TO'];
+        }
 
     }
     showAddRule(){
         this.editMode = false;
         this.showFlyout = true;
+        this.selectedDimensions==[];
         this.actions = new FormArray([]);
         let _form = this._ruleForm.getForm();
-        _form['actions'] = this.actions;
         this.ruleForm = this._fb.group(_form);
+        this.selectedDimensions==[];
+        this.ruleForm.reset();
     }
     showMessage(status, obj) {
         if(status) {
@@ -103,9 +167,15 @@ export class RulesComponent {
             }
         }
     }
-
+    doNothing($event){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+    }
     hideFlyout(){
+        this.selectedDimensions=[];
         this.row = {};
+        this.selectedDimensions=[];
         this.showFlyout = !this.showFlyout;
     }
 
@@ -124,6 +194,7 @@ export class RulesComponent {
         this.tableData.columns = [
             {"name":"id","title":"id","visible": false},
             {"name": "rule", "title": "Rule"},
+            {"name": "conditions", "title": "conditions","visible": false},
             {"name": "action", "title": "action","visible": false},
             {"name": "actionValue", "title": "actionValue","visible": false},
             {"name": "actions", "title": ""},
@@ -133,7 +204,11 @@ export class RulesComponent {
         let base = this;
         _.each(RulesList, function(RulesList) {
             let row:any = {};
-            row['rule']="when a "+RulesList.sourceType+" is created and the "+RulesList.attributeName+" " +RulesList.comparisionType +" "+RulesList.comparisionValue;
+            if(RulesList.conditions[0]) {
+                row['rule'] = "When a " + RulesList.sourceType + " is created and the source is" +" "+ RulesList.source + " ," + RulesList.conditions[0].attributeName + " " + RulesList.conditions[0].comparisionType + " " + RulesList.conditions[0].comparisionValue + " " + "AND" + " " + RulesList.conditions[1].attributeName + " " + RulesList.conditions[1].comparisionType + " " + RulesList.conditions[1].comparisionValue;
+            }else{
+                row['rule'] = "When a " + RulesList.sourceType + " is created and the " + RulesList.source + " " ;
+            }
             row['id']=RulesList.id;
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.tableData.rows.push(row);
@@ -172,15 +247,14 @@ export class RulesComponent {
     deleteAction(index){
         let indexValue=this.actions.controls.splice(index,1);
         let actionsControl:any = this.ruleForm.controls['actions'];
-        let actionsControlform=actionsControl.controls.splice(index, 1);
-
+        let actionsControlform=actionsControl.value.splice(index, 1);
     }
 
     updateActionValueInUI(field, index, value,id){
         let base = this;
         if(field == 'chartOfAccount'){
             setTimeout(function(){
-                jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(value));
+                jQuery('#coa-'+index).siblings().children('input').val(value);
             }, 10);
         } else if(field == 'dimension'){
             setTimeout(function(){
@@ -200,8 +274,8 @@ export class RulesComponent {
         this.editMode = true;
         this.actions = new FormArray([]);
         this.ruleservice.rule(this.companyId,row.id).subscribe(rule => {
+            this.getRowDetails(row.id);
             rule.actions.forEach(function(action, index){
-                debugger;
                 base.updateActionValueInUI(action.action, index, action.actionValue,action.id);
                 let actionForm = base._fb.group(base._actionForm.getForm(action));
                 base.actions.push(actionForm);
@@ -210,24 +284,47 @@ export class RulesComponent {
             _form['actions'] = this.actions;
             this.ruleForm = this._fb.group(_form);
         });
-        this.getRowDetails(row.id);
+        // this.getRowDetails(row.id);
 
+    }
+    isValid(ruleForm){
+        if(ruleForm.value.comparisionType=="" || ruleForm.value.comparisionType==null && ruleForm.value.comparisionType1=="" || ruleForm.value.comparisionType1==null
+            && ruleForm.value.comparisionValue=="" || ruleForm.value.comparisionValue==null && ruleForm.value.comparisionValue=="" || ruleForm.value.comparisionValue==null
+            && ruleForm.value.comparisionValue1=="" || ruleForm.value.comparisionValue1==null){
+            return false;
+        }
+            return true;
     }
     getRowDetails(RuleID){
         let base=this;
         this.ruleservice.rule(this.companyId,RuleID).subscribe(rule => {
             this.row = rule;
+            this.selectedDimensions=rule.actions;
             let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
             selectedCOAControl.patchValue(rule.sourceType);
+            let selectedSource:any = this.ruleForm.controls['source'];
+            selectedSource.patchValue(rule.source);
             let attributeName:any = this.ruleForm.controls['attributeName'];
-            attributeName.patchValue(rule.attributeName);
+            let ruleattribute=rule.conditions[0].attributeName;
+            attributeName.patchValue(ruleattribute);
             let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
-            selectedAmountControl.patchValue(rule.comparisionType);
+            let rulecoparisionrype=rule.conditions[0].comparisionType;
+            selectedAmountControl.patchValue(rulecoparisionrype);
             let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
-            selectedValueControl.patchValue(rule.comparisionValue);
-let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
+            let rulecoparisionvalue=rule.conditions[0].comparisionValue;
+            selectedValueControl.patchValue(rulecoparisionvalue);
+            let logicalOperator:any = this.ruleForm.controls['logicalOperator'];
+            logicalOperator.patchValue("AND");
+            let attributeName1:any = this.ruleForm.controls['attributeName1'];
+            attributeName1.patchValue(rule.conditions[1].attributeName);
+            let comparisionType1:any = this.ruleForm.controls['comparisionType1'];
+            comparisionType1.patchValue(rule.conditions[1].comparisionType);
+            let comparisionValue1:any = this.ruleForm.controls['comparisionValue1'];
+            comparisionValue1.patchValue(rule.conditions[1].comparisionValue);
+            let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
             effectiveDate.patchValue(rule.effectiveDate);
             this._ruleForm.updateForm(this.ruleForm, rule);
+
 
         }, error => this.handleError(error));
     }
@@ -235,7 +332,10 @@ let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
         let data = this._ruleForm.getData(this.ruleForm);
         return data.sourceType;
     }
-
+    setDate(date: string){
+        let jeDateControl:any = this.ruleForm.controls['effectiveDate'];
+        jeDateControl.patchValue(date);
+    }
     isActionCOA(actionForm){
         if(actionForm){
             let data = this._actionForm.getData(actionForm);
@@ -261,7 +361,7 @@ let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
         let currentActionForm:any = actionsControl.controls[index];
         let currentActionData = this._actionForm.getData(currentActionForm);
         if(action == 'chartOfAccount'){
-            currentActionData.actionValue = actionValueObj.id;
+            currentActionData.actionValue = actionValueObj.name;
         } else{
             currentActionData.actionValue = actionValueObj.name;
         }
@@ -272,20 +372,93 @@ let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
         $event && $event.preventDefault();
         let data = this._ruleForm.getData(this.ruleForm);
         this.companyId = Session.getCurrentCompany();
-        if(dateFlag == 'NO_DATE'){
-            delete data.effectiveDate;
+        if(data.effectiveDate=="" || data.effectiveDate==null){
+            data.effectiveDate=this.todaysDate;
+        }else{
+            console.log("data.effectiveDate",data.effectiveDate);
         }
-        if(this.editMode){
 
+        if(this.editMode){
+            if(data.attributeName || data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1 ){
+                delete data.attributeName;
+                delete data.comparisionType;
+                delete data.comparisionValue;
+                delete data.logicalOperator;
+                delete data.attributeName1;
+                delete data.comparisionType1;
+                delete data.comparisionValue1;
+            }
+            data.conditions=[];
+            data.actions=this.selectedDimensions;
+            var condition1={};
+            var condition2={};
+            let chartOfAccount:any = this.ruleForm.controls['chartOfAccount'];
+            chartOfAccount.patchValue(chartOfAccount.value);
+            let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
+            selectedAmountControl.patchValue(selectedAmountControl.value);
+            let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
+            selectedValueControl.patchValue(selectedValueControl.value);
+            let logicalOperator:any = this.ruleForm.controls['logicalOperator'];
+            logicalOperator.patchValue(logicalOperator.value);
+            condition1['attributeName']="Title";
+            condition1['comparisionType']=selectedAmountControl.value;
+            condition1['comparisionValue']=selectedValueControl.value;
+            condition1['logicalOperator']=logicalOperator.value;
+            var conditionrow=data.conditions.push(condition1);
+            let selectedAmountControl1:any = this.ruleForm.controls['comparisionType1'];
+            selectedAmountControl1.patchValue(selectedAmountControl1.value);
+            let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
+            selectedValueControl1.patchValue(selectedValueControl1.value);
+            condition2['attributeName']="Amount";
+            condition2['comparisionType']=selectedAmountControl1.value;
+            condition2['comparisionValue']=selectedValueControl1.value;
+            var conditionrow2=data.conditions.push(condition2);
             data.id = this.row.id;
             this.ruleservice.updateRule(data, this.companyId)
                 .subscribe(success  => {
-                    console.log("vendorodeldata",<VendorModel>data);
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
         } else{
+            if(data.attributeName || data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1 ){
+                delete data.attributeName;
+                delete data.comparisionType;
+                delete data.comparisionValue;
+                delete data.logicalOperator;
+                delete data.attributeName1;
+                delete data.comparisionType1;
+                delete data.comparisionValue1;
+            }
+            data.conditions=[];
+            var condition1={};
+            var condition2={};
+            data.actions=this.selectedDimensions;
+            let chartOfAccount:any = this.ruleForm.controls['chartOfAccount'];
+            chartOfAccount.patchValue(chartOfAccount.value);
+            let attributeName:any = this.ruleForm.controls['attributeName'];
+            attributeName.patchValue(attributeName.value);
+            let selectedAmountControl:any = this.ruleForm.controls['comparisionType'];
+            selectedAmountControl.patchValue(selectedAmountControl.value);
+            let selectedValueControl:any = this.ruleForm.controls['comparisionValue'];
+            selectedValueControl.patchValue(selectedValueControl.value);
+            let logicalOperator:any = this.ruleForm.controls['logicalOperator'];
+            logicalOperator.patchValue(logicalOperator.value);
+            condition1['attributeName']="Title";
+            condition1['comparisionType']=selectedAmountControl.value;
+            condition1['comparisionValue']=selectedValueControl.value;
+            condition1['logicalOperator']=logicalOperator.value;
+            var conditionrow=data.conditions.push(condition1);
+            let attributeName1:any = this.ruleForm.controls['attributeName1'];
+            attributeName1.patchValue(attributeName1.value);
+            let selectedAmountControl1:any = this.ruleForm.controls['comparisionType1'];
+            selectedAmountControl1.patchValue(selectedAmountControl1.value);
+            let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
+            selectedValueControl1.patchValue(selectedValueControl1.value);
+            condition2['attributeName']="Amount";
+            condition2['comparisionType']=selectedAmountControl1.value;
+            condition2['comparisionValue']=selectedValueControl1.value;
+            var conditionrow2=data.conditions.push(condition2);
             this.ruleservice.addRule(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
@@ -295,6 +468,47 @@ let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
         }
     }
 
+    isDimensionSelected(dimensionName){
+        let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
+        return selectedDimensionNames.indexOf(dimensionName) != -1;
+    }
+    selectDimension($event, dimensionName){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+        let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
+        if(selectedDimensionNames.indexOf(dimensionName) == -1){
+            this.selectedDimensions.push({
+                "name": dimensionName,
+                "values": []
+            });
+        } else{
+            this.selectedDimensions.splice(selectedDimensionNames.indexOf(dimensionName), 1);
+        }
+    }
+    selectValue($event, dimension, value){
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+        _.each(this.selectedDimensions, function (selectedDimension) {
+            if(selectedDimension.name == dimension.name){
+                if(selectedDimension.values.indexOf(value) == -1){
+                    selectedDimension.values.push(value);
+                } else{
+                    selectedDimension.values.splice(selectedDimension.values.indexOf(value), 1);
+                }
+            }
+        });
+    }
+    isValueSelected(dimension, value){
+        let currentDimension = _.find(this.selectedDimensions, {'name': dimension.name});
+        if(!_.isEmpty(currentDimension)){
+            if(currentDimension.values.indexOf(value) != -1){
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
     ngOnInit(){
         let companyId = Session.getCurrentCompany();
         let _form = this._ruleForm.getForm();
@@ -304,6 +518,7 @@ let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
         this.coaService.chartOfAccounts(companyId)
             .subscribe(chartOfAccounts => {
                 this.chartOfAccounts = chartOfAccounts;
+                _.sortBy(this.chartOfAccounts, ['number', 'name']);
             });
         this.dimensionService.dimensions(companyId)
             .subscribe(dimensions => {

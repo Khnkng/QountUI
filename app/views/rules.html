@@ -12,7 +12,7 @@
         <div class="foo-toolbar">
             <button class="button small" (click)="showAddRule()"><i class="icon ion-plus-round"></i> Rule</button>
         </div>
-        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasRuleList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable table-striped" *ngIf="hasRuleList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
     <div class="qount-off-canvas-menu rule-flyout">
         <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
@@ -26,68 +26,97 @@
                         <form *ngIf="showFlyout" novalidate [formGroup]="ruleForm">
                             <div class="row">
                                 <div class="small-12 medium-12 columns">
+                                    <div class="form-section-left">
                                     <header class="form-section-header">Rule</header>
                                     <div class="row">
                                         <div class="small-12 medium-12 columns rule-row">
-                                            <label>When a</label>
-                                            <select class="source" formControlName="sourceType">
-                                                <option>Expense</option>
-                                                <option>Deposit</option>
-                                            </select>
-                                            <label>is created and the</label>
-                                            <select class="column-condition" formControlName="attributeName">
-                                                <option value="TITLE">title</option>
-                                                <option value="AMOUNT">amount</option>
-                                            </select>
-                                            <select class="condition" formControlName="comparisionType">
-                                                <option value="BEGINS_WITH">begins with</option>
-                                                <option value="CONTAINS">contains</option>
-                                                <option value="EQUALS_TO">equals to</option>
-                                                <option value="GREATER_THAN">greater than</option>
-                                                <option value="LESS_THAN">less than</option>
-                                            </select>
-                                            <input type="text" class="condition-value" formControlName="comparisionValue"/>
-                                        </div>
-                                    </div>
-                                    <header class="form-section-header">Actions:</header>
-                                    <div class="actions-form" formArrayName="actions">
-                                        <div class="row action-row" *ngFor="let actionForm of ruleForm.controls.actions.controls;let index=index;">
-                                            <div class="small-12 medium-6 columns">
-                                                <label>Then add</label>
-                                                <select class="action" [formControl]="actionForm.controls.action">
-                                                    <option value="chartOfAccount">Chart of account</option>
-                                                    <option value="dimension">Dimension</option>
-                                                </select>
-                                                <label *ngIf="isActionCOA(actionForm)" class="combo-box">
-                                                    <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Chart of account" [formControl]="actionForm.controls.actionValue" [listObject]="chartOfAccounts" (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
-                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.name}}</option>
+
+                                            <table id="ruletable" style="width:40%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
+                                                <tbody style="border-color: white">
+                                                <tr style="border:0px;border-color:white;">
+                                                    <td><label>Type</label></td>
+                                                    <td><span style="font-size: 0.875rem;color:black"><input checked style="margin-top:3px;" value="Expense" type="radio" formControlName="sourceType" name="sourceType"  type="radio" />Expense</span></td>
+                                                    <td><span style="font-size: 0.875rem;color:black"><input style="margin-top:3px;" value="Deposit" type="radio" formControlName="sourceType" name="sourceType"  type="radio" />Deposit</span></td>
+                                                </tr>
+                                                <tr style="border:0px;border-color:white">
+                                                    <td><label >Source</label></td>
+                                                    <td><select style="height: 2.4375rem;width: 100%" formControlName="source">
+                                                        <option *ngFor="let bank of banks;"  value="{{bank.name}}">{{bank.name}}</option>
+                                                    </select></td>
+                                                </tr>
+                                                <tr style="border:0px;border-color:white">
+                                                    <td><label>Title</label></td>
+                                                    <td>
+                                                    <select style="height: 2.4375rem;width: 100%" class="condition" formControlName="comparisionType">
+                                                        <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                     </select>
-                                                </label>
-                                                <label *ngIf="isActionDimension(actionForm)" class="combo-box">
-                                                    <select id="dimension-{{index}}" combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter Dimension" [formControl]="actionForm.controls.actionValue" [listObject]="dimensions" (valueChanged)="updateActionValue($event, index, 'dimension')">
-                                                        <option *ngFor="let dimension of dimensions" [value]="dimension.name">{{dimension.name}}</option>
-                                                    </select>
-                                                </label>
-                                            </div>
-                                            <div class="small-12 medium-1 columns">
-                                                <i class="icon ion-close" *ngIf="actions.length != 1" (click)="deleteAction(index)"></i>
-                                            </div>
+                                                    </td>
+                                                    <td>
+                                                    <input type="text" class="condition-value" formControlName="comparisionValue" placeholder="Title*" />
+                                                    </td>
+                                                </tr>
+                                                <tr style="border:0px;border-color:white">
+                                                    <td><label>Amount</label></td>
+                                                    <td><select style="height: 2.4375rem;width: 100%" class="condition" formControlName="comparisionType1">
+                                                        <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
+                                                    </select></td>
+                                                    <td><input  type="text" formControlName="comparisionValue1" placeholder="Amount*" class="condition-value"/>
+                                                    </td>
+                                                </tr>
+                                                <tr style="border:0px;border-color:white;">
+                                                    <td>
+                                                        <label value="chartOfAccount">COA</label>
+                                                    </td>
+                                                    <td> <label>
+                                                        <select style="margin-left:0px;height: 2.4375rem;"  title="" data-placeholder="Enter Chart of account" formControlName="chartOfAccount"  (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
+                                                            <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                                        </select>
+                                                    </label></td>
+                                                </tr>
+                                                <tr style="border:0px;border-color:white;">
+                                                    <td><label>Effective Date</label></td>
+                                                    <td><input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event)" [format]="'YYYY-MM-DD'" [mindate]="'past'"  value="{{todaysDate}}"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+
                                         </div>
                                     </div>
-                                    <div class="row add-action">
-                                        <div class="small-2 medium-3 columns">
-                                            <a (click)="addNewAction()"><i class="icon ion-plus-round"></i> Action</a>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="small-2 medium-6 columns">
-                                            <button type="submit" class="button small float-left" (click)="submit($event, 'NO_DATE')">Save</button>
-                                            <div class="date-wrapper float-left" (click)="submit($event, 'WITH_DATE')">
-                                                <a class="button small float-left">Save and apply to all {{getSourceName()}}s since</a>
+                                    <div class="form-section-left">
+                                        <div class="row collapse dimension-flyout">
+                                            <div class="row">
+                                                <div class="small-12 medium-12 columns">
+                                                    <header class="form-section-header" style="margin-top:37px">Dimensions</header>
+                                                        <div class="row dimension-grids" style="margin-top: 15px" (click)="doNothing($event)">
+                                                            <div class="small-12 medium-6 columns dimension-grid" *ngFor="let dimension of dimensions">
+                                                                <div class="dimension-header">
+                                                                    <div>
+                                                                        <span class="float-left" style="font-size: 0.875rem">{{dimension.name}}</span>
+                                                                        <span class="float-right">
+                                                    <i class="icon ion-checkmark-circled" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"
+                                                       (click)="selectDimension($event, dimension.name)"></i>
+                                                </span>
+                                                                    </div>
+                                                                    <div class="bottom" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"></div>
+                                                                </div>
+                                                                <div class="dimension-values" [ngClass]="{'selected': isDimensionSelected(dimension.name)}">
+                                                                    <div class="dimension-value" *ngFor="let value of dimension.values; let index = index;">
+                                                                        <label style="font-size: 0.875rem" (click)="selectValue($event, dimension, value)">
+                                                                            <input type="checkbox" [checked]="isValueSelected(dimension, value)"/>{{value}}
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </div>
                                             </div>
-                                            <input class="float-left" type="text" formControlName="effectiveDate"/>
                                         </div>
-                                    </div>
+                                        </div>
+                                </div>
+
+                                <div class="small-2 medium-12 columns">
+                                    <button type="submit" class="button create small float-right" [disabled]="!isValid(ruleForm)" (click)="submit($event)">Save</button>
                                 </div>
                             </div>
                         </form>
@@ -98,7 +127,9 @@
                       <i class="ion-ios-close-empty"></i>
                     </span>
                 </button>
+
             </section>
+
         </div>
     </div>
 </div>

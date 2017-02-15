@@ -15,13 +15,20 @@ export class FinancialAccountForm extends abstractForm{
     numberValidator.push(Validators.required);
     return {
       "name": ['', Validators.required],
-      "starting_balance": [''],
-      "starting_balance_date": [''],
-      "is_credit_account": [false],
-      "id": [''],
+      "starting_balance": ['', Validators.required],
+      "starting_balance_date": ['', Validators.required],
+      "bank_id": [''],
       "user_name": [''],
+      "id": [''],
       "password": [''],
-      "importType":['AUTO']
+      "type":['', Validators.required],
+      "importType":['MANUAL'],
+      "chart_of_account_id": [''],
+      "account_number":[''],
+      "routing_number":[''],
+      "signatory":[''],
+      "is_payment_accout_type":[false],
+      "transit_chart_of_account_id":['']
     }
   }
 }

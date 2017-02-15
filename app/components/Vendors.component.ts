@@ -51,6 +51,10 @@ export class VendorComponent {
   countryCode:string;
   showAddress:boolean;
   showFlyout:boolean = false;
+  vendorTypes:any = {
+    company : "Business",
+    individual: "Individual"
+  };
 
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
               private _router: Router, private loadingService:LoadingService,
@@ -73,6 +77,7 @@ export class VendorComponent {
     this.coaService.chartOfAccounts(this.companyId)
         .subscribe(chartOfAccounts => {
           this.chartOfAccounts=chartOfAccounts?_.filter(chartOfAccounts, {'type': 'accountsPayable'}):[];
+          _.sortBy(this.chartOfAccounts, ['number', 'name']);
         }, error=> this.handleError(error));
   }
 
@@ -106,8 +111,8 @@ export class VendorComponent {
       {"name": "ssn", "title": "SSN","visible": false},
       {"name": "has1099", "title": "1099","visible": false},
       {"name": "paymentMethod", "title": "Payment Method","visible": false},
-      {"name": "accountNumber", "title": "Account Number","visible": false},
-      {"name": "accountNumbers", "title": "Account Numbers","visible": false},
+      {"name": "accountNumber", "title": "Reference Number","visible": false},
+      {"name": "accountNumbers", "title": "Reference Numbers","visible": false},
       {"name": "routingNumber", "title": "RoutingNumber","visible": false},
       {"name": "coa", "title": "COA","visible": false},
       {"name": "creditCardNumber", "title": "Credit Card Number","visible": false},
@@ -119,9 +124,9 @@ export class VendorComponent {
       for(let key in base.vendors[0]) {
         row[key] = vendor[key];
         if(key == 'type'){
-          if(vendor[key] == 'Individual'){
+          if(vendor[key] == base.vendorTypes.individual){
             row['einssn'] = vendor['ssn'];
-          } else if(vendor[key] == 'Company'){
+          } else if(vendor[key] == base.vendorTypes.company){
             row['einssn'] = vendor['ein'];
           }
         }
@@ -175,8 +180,13 @@ export class VendorComponent {
   }
 
   showCOA(coa:any) {
-    let coaControl:any = this.vendorForm.controls['coa'];
-    coaControl.patchValue(coa.id);
+    let data = this._vendorForm.getData(this.vendorForm);
+    if(coa && coa.id){
+      data.coa = coa.id;
+    } else{
+      data.coa = null;
+    }
+    this._vendorForm.updateForm(this.vendorForm, data);
   }
 
   removeVendor(row:any) {
@@ -194,6 +204,10 @@ export class VendorComponent {
     _.remove(this.vendors, function (_vendor) {
       return vendor.id == _vendor.id;
     });
+  }
+
+  ngOnDestroy(){
+    jQuery('.ui-autocomplete').remove();
   }
 
   active1:boolean=true;
@@ -290,12 +304,14 @@ export class VendorComponent {
   setVendorType(vendorType, vendor?){
     let validator = [Validators.required, Validators.pattern];
     let tempForm = _.cloneDeep(this._vendorForm.getForm());
-    if(vendorType == 'Company'){
-      tempForm.ein = [this.row.ein || '', validator];
-      tempForm.ssn = [this.row.ssn || ''];
+    let ein = this.row? this.row.ein : '';
+    let ssn = this.row? this.row.ssn : '';
+    if(vendorType == this.vendorTypes.company){
+      tempForm.ein = [ein || '', validator];
+      tempForm.ssn = [ssn || ''];
     } else {
-      tempForm.ein = [this.row.ein || ''];
-      tempForm.ssn = [this.row.ssn || '', validator];
+      tempForm.ein = [ein || ''];
+      tempForm.ssn = [ssn || '', validator];
     }
     if(!vendor){
       tempForm.type = [vendorType, [Validators.required]];
@@ -309,7 +325,7 @@ export class VendorComponent {
 
   isVendorCompany(form){
     let data = this._vendorForm.getData(form);
-    if(data.type == 'Company'){
+    if(data.type == this.vendorTypes.company){
       return true;
     }
     return false;
@@ -337,6 +353,14 @@ export class VendorComponent {
       if(!_.isEmpty(coa)){
         setTimeout(function(){
           base.coaComboBox.setValue(coa, 'name');
+        });
+      } else{
+        let defaultOption = {
+          'name': 'None',
+          'value': 'None'
+        };
+        setTimeout(function(){
+          base.coaComboBox.setValue(defaultOption, 'name');
         });
       }
       vendor.has1099 = vendor.has1099 == 'true' || vendor.has1099 == true;

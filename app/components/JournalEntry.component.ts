@@ -114,7 +114,9 @@ export class JournalEntryComponent{
         }, 0);
     }
 
-    selectValue(dimension, value){
+    selectValue($event, dimension, value){
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
         _.each(this.selectedDimensions, function (selectedDimension) {
             if(selectedDimension.name == dimension.name){
                 if(selectedDimension.values.indexOf(value) == -1){
@@ -139,9 +141,13 @@ export class JournalEntryComponent{
             }
             return false;
         }
+        return false;
     }
 
-    selectDimension(dimensionName){
+    selectDimension($event, dimensionName){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
         let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
         if(selectedDimensionNames.indexOf(dimensionName) == -1){
             this.selectedDimensions.push({
@@ -151,6 +157,13 @@ export class JournalEntryComponent{
         } else{
             this.selectedDimensions.splice(selectedDimensionNames.indexOf(dimensionName), 1);
         }
+    }
+
+    /*This function will stop event bubbling to avoid default selection of first value in first dimension*/
+    doNothing($event){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
     }
 
     hideFlyout(){
@@ -177,6 +190,8 @@ export class JournalEntryComponent{
         this.dimensionFlyoutCSS = "expanded";
         this.lineActive = true;
         this.resetLineForm();
+        this.selectedDimensions = [];
+
         if(lineStatus == 'NEW'){
             this.editingLine = {
                 status: 'NEW'
@@ -194,20 +209,30 @@ export class JournalEntryComponent{
 
     getLineData(lineForm){
         let base = this;
-        let lineId = lineForm.controls['id'].value;
-        this.journalService.getJournalLine(this.currentCompany.id, this.journalEntry.id, lineId)
-            .subscribe(journalLine => {
-                this._lineListForm.updateForm(this.lineForm, journalLine);
-                this.filteredChartOfAccounts = _.filter(this.chartOfAccounts, {'category': journalLine.type});
-                let coa = _.find(this.filteredChartOfAccounts, {'id': journalLine.coa});
-                this.selectedDimensions = journalLine.dimensions;
-                this.newLineForm();
-                setTimeout(function(){
-                    base.newCoaComboBox.setValue(coa, 'name');
-                },0);
-            }, error => {
-                this.toastService.pop(TOAST_TYPE.error, "Couldn't fetch Line details");
-            });
+        if(this.newJournalEntry){
+            let lineData = this._lineListForm.getData(lineForm);
+            this.updateLineFormForEdit(lineData);
+        } else{
+            let lineId = lineForm.controls['id'].value;
+            this.journalService.getJournalLine(this.currentCompany.id, this.journalEntry.id, lineId)
+                .subscribe(journalLine => {
+                    this.updateLineFormForEdit(journalLine);
+                }, error => {
+                    this.toastService.pop(TOAST_TYPE.error, "Couldn't fetch Line details");
+                });
+        }
+    }
+
+    updateLineFormForEdit(lineData){
+        let base = this;
+        this._lineListForm.updateForm(this.lineForm, lineData);
+        this.filteredChartOfAccounts = _.filter(this.chartOfAccounts, {'category': lineData.type});
+        let coa = _.find(this.filteredChartOfAccounts, {'id': lineData.coa});
+        this.selectedDimensions = lineData.dimensions;
+        this.newLineForm();
+        setTimeout(function(){
+            base.newCoaComboBox.setValue(coa, 'name');
+        },0);
     }
 
     /*When user clicks on save button in the flyout*/
@@ -285,6 +310,7 @@ export class JournalEntryComponent{
         lineControl.controls['coa'].patchValue(line.coa);
         lineControl.controls['entryType'].patchValue(line.entryType);
         lineControl.controls['amount'].patchValue(line.amount);
+        lineControl.controls['dimensions'].patchValue(line.dimensions);
     }
 
     //When user double clicks on the line, it toggles and show the fields
@@ -301,7 +327,11 @@ export class JournalEntryComponent{
             index: index
         };
         let data = this._lineListForm.getData(lineListItem);
-        this.updateLineData(data);
+        if(this.newJournalEntry){
+            this.updateLineInView(data);
+        } else{
+            this.updateLineData(data);
+        }
     }
 
     setJournalDate(date: string){
@@ -556,6 +586,7 @@ export class JournalEntryComponent{
             this.coaService.chartOfAccounts(this.currentCompany.id)
                 .subscribe(chartOfAccounts => {
                     this.chartOfAccounts = chartOfAccounts;
+                    _.sortBy(this.chartOfAccounts, ['number', 'name']);
                     this.toggleAutoReverse();
                     this.toggleRecurring();
                     if(!this.newJournalEntry || this.isReverse){

@@ -1,0 +1,169 @@
+<div class="qount-off-canvas-menu">
+    <div class="flyout expanded" [ngClass]="{'expanded':true}">
+        <section class="flyout-placeholder">
+            <header class="flyout-header">
+                <h6> {{newExpense ? "Create Expense" : "Update expense"}}</h6>
+            </header>
+            <div class="flyout-body flyout-shadow-effect">
+                <form (ngSubmit)="submit($event)" [formGroup]="expenseForm">
+                    <section class="form-section clearfix">
+                        <div class="row">
+                            <div class="small-12 medium-12 columns">
+                                <div class="form-section-left expense-row">
+                                    <header class="form-section-header">Expense Info</header>
+                                    <div class="row">
+                                        <div class="small-12 medium-2 columns">
+                                            <label>Title
+                                                <input type="text" formControlName="title" placeholder="Title*"/>
+                                                <div class="error" [hidden]="expenseForm.controls.title.untouched || expenseForm.controls.title.valid">Expense Title is required</div>
+                                            </label>
+                                        </div>
+                                        <div class="small-12 medium-2 columns">
+                                            <label>Date
+                                                <input type="text" custom-datepicker [format]="'YYYY/MM/DD'" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="due_date" placeholder="Date*">
+                                                <div class="error" [hidden]="expenseForm.controls.due_date.untouched || expenseForm.controls.due_date.valid">Date is required</div>
+                                            </label>
+                                        </div>
+                                        <div class="small-12 medium-2 columns">
+                                            <label>Amount
+                                                <input type="text" formControlName="amount" placeholder="Amount*"/>
+                                                <div class="error" [hidden]="expenseForm.controls.amount.untouched || expenseForm.controls.amount.valid">Amount is required</div>
+                                            </label>
+                                        </div>
+                                        <div class="small-12 medium-3 columns">
+                                            <label>Bank Account
+                                                <select combo-box #accountComboBoxDir="comboBox" data-placeholder="Select Account" [listObject]="accounts" formControlName="bank_account_id" (valueChanged)="setBankAccount($event)">
+                                                    <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
+                                                </select>
+                                                <div class="error" [hidden]="expenseForm.controls.bank_account_id.untouched || expenseForm.controls.bank_account_id.valid">Please select bank account</div>
+                                            </label>
+                                        </div>
+                                        <div class="small-12 medium-1 columns">
+                                            <label>Paid?
+                                                <div class="switch tiny">
+                                                    <input class="switch-input" id="isPaid" type="checkbox" formControlName="is_paid" (change)="togglePaidStatus($event)"/>
+                                                    <label class="switch-paddle" for="isPaid">
+                                                        <span class="show-for-sr">Paid status switch</span>
+                                                    </label>
+                                                </div>
+                                                <div class="error" [hidden]="expenseForm.controls.is_paid.untouched || expenseForm.controls.is_paid.valid">Please paid status</div>
+                                            </label>
+                                        </div>
+                                        <div class="small-12 medium-2 columns" [hidden]="!isExpensePaid">
+                                            <label>Paid Date
+                                                <input type="text" custom-datepicker [format]="'YYYY/MM/DD'" [mindate]="'past'" (valueChanged)="setPaidDate($event)" formControlName="paid_date" placeholder="Paid Date*">
+                                                <div class="error" [hidden]="expenseForm.controls.paid_date.untouched || expenseForm.controls.paid_date.valid">Paid date is required</div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <header class="form-section-header">Expense Items Info</header>
+                                    <div class="text-right">
+                                        <span (click)="showNewItem()">
+                                            <i class="icon ion-ios-plus-outline"></i> Item
+                                        </span>
+                                    </div>
+                                    <div formArrayName="expense_items">
+                                        <table>
+                                            <thead>
+                                            <tr>
+                                                <th style="width: 15%;">Title</th>
+                                                <th style="width: 15%;">Amount</th>
+                                                <th style="width: 20%;">COA</th>
+                                                <th style="width: 20%;">Vendor</th>
+                                                <th style="width: 20%;">Notes</th>
+                                                <th style="width: 8%;"></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr *ngIf="expenseForm.controls.expense_items.controls.length == 0">
+                                                <td colspan="6" class="text-center">No expense items found</td>
+                                            </tr>
+                                            <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="!newExpense && itemForm.controls.destroy.value">
+                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.title.value}}</td>
+                                                <td *ngIf="itemForm.editable">
+                                                    <input type="text" placeholder="Title" [formControl]="itemForm.controls.title"/>
+                                                </td>
+                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.amount.value}}</td>
+                                                <td *ngIf="itemForm.editable">
+                                                    <input type="text" placeholder="Amount" [formControl]="itemForm.controls.amount"/>
+                                                </td>
+                                                <td *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
+                                                <td *ngIf="itemForm.editable" class="combo-box-field">
+                                                    <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
+                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                                    </select>
+                                                </td>
+                                                <td *ngIf="!itemForm.editable">{{getVendorName(itemForm.controls.vendor_id.value)}}</td>
+                                                <td *ngIf="itemForm.editable" class="combo-box-field">
+                                                    <select id="vendor-{{index}}" combo-box #vendorComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors" [formControl]="itemForm.controls.vendor_id" (valueChanged)="setVendorForItem($event, itemForm)">
+                                                        <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
+                                                    </select>
+                                                </td>
+                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.notes.value}}</td>
+                                                <td *ngIf="itemForm.editable">
+                                                    <textarea [formControl]="itemForm.controls.notes" placeholder="Notes"></textarea>
+                                                </td>
+                                                <td>
+                                                        <span *ngIf="!itemForm.editable" (click)="editItem(index, itemForm)">
+                                                            <i class="icon ion-edit"></i>
+                                                        </span>
+                                                    <span *ngIf="!itemForm.editable" (click)="deleteItem(index)">
+                                                            <i class="icon ion-ios-trash-outline"></i>
+                                                        </span>
+                                                    <span *ngIf="itemForm.editable" (click)="updateItem(index, itemForm)">
+                                                            <i class="icon ion-ios-checkmark-outline"></i>
+                                                        </span>
+                                                    <span *ngIf="itemForm.editable" (click)="toggleLine(index, itemForm)">
+                                                            <i class="icon ion-ios-close-outline"></i>
+                                                        </span>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                            <tbody *ngIf="addNewItemFlag" class="expense-item-info" [formGroup]="newItemForm">
+                                            <tr>
+                                                <td>
+                                                    <input type="text" placeholder="Title" formControlName="title"/>
+                                                </td>
+                                                <td>
+                                                    <input type="text" placeholder="Amount" formControlName="amount"/>
+                                                </td>
+                                                <td class="combo-box-field">
+                                                    <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" formControlName="chart_of_account_id" (valueChanged)="setCOAForNewItem($event)">
+                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                                    </select>
+                                                </td>
+                                                <td class="combo-box-field">
+                                                    <select combo-box #newVendorComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors" formControlName="vendor_id" (valueChanged)="setVendorForNewItem($event)">
+                                                        <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <textarea formControlName="notes" placeholder="Notes"></textarea>
+                                                </td>
+                                                <td>
+                                                    <i class="icon ion-ios-checkmark-outline" (click)="saveNewItem()"></i>
+                                                    <i class="icon ion-ios-close-outline" (click)="hideNewItem()"></i>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-12 columns">
+                                <button class="button create small float-right" [disabled]="!expenseForm.valid" type="submit" (click)="submit($event)" data-close>{{newExpense?"Add":"Update"}}</button>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="showExpensesPage()">
+                    <span aria-hidden="true">
+                      <i class="ion-ios-close-empty"></i>
+                    </span>
+                </button>
+            </div>
+        </section>
+    </div>
+</div>

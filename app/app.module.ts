@@ -38,7 +38,7 @@ import {ItemCodeForm} from "./forms/ItemCode.form";
 import {BooksComponent} from "./components/Books.component";
 import {JournalEntryComponent} from "./components/JournalEntry.component";
 import {JournalEntryForm, JournalLineForm} from "./forms/JournalEntry.form";
-import {ExpensesForm} from "./forms/Expenses.form";
+import {ExpenseCodesForm} from "./forms/ExpenseCodes.form";
 import {PaymentsModule} from "billsUI/app/payments.module";
 import {InvoicesModule} from "invoicesUI/app/invoices.module";
 import {RulesService} from "qCommon/app/services/Rules.service";
@@ -62,6 +62,11 @@ import {TermsAndConditionsComponent} from "./components/TermsAndConditions.compo
 import {ResetPasswordComponent} from "./components/resetpassword.component";
 import {RulesComponent} from "./components/Rules.component";
 import {RuleForm, RuleActionForm} from "./forms/Rule.form";
+import {ExpenseComponent} from "./components/Expense.component";
+import {ExpenseForm, ExpenseItemForm} from "./forms/Expenses.form";
+import {DepositComponent} from "./components/Deposit.component";
+import {DepositsForm} from "./forms/Deposits.form";
+import {DepositsLineForm} from "./forms/Deposits.form";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -118,6 +123,16 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         {
             path: 'JournalEntry',
             component: JournalEntryComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'Expense',
+            component: ExpenseComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'expense/:expenseID',
+            component: ExpenseComponent,
             canActivate: [LoggedInActivator]
         },
         {
@@ -194,17 +209,29 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             path: 'termsAndConditions',
             component: TermsAndConditionsComponent,
             canActivate: [LoggedInActivator]
-        }
+        },
+        {
+            path: 'deposit',
+            component: DepositComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'deposit/:depositID',
+            component: DepositComponent,
+            canActivate: [LoggedInActivator]
+        },
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
-        OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent, ResetPasswordComponent, RulesComponent],
+        OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
+        ResetPasswordComponent, RulesComponent, ExpenseComponent,DepositComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
-    providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm,ExpensesForm, TaxesForm, JournalEntryForm, JournalLineForm,
-        RulesService, CustomersForm, DimensionForm, UsersForm, FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm],
+    providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
+        TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm,
+        FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

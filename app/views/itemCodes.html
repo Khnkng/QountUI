@@ -55,7 +55,7 @@
                                                 </div>
                                                 <div class="small-6 columns custom-qount-form-field">
                                                     <select combo-box #paymentCOAComboBoxDir="comboBox" data-placeholder="Enter Payment COA" formControlName="payment_coa_mapping" [listObject]="paymentChartOfAccounts" (valueChanged)="updatePaymentCOA($event)">
-                                                        <option *ngFor="let chartOfAccount of paymentChartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.name}}</option>
+                                                        <option *ngFor="let chartOfAccount of paymentChartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>{{chartOfAccount}}
                                                     <div class="error" [hidden]="itemcodeForm.controls.payment_coa_mapping.untouched || itemcodeForm.controls.payment_coa_mapping.valid">Payment COA is required.</div>
                                                 </div>
@@ -66,7 +66,7 @@
                                                 </div>
                                                 <div class="small-6 columns custom-qount-form-field">
                                                     <select combo-box #invoiceCOAComboBoxDir="comboBox" data-placeholder="Enter Invoice COA" formControlName="invoice_coa_mapping" [listObject]="invoiceChartOfAccounts" (valueChanged)="updateInvoiceCOA($event)">
-                                                        <option *ngFor="let chartOfAccount of invoiceChartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.name}}</option>
+                                                        <option *ngFor="let chartOfAccount of invoiceChartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
                                                     <div class="error" [hidden]="itemcodeForm.controls.invoice_coa_mapping.untouched || itemcodeForm.controls.invoice_coa_mapping.valid">Invoice COA is required.</div>
                                                 </div>
@@ -76,8 +76,17 @@
                                                     <label class="text-right">Unit Price</label>
                                                 </div>
                                                 <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="text" formControlName="unit_price" placeholder="Unit Price"/>
-                                                    <div class="error" [hidden]="itemcodeForm.controls.unit_price.untouched || itemcodeForm.controls.unit_price.valid">Unit price is required.</div>
+                                                    <input type="text" formControlName="purchase_price" placeholder="Unit Price"/>
+                                                    <div class="error" [hidden]="itemcodeForm.controls.purchase_price.untouched || itemcodeForm.controls.purchase_price.valid">Unit price is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top:-16px;">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Sales Price</label>
+                                                </div>
+                                                <div class="small-6 columns custom-qount-form-field">
+                                                    <input type="text" formControlName="sales_price" placeholder="Sales Price"/>
+                                                    <div class="error" [hidden]="itemcodeForm.controls.sales_price.untouched || itemcodeForm.controls.sales_price.valid">Unit price is required.</div>
                                                 </div>
                                             </div>
                                         </div>

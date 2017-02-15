@@ -107,7 +107,7 @@
                           </div>
                           <div [hidden]="!subAccount">
                             <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentID" [listObject]="parentAccounts" (valueChanged)="updateParent($event)">
-                              <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.id">{{parentAccount.name}}</option>
+                              <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.id">{{parentAccount.number}} - {{parentAccount.name}}</option>
                             </select>
                           </div>
                         </div>

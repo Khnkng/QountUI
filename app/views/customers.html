@@ -57,18 +57,82 @@
                                                     <div class="error" [hidden]="customerForm.controls.customer_country.untouched || customerForm.controls.customer_country.valid">Country is required.</div>
                                                 </div>
                                             </div>
-
+                                            <div class="row" style="margin-top:14px">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Email</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="email_id" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
+                                                    <div class="error" *ngIf="customerForm.controls.email_id.touched && customerForm.controls.email_id.hasError('required')">Customer email is required</div>
+                                                    <div class="error" *ngIf="customerForm.controls.email_id.touched && customerForm.controls.email_id.hasError('pattern')">Please check email format</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">COA</label>
+                                                </div>
+                                                <div class="small-6 columns custom-qount-form-field">
+                                                    <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="coa" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
+                                                        <option *ngFor="let coa of chartOfAccounts" [value]="coa.name">{{coa.number}} - {{coa.name}}</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="customerForm.controls.coa.untouched || customerForm.controls.coa.valid">COA is required</div>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="form-section-left">
                                             <header class="form-section-header">Contact Info</header>
-                                            <Address [code]="countryCode" #addressDir="address"></Address>
-                                        </div>
+                                            <div class="row">
+                                                <div class="small-3 columns">
+                                                    <label class="text-right middle">Address</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="customer_address" placeholder="Address*" />
+                                                    <div class="error" [hidden]="customerForm.controls.customer_address.untouched || customerForm.controls.customer_address.valid">Customer Address is required</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-3 columns">
+                                                    <label class="text-right">City</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="customer_city" placeholder="City*"/>
+                                                    <div class="error" [hidden]="customerForm.controls.customer_city.untouched || customerForm.controls.customer_city.valid">City is required</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-3 columns">
+                                                    <label class="text-right">State</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="customer_state" placeholder="State*"/>
+                                                    <div class="error" [hidden]="customerForm.controls.customer_state.untouched || customerForm.controls.customer_state.valid">State is required</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-3 columns">
+                                                    <label class="text-right">Zip Code</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="customer_zipcode" placeholder="Zip Code*"/>
+                                                    <div class="error" [hidden]="customerForm.controls.customer_zipcode.untouched || customerForm.controls.customer_zipcode.valid">Pin code is required</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-3 columns">
+                                                    <label class="text-right">Phone Number</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="phone_number" placeholder="Phone Number*"/>
+                                                    <div class="error" [hidden]="customerForm.controls.phone_number.untouched || customerForm.controls.phone_number.valid">Phone number is required</div>
+                                                </div>
+                                            </div>
+                                    </div>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
-                                        <button class="button create small float-right" [disabled]="!customerForm.valid || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
+                                        <button class="button create small float-right" [disabled]="!customerForm.valid" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
                                     </div>
                                 </div>
                             </section>

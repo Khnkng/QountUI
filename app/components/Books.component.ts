@@ -10,6 +10,8 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {ExpenseService} from "qCommon/app/services/Expense.service";
+import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 
 declare var _:any;
 declare var jQuery:any;
@@ -32,11 +34,11 @@ export class BooksComponent{
     ];
 
     depositsTableData:any = {};
-    depositsTableOptions:any = {search:false, pageSize:10};
+    depositsTableOptions:any = {search:false, pageSize:7};
     expensesTableData:any = {};
-    expensesTableOptions:any = {search:false, pageSize:10};
+    expensesTableOptions:any = {search:false, pageSize:7};
     jeTableData:any = {};
-    jeTableOptions:any = {search:false, pageSize:10};
+    jeTableOptions:any = {search:false, pageSize:7};
 
     tabHeight:string;
     badges:any = [];
@@ -52,10 +54,11 @@ export class BooksComponent{
     hasDeposits:boolean = false;
     allCompanies:Array<any>;
     currentCompany:any;
+    accounts:Array<any>;
 
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
-                private toastService: ToastService, private loadingService:LoadingService,
-        private companiesService: CompaniesService) {
+                private toastService: ToastService, private loadingService:LoadingService, private companiesService: CompaniesService,
+                private expenseService: ExpenseService, private accountsService: FinancialAccountsService) {
         let companyId = Session.getCurrentCompany();
         this.companiesService.companies().subscribe(companies => {
             this.allCompanies = companies;
@@ -112,16 +115,32 @@ export class BooksComponent{
         if(this.selectedTab == 0){
             this.isLoading = false;
         } else if(this.selectedTab == 1){
-            this.isLoading = false;
+            this.isLoading = true;
+            this.loadingService.triggerLoadingEvent(true);
+            this.accountsService.financialAccounts(this.currentCompany.id)
+                .subscribe(accounts => {
+                    this.accounts = accounts.accounts;
+                    this.expenseService.expenses(this.currentCompany.id)
+                        .subscribe(expenses => {
+                            this.loadingService.triggerLoadingEvent(false);
+                            this.buildExpenseTableData(expenses.expenses);
+                        }, error => this.handleError(error));
+                }, error=> {
+
+                });
         } else if(this.selectedTab == 2){
             this.isLoading = true;
             this.loadingService.triggerLoadingEvent(true);
-            this.journalService.journalEntries(this.currentCompany.id)
-                .subscribe(journalEntries => {
-                    this.loadingService.triggerLoadingEvent(false);
-                    this.buildTableData(journalEntries);
-                }, error => this.handleError(error));
+            this.fetchJournalEntries();
         }
+    }
+
+    fetchJournalEntries(){
+        this.journalService.journalEntries(this.currentCompany.id)
+            .subscribe(journalEntries => {
+                this.loadingService.triggerLoadingEvent(false);
+                this.buildTableData(journalEntries);
+            }, error => this.handleError(error));
     }
 
     handleAction($event){
@@ -144,12 +163,15 @@ export class BooksComponent{
 
     removeJournalEntry(journalEntry){
         let base = this;
+        this.loadingService.triggerLoadingEvent(true);
         this.journalService.removeJournalEntry(journalEntry.id, this.currentCompany.id)
             .subscribe(response => {
-                base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully.");
-                _.remove(base.jeTableData.rows, {id: journalEntry.id});
-                base.buildTableData(base.jeTableData.rows);
-            }, error => this.handleError(error));
+                this.loadingService.triggerLoadingEvent(false);
+                base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully");
+                this.fetchJournalEntries();
+            }, error => {
+                base.toastService.pop(TOAST_TYPE.error, "Failed to delete Journal Entry");
+            });
     }
 
     showJournalEntry(journalEntry){
@@ -162,10 +184,57 @@ export class BooksComponent{
     }
 
     handleBadges(length, selectedTab){
-        if(selectedTab == 2){
+        if(selectedTab == 1){
+            this.badges.expenses = length;
+            this.localBadges['expenses'] = length;
+            sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+        } else if(selectedTab == 2){
             this.badges.journalEntries = length;
             this.localBadges['journalEntries'] = length;
             sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+        }
+    }
+
+    getBankAccountName(accountId){
+        let account = _.find(this.accounts, {'id': accountId});
+        return account? account.name: "";
+    }
+
+    buildExpenseTableData(data){
+        let base = this;
+        this.isLoading = false;
+        this.handleBadges(data.length, 1);
+        this.expensesTableData.columns = [
+            {"name": "title", "title": "Title"},
+            {"name": "amount", "title": "Amount"},
+            {"name": "status", "title": "Status", "type": "html", "sortable": false},
+            {"name": "paid_date", "title": "Paid Date"},
+            {"name": "due_date", "title": "Due Date"},
+            {"name": "bank_account_id", "title": "Bank Account"},
+            {"name": "id", "title": "id", 'visible': false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false}];
+        this.expensesTableData.rows = [];
+        data.forEach(function(expense){
+            let row:any = {};
+            _.each(Object.keys(expense), function(key){
+                if(key == 'bank_account_id'){
+                    row[key] = base.getBankAccountName(expense[key]);
+                } else if(key == 'is_paid'){
+                    if(expense.is_paid || expense.paid_date){
+                        row['status']= "<button class='hollow button success'>Paid</button>";
+                    } else{
+                        row['status']= "<button class='hollow button alert'>Not Paid</button>";
+                    }
+                    row[key] = expense.is_paid? "PAID": "UNPAID";
+                } else{
+                    row[key] = expense[key];
+                }
+            });
+            row['actions'] = "<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            base.expensesTableData.rows.push(row);
+        });
+        if(this.expensesTableData.rows.length > 0){
+            this.hasExpenses = true;
         }
     }
 
@@ -173,7 +242,6 @@ export class BooksComponent{
         let base = this;
         this.isLoading = false;
         this.handleBadges(data.length, 2);
-        let tableColumns = {};
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
             {"name": "date", "title": "Date"},
@@ -208,6 +276,39 @@ export class BooksComponent{
         if(this.jeTableData.rows.length > 0){
             this.hasJournalEntries = true;
         }
+        this.hasJournalEntries = false;
+        setTimeout(function(){
+           base.hasJournalEntries = true;
+        });
+    }
+
+    onRowDblClick($event){
+        let link = ['/expense', $event.id];
+        this._router.navigate(link);
+    }
+
+    handleExpenseAction($event){
+        let action = $event.action;
+        delete $event.action;
+        delete $event.actions;
+        if(action == 'delete'){
+            this.removeExpense($event);
+        }
+    }
+
+    removeExpense($event){
+        this.loadingService.triggerLoadingEvent(true);
+        this.expenseService.removeExpense($event.id, this.currentCompany)
+            .subscribe(response=> {
+                this.loadingService.triggerLoadingEvent(false);
+                this.badges.expenses = this.badges.expenses-1;
+                this.localBadges['expenses'] = this.localBadges['expenses']-1;
+                sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+                this.toastService.pop(TOAST_TYPE.success, "Deleted expense successfully");
+            }, error=>{
+                this.loadingService.triggerLoadingEvent(false);
+                this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
+            });
     }
 
     getSourceName(source){
@@ -272,6 +373,15 @@ export class BooksComponent{
 
     addNewJE(){
         let link = ['JournalEntry'];
+        this._router.navigate(link);
+    }
+
+    createNewExpense(){
+        let link = ['Expense'];
+        this._router.navigate(link);
+    }
+    createDeposit(){
+        let link = ['deposit'];
         this._router.navigate(link);
     }
 }

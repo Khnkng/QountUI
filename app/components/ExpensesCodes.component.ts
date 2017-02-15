@@ -12,10 +12,11 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {CodesService} from "qCommon/app/services/CodesService.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
-import {ExpensesForm} from "../forms/Expenses.form";
+import {ExpenseCodesForm} from "../forms/ExpenseCodes.form";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
-import {ExpensesService} from "qCommon/app/services/Expenses.service";
+import {ExpensesService} from "qCommon/app/services/ExpenseCodes.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {Router} from "@angular/router";
 
 declare var jQuery:any;
 declare var _:any;
@@ -35,7 +36,6 @@ export class ExpensesCodesComponent {
   newFormActive:boolean = true;
   @ViewChild('addItemcode') addItemcode;
   @ViewChild('selectedCOAComboBoxDir') selectedCOAComboBox: ComboBox;
-  //@ViewChild('invoiceCOAComboBoxDir') invoiceCOAComboBox: ComboBox;
   hasItemCodes: boolean = false;
   tableData:any = {};
   tableOptions:any = {};
@@ -48,8 +48,8 @@ export class ExpensesCodesComponent {
   allCOAList:Array<any> = [];
   showFlyout:boolean = false;
 
-  constructor(private _fb: FormBuilder, private _expensesForm: ExpensesForm, private switchBoard: SwitchBoard,
-              private codeService: CodesService, private toastService: ToastService,
+  constructor(private _fb: FormBuilder, private _expensesForm: ExpenseCodesForm, private switchBoard: SwitchBoard,
+              private codeService: CodesService, private toastService: ToastService, private _router:Router,
               private coaService: ChartOfAccountsService, private expensesSerice:ExpensesService,
               private companiesService: CompaniesService, private loadingService:LoadingService){
     this.expensesForm = this._fb.group(_expensesForm.getForm());
@@ -77,14 +77,10 @@ export class ExpensesCodesComponent {
 
   filterChartOfAccounts(chartOfAccounts){
     this.allCOAList = chartOfAccounts;
-    //this.paymentChartOfAccounts = _.filter(chartOfAccounts, function(coa){
-    //  return coa.type != '';
-    //});
-    //this.invoiceChartOfAccounts = _.filter(chartOfAccounts, function(coa){
-    //  return coa.type != '';
     this.chartOfAccountsArr = _.filter(chartOfAccounts, function(coa){
       return coa.type != '';
     });
+    _.sortBy(this.chartOfAccountsArr, ['number', 'name']);
     this.expensesSerice.getAllExpenses(this.currentCompany.id)
         .subscribe(expenseCodes => this.buildTableData(expenseCodes), error=> this.handleError(error));
   }
@@ -128,9 +124,13 @@ export class ExpensesCodesComponent {
   }
 
   updateExpenseCOA(selectedCOA){
-    let selectedCOAControl:any = this.expensesForm.controls['coa_mapping_id'];
-    if(selectedCOA){
-      selectedCOAControl.patchValue(selectedCOA.id);
+    if(selectedCOA && selectedCOA.id){
+      let data = this._expensesForm.getData(this.expensesForm);
+      data.coa_mapping_id = selectedCOA.id;
+      this._expensesForm.updateForm(this.expensesForm, data);
+    } else{
+      let coaControl = this.expensesForm.controls['coa_mapping_id'];
+      coaControl.patchValue(null);
     }
   }
 
@@ -194,10 +194,6 @@ export class ExpensesCodesComponent {
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
       {"name": "desc", "title": "Description"},
-      //{"name": "paymentCOAName", "title": "Payment COA"},
-      //{"name": "payment_coa_mapping", "title": "payment COA id", "visible": false},
-      //{"name": "invoiceCOAName", "title": "Invoice COA"},
-      //{"name": "invoice_coa_mapping", "title": "invoice COA id", "visible": false},
       {"name": "selectedCOAName", "title": "COA"},
       {"name": "coa_mapping_id", "title": "COA id", "visible": false},
       {"name": "companyID", "title": "Company ID", "visible": false},
@@ -231,6 +227,11 @@ export class ExpensesCodesComponent {
       return coa.name;
     }
     return "";
+  }
+
+  routeToToolsPage(){
+    let link = ['tools'];
+    this._router.navigate(link);
   }
 
   hideFlyout(){

@@ -4,8 +4,9 @@
 
 import {Component,ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
-import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {Session} from "qCommon/app/services/Session";
+import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
@@ -25,6 +26,8 @@ export class FinancialAccountsComponent{
   accounts = [];
   newFormActive:boolean = true;
   @ViewChild('addAccount') addAccount;
+  @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
+  @ViewChild('transitCOAComboBoxDir') transitCOAComboBox: ComboBox;
   hasAccounts: boolean = false;
   tableData:any = {};
   tableOptions:any = {};
@@ -32,25 +35,28 @@ export class FinancialAccountsComponent{
   currentCompany:any;
   row:any;
   tempValues:Array<string> = [];
-  tableColumns:Array<string> = ['name', 'id', 'starting_balance', 'current_balance', 'no_effect_on_pl', 'is_credit_account', 'starting_balance_date'];
-  importType:string = 'AUTO';
+  tableColumns:Array<string> = ['name', 'id', 'starting_balance', 'current_balance', 'no_effect_on_pl', 'is_credit_account', 'starting_balance_date', 'chart_of_account_id','transit_chart_of_account_id'];
+  importType:string = 'MANUAL';
   banks:Array<any> = [];
   showFlyout:boolean = false;
+  chartOfAccounts:Array<any>=[];
 
-  constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private switchBoard: SwitchBoard, private loadingService:LoadingService,
+  constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private financialAccountsService: FinancialAccountsService, private toastService: ToastService){
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
     if(this.currentCompany){
       this.loadingService.triggerLoadingEvent(true);
+      this.coaService.chartOfAccounts(this.currentCompany)
+          .subscribe(chartOfAccounts => {
+            this.chartOfAccounts = _.filter(chartOfAccounts, {'type': 'bank'});
+            this.getFinancialAccounts(this.currentCompany);
+          }, error =>{
+            this.toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
+          });
       this.financialAccountsService.financialInstitutions()
           .subscribe(banks => {
             this.banks = banks;
-          }, error => this.handleError(error));
-      this.financialAccountsService.financialAccounts(this.currentCompany)
-          .subscribe(response => {
-            this.loadingService.triggerLoadingEvent(false);
-            this.buildTableData(response.accounts);
           }, error => this.handleError(error));
     } else{
       this.toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
@@ -69,18 +75,35 @@ export class FinancialAccountsComponent{
 
   showAddAccount() {
     this.editMode = false;
-    this.accountForm = this._fb.group(this._financialAccountForm.getForm());
     this.newForm();
+    this.accountForm = this._fb.group(this._financialAccountForm.getForm());
     this.showFlyout = true;
   }
 
   showEditAccount(row: any){
-    let base = this;
     this.editMode = true;
     this.newForm();
-    this.row = row;
-    this._financialAccountForm.updateForm(this.accountForm, row);
-    this.showFlyout = true;
+    this.getAccountDetails(row.id);
+  }
+
+  getAccountDetails(accountId){
+    let base = this;
+    this.loadingService.triggerLoadingEvent(true);
+    this.financialAccountsService.financialAccount(accountId, this.currentCompany)
+        .subscribe(account => {
+          account = account.account || {};
+          this.showFlyout = true;
+          this.loadingService.triggerLoadingEvent(false);
+          this._financialAccountForm.updateForm(this.accountForm, account);
+          let coa = _.find(this.chartOfAccounts, {'id': account.chart_of_account_id});
+          let transitCOA=_.find(this.chartOfAccounts, {'id': account.transit_chart_of_account_id});//
+          setTimeout(function(){
+            base.coaComboBox.setValue(coa, 'name');
+            base.transitCOAComboBox.setValue(transitCOA, 'name');
+          },0);
+        }, error => {
+          this.toastService.pop(TOAST_TYPE.error, "Failed to load financial account details");
+        });
   }
 
   removeAccount(row: any){
@@ -106,6 +129,22 @@ export class FinancialAccountsComponent{
 
   }
 
+  updateChartOfAccount(coa){
+    if(coa && coa.id){
+      let data = this._financialAccountForm.getData(this.accountForm);
+      data.chart_of_account_id = coa.id;
+      this._financialAccountForm.updateForm(this.accountForm, data);
+    }
+  }
+
+  updateTransitChartOfAccount(transitCOA){
+    if(transitCOA && transitCOA.id){
+      let data = this._financialAccountForm.getData(this.accountForm);
+      data.transit_chart_of_account_id = transitCOA.id;
+      this._financialAccountForm.updateForm(this.accountForm, data);
+    }
+  }
+
   handleAction($event){
     let action = $event.action;
     delete $event.action;
@@ -123,13 +162,19 @@ export class FinancialAccountsComponent{
     let data = this._financialAccountForm.getData(this.accountForm);
     delete data.importType;
     if(this.editMode){
-      data.id = this.row.id;
-
+      this.financialAccountsService.updateAccount(data, this.currentCompany)
+          .subscribe(response => {
+            console.log(response);
+            this.toastService.pop(TOAST_TYPE.success, "Updated Financial account successfully");
+            this.getFinancialAccounts(this.currentCompany);
+          }, error =>{
+            this.toastService.pop(TOAST_TYPE.error, "Failed to update financial account");
+          });
     } else{
       this.financialAccountsService.addAccount(data, this.currentCompany)
           .subscribe(response => {
-            this.accounts.push(response.account);
-            this.buildTableData(this.accounts);
+            this.toastService.pop(TOAST_TYPE.success, "Financial account created successfully");
+            this.getFinancialAccounts(this.currentCompany);
           }, error => {
             this.toastService.pop(TOAST_TYPE.error, "Failed to create Account");
           });
@@ -144,6 +189,19 @@ export class FinancialAccountsComponent{
     this.buildTableData(this.accounts);
   }
 
+  getFinancialAccounts(companyId){
+    this.financialAccountsService.financialAccounts(companyId)
+        .subscribe(response => {
+          this.loadingService.triggerLoadingEvent(false);
+          this.buildTableData(response.accounts);
+        }, error => this.handleError(error));
+  }
+
+  getCOAName(id){
+    let coa = _.find(this.chartOfAccounts, {'id': id});
+    return (coa && coa.name) ? coa.name : "";
+  }
+
   buildTableData(accounts) {
     this.hasAccounts = false;
     this.accounts = accounts;
@@ -152,6 +210,7 @@ export class FinancialAccountsComponent{
     this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
+      {"name": "chart_of_account", "title": "Chart of Account"},
       {"name": "starting_balance", "title": "Starting Balance"},
       {"name": "starting_balance_date", "title": "Start Balance Date"},
       {"name": "current_balance", "title": "Current Balance"},
@@ -163,6 +222,11 @@ export class FinancialAccountsComponent{
       let row:any = {};
       _.each(base.tableColumns, function(key) {
         row[key] = account[key];
+        if(key == 'chart_of_account_id'){
+          row['chart_of_account'] = base.getCOAName(account[key]);
+        }if(key=='transit_chart_of_account_id'){
+          row['transit_chart_of_account_id'] = base.getCOAName(account[key]);
+        }
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       });
       base.tableData.rows.push(row);

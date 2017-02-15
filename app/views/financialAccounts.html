@@ -28,7 +28,7 @@
                             <section class="form-section clearfix">
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
-                                        <div class="row">
+                                        <!--<div class="row">
                                             <div class="small-12 medium-8 large-centered columns">
                                                 <div class="row">
                                                     <div class="small-12 medium-6 columns">
@@ -39,7 +39,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>-->
                                         <div class="form-section-left">
                                             <div class="row">
                                                 <div class="small-4 columns">
@@ -50,30 +50,33 @@
                                                     <div class="error" [hidden]="accountForm.controls.name.untouched || accountForm.controls.name.valid">Name is required.</div>
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="small-4 columns">
-                                                    <label class="text-right">Select bank</label>
+                                                    <label class="text-right">Type</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <select formControlName="id">
-                                                        <option *ngFor="let bank of banks;" value="{{bank.id}}">{{bank.name}}</option>
+                                                    <select formControlName="type">
+                                                        <option value="paypal">Paypal</option>
+                                                        <option value="stripe">Stripe</option>
+                                                        <option value="credit">Credit</option>
+                                                        <option value="checking">Checking</option>
+                                                        <option value="savings">Savings</option>
                                                     </select>
+                                                    <div class="error" [hidden]="accountForm.controls.type.untouched || accountForm.controls.type.valid">Type is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="small-4 columns">
-                                                    <label class="text-right">Password</label>
+                                                    <label class="text-right">Transit COA</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" disabled *ngIf="importType != 'AUTO'"/>
-                                                    <input type="password" formControlName="password" *ngIf="importType == 'AUTO'" placeholder="Password"/>
+                                                    <select combo-box #transitCOAComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="transit_chart_of_account_id" [listObject]="chartOfAccounts" (valueChanged)="updateTransitChartOfAccount($event)">
+                                                        <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.number}} - {{coa.name}}</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="accountForm.controls.transit_chart_of_account_id.untouched || accountForm.controls.transit_chart_of_account_id.valid">Transit COA is required</div>
                                                 </div>
                                             </div>
-
-                                        </div>
-                                        <div class="form-section-left">
-                                            <div class="row">
+                                            <div class="row" style="margin-top: 15px">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Starting Balance</label>
                                                 </div>
@@ -84,28 +87,91 @@
                                             </div>
                                             <div class="row">
                                                 <div class="small-4 columns">
+                                                    <label class="text-right"></label>
+                                                </div>
+                                                <div class="small-6 columns custom-qount-form-field">
+                                                    <input type="checkbox" formControlName="is_payment_accout_type" /> Payment Type Account
+                                                    <div class="error" [hidden]="accountForm.controls.is_payment_accout_type.untouched || accountForm.controls.is_payment_accout_type.valid">Payment type is required</div>
+                                                </div>
+                                            </div>
+                                            <div class="row" *ngIf="accountForm.controls.is_payment_accout_type.value">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Routing Number</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="routing_number" placeholder="Routing Number*"/>
+                                                    <div class="error" [hidden]="accountForm.controls.routing_number.untouched || accountForm.controls.routing_number.valid">Routing number is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row" *ngIf="accountForm.controls.is_payment_accout_type.value">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Signatory</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="signatory" placeholder="Signatory*"/>
+                                                    <div class="error" [hidden]="accountForm.controls.signatory.untouched || accountForm.controls.signatory.valid">Signatory is required.</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-section-left">
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Select bank</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <select formControlName="bank_id">
+                                                        <option *ngFor="let bank of banks;" value="{{bank.id}}">{{bank.name}}</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Chart of Account</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="chart_of_account_id" [listObject]="chartOfAccounts" (valueChanged)="updateChartOfAccount($event)">
+                                                        <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.number}} - {{coa.name}}</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="accountForm.controls.chart_of_account_id.untouched || accountForm.controls.chart_of_account_id.valid">COA is required</div>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top: 15px">
+                                                <div class="small-4 columns">
                                                     <label class="text-right">Starting Balance Date</label>
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" custom-datepicker [format]="'DD/MM/YYYY'" [mindate]="'past'" (valueChanged)="setBalanceDate($event)" formControlName="starting_balance_date" placeholder="Starting Balance Date"/>
-                                                    <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Date is required.</div>
+                                                    <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Starting balance date is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row" style="margin-top: 15px">
+                                                <div class="small-10 columns">.
+                                                </div>
+                                            </div>
+                                            <div class="row" *ngIf="accountForm.controls.is_payment_accout_type.value">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Account Number</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="account_number" placeholder="Account Number*"/>
+                                                    <div class="error" [hidden]="accountForm.controls.account_number.untouched || accountForm.controls.account_number.valid">Account number is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row" *ngIf="importType == 'AUTO'">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Username</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" disabled *ngIf="importType != 'AUTO'"/>
-                                                    <input type="text" formControlName="user_name" *ngIf="importType == 'AUTO'" placeholder="Username"/>
+                                                    <input type="text" formControlName="user_name" placeholder="Username"/>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row" *ngIf="importType == 'AUTO'">
                                                 <div class="small-4 columns">
-
+                                                    <label class="text-right">Password</label>
                                                 </div>
-                                                <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="checkbox" id="credit-account" formControlName="is_credit_account"/><label for="credit-account">Credit Account</label>
+                                                <div class="small-6 columns">
+                                                    <input type="password" formControlName="password" placeholder="Password"/>
                                                 </div>
                                             </div>
                                         </div>
