@@ -2961,11 +2961,12 @@ tbody{
   .addCustomerLogo {
     border: 1pt solid #ccc;
     width: 330px;
-    height: 150px;
+    height: 100px;
     position: relative;
+    margin-bottom: 10px;
     .addCustomerLink {
       position: absolute;
-      top: 30%;
+      top: 20%;
       text-align: center;
       width: 100%;
       i.icon {
@@ -2984,7 +2985,7 @@ tbody{
     background: #eee;
     padding: 15px 0px 10px 0px;
     border-bottom:1pt solid #3c3c3c;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     label {
       text-align: left;
       display: inline-block;
@@ -2996,10 +2997,55 @@ tbody{
   }
 
   .add-item {
-    border-top: 1pt solid #ccc;
     border-bottom: 1pt solid #ccc;
     padding: 10px;
   }
 
+  .items-table {
+    padding: 10px 0px 10px 0px;
+    border-bottom: 1pt solid #ccc;
+  }
+
+  .items-table:first-child {
+    padding-top:0px;
+  }
+
+  .items-table > div {
+    padding: 0px;
+  }
+
 
 }
+
+form .ng-dirty.ng-invalid, form .ng-touched.ng-invalid {
+  border: none;
+}
+
+form .ng-dirty.ng-valid {
+  border: none;
+}
+
+form input.ng-dirty.ng-invalid, form input.ng-touched.ng-invalid {
+  border: 1px solid #cacaca;
+}
+
+form input.ng-dirty.ng-valid {
+  border: 1px solid #cacaca;
+}
+
+form select.ng-dirty.ng-invalid, form select.ng-touched.ng-invalid {
+  border: 1px solid #cacaca;
+}
+
+form select.ng-dirty.ng-valid {
+  border: 1px solid #cacaca;
+}
+
+form input.ng-dirty.ng-valid {
+  border: 1px solid #cacaca;
+}
+
+form select.ng-dirty.ng-valid {
+  border: 1px solid #cacaca;
+}
+
