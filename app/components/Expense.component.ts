@@ -24,18 +24,18 @@ declare let _:any;
 export class ExpenseComponent{
     expenseForm: FormGroup;
     newItemForm: FormGroup;
-    //expenseItemsArray: FormArray = new FormArray([]);
     routeSub:any;
     expenseID:string;
-    newExpense: boolean = true;
+    newExpense: boolean = false;
     currentCompanyId: string;
     accounts:Array<any>=[];
     vendors:Array<any> = [];
     chartOfAccounts:Array<any> = [];
     isExpensePaid:boolean = false;
     addNewItemFlag:boolean = false;
-    editingItem:any;
+    editingItems:any={};
 
+    @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
     @ViewChild("newVendorComboBoxDir") newVendorComboBox: ComboBox;
 
@@ -57,8 +57,13 @@ export class ExpenseComponent{
     }
 
     setBankAccount(account){
-        let accountControl:any = this.expenseForm.controls['bank_account_id'];
-        accountControl.patchValue(account.id);
+        let data = this._expenseForm.getData(this.expenseForm);
+        if(account && account.id){
+            data.bank_account_id = account.id;
+        } else{
+            data.bank_account_id = '';
+        }
+        this._expenseForm.updateForm(this.expenseForm, data);
     }
 
     togglePaidStatus(){
@@ -69,41 +74,46 @@ export class ExpenseComponent{
     }
 
     setPaidDate(date){
-        let paidDateControl:any = this.expenseForm.controls['paid_date'];
-        paidDateControl.patchValue(date);
+        let data = this._expenseForm.getData(this.expenseForm);
+        data.paid_date = date;
+        this._expenseForm.updateForm(this.expenseForm, data);
     }
 
     setDueDate(date){
-        let dueDateControl:any = this.expenseForm.controls['due_date'];
-        dueDateControl.patchValue(date);
+        let data = this._expenseForm.getData(this.expenseForm);
+        data.due_date = date;
+        this._expenseForm.updateForm(this.expenseForm, data);
     }
 
     processExpense(expense){
-
+        console.log(expense);
+        let base = this;
+        let itemsControl:any = this.expenseForm.controls['expense_items'];
+        _.each(expense.expense_items, function(expenseItem){
+            itemsControl.controls.push(base._fb.group(base._expenseItemForm.getForm(expenseItem)));
+        });
+        let account = _.find(this.accounts, {'id': expense.bank_account_id});
+        setTimeout(function(){
+           base.accountComboBox.setValue(account, 'name');
+        });
+        this._expenseForm.updateForm(this.expenseForm, expense);
     }
 
-    editItem(index){
+    editItem(index, itemForm){
         let base = this;
-        this.editingItem = {
-          "index": index
-        };
-        this.showNewItem();
-        let itemsControl:any = this.expenseForm.controls['expense_items'];
-        let itemControl:any = itemsControl.controls[index];
-        let itemData = this._expenseItemForm.getData(itemControl);
-        let coa = _.find(this.chartOfAccounts, {'id': itemData.chart_of_account_id});
-        let vendor = _.find(this.vendors, {'id': itemData.vendor_id});
+        itemForm.editable = !itemForm.editable;
+        let itemData = this._expenseItemForm.getData(itemForm);
+        this.editingItems[index] = itemData;
         setTimeout(function(){
-            base.newCOAComboBox.setValue(coa, 'name');
-            base.newVendorComboBox.setValue(vendor, 'name');
+            jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
+            jQuery('#vendor-'+index).siblings().children('input').val(base.getVendorName(itemData.vendor_id));
         });
-        this._expenseItemForm.updateForm(this.newItemForm, itemData);
     }
 
     deleteItem(index){
         let itemsList:any = this.expenseForm.controls['expense_items'];
-        itemsList.controls.splice(index, 1);
-        //this.expenseItemsArray.controls.splice(index, 1);
+        let itemControl = itemsList.controls[index];
+        itemControl.controls['destroy'].patchValue(true);
     }
 
     showNewItem(){
@@ -137,7 +147,7 @@ export class ExpenseComponent{
 
     setVendor(vendor, index){
         let data = this._expenseItemForm.getData(this.expenseForm.controls[index]);
-        data.chart_of_account_id = vendor.id;
+        data.vendor_id = vendor.id;
         let tempForm = this._fb.group(this.expenseForm.controls[index]);
         this._expenseItemForm.updateForm(tempForm, data);
     }
@@ -158,29 +168,81 @@ export class ExpenseComponent{
         return vendor? vendor.name: '';
     }
 
-    updateItem(){
-        this.hideNewItem();
-        let data = _.cloneDeep(this._expenseItemForm.getData(this.newItemForm));
+    updateItem(index, itemForm){
+        let data = _.cloneDeep(this._expenseItemForm.getData(itemForm));
         let expenseItems:any = this.expenseForm.controls['expense_items'];
-        let itemControl:any = expenseItems.controls[this.editingItem.index];
+        let itemControl:any = expenseItems.controls[index];
         itemControl.controls['title'].patchValue(data.title);
         itemControl.controls['amount'].patchValue(data.amount);
         itemControl.controls['chart_of_account_id'].patchValue(data.chart_of_account_id);
         itemControl.controls['vendor_id'].patchValue(data.vendor_id);
         itemControl.controls['notes'].patchValue(data.notes);
-        this.editingItem = null;
+        itemForm.editable = !itemForm.editable;
+    }
+
+    toggleLine(index, itemForm){
+        itemForm.editable = !itemForm.editable;
+        let tempForm = this._fb.group(this._expenseItemForm.getForm(this.editingItems[index]));
+        this.updateItem(index, tempForm);
+    }
+
+    setCOAForItem(coa, itemForm){
+        if(coa && coa.id){
+            let data = this._expenseItemForm.getData(itemForm);
+            data.chart_of_account_id= coa.id;
+            this._expenseItemForm.updateForm(itemForm, data);
+        } else{
+            let data = this._expenseItemForm.getData(itemForm);
+            data.chart_of_account_id= null;
+            this._expenseItemForm.updateForm(itemForm, data);
+        }
+    }
+
+    setVendorForItem(vendor, itemForm){
+        if(vendor && vendor.id){
+            let data = this._expenseItemForm.getData(itemForm);
+            data.vendor_id= vendor.id;
+            this._expenseItemForm.updateForm(itemForm, data);
+        } else{
+            let data = this._expenseItemForm.getData(itemForm);
+            data.vendor_id= null;
+            this._expenseItemForm.updateForm(itemForm, data);
+        }
+    }
+
+    getExpenseItemData(expenseForm){
+        let base = this;
+        let data = [];
+        _.each(expenseForm.controls, function(expenseItemControl){
+            data.push(base._expenseItemForm.getData(expenseItemControl));
+        });
+        return data;
     }
 
     submit($event){
         $event && $event.preventDefault();
         let data = this._expenseForm.getData(this.expenseForm);
-        this.expenseService.addExpense(data, this.currentCompanyId)
-            .subscribe(response=>{
-               console.log("Created expense");
-               this.showExpensesPage();
-            }, error => {
-                console.log("expense creation failed");
-            });
+        data.expense_items = this.getExpenseItemData(this.expenseForm.controls['expense_items']);
+        this.loadingService.triggerLoadingEvent(true);
+        if(this.newExpense){
+            this.expenseService.addExpense(data, this.currentCompanyId)
+                .subscribe(response=>{
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.showExpensesPage();
+                }, error => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    console.log("expense creation failed", error);
+                });
+        } else{
+            this.expenseService.updateExpense(data, this.currentCompanyId)
+                .subscribe(response =>{
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.showExpensesPage();
+                }, error => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    console.log("updating expense failed", error);
+                });
+        }
     }
 
     ngOnInit(){
@@ -215,7 +277,7 @@ export class ExpenseComponent{
             this.expenseService.expense(this.expenseID, this.currentCompanyId)
                 .subscribe(expense => {
                     this.loadingService.triggerLoadingEvent(false);
-                    this.processExpense(expense);
+                    this.processExpense(expense.expenses);
                 }, error =>{
                     this.toastService.pop(TOAST_TYPE.error, "Failed to load expense details");
                 })

@@ -67,13 +67,6 @@ export class BooksComponent{
             } else if(this.allCompanies.length> 0){
                 this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
             }
-
-            this.accountsService.financialAccounts(companyId)
-                .subscribe(accounts => {
-                    this.accounts = accounts;
-                }, error=> {
-
-                });
             this.routeSub = this._route.params.subscribe(params => {
                 this.selectedTab=params['tabId'];
                 this.selectTab(this.selectedTab,"");
@@ -124,20 +117,30 @@ export class BooksComponent{
         } else if(this.selectedTab == 1){
             this.isLoading = true;
             this.loadingService.triggerLoadingEvent(true);
-            this.expenseService.expenses(this.currentCompany.id)
-                .subscribe(expenses => {
-                    this.loadingService.triggerLoadingEvent(false);
-                    this.buildExpenseTableData(expenses.expenses);
-                }, error => this.handleError(error));
+            this.accountsService.financialAccounts(this.currentCompany.id)
+                .subscribe(accounts => {
+                    this.accounts = accounts.accounts;
+                    this.expenseService.expenses(this.currentCompany.id)
+                        .subscribe(expenses => {
+                            this.loadingService.triggerLoadingEvent(false);
+                            this.buildExpenseTableData(expenses.expenses);
+                        }, error => this.handleError(error));
+                }, error=> {
+
+                });
         } else if(this.selectedTab == 2){
             this.isLoading = true;
             this.loadingService.triggerLoadingEvent(true);
-            this.journalService.journalEntries(this.currentCompany.id)
-                .subscribe(journalEntries => {
-                    this.loadingService.triggerLoadingEvent(false);
-                    this.buildTableData(journalEntries);
-                }, error => this.handleError(error));
+            this.fetchJournalEntries();
         }
+    }
+
+    fetchJournalEntries(){
+        this.journalService.journalEntries(this.currentCompany.id)
+            .subscribe(journalEntries => {
+                this.loadingService.triggerLoadingEvent(false);
+                this.buildTableData(journalEntries);
+            }, error => this.handleError(error));
     }
 
     handleAction($event){
@@ -160,12 +163,15 @@ export class BooksComponent{
 
     removeJournalEntry(journalEntry){
         let base = this;
+        this.loadingService.triggerLoadingEvent(true);
         this.journalService.removeJournalEntry(journalEntry.id, this.currentCompany.id)
             .subscribe(response => {
-                base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully.");
-                _.remove(base.jeTableData.rows, {id: journalEntry.id});
-                base.buildTableData(base.jeTableData.rows);
-            }, error => this.handleError(error));
+                this.loadingService.triggerLoadingEvent(false);
+                base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully");
+                this.fetchJournalEntries();
+            }, error => {
+                base.toastService.pop(TOAST_TYPE.error, "Failed to delete Journal Entry");
+            });
     }
 
     showJournalEntry(journalEntry){
@@ -213,17 +219,18 @@ export class BooksComponent{
             _.each(Object.keys(expense), function(key){
                 if(key == 'bank_account_id'){
                     row[key] = base.getBankAccountName(expense[key]);
-                } else if(key == 'status'){
-                    if(expense.is_paid){
-                        row[key]= "<button class='hollow button success'>Paid</button>";
+                } else if(key == 'is_paid'){
+                    if(expense.is_paid || expense.paid_date){
+                        row['status']= "<button class='hollow button success'>Paid</button>";
                     } else{
-                        row[key]= "<button class='hollow button alert'>Not Paid</button>";
+                        row['status']= "<button class='hollow button alert'>Not Paid</button>";
                     }
                     row[key] = expense.is_paid? "PAID": "UNPAID";
                 } else{
                     row[key] = expense[key];
                 }
             });
+            row['actions'] = "<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.expensesTableData.rows.push(row);
         });
         if(this.expensesTableData.rows.length > 0){
@@ -269,6 +276,39 @@ export class BooksComponent{
         if(this.jeTableData.rows.length > 0){
             this.hasJournalEntries = true;
         }
+        this.hasJournalEntries = false;
+        setTimeout(function(){
+           base.hasJournalEntries = true;
+        });
+    }
+
+    onRowDblClick($event){
+        let link = ['/expense', $event.id];
+        this._router.navigate(link);
+    }
+
+    handleExpenseAction($event){
+        let action = $event.action;
+        delete $event.action;
+        delete $event.actions;
+        if(action == 'delete'){
+            this.removeExpense($event);
+        }
+    }
+
+    removeExpense($event){
+        this.loadingService.triggerLoadingEvent(true);
+        this.expenseService.removeExpense($event.id, this.currentCompany)
+            .subscribe(response=> {
+                this.loadingService.triggerLoadingEvent(false);
+                this.badges.expenses = this.badges.expenses-1;
+                this.localBadges['expenses'] = this.localBadges['expenses']-1;
+                sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+                this.toastService.pop(TOAST_TYPE.success, "Deleted expense successfully");
+            }, error=>{
+                this.loadingService.triggerLoadingEvent(false);
+                this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
+            });
     }
 
     getSourceName(source){

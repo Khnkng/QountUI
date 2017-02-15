@@ -181,7 +181,11 @@ export class VendorComponent {
 
   showCOA(coa:any) {
     let data = this._vendorForm.getData(this.vendorForm);
-    data.coa = coa.id;
+    if(coa && coa.id){
+      data.coa = coa.id;
+    } else{
+      data.coa = null;
+    }
     this._vendorForm.updateForm(this.vendorForm, data);
   }
 
@@ -349,6 +353,14 @@ export class VendorComponent {
       if(!_.isEmpty(coa)){
         setTimeout(function(){
           base.coaComboBox.setValue(coa, 'name');
+        });
+      } else{
+        let defaultOption = {
+          'name': 'None',
+          'value': 'None'
+        };
+        setTimeout(function(){
+          base.coaComboBox.setValue(defaultOption, 'name');
         });
       }
       vendor.has1099 = vendor.has1099 == 'true' || vendor.has1099 == true;
