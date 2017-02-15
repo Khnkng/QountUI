@@ -18,20 +18,21 @@ export class ExpenseForm extends abstractForm{
             "is_paid": [false],
             "paid_date": [''],
             "due_date": [''],
-            "bank_account_id": ['']
+            "bank_account_id": [''],
+            "id": ['']
         }
     }
 }
 
 @Injectable()
 export class ExpenseItemForm extends abstractForm{
-    getForm() {
+    getForm(item?) {
         return {
-            "title": ['', Validators.required],
-            "amount": ['', Validators.required],
-            "notes": [''],
-            "vendor_id": [''],
-            "chart_of_account_id": ['']
+            "title": [item? item.title: '', Validators.required],
+            "amount": [item? item.amount: '', Validators.required],
+            "notes": [item? item.notes: ''],
+            "vendor_id": [item? item.vendor_id: ''],
+            "chart_of_account_id": [item? item.chart_of_account_id: '']
         }
     }
 }

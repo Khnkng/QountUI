@@ -124,9 +124,14 @@ export class ExpensesCodesComponent {
   }
 
   updateExpenseCOA(selectedCOA){
-    let data = this._expensesForm.getData(this.expensesForm);
-    data.coa_mapping_id = selectedCOA.id;
-    this._expensesForm.updateForm(this.expensesForm, data);
+    if(selectedCOA && selectedCOA.id){
+      let data = this._expensesForm.getData(this.expensesForm);
+      data.coa_mapping_id = selectedCOA.id;
+      this._expensesForm.updateForm(this.expensesForm, data);
+    } else{
+      let coaControl = this.expensesForm.controls['coa_mapping_id'];
+      coaControl.patchValue(null);
+    }
   }
 
   ngOnInit(){
