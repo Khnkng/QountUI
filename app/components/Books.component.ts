@@ -207,8 +207,8 @@ export class BooksComponent{
         this.expensesTableData.columns = [
             {"name": "title", "title": "Title"},
             {"name": "amount", "title": "Amount"},
-            {"name": "status", "title": "Status", "type": "html", "sortable": false},
-            {"name": "paid_date", "title": "Paid Date"},
+            //{"name": "status", "title": "Status", "type": "html", "sortable": false},
+            //{"name": "paid_date", "title": "Paid Date"},
             {"name": "due_date", "title": "Due Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false},
@@ -219,18 +219,20 @@ export class BooksComponent{
             _.each(Object.keys(expense), function(key){
                 if(key == 'bank_account_id'){
                     row[key] = base.getBankAccountName(expense[key]);
-                } else if(key == 'is_paid'){
+                } else{
+                    row[key] = expense[key];
+                }
+
+                /*else if(key == 'is_paid'){
                     if(expense.is_paid || expense.paid_date){
                         row['status']= "<button class='hollow button success'>Paid</button>";
                     } else{
                         row['status']= "<button class='hollow button alert'>Not Paid</button>";
                     }
                     row[key] = expense.is_paid? "PAID": "UNPAID";
-                } else{
-                    row[key] = expense[key];
-                }
+                }*/
             });
-            row['actions'] = "<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.expensesTableData.rows.push(row);
         });
         if(this.expensesTableData.rows.length > 0){
@@ -282,17 +284,15 @@ export class BooksComponent{
         });
     }
 
-    onRowDblClick($event){
-        let link = ['/expense', $event.id];
-        this._router.navigate(link);
-    }
-
     handleExpenseAction($event){
         let action = $event.action;
         delete $event.action;
         delete $event.actions;
         if(action == 'delete'){
             this.removeExpense($event);
+        } else if(action == 'edit'){
+            let link = ['/expense', $event.id];
+            this._router.navigate(link);
         }
     }
 

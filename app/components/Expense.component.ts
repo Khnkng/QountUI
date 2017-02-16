@@ -34,6 +34,7 @@ export class ExpenseComponent{
     isExpensePaid:boolean = false;
     addNewItemFlag:boolean = false;
     editingItems:any={};
+    dimensionFlyoutCSS:any;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
@@ -54,6 +55,15 @@ export class ExpenseComponent{
     showExpensesPage(){
         let link = ['books', 1];
         this._router.navigate(link);
+    }
+
+    showFlyout(index) {
+        this.dimensionFlyoutCSS = "expanded";
+        console.log("editing in", index);
+    }
+
+    hideFlyout(){
+        this.dimensionFlyoutCSS = "collapsed";
     }
 
     setBankAccount(account){

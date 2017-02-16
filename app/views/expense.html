@@ -12,19 +12,19 @@
                                 <div class="form-section-left expense-row">
                                     <header class="form-section-header">Expense Info</header>
                                     <div class="row">
-                                        <div class="small-12 medium-2 columns">
+                                        <div class="small-12 medium-3 columns">
                                             <label>Title
                                                 <input type="text" formControlName="title" placeholder="Title*"/>
                                                 <div class="error" [hidden]="expenseForm.controls.title.untouched || expenseForm.controls.title.valid">Expense Title is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-2 columns">
+                                        <div class="small-12 medium-3 columns">
                                             <label>Date
                                                 <input type="text" custom-datepicker [format]="'YYYY/MM/DD'" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="due_date" placeholder="Date*">
                                                 <div class="error" [hidden]="expenseForm.controls.due_date.untouched || expenseForm.controls.due_date.valid">Date is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-2 columns">
+                                        <div class="small-12 medium-3 columns">
                                             <label>Amount
                                                 <input type="text" formControlName="amount" placeholder="Amount*"/>
                                                 <div class="error" [hidden]="expenseForm.controls.amount.untouched || expenseForm.controls.amount.valid">Amount is required</div>
@@ -38,7 +38,7 @@
                                                 <div class="error" [hidden]="expenseForm.controls.bank_account_id.untouched || expenseForm.controls.bank_account_id.valid">Please select bank account</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-1 columns">
+                                        <!--<div class="small-12 medium-1 columns">
                                             <label>Paid?
                                                 <div class="switch tiny">
                                                     <input class="switch-input" id="isPaid" type="checkbox" formControlName="is_paid" (change)="togglePaidStatus($event)"/>
@@ -54,7 +54,7 @@
                                                 <input type="text" custom-datepicker [format]="'YYYY/MM/DD'" [mindate]="'past'" (valueChanged)="setPaidDate($event)" formControlName="paid_date" placeholder="Paid Date*">
                                                 <div class="error" [hidden]="expenseForm.controls.paid_date.untouched || expenseForm.controls.paid_date.valid">Paid date is required</div>
                                             </label>
-                                        </div>
+                                        </div>-->
                                     </div>
                                     <header class="form-section-header">Expense Items Info</header>
                                     <div class="text-right">
@@ -78,7 +78,7 @@
                                             <tr *ngIf="expenseForm.controls.expense_items.controls.length == 0">
                                                 <td colspan="6" class="text-center">No expense items found</td>
                                             </tr>
-                                            <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="!newExpense && itemForm.controls.destroy.value">
+                                            <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="!newExpense && itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
                                                 <td *ngIf="!itemForm.editable">{{itemForm.controls.title.value}}</td>
                                                 <td *ngIf="itemForm.editable">
                                                     <input type="text" placeholder="Title" [formControl]="itemForm.controls.title"/>
@@ -104,7 +104,7 @@
                                                     <textarea [formControl]="itemForm.controls.notes" placeholder="Notes"></textarea>
                                                 </td>
                                                 <td>
-                                                        <span *ngIf="!itemForm.editable" (click)="editItem(index, itemForm)">
+                                                        <span *ngIf="!itemForm.editable" (click)="showFlyout(index)">
                                                             <i class="icon ion-edit"></i>
                                                         </span>
                                                     <span *ngIf="!itemForm.editable" (click)="deleteItem(index)">
@@ -165,5 +165,23 @@
                 </button>
             </div>
         </section>
+    </div>
+</div>
+
+<div class="report-wrapper journal-flyout">
+    <div class="sidenav customization-panel" [ngClass]="dimensionFlyoutCSS" foundation>
+        <button class="close-button " data-close aria-label="Close modal" type="button">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty" (click)="hideFlyout()"></i>
+                </span>
+        </button>
+        <div class="row collapse dimension-flyout">
+            <div class="row">
+                <div class="small-12 medium-12 small-centered column">
+                    <h5>Item Details</h5>
+                </div>
+            </div>
+        </div>
+        Editing item
     </div>
 </div>
