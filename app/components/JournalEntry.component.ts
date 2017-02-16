@@ -482,7 +482,7 @@ export class JournalEntryComponent{
         let base = this;
         this.filteredChartOfAccounts = [];
         _.each(this.chartOfAccounts, function (coa) {
-            if(coa.category && (coa.category.toLowerCase() == category.toLowerCase())){
+            if(coa.category && category && (coa.category.toLowerCase() == category.toLowerCase())){
                 base.filteredChartOfAccounts.push(coa);
             }
         });
@@ -492,7 +492,7 @@ export class JournalEntryComponent{
         let base = this;
         let filteredCOA = [];
         _.each(this.chartOfAccounts, function (coa) {
-            if(coa.category && (coa.category.toLowerCase() == category.toLowerCase())){
+            if(coa.category && category && (coa.category.toLowerCase() == category.toLowerCase())){
                 filteredCOA.push(coa);
             }
         });
