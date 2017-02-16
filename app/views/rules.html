@@ -40,8 +40,26 @@
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label >Source</label></td>
-                                                    <td><select style="height: 2.4375rem;width: 100%" formControlName="source">
-                                                        <option *ngFor="let bank of banks;"  value="{{bank.name}}">{{bank.name}}</option>
+                                                    <td><select  style="height: 2.4375rem;" formControlName="source">
+                                                        <option *ngFor="let bank of banks;"  value="{{bank.id}}">{{bank.name}}</option>
+                                                    </select></td>
+                                                </tr>
+                                                <tr style="border:0px;border-color:white">
+                                                    <td><label >Vendors</label></td>
+                                                    <td><select  style="height: 2.4375rem;width:100%;" formControlName="vendorType">
+                                                        <option *ngFor="let type of vendorsArray;"  value="{{type}}">{{type}}</option>
+                                                    </select></td>
+                                                    <td><select  style="height: 2.4375rem;" formControlName="vendor">
+                                                        <option *ngFor="let vendor of vendors;"  value="{{vendor.id}}">{{vendor.name}}</option>
+                                                    </select></td>
+                                                </tr>
+                                                <tr style="border:0px;border-color:white">
+                                                    <td><label >Customers</label></td>
+                                                    <td><select  style="height: 2.4375rem;width:100%;" formControlName="customerType">
+                                                        <option *ngFor="let customer of customersArray;"  value="{{customer}}">{{customer}}</option>
+                                                    </select></td>
+                                                    <td><select  style="height: 2.4375rem;width:95%;" formControlName="customer">
+                                                        <option *ngFor="let customer of customers;"  value="{{customer.customer_id}}">{{customer.customer_name}}</option>
                                                     </select></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
@@ -58,7 +76,7 @@
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Amount</label></td>
                                                     <td><select style="height: 2.4375rem;width: 100%" class="condition" formControlName="comparisionType1">
-                                                        <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
+                                                        <option *ngFor="let comparisiontypeAmount of conparisionAmountArray;" value="{{comparisiontypeAmount}}" >{{comparisiontypeAmount}}</option>
                                                     </select></td>
                                                     <td><input  type="text" formControlName="comparisionValue1" placeholder="Amount*" class="condition-value"/>
                                                     </td>
@@ -67,9 +85,10 @@
                                                     <td>
                                                         <label value="chartOfAccount">COA</label>
                                                     </td>
-                                                    <td> <label>
-                                                        <select style="margin-left:0px;height: 2.4375rem;"  title="" data-placeholder="Enter Chart of account" formControlName="chartOfAccount"  (valueChanged)="updateActionValue($event, index, 'chartOfAccount')">
-                                                            <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                                    <td> <label style="width:100%">
+
+                                                        <select  combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="chartOfAccount" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
+                                                            <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.number}} - {{coa.name}}</option>
                                                         </select>
                                                     </label></td>
                                                 </tr>
@@ -116,7 +135,7 @@
                                 </div>
 
                                 <div class="small-2 medium-12 columns">
-                                    <button type="submit" class="button create small float-right" [disabled]="!isValid(ruleForm)" (click)="submit($event)">Save</button>
+                                    <button type="submit" class="button create small float-right" [disabled]="isValid(ruleForm)" (click)="submit($event)">Save</button>
                                 </div>
                             </div>
                         </form>
