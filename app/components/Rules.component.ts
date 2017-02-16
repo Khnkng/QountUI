@@ -47,7 +47,7 @@ export class RulesComponent {
     depositAarraylist:Array<any>=[];
     banks:Array<any> = [];
     rules:Array<any> = [];
-    customers:Array<any> = [];
+    customernames:Array<any> = [];
     tableData:any = {};
     todaysDate:any;
     selectedDimensions:Array<any> = [];
@@ -64,6 +64,8 @@ export class RulesComponent {
     customersArray:Array<any>;
     conparisionAmountArray:Array<any>;
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
+    @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
+    @ViewChild('selectedCOAComboBoxDir') selectedCOAComboBox: ComboBox;
     constructor(private _router:Router, private customersService: CustomersService,private companyService: CompaniesService,private _toastService: ToastService, private _fb: FormBuilder,private ruleservice:RulesService,private _ruleForm: RuleForm, private coaService: ChartOfAccountsService,
         private dimensionService: DimensionService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
         this.companyId = Session.getCurrentCompany();
@@ -82,8 +84,8 @@ export class RulesComponent {
                 this.vendors = vendors;
             } , error =>  this.handleError(error));
         this.customersService.customers(this.companyId)
-            .subscribe(customers  => {
-                this.customers=customers;
+            .subscribe(customernames  => {
+                this.customernames=customernames;
             }, error =>  this.handleError(error));
         this.financialAccountsService.financialInstitutions()
             .subscribe(banks => {
@@ -381,18 +383,27 @@ export class RulesComponent {
 
                 }
                 else if(rule.conditions[i].attributeName=='vendor'){
-                    let vendorType: any = this.ruleForm.controls['vendorType'];
-                    vendorType.patchValue(rule.conditions[i].comparisionType);
+                    let base=this;
+                    let coa = _.find(base.vendors, function(_coa) {
+                        return _coa.id == rule.conditions[i].comparisionValue;
+                    });
+                    if(!_.isEmpty(coa)){
+                        setTimeout(function(){
+                            base.vendorCountryComboBox.setValue(coa, 'name');
+                        });
+                    }
 
-                    let vendor: any = this.ruleForm.controls['vendor'];
-                    vendor.patchValue(rule.conditions[i].comparisionValue);
                 }
                 else if(rule.conditions[i].attributeName=='customer'){
-                    let customerType: any = this.ruleForm.controls['customerType'];
-                    customerType.patchValue(rule.conditions[i].comparisionType);
+                    let customer = _.find(base.customernames, function(_customer) {
+                        return _customer.customer_id == rule.conditions[i].comparisionValue;
+                    });
+                    if(!_.isEmpty(customer)){
+                        setTimeout(function(){
+                            base.selectedCOAComboBox.setValue(customer, 'customer_name');
+                        });
+                    }
 
-                    let customer: any = this.ruleForm.controls['customer'];
-                    customer.patchValue(rule.conditions[i].comparisionValue);
                 }
                 else if(rule.conditions[i].attributeName=='Amount'){
                     let comparisionType1: any = this.ruleForm.controls['comparisionType1'];
