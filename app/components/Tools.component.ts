@@ -20,6 +20,9 @@ declare var _:any;
 export class ToolsComponent {
   companyCount: number = 0;
   vendorCount: number = 0;
+  taxesCount:number = 0;
+  rulesCount = 0;
+  modulesCount = 0;
   customerCount: number = 0;
   employeeCount: number = 0;
   itemCount: number = 0;
@@ -46,6 +49,9 @@ export class ToolsComponent {
       this.expenseCodeCount = badges.expenseCodes;
       this.itemCount = badges.itemCodes;
       this.vendorCount = badges.vendors;
+      this.taxesCount=badges.taxesCount;
+      this.rulesCount=badges.rulesCount;
+      this.modulesCount=badges.modulesCount;
       this.usersCount= badges.companyUsers;
       this.dimensionCount = badges.dimensions;
     }, error => this.handleError(error));
