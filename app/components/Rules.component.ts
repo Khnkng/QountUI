@@ -217,6 +217,17 @@ export class RulesComponent {
         data.chartOfAccount = coa.id;
         this._ruleForm.updateForm(this.ruleForm, data);
     }
+
+    showVendor(coa:any) {
+        let data= this._ruleForm.getData(this.ruleForm);
+        data.vendorValue = coa.id;
+        this._ruleForm.updateForm(this.ruleForm, data);
+    }
+    showCustomer(coa:any) {
+        let data= this._ruleForm.getData(this.ruleForm);
+        data.customerValue = coa.customer_id;
+        this._ruleForm.updateForm(this.ruleForm, data);
+    }
     buildTableData(RulesList){
         this.hasRuleList = false;
         this.RulesList = RulesList;
@@ -225,7 +236,7 @@ export class RulesComponent {
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
             {"name":"id","title":"id","visible": false},
-            {"name": "rule", "title": "Rule"},
+            {"name": "ruleText", "title": "Rule"},
             {"name": "conditions", "title": "conditions","visible": false},
             {"name": "action", "title": "action","visible": false},
             {"name": "actionValue", "title": "actionValue","visible": false},
@@ -235,31 +246,9 @@ export class RulesComponent {
         ];
         let base = this;
         _.each(RulesList, function(RulesList) {
-
-                let bank = _.find(base.banks, function(bank){
-                    return RulesList.source == bank.id;
-                });
-                if(bank){
-                    base.tableBankname= bank.name;
-                }
-                else {
-                    console.log("bank name");
-                }
-
-                     let row:any = {};
-            if(RulesList.conditions){
-                row['rule'] = "When a " + RulesList.sourceType + " is created and the " + base.tableBankname + " ";
-            }
-            else if((RulesList.conditions[0].comparisionType &&RulesList.conditions[0].comparisionValue) && (RulesList.conditions[1].comparisionType &&RulesList.conditions[1].comparisionValue) && (RulesList.conditions[2].comparisionType &&RulesList.conditions[2].comparisionValue) && (RulesList.conditions[3].comparisionType &&RulesList.conditions[3].comparisionValue)) {
-                row['rule'] = "When a " + RulesList.sourceType + " is created and the source is" +" "+ base.tableBankname + " ," + RulesList.conditions[0].attributeName + " " + RulesList.conditions[0].comparisionType + " " + RulesList.conditions[0].comparisionValue + " " + "AND" + " " + RulesList.conditions[1].attributeName + " " + RulesList.conditions[1].comparisionType + " " + RulesList.conditions[1].comparisionValue;
-            }else if(RulesList.conditions[0].comparisionType &&RulesList.conditions[0].comparisionValue){
-                row['rule'] = "When a " + RulesList.sourceType + " is created and the " + base.tableBankname + " ," + RulesList.conditions[0].attributeName +" "+ RulesList.conditions[0].comparisionType + " " + RulesList.conditions[0].comparisionValue ;
-            }
-
-            else{
-                row['rule'] = "When a " + RulesList.sourceType + " is created and the " + base.tableBankname + " ";
-            }
+             let row:any = {};
             row['id']=RulesList.id;
+            row['ruleText']=RulesList.ruleText;
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.tableData.rows.push(row);
         });
@@ -341,8 +330,8 @@ export class RulesComponent {
         if((ruleForm.value.sourceType==null) && (ruleForm.value.source==null)
             && (ruleForm.value.comparisionType &&  ruleForm.value.comparisionValue)  ||
             (ruleForm.value.comparisionType1 && ruleForm.value.comparisionValue1) ||
-            (ruleForm.value.vendorType && ruleForm.value.vendor)||
-            (ruleForm.value.customerType && ruleForm.value.customer)){
+            (ruleForm.value.vendorValue)||
+            (ruleForm.value.customerValue)){
             return false;
         }
             return true;
@@ -357,8 +346,6 @@ export class RulesComponent {
             this.selectedDimensions=rule.actions;
             let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
             selectedCOAControl.patchValue(rule.sourceType);
-            let source:any = this.ruleForm.controls['source'];
-            source.patchValue(rule.source);
 
             let coa = _.find(this.chartOfAccounts, function(_coa) {
                 return _coa.id == rule.chartOfAccount;
@@ -412,6 +399,10 @@ export class RulesComponent {
                     let comparisionValue1: any = this.ruleForm.controls['comparisionValue1'];
                     comparisionValue1.patchValue(rule.conditions[i].comparisionValue);
                 }
+                else if(rule.conditions[i].attributeName=='source'){
+                    let source:any = this.ruleForm.controls['source'];
+                    source.patchValue(rule.conditions[i].comparisionValue);
+                }
                 else{
 console.log("end");
                 }
@@ -460,14 +451,18 @@ console.log("end");
         }
 
         if(this.editMode){
-            if(data.attributeName || data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1 ){
+            if(data.attributeName|| data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1
+            || data.vendorValue || data.customerValue ||  data.source){
                 delete data.attributeName;
                 delete data.comparisionType;
                 delete data.comparisionValue;
                 delete data.logicalOperator;
                 delete data.attributeName1;
                 delete data.comparisionType1;
+                delete data.vendorValue;
+                delete data.customerValue;
                 delete data.comparisionValue1;
+                delete data.source;
             }
             data.conditions=[];
             var condition1={};
@@ -504,25 +499,25 @@ console.log("end");
 
             let vendorType:any = this.ruleForm.controls['vendorType'];
             vendorType.patchValue(vendorType.value);
-            let vendor:any = this.ruleForm.controls['vendor'];
+            let vendor:any = this.ruleForm.controls['vendorValue'];
             vendor.patchValue(vendor.value);
             condition3['attributeName']="vendor";
-            condition3['comparisionType']=vendorType.value;
+            condition3['comparisionType']="EQUALS_TO";
             condition3['comparisionValue']=vendor.value;
             var conditionrow3=data.conditions.push(condition3);
 
             let customerType:any = this.ruleForm.controls['customerType'];
             customerType.patchValue(customerType.value);
-            let customer:any = this.ruleForm.controls['customer'];
+            let customer:any = this.ruleForm.controls['customerValue'];
             customer.patchValue(customer.value);
             condition4['attributeName']="customer";
-            condition4['comparisionType']=customerType.value;
+            condition4['comparisionType']="EQUALS_TO";
             condition4['comparisionValue']=customer.value;
             var conditionrow4=data.conditions.push(condition4);
             let source:any = this.ruleForm.controls['source'];
             source.patchValue(source.value);
             condition5['attributeName']="source";
-            condition5['comparisionType']="";
+            condition5['comparisionType']="EQUALS_TO";
             condition5['comparisionValue']=source.value;
             var conditionrow5=data.conditions.push(condition5);
             data.id = this.row.id;
@@ -533,16 +528,18 @@ console.log("end");
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
         } else{
-            if(data.attributeName || data.vendor || data.customer || data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1 ){
+            if(data.attributeName==null || data.comparisionType==null || data.comparisionValue==null || data.logicalOperator==null || data.attributeName1 || data.comparisionType1==null || data.comparisionValue1==null
+                || data.vendorValue==null || data.customerValue==null ||  data.source==null){
                 delete data.attributeName;
                 delete data.comparisionType;
                 delete data.comparisionValue;
                 delete data.logicalOperator;
                 delete data.attributeName1;
                 delete data.comparisionType1;
-                delete data.vendor;
-                delete data.customer;
+                delete data.vendorValue;
+                delete data.customerValue;
                 delete data.comparisionValue1;
+                delete data.source;
 
             }
             data.conditions=[];
@@ -580,25 +577,25 @@ console.log("end");
 
             let vendorType:any = this.ruleForm.controls['vendorType'];
             vendorType.patchValue(vendorType.value);
-            let vendor:any = this.ruleForm.controls['vendor'];
+            let vendor:any = this.ruleForm.controls['vendorValue'];
             vendor.patchValue(vendor.value);
             condition3['attributeName']="vendor";
-            condition3['comparisionType']=vendorType.value;
+            condition3['comparisionType']="EQUALS_TO";
             condition3['comparisionValue']=vendor.value;
             var conditionrow3=data.conditions.push(condition3);
 
             let customerType:any = this.ruleForm.controls['customerType'];
             customerType.patchValue(customerType.value);
-            let customer:any = this.ruleForm.controls['customer'];
+            let customer:any = this.ruleForm.controls['customerValue'];
             customer.patchValue(customer.value);
             condition4['attributeName']="customer";
-            condition4['comparisionType']=customerType.value;
+            condition4['comparisionType']="EQUALS_TO";
             condition4['comparisionValue']=customer.value;
             var conditionrow4=data.conditions.push(condition4);
             let source:any = this.ruleForm.controls['source'];
             source.patchValue(source.value);
             condition5['attributeName']="source";
-            condition5['comparisionType']="";
+            condition5['comparisionType']="EQUALS_TO";
             condition5['comparisionValue']=source.value;
             var conditionrow5=data.conditions.push(condition5);
             this.ruleservice.addRule(<VendorModel>data, this.companyId)
