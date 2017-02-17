@@ -115,7 +115,6 @@ export class TaxesComponent {
             let row:any = {};
             _.each(base.tableColumns, function(key) {
                 if(key == 'taxRate'){
-                    debugger;
                     console.log("taxRate");
                     row[key] = expense[key]+"%";
                 }  else{
@@ -169,8 +168,13 @@ export class TaxesComponent {
 
 
     showCOA(coa:any) {
-        let coaControl:any = this.TaxesForm.controls['taxLiabilityCoa'];
-        coaControl.patchValue(coa.id);
+        let data = this._taxesForm.getData(this.TaxesForm);
+        if(coa && coa.id){
+            data.taxLiabilityCoa = coa.id;
+        }else if(!coa||coa=='--None--'){
+            data.taxLiabilityCoa='--None--';
+        }
+        this._taxesForm.updateForm(this.TaxesForm, data);
     }
 
     removeTax(row:any) {
@@ -204,14 +208,14 @@ export class TaxesComponent {
     }
 
     submit($event) {
-        this.loadingService.triggerLoadingEvent(true);
-        $event && $event.preventDefault();
         let data = this._taxesForm.getData(this.TaxesForm);
-        console.log("sadsf",data);
         this.companyId = Session.getCurrentCompany();
-
+        if(data.taxLiabilityCoa=='--None--'||_.isEmpty(data.taxLiabilityCoa)){
+            this._toastService.pop(TOAST_TYPE.error, "Please select Tax Liability COA");
+            return;
+        }
+        this.loadingService.triggerLoadingEvent(true);
         if(this.editMode){
-
             data.id = this.row.id;
             if(data.taxRate.includes("%")){
                 var res=data.taxRate.split('%')
@@ -250,7 +254,11 @@ export class TaxesComponent {
     }
     showCOA(coa:any) {
         let data= this._taxesForm.getData(this.TaxesForm);
-        data.taxLiabilityCoa = coa.id;
+        if(coa&&coa.id){
+            data.taxLiabilityCoa = coa.id;
+        }else if(!coa||coa=='--None--'){
+            data.taxLiabilityCoa='--None--';
+        }
         this._taxesForm.updateForm(this.TaxesForm, data);
     }
     getCoa(){

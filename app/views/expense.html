@@ -12,19 +12,19 @@
                                 <div class="form-section-left expense-row">
                                     <header class="form-section-header">Expense Info</header>
                                     <div class="row">
-                                        <div class="small-12 medium-2 columns">
+                                        <div class="small-12 medium-3 columns">
                                             <label>Title
                                                 <input type="text" formControlName="title" placeholder="Title*"/>
                                                 <div class="error" [hidden]="expenseForm.controls.title.untouched || expenseForm.controls.title.valid">Expense Title is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-2 columns">
+                                        <div class="small-12 medium-3 columns">
                                             <label>Date
                                                 <input type="text" custom-datepicker [format]="'YYYY/MM/DD'" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="due_date" placeholder="Date*">
                                                 <div class="error" [hidden]="expenseForm.controls.due_date.untouched || expenseForm.controls.due_date.valid">Date is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-2 columns">
+                                        <div class="small-12 medium-3 columns">
                                             <label>Amount
                                                 <input type="text" formControlName="amount" placeholder="Amount*"/>
                                                 <div class="error" [hidden]="expenseForm.controls.amount.untouched || expenseForm.controls.amount.valid">Amount is required</div>
@@ -38,7 +38,7 @@
                                                 <div class="error" [hidden]="expenseForm.controls.bank_account_id.untouched || expenseForm.controls.bank_account_id.valid">Please select bank account</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-1 columns">
+                                        <!--<div class="small-12 medium-1 columns">
                                             <label>Paid?
                                                 <div class="switch tiny">
                                                     <input class="switch-input" id="isPaid" type="checkbox" formControlName="is_paid" (change)="togglePaidStatus($event)"/>
@@ -54,7 +54,7 @@
                                                 <input type="text" custom-datepicker [format]="'YYYY/MM/DD'" [mindate]="'past'" (valueChanged)="setPaidDate($event)" formControlName="paid_date" placeholder="Paid Date*">
                                                 <div class="error" [hidden]="expenseForm.controls.paid_date.untouched || expenseForm.controls.paid_date.valid">Paid date is required</div>
                                             </label>
-                                        </div>
+                                        </div>-->
                                     </div>
                                     <header class="form-section-header">Expense Items Info</header>
                                     <div class="text-right">
@@ -70,15 +70,14 @@
                                                 <th style="width: 15%;">Amount</th>
                                                 <th style="width: 20%;">COA</th>
                                                 <th style="width: 20%;">Vendor</th>
-                                                <th style="width: 20%;">Notes</th>
                                                 <th style="width: 8%;"></th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr *ngIf="expenseForm.controls.expense_items.controls.length == 0">
-                                                <td colspan="6" class="text-center">No expense items found</td>
+                                                <td colspan="5" class="text-center">No expense items found</td>
                                             </tr>
-                                            <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="!newExpense && itemForm.controls.destroy.value">
+                                            <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="!newExpense && itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
                                                 <td *ngIf="!itemForm.editable">{{itemForm.controls.title.value}}</td>
                                                 <td *ngIf="itemForm.editable">
                                                     <input type="text" placeholder="Title" [formControl]="itemForm.controls.title"/>
@@ -99,12 +98,8 @@
                                                         <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
                                                     </select>
                                                 </td>
-                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.notes.value}}</td>
-                                                <td *ngIf="itemForm.editable">
-                                                    <textarea [formControl]="itemForm.controls.notes" placeholder="Notes"></textarea>
-                                                </td>
                                                 <td>
-                                                        <span *ngIf="!itemForm.editable" (click)="editItem(index, itemForm)">
+                                                        <span *ngIf="!itemForm.editable" (click)="showFlyout(index)">
                                                             <i class="icon ion-edit"></i>
                                                         </span>
                                                     <span *ngIf="!itemForm.editable" (click)="deleteItem(index)">
@@ -138,9 +133,6 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <textarea formControlName="notes" placeholder="Notes"></textarea>
-                                                </td>
-                                                <td>
                                                     <i class="icon ion-ios-checkmark-outline" (click)="saveNewItem()"></i>
                                                     <i class="icon ion-ios-close-outline" (click)="hideNewItem()"></i>
                                                 </td>
@@ -165,5 +157,97 @@
                 </button>
             </div>
         </section>
+    </div>
+</div>
+
+<div class="report-wrapper journal-flyout">
+    <div class="sidenav customization-panel" [ngClass]="dimensionFlyoutCSS" foundation>
+        <button class="close-button " data-close aria-label="Close modal" type="button">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty" (click)="hideFlyout()"></i>
+                </span>
+        </button>
+        <div class="row collapse dimension-flyout">
+            <div class="row">
+                <div class="small-12 medium-12 small-centered column">
+                    <h5>Item Details</h5>
+                </div>
+            </div>
+        </div>
+        <form *ngIf="itemActive" novalidate [formGroup]="editItemForm">
+            <div class="row collapse dimension-flyout">
+                <div class="row">
+                    <div class="small-12 medium-6 columns">
+                        <div class="row">
+                            <div class="small-12 medium-6 column">
+                                <label>Title
+                                    <input type="text" formControlName="title" placeholder="Title*"/>
+                                    <div class="error" [hidden]="expenseForm.controls.title.untouched || expenseForm.controls.title.valid">Item Title is required</div>
+                                </label>
+                            </div>
+                            <div class="small-12 medium-6 column">
+                                <label>Amount
+                                    <input type="text" formControlName="amount" placeholder="Amount*"/>
+                                    <div class="error" [hidden]="expenseForm.controls.amount.untouched || expenseForm.controls.amount.valid">Item Amount is required</div>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-6 column">
+                                <label>Chart of Account
+                                    <select combo-box #editCOAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" formControlName="chart_of_account_id" (valueChanged)="setCOAForEditingItem($event)">
+                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="small-12 medium-6 column">
+                                <label>Vendor
+                                    <select combo-box #editVendorComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors" formControlName="vendor_id" (valueChanged)="setVendorForEditingItem($event)">
+                                        <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-12 column">
+                                <label>Notes
+                                    <textarea formControlName="notes" placeholder="Notes"></textarea>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="small-12 medium-6 columns">
+                        <label>Dimensions
+                            <div class="row dimension-grids" (click)="doNothing($event)">
+                                <div class="small-12 medium-4 columns dimension-grid" *ngFor="let dimension of dimensions">
+                                    <div class="dimension-header">
+                                        <div>
+                                            <span class="float-left">{{dimension.name}}</span>
+                                            <span class="float-right">
+                                                    <i class="icon ion-checkmark-circled" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"
+                                                       (click)="selectDimension($event, dimension.name)"></i>
+                                                </span>
+                                        </div>
+                                        <div class="bottom" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"></div>
+                                    </div>
+                                    <div class="dimension-values" [ngClass]="{'selected': isDimensionSelected(dimension.name)}">
+                                        <div class="dimension-value" *ngFor="let value of dimension.values; let index = index;">
+                                            <label (click)="selectValue($event, dimension, value)">
+                                                <input type="checkbox" [checked]="isValueSelected(dimension, value)"/>{{value}}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="small-12 medium-12 columns">
+                        <input type="button" class="button small float-right" value="Save" (click)="saveItem()"/>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>

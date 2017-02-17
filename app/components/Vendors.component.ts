@@ -183,8 +183,8 @@ export class VendorComponent {
     let data = this._vendorForm.getData(this.vendorForm);
     if(coa && coa.id){
       data.coa = coa.id;
-    } else{
-      data.coa = null;
+    }else if(!coa||coa=='--None--'){
+      data.coa='--None--';
     }
     this._vendorForm.updateForm(this.vendorForm, data);
   }
@@ -224,13 +224,22 @@ export class VendorComponent {
   }
 
   submit($event) {
-    this.loadingService.triggerLoadingEvent(true);
+
     $event && $event.preventDefault();
     let data = this._vendorForm.getData(this.vendorForm);
     this.companyId = Session.getCurrentCompany();
     let addressData = this.addressDir.getData();
     addressData.country=data.country;
     data.addresses=[addressData];
+
+    if(data.coa=='--None--'||data.coa==''){
+      this._toastService.pop(TOAST_TYPE.error, "Please select COA");
+      return;
+    }if(addressData.state=='--None--'||addressData.state==''){
+      this._toastService.pop(TOAST_TYPE.error, "Please select state");
+      return;
+    }
+    this.loadingService.triggerLoadingEvent(true);
     if(this.editMode) {
       data.id = this.row.id;
       this.companyService.updateVendor(<VendorModel>data, this.companyId)
@@ -333,6 +342,11 @@ export class VendorComponent {
 
   editAddress:any;
 
+  getAccountNumbers(){
+    let data = this._vendorForm.getData(this.vendorForm);
+    return data.accountNumbers || [];
+  }
+
   getVendorDetails(vendorID){
     let base=this;
     this.companyService.vendor(this.companyId,vendorID).subscribe(vendor => {
@@ -354,17 +368,11 @@ export class VendorComponent {
         setTimeout(function(){
           base.coaComboBox.setValue(coa, 'name');
         });
-      } else{
-        let defaultOption = {
-          'name': 'None',
-          'value': 'None'
-        };
-        setTimeout(function(){
-          base.coaComboBox.setValue(defaultOption, 'name');
-        });
       }
       vendor.has1099 = vendor.has1099 == 'true' || vendor.has1099 == true;
       this.setVendorType(vendor.type, vendor);
+      let accountNumbersControl:any = this.vendorForm.controls['accountNumbers'];
+      accountNumbersControl.patchValue(vendor.accountNumbers);
       this._vendorForm.updateForm(this.vendorForm, vendor);
     }, error => this.handleError(error));
   }

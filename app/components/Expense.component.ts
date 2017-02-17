@@ -11,6 +11,7 @@ import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ExpenseService} from "qCommon/app/services/Expense.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {DimensionService} from "qCommon/app/services/DimensionService.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants"
 
 declare let jQuery:any;
@@ -24,6 +25,7 @@ declare let _:any;
 export class ExpenseComponent{
     expenseForm: FormGroup;
     newItemForm: FormGroup;
+    editItemForm: FormGroup;
     routeSub:any;
     expenseID:string;
     newExpense: boolean = false;
@@ -34,15 +36,22 @@ export class ExpenseComponent{
     isExpensePaid:boolean = false;
     addNewItemFlag:boolean = false;
     editingItems:any={};
+    dimensionFlyoutCSS:any;
+    itemActive:boolean = false;
+    dimensions:Array<any> = [];
+    selectedDimensions:Array<any> = [];
+    editItemIndex:number;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
     @ViewChild("newVendorComboBoxDir") newVendorComboBox: ComboBox;
+    @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
+    @ViewChild("editVendorComboBoxDir") editVendorComboBox: ComboBox;
 
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _expenseForm: ExpenseForm,
             private _expenseItemForm: ExpenseItemForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
             private vendorService: CompaniesService, private expenseService: ExpenseService, private toastService: ToastService,
-            private loadingService: LoadingService){
+            private loadingService: LoadingService, private dimensionService: DimensionService){
         this.routeSub = this._route.params.subscribe(params => {
             this.expenseID=params['expenseID'];
             if(!this.expenseID){
@@ -54,6 +63,51 @@ export class ExpenseComponent{
     showExpensesPage(){
         let link = ['books', 1];
         this._router.navigate(link);
+    }
+
+    showFlyout(index) {
+        let base = this;
+        this.itemActive = true;
+        this.dimensionFlyoutCSS = "expanded";
+        let itemsControl:any = this.expenseForm.controls['expense_items'];
+        let data = this._expenseItemForm.getData(itemsControl.controls[index]);
+        let coa = _.find(this.chartOfAccounts, {'id': data.chart_of_account_id});
+        let vendor = _.find(this.vendors, {'id': data.vendor_id});
+        setTimeout(function(){
+            base.editCOAComboBox.setValue(coa, 'name');
+            base.editVendorComboBox.setValue(vendor, 'name');
+        });
+        this.editItemForm = this._fb.group(this._expenseItemForm.getForm(data));
+        this.editItemIndex = index;
+    }
+
+    hideFlyout(){
+        this.dimensionFlyoutCSS = "collapsed";
+        this.itemActive = false;
+        this.editItemIndex = null;
+    }
+
+    setCOAForEditingItem(coa){
+        let data = this._expenseItemForm.getData(this.editItemForm);
+        if(coa && coa.id){
+            data.chart_of_account_id = coa.id;
+        }
+        this._expenseItemForm.updateForm(this.editItemForm, data);
+    }
+
+    setVendorForEditingItem(vendor){
+        let data = this._expenseItemForm.getData(this.editItemForm);
+        if(vendor && vendor.id){
+            data.vendor_id = vendor.id;
+        }
+        this._expenseItemForm.updateForm(this.editItemForm, data);
+    }
+
+    /*This function will stop event bubbling to avoid default selection of first value in first dimension*/
+    doNothing($event){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
     }
 
     setBankAccount(account){
@@ -210,6 +264,73 @@ export class ExpenseComponent{
         }
     }
 
+    selectValue($event, dimension, value){
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+        _.each(this.selectedDimensions, function (selectedDimension) {
+            if(selectedDimension.name == dimension.name){
+                if(selectedDimension.values.indexOf(value) == -1){
+                    selectedDimension.values.push(value);
+                } else{
+                    selectedDimension.values.splice(selectedDimension.values.indexOf(value), 1);
+                }
+            }
+        });
+    }
+
+    isDimensionSelected(dimensionName){
+        let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
+        return selectedDimensionNames.indexOf(dimensionName) != -1;
+    }
+
+    isValueSelected(dimension, value){
+        let currentDimension = _.find(this.selectedDimensions, {'name': dimension.name});
+        if(!_.isEmpty(currentDimension)){
+            if(currentDimension.values.indexOf(value) != -1){
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    selectDimension($event, dimensionName){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+        let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
+        if(selectedDimensionNames.indexOf(dimensionName) == -1){
+            this.selectedDimensions.push({
+                "name": dimensionName,
+                "values": []
+            });
+        } else{
+            this.selectedDimensions.splice(selectedDimensionNames.indexOf(dimensionName), 1);
+        }
+    }
+
+    /*When user clicks on save button in the flyout*/
+    saveItem(){
+        let dimensions = this.editItemForm.controls['dimensions'];
+        dimensions.patchValue(this.selectedDimensions);
+        let itemData = this._expenseItemForm.getData(this.editItemForm);
+        this.updateLineInView(itemData);
+        this.selectedDimensions = [];
+        this.hideFlyout();
+    }
+
+    /*This will just update line details in VIEW*/
+    updateLineInView(item){
+        let itemsControl:any = this.expenseForm.controls['expense_items'];
+        let itemControl = itemsControl.controls[this.editItemIndex];
+        itemControl.controls['title'].patchValue(item.title);
+        itemControl.controls['amount'].patchValue(item.amount);
+        itemControl.controls['chart_of_account_id'].patchValue(item.chart_of_account_id);
+        itemControl.controls['vendor_id'].patchValue(item.vendor_id);
+        itemControl.controls['notes'].patchValue(item.notes);
+        itemControl.controls['dimensions'].patchValue(item.dimensions);
+    }
+
     getExpenseItemData(expenseForm){
         let base = this;
         let data = [];
@@ -255,6 +376,12 @@ export class ExpenseComponent{
 
         this.currentCompanyId = Session.getCurrentCompany();
         this.loadingService.triggerLoadingEvent(true);
+        this.dimensionService.dimensions(this.currentCompanyId)
+            .subscribe(dimensions =>{
+                this.dimensions = dimensions;
+            }, error => {
+
+            });
         this.accountsService.financialAccounts(this.currentCompanyId)
             .subscribe(accounts=> {
                this.accounts = accounts.accounts;

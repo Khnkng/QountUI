@@ -23,11 +23,13 @@
             <label class="text-right">State</label>
         </div>
         <div class="small-6 columns">
-            <input type="text" formControlName="state" placeholder="State*"/>
+            <select combo-box #stateComboBoxDir="comboBox" title="" data-placeholder="Select State" formControlName="state" [listObject]="states" (valueChanged)="setState($event)">
+                <option *ngFor="let state of states" [value]="state.name">{{state.name}}</option>
+            </select>
             <div class="error" [hidden]="addressForm.controls.state.untouched || addressForm.controls.state.valid">State is required</div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" style="margin-top:13px">
         <div class="small-3 columns">
             <label class="text-right">Zip Code</label>
         </div>
