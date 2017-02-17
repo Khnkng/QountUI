@@ -97,7 +97,7 @@
                           <label class="text-right">Reference Number(s)</label>
                         </div>
                         <div class="small-6 columns custom-qount-form-field">
-                          <custom-tag [controlName]="'accountNumbers'" [group]="vendorForm" [inputType]="'text'"
+                          <custom-tag [_list]="getAccountNumbers()" [controlName]="'accountNumbers'" [group]="vendorForm" [inputType]="'text'"
                                       [height]="'80px'" [placeholder]="'Enter number and hit enter'">loading</custom-tag>
                         </div>
                       </div>

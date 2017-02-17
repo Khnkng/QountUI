@@ -333,6 +333,11 @@ export class VendorComponent {
 
   editAddress:any;
 
+  getAccountNumbers(){
+    let data = this._vendorForm.getData(this.vendorForm);
+    return data.accountNumbers || [];
+  }
+
   getVendorDetails(vendorID){
     let base=this;
     this.companyService.vendor(this.companyId,vendorID).subscribe(vendor => {
@@ -365,6 +370,8 @@ export class VendorComponent {
       }
       vendor.has1099 = vendor.has1099 == 'true' || vendor.has1099 == true;
       this.setVendorType(vendor.type, vendor);
+      let accountNumbersControl:any = this.vendorForm.controls['accountNumbers'];
+      accountNumbersControl.patchValue(vendor.accountNumbers);
       this._vendorForm.updateForm(this.vendorForm, vendor);
     }, error => this.handleError(error));
   }
