@@ -50,12 +50,14 @@
 
       this._on( this.input, {
         autocompleteselect: function( event, ui ) {
-          ui.item.option.selected = true;
-          this._trigger( "select", event, {
-            item: ui.item.option.value
-          });
+          if(ui.item.option){
+            ui.item.option.selected = true;
+            this._trigger( "select", event, {
+              item: ui.item.option.value
+            });
+          }
           if(this.options.onchange) {
-            this.options.onchange(ui.item.option.value);
+            this.options.onchange(ui.item.option?ui.item.option.value:'--None--');
             if(this.options.clearOnSelect) {
               this.input.val('');
             }
@@ -64,7 +66,13 @@
 
         autocompletechange: "_removeIfInvalid"
       });
-
+      this.input.data('ui-autocomplete')._renderMenu= function( ul, items ) {
+        var that = this;
+        items.splice(0, 0, {"label": "--None--", "value":"--None--"});
+        $.each( items, function( index, item ) {
+          that._renderItemData( ul, item );
+        } );
+      };
       this.options.inputBox(this.input);
     },
 

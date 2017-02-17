@@ -149,13 +149,21 @@ export class ItemCodesComponent{
 
   updatePaymentCOA(paymentCOA){
     let data = this._itemCodeForm.getData(this.itemcodeForm);
-    data.payment_coa_mapping = paymentCOA.id;
+    if(paymentCOA&&paymentCOA.id){
+      data.payment_coa_mapping = paymentCOA.id;
+    }else if(!paymentCOA||paymentCOA=='--None--'){
+      data.payment_coa_mapping = '--None--';
+    }
     this._itemCodeForm.updateForm(this.itemcodeForm, data);
   }
 
   updateInvoiceCOA(invoiceCOA){
     let data = this._itemCodeForm.getData(this.itemcodeForm);
-    data.invoice_coa_mapping = invoiceCOA.id;
+    if(invoiceCOA&&invoiceCOA.id){
+      data.invoice_coa_mapping = invoiceCOA.id;
+    }else if(!invoiceCOA||invoiceCOA=='--None--'){
+      data.invoice_coa_mapping='--None--';
+    }
     this._itemCodeForm.updateForm(this.itemcodeForm, data);
   }
 
@@ -175,10 +183,22 @@ export class ItemCodesComponent{
   }
 
   submit($event){
-    this.loadingService.triggerLoadingEvent(true);
     let base = this;
     $event && $event.preventDefault();
     let data = this._itemCodeForm.getData(this.itemcodeForm);
+
+    if(data.payment_coa_mapping=='--None--'||data.payment_coa_mapping==''){
+      data.payment_coa_mapping=null;
+    }
+    if(data.invoice_coa_mapping=='--None--'||data.invoice_coa_mapping==''){
+      data.invoice_coa_mapping=null;
+    }
+
+    if(!data.payment_coa_mapping&&!data.invoice_coa_mapping){
+      this.toastService.pop(TOAST_TYPE.error, "Please select payment COA or invoice COA");
+      return;
+    }
+    this.loadingService.triggerLoadingEvent(true);
     if(this.editMode){
       data.id = this.row.id;
       data.companyID = this.currentCompany.id;

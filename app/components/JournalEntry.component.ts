@@ -240,8 +240,12 @@ export class JournalEntryComponent{
         let base = this;
         let dimensions = this.lineForm.controls['dimensions'];
         dimensions.patchValue(this.selectedDimensions);
+        let lineData = this._lineListForm.getData(this.lineForm);
+        if(lineData.coa=='--None--'||lineData.coa==''){
+            this.toastService.pop(TOAST_TYPE.error, "Please select Chart of Account");
+            return;
+        }
         if(this.editingLine.status == 'NEW'){
-            let lineData = this._lineListForm.getData(this.lineForm);
             this.resetLineForm();
             if(this.newJournalEntry){
                 this.saveLineInView(lineData);
@@ -249,7 +253,6 @@ export class JournalEntryComponent{
                 this.saveLineData(lineData);
             }
         } else{
-            let lineData = base._lineListForm.getData(base.lineForm);
             if(base.newJournalEntry){
                 base.updateLineInView(lineData);
             } else{
@@ -327,6 +330,10 @@ export class JournalEntryComponent{
             index: index
         };
         let data = this._lineListForm.getData(lineListItem);
+        if(data.coa=='--None--'||data.coa==''){
+            this.toastService.pop(TOAST_TYPE.error, "Please select Chart of Account");
+            return;
+        }
         if(this.newJournalEntry){
             this.updateLineInView(data);
         } else{
@@ -383,7 +390,11 @@ export class JournalEntryComponent{
 
     updateChartOfAccount(chartOfAccount){
         let lineData = this._lineListForm.getData(this.lineForm);
-        lineData.coa = chartOfAccount.id;
+        if(chartOfAccount&&chartOfAccount.id){
+            lineData.coa = chartOfAccount.id;
+        }else if(!chartOfAccount||chartOfAccount=='--None--'){
+            lineData.coa='--None--';
+        }
         this._lineListForm.updateForm(this.lineForm, lineData);
     }
 
@@ -503,7 +514,11 @@ export class JournalEntryComponent{
         let linesControl:any = this.jeForm.controls['journalLines'];
         let currentLineForm:any = linesControl.controls[index];
         let currentLineData = this._lineListForm.getData(currentLineForm);
-        currentLineData.coa = chartOfAccount.id;
+        if(chartOfAccount&&chartOfAccount.id){
+            currentLineData.coa = chartOfAccount.id;
+        }else if(!chartOfAccount||chartOfAccount=='--None--'){
+            currentLineData.coa='--None--';
+        }
         this._lineListForm.updateForm(currentLineForm, currentLineData);
     }
 

@@ -124,14 +124,13 @@ export class ExpensesCodesComponent {
   }
 
   updateExpenseCOA(selectedCOA){
+    let data = this._expensesForm.getData(this.expensesForm);
     if(selectedCOA && selectedCOA.id){
-      let data = this._expensesForm.getData(this.expensesForm);
       data.coa_mapping_id = selectedCOA.id;
-      this._expensesForm.updateForm(this.expensesForm, data);
-    } else{
-      let coaControl = this.expensesForm.controls['coa_mapping_id'];
-      coaControl.patchValue(null);
+    }else if(!selectedCOA||selectedCOA=='--None--'){
+      data.coa_mapping_id='--None--';
     }
+    this._expensesForm.updateForm(this.expensesForm, data);
   }
 
   ngOnInit(){
@@ -150,10 +149,17 @@ export class ExpensesCodesComponent {
   }
 
   submit($event){
-    this.loadingService.triggerLoadingEvent(true);
+
     let base = this;
     $event && $event.preventDefault();
     let data = this._expensesForm.getData(this.expensesForm);
+
+    if(data.coa_mapping_id=='--None--'||data.coa_mapping_id==''){
+      this.toastService.pop(TOAST_TYPE.error, "Please select Expense COA");
+      return;
+    }
+
+    this.loadingService.triggerLoadingEvent(true);
     if(this.editMode){
       data.id = this.row.id;
       data.companyID = this.currentCompany.id;

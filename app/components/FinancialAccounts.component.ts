@@ -130,19 +130,23 @@ export class FinancialAccountsComponent{
   }
 
   updateChartOfAccount(coa){
+    let data = this._financialAccountForm.getData(this.accountForm);
     if(coa && coa.id){
-      let data = this._financialAccountForm.getData(this.accountForm);
       data.chart_of_account_id = coa.id;
-      this._financialAccountForm.updateForm(this.accountForm, data);
+    }else if(!coa||coa=='--None--'){
+      data.chart_of_account_id='--None--';
     }
+    this._financialAccountForm.updateForm(this.accountForm, data);
   }
 
   updateTransitChartOfAccount(transitCOA){
+    let data = this._financialAccountForm.getData(this.accountForm);
     if(transitCOA && transitCOA.id){
-      let data = this._financialAccountForm.getData(this.accountForm);
       data.transit_chart_of_account_id = transitCOA.id;
-      this._financialAccountForm.updateForm(this.accountForm, data);
+    }else if(!transitCOA||transitCOA=='--None--'){
+      data.transit_chart_of_account_id='--None--';
     }
+    this._financialAccountForm.updateForm(this.accountForm, data);
   }
 
   handleAction($event){
@@ -160,6 +164,13 @@ export class FinancialAccountsComponent{
     let base = this;
     $event && $event.preventDefault();
     let data = this._financialAccountForm.getData(this.accountForm);
+    if(data.chart_of_account_id=='--None--'||data.chart_of_account_id==''){
+      this.toastService.pop(TOAST_TYPE.error, "Please select Chart of Account");
+      return;
+    }if(data.transit_chart_of_account_id=='--None--'||data.transit_chart_of_account_id==''){
+      this.toastService.pop(TOAST_TYPE.error, "Please select Transit COA");
+      return;
+    }
     delete data.importType;
     if(this.editMode){
       this.financialAccountsService.updateAccount(data, this.currentCompany)

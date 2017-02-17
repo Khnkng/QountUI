@@ -161,7 +161,11 @@ export class CustomersComponent {
     }
     showCOA(coa:any) {
         let data= this._customersForm.getData(this.customerForm);
-        data.coa = coa.id;
+        if(coa && coa.id){
+            data.coa = coa.id;
+        }else if(!coa||coa=='--None--'){
+            data.coa='--None--';
+        }
         this._customersForm.updateForm(this.customerForm, data);
     }
     showEditVendor(row:any) {
@@ -207,10 +211,14 @@ export class CustomersComponent {
     }
 
     submit($event) {
-        this.loadingService.triggerLoadingEvent(true);
         $event && $event.preventDefault();
         var data = this._customersForm.getData(this.customerForm);
         this.companyId = Session.getCurrentCompany();
+        if(data.coa=='--None--'||data.coa==''){
+            this._toastService.pop(TOAST_TYPE.error, "Please select payment COA");
+            return;
+        }
+        this.loadingService.triggerLoadingEvent(true);
         if(this.editMode) {
             data.customer_id=this.row.customer_id;
             this.customersService.updateCustomer(<CustomersModel>data, this.companyId)
