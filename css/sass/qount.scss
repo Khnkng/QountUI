@@ -276,7 +276,7 @@ h1, h2, h3, h4, h5, h6 {
   /*margin-top: 0.1em;*/
   padding-left: 2px;
   img {
-    height: 34px;
+    height: 43px;
   }
 }
 
@@ -491,7 +491,7 @@ form {
 @media #{$medium-up} {
 
   .main-canvas {
-    margin-top: 70px;
+    margin-top: 50px;
   }
 
   .signup-bg {
@@ -3071,6 +3071,10 @@ form select.ng-dirty.ng-valid {
 }
 
 form input.ng-dirty.ng-valid {
+  border: 1px solid #cacaca;
+}
+
+form textarea.ng-dirty.ng-valid {
   border: 1px solid #cacaca;
 }
 

@@ -1,30 +1,30 @@
 
 <div [ngClass]="{'signup-bg': !hasLoggedIn}">
-<div class="top-bar" data-sticky-container [hidden]="!hasLoggedIn">
-  <div class="top-bar-title">
+  <div class="top-bar" data-sticky-container [hidden]="!hasLoggedIn">
+    <div class="top-bar-title">
     <span class="qount-off-canvas-menu-buttom hide-for-large" (click)="toggleOffCanvasMenu()">
       <i [ngClass]="{'ion-navicon-round':!isOffCanvasMenuExpanded, 'ion-close-round':isOffCanvasMenuExpanded}"></i>
     </span>
-    <span class="icon">
-      <img src="./images/SVG/logo.svg" style="width: 110px;cursor: pointer;" (click)="goToDefaultPage()" [hidden]="!isSideMenuExpanded"/>
+      <span class="icon">
+      <img src="./images/logo_withtext.png" style="width: 100px;cursor: pointer;" (click)="goToDefaultPage()" [hidden]="!isSideMenuExpanded"/>
       <img src="./images/logo.png" style="cursor: pointer;" (click)="goToDefaultPage()" [hidden]="isSideMenuExpanded"/>
     </span>
+    </div>
+    <div id="responsive-menu">
+      <qount-header *ngIf="hasLoggedIn" (togglemenu)="togglemenu($event)" (redirect)="redirectToPage($event)"></qount-header>
+    </div>
   </div>
-  <div id="responsive-menu">
-    <qount-header *ngIf="hasLoggedIn" (togglemenu)="togglemenu($event)" (redirect)="redirectToPage($event)"></qount-header>
-  </div>
-</div>
   <offcanvas-menu></offcanvas-menu>
-<div class="expanded row"  [ngClass]="{'signup-container' : !hasLoggedIn}">
-  <div [ngClass]="sMenuCss" class="show-for-large" *ngIf="hasLoggedIn">
-    <side-bar [isExpanded]="isSideMenuExpanded">
-    </side-bar>
+  <div class="expanded row"  [ngClass]="{'signup-container' : !hasLoggedIn}">
+    <div [ngClass]="sMenuCss" class="show-for-large" *ngIf="hasLoggedIn">
+      <side-bar [isExpanded]="isSideMenuExpanded">
+      </side-bar>
+    </div>
+    <div class="columns" [ngClass]="mainCanvasCss">
+      <router-outlet>
+      </router-outlet>
+    </div>
   </div>
-  <div class="columns" [ngClass]="mainCanvasCss">
-    <router-outlet>
-    </router-outlet>
-  </div>
-</div>
 </div>
 
 <div id="toast-container" [ngClass]="confirmClass">
