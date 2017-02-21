@@ -55,6 +55,7 @@ export class BooksComponent{
     allCompanies:Array<any>;
     currentCompany:any;
     accounts:Array<any>;
+    companyCurrency: string;
 
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
                 private toastService: ToastService, private loadingService:LoadingService, private companiesService: CompaniesService,
@@ -80,6 +81,7 @@ export class BooksComponent{
                 this.localBadges = JSON.parse(sessionStorage.getItem("localBooksBadges"));
             }
         }, error => this.handleError(error));
+        this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
     animateBoxInfo(boxInfo) {
@@ -219,6 +221,9 @@ export class BooksComponent{
             _.each(Object.keys(expense), function(key){
                 if(key == 'bank_account_id'){
                     row[key] = base.getBankAccountName(expense[key]);
+                } else if(key == 'amount'){
+                    let amount = parseFloat(expense[key]);
+                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 } else{
                     row[key] = expense[key];
                 }

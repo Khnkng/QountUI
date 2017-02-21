@@ -41,6 +41,7 @@ export class ExpenseComponent{
     dimensions:Array<any> = [];
     selectedDimensions:Array<any> = [];
     editItemIndex:number;
+    companyCurrency:string;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
@@ -58,6 +59,7 @@ export class ExpenseComponent{
                 this.newExpense = true;
             }
         });
+        this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
     showExpensesPage(){
@@ -73,6 +75,7 @@ export class ExpenseComponent{
         let data = this._expenseItemForm.getData(itemsControl.controls[index]);
         let coa = _.find(this.chartOfAccounts, {'id': data.chart_of_account_id});
         let vendor = _.find(this.vendors, {'id': data.vendor_id});
+        this.selectedDimensions = data.dimensions;
         setTimeout(function(){
             base.editCOAComboBox.setValue(coa, 'name');
             base.editVendorComboBox.setValue(vendor, 'name');
@@ -85,6 +88,7 @@ export class ExpenseComponent{
         this.dimensionFlyoutCSS = "collapsed";
         this.itemActive = false;
         this.editItemIndex = null;
+        this.selectedDimensions = [];
     }
 
     setCOAForEditingItem(coa){
@@ -140,10 +144,10 @@ export class ExpenseComponent{
     }
 
     processExpense(expense){
-        console.log(expense);
         let base = this;
         let itemsControl:any = this.expenseForm.controls['expense_items'];
         _.each(expense.expense_items, function(expenseItem){
+            expenseItem.amount = parseFloat(expenseItem.amount);
             itemsControl.controls.push(base._fb.group(base._expenseItemForm.getForm(expenseItem)));
         });
         let account = _.find(this.accounts, {'id': expense.bank_account_id});
@@ -344,6 +348,11 @@ export class ExpenseComponent{
         $event && $event.preventDefault();
         let data = this._expenseForm.getData(this.expenseForm);
         data.expense_items = this.getExpenseItemData(this.expenseForm.controls['expense_items']);
+        let itemTotal = _.sumBy(data.expense_items, 'amount');
+        if(itemTotal != data.amount){
+            this.toastService.pop(TOAST_TYPE.error, "Expense amount and Item total did not match.");
+            return;
+        }
         this.loadingService.triggerLoadingEvent(true);
         if(this.newExpense){
             this.expenseService.addExpense(data, this.currentCompanyId)
@@ -390,7 +399,9 @@ export class ExpenseComponent{
             });
         this.coaService.chartOfAccounts(this.currentCompanyId)
             .subscribe(chartOfAccounts=> {
-                this.chartOfAccounts = chartOfAccounts;
+                this.chartOfAccounts = _.filter(chartOfAccounts, function(chartOfAccount){
+                    return chartOfAccount.type == 'expenses' || chartOfAccount.type == 'otherExpense';
+                });
             }, error => {
 
             });
