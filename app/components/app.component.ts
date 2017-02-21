@@ -86,7 +86,11 @@ export class AppComponent  implements OnInit{
         });
         self.toasts.splice(index, 1);
     }
-
+    confirm(toast){
+        this.switchBoard.onToastConfirm.next({});
+        this.removeToast(toast.toastId);
+        this.confirmClass = "";
+    }
     cancel(toast){
         this.removeToast(toast.toastId);
         this.confirmClass = "";
