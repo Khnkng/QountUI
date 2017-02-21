@@ -38,16 +38,18 @@ export class ItemCodesComponent{
   editMode:boolean = false;
   currentCompany:any;
   allCompanies:Array<any>;
+  itemCodeId:any;
   row:any;
   tableColumns:Array<string> = ['name', 'id', 'payment_coa_mapping', 'invoice_coa_mapping', 'desc'];
   combo:boolean = true;
   allCOAList:Array<any> = [];
   showFlyout:boolean = false;
-
+  confirmSubscription:any;
   constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard,
               private codeService: CodesService, private toastService: ToastService, private loadingService:LoadingService,
         private coaService: ChartOfAccountsService, private companiesService: CompaniesService){
     this.itemcodeForm = this._fb.group(_itemCodeForm.getForm());
+    this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteItemCode(toast));
     let companyId = Session.getCurrentCompany();
     this.loadingService.triggerLoadingEvent(true);
     this.companiesService.companies().subscribe(companies => {
@@ -63,6 +65,9 @@ export class ItemCodesComponent{
             this.loadingService.triggerLoadingEvent(false);
           }, error=> this.handleError(error));
     }, error => this.handleError(error));
+  }
+  ngOnDestroy(){
+    this.confirmSubscription.unsubscribe();
   }
 
   handleError(error){
@@ -130,16 +135,20 @@ export class ItemCodesComponent{
     this._itemCodeForm.updateForm(this.itemcodeForm, row);
     this.showFlyout = true;
   }
-
-  removeItemCode(row: any){
-    let itemCodeId = row.id;
+  deleteItemCode(toast){
     this.loadingService.triggerLoadingEvent(true);
-    this.codeService.removeItemCode(itemCodeId)
+    this.codeService.removeItemCode(this.itemCodeId)
         .subscribe(coa => {
           this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.success, "Deleted Item code successfully");
-          this.itemCodes.splice(_.findIndex(this.itemCodes, {id: itemCodeId}, 1));
+          this.toastService.pop(TOAST_TYPE.error, "Deleted Item code successfully");
+          //this.itemCodes.splice(_.findIndex(this.itemCodes, {id: this.itemCodeId}, 1));
+          this.codeService.itemCodes(this.currentCompany.id)
+              .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));
         }, error => this.handleError(error));
+  }
+  removeItemCode(row: any){
+     this.itemCodeId = row.id;
+    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Item code?");
   }
 
   newForm(){

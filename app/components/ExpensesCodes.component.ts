@@ -47,12 +47,15 @@ export class ExpensesCodesComponent {
   combo:boolean = true;
   allCOAList:Array<any> = [];
   showFlyout:boolean = false;
+  itemCodeId:any;
+  confirmSubscription:any;
 
   constructor(private _fb: FormBuilder, private _expensesForm: ExpenseCodesForm, private switchBoard: SwitchBoard,
               private codeService: CodesService, private toastService: ToastService, private _router:Router,
               private coaService: ChartOfAccountsService, private expensesSerice:ExpensesService,
               private companiesService: CompaniesService, private loadingService:LoadingService){
     this.expensesForm = this._fb.group(_expensesForm.getForm());
+    this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteExpense(toast));
     let companyId = Session.getCurrentCompany();
     this.loadingService.triggerLoadingEvent(true);
     this.companiesService.companies().subscribe(companies => {
@@ -69,7 +72,9 @@ export class ExpensesCodesComponent {
           }, error=> this.handleError(error));
     }, error => this.handleError(error));
   }
-
+  ngOnDestroy(){
+    this.confirmSubscription.unsubscribe();
+  }
   handleError(error){
     this.row = {};
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
@@ -106,16 +111,19 @@ export class ExpensesCodesComponent {
     this._expensesForm.updateForm(this.expensesForm, row);
     this.showFlyout = true;
   }
+deleteExpense(toast){
 
+  this.loadingService.triggerLoadingEvent(true);
+  this.expensesSerice.removeExpense(this.currentCompany.id,this.itemCodeId)
+      .subscribe(coa => {
+        this.loadingService.triggerLoadingEvent(false);
+        this.toastService.pop(TOAST_TYPE.error, "Deleted Expense code successfully");
+        this.expenses.splice(_.findIndex(this.expenses, {id: this.itemCodeId}, 1));
+      }, error => this.handleError(error));
+}
   removeExpense(row: any){
-    this.loadingService.triggerLoadingEvent(true);
-    let itemCodeId = row.id;
-    this.expensesSerice.removeExpense(this.currentCompany.id,itemCodeId)
-        .subscribe(coa => {
-          this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.success, "Deleted Expense successfully");
-          this.expenses.splice(_.findIndex(this.expenses, {id: itemCodeId}, 1));
-        }, error => this.handleError(error));
+     this.itemCodeId = row.id;
+    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Expense code?");
   }
 
   newForm(){

@@ -9,6 +9,7 @@ import {RuleForm, RuleActionForm} from "../forms/Rule.form";
 import {FormGroup, FormBuilder, FormArray} from "@angular/forms";
 import {RulesService} from "qCommon/app/services/Rules.service";
 import {Session} from "qCommon/app/services/Session";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {DimensionService} from "qCommon/app/services/DimensionService.service";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {VendorModel} from "../models/Vendor.model";
@@ -34,6 +35,8 @@ export class RulesComponent {
     showFlyout:boolean = false;
     ruleForm:FormGroup;
     editMode:boolean = false;
+    ruleToDelete:any;
+    confirmSubscription: any;
     RulesList:any;
     vendors:any;
     AttributeList:any;
@@ -66,9 +69,10 @@ export class RulesComponent {
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
     @ViewChild('selectedCOAComboBoxDir') selectedCOAComboBox: ComboBox;
-    constructor(private _router:Router, private customersService: CustomersService,private companyService: CompaniesService,private _toastService: ToastService, private _fb: FormBuilder,private ruleservice:RulesService,private _ruleForm: RuleForm, private coaService: ChartOfAccountsService,
+    constructor(private _router:Router, private customersService: CustomersService, private switchBoard:SwitchBoard,private companyService: CompaniesService,private _toastService: ToastService, private _fb: FormBuilder,private ruleservice:RulesService,private _ruleForm: RuleForm, private coaService: ChartOfAccountsService,
         private dimensionService: DimensionService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
         this.companyId = Session.getCurrentCompany();
+        this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.RuleDelete(toast));
         this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO'];
         this.conparisionAmountArray=['EQUALS_TO','LESS_THAN','GREATER_THAN',' GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
         this.vendorsArray=['EQUALS_TO'];
@@ -119,8 +123,11 @@ export class RulesComponent {
                 }
             }, error =>  this.handleError(error));
     }
+    ngOnDestroy(){
+        this.confirmSubscription.unsubscribe();
+    }
     handleError(error) {
-
+        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }
 
     expesevalue(){
@@ -145,6 +152,19 @@ export class RulesComponent {
         }
 
     }
+    RuleDelete(toast){
+        this.ruleservice.removeRule(this.ruleToDelete, this.companyId)
+            .subscribe(success  => {
+                this._toastService.pop(TOAST_TYPE.error, "Rule deleted successfully");
+                this.ruleservice.getRulesofCompany(this.companyId)
+                    .subscribe(RulesList  => {
+                        this.buildTableData(RulesList);
+                        this.loadingService.triggerLoadingEvent(false);
+                        return;
+                    }, error =>  this.handleError(error));
+            }, error =>  this.handleError(error));
+    }
+
     showAddRule(){
         this.editMode = false;
         this.showFlyout = true;
@@ -268,20 +288,8 @@ export class RulesComponent {
         }
     }
     removeRule(row:any){
-        let vendor:VendorModel = row;
-        this.loadingService.triggerLoadingEvent(true);
-        this.ruleservice.removeRule(row.id, this.companyId)
-            .subscribe(success  => {
-                this._toastService.pop(TOAST_TYPE.success, "Rule deleted successfully");
-                this.ruleservice.getRulesofCompany(this.companyId)
-                    .subscribe(RulesList  => {
-                        this.buildTableData(RulesList);
-                        this.loadingService.triggerLoadingEvent(false);
-                    }, error =>  this.handleError(error));
-            }, error =>  this.handleError(error));
-        _.remove(this.vendors, function (_vendor) {
-            return vendor.id == _vendor.id;
-        });
+        this.ruleToDelete = row.id;
+        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Rule?");
     }
     deleteAction(index){
         let indexValue=this.actions.controls.splice(index,1);

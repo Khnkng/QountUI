@@ -32,7 +32,9 @@ export class VendorComponent {
   tableData:any = {};
   tableOptions:any = {};
   status:any;
+  vendorId:any;
   vendors:Array<any>;
+  confirmSubscription:any;
   editMode:boolean = false;
   @ViewChild('createVendor') createVendor;
   @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
@@ -60,7 +62,8 @@ export class VendorComponent {
               private _router: Router, private loadingService:LoadingService,
               private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
     this.vendorForm = this._fb.group(_vendorForm.getForm());
-    this.companyId = Session.getCurrentCompany();
+    this.companyId = Session.getCurrentCompany(); ;
+    this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteVendor(toast));
     this.loadingService.triggerLoadingEvent(true);
     this.companyService.companies().subscribe(companies => {
       this.companies = companies;
@@ -80,7 +83,10 @@ export class VendorComponent {
           _.sortBy(this.chartOfAccounts, ['number', 'name']);
         }, error=> this.handleError(error));
   }
-
+  ngOnDestroy(){
+    this.confirmSubscription.unsubscribe();
+    jQuery('.ui-autocomplete').remove();
+  }
   getCompanyName(companyId){
     let company = _.find(this.companies, {id: companyId});
     if(company){
@@ -163,7 +169,7 @@ export class VendorComponent {
     if(action == 'edit') {
       this.showEditVendor($event);
     } else if(action == 'delete'){
-      this.removeVendor($event);
+      this.vendorDelete($event);
     }
   }
 
@@ -188,27 +194,29 @@ export class VendorComponent {
     }
     this._vendorForm.updateForm(this.vendorForm, data);
   }
+deleteVendor(toast){
+  this.loadingService.triggerLoadingEvent(true);
+  this.companyService.removeVendor(this.vendorId, this.companyId)
+      .subscribe(success  => {
+        this.companyService.vendors(this.companyId)
+            .subscribe(vendors  => {
+              this.buildTableData(vendors);
+              this.loadingService.triggerLoadingEvent(false);
+              this._toastService.pop(TOAST_TYPE.error, "Vendor deleted successfully");
+            }, error =>  this.handleError1(error));
+      }, error =>  this.handleError(error));
 
-  removeVendor(row:any) {
+}
+  handleError1(error){
+
+  }
+  vendorDelete(row:any) {
     let vendor:VendorModel = row;
-    this.loadingService.triggerLoadingEvent(true);
-    this.companyService.removeVendor(vendor.id, this.companyId)
-        .subscribe(success  => {
-          this._toastService.pop(TOAST_TYPE.success, "Vendor deleted successfully");
-          this.companyService.vendors(this.companyId)
-              .subscribe(vendors  => {
-                this.buildTableData(vendors);
-                this.loadingService.triggerLoadingEvent(false);
-              }, error =>  this.handleError(error));
-        }, error =>  this.handleError(error));
-    _.remove(this.vendors, function (_vendor) {
-      return vendor.id == _vendor.id;
-    });
+    this.vendorId=row.id;
+    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Vendor?");
   }
 
-  ngOnDestroy(){
-    jQuery('.ui-autocomplete').remove();
-  }
+
 
   active1:boolean=true;
   newForm1(){
@@ -307,7 +315,7 @@ export class VendorComponent {
   }
 
   handleError(error) {
-
+    this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
   }
 
   setVendorType(vendorType, vendor?){

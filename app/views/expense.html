@@ -26,7 +26,7 @@
                                         </div>
                                         <div class="small-12 medium-3 columns">
                                             <label>Amount
-                                                <input type="text" formControlName="amount" placeholder="Amount*"/>
+                                                <input type="text" formControlName="amount" placeholder="Amount*" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
                                                 <div class="error" [hidden]="expenseForm.controls.amount.untouched || expenseForm.controls.amount.valid">Amount is required</div>
                                             </label>
                                         </div>
@@ -82,9 +82,9 @@
                                                 <td *ngIf="itemForm.editable">
                                                     <input type="text" placeholder="Title" [formControl]="itemForm.controls.title"/>
                                                 </td>
-                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.amount.value}}</td>
+                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.amount.value? (itemForm.controls.amount.value| currency:companyCurrency:true:'1.2-2'):null}}</td>
                                                 <td *ngIf="itemForm.editable">
-                                                    <input type="text" placeholder="Amount" [formControl]="itemForm.controls.amount"/>
+                                                    <input type="text" placeholder="Amount" [formControl]="itemForm.controls.amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
                                                 </td>
                                                 <td *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
@@ -120,7 +120,7 @@
                                                     <input type="text" placeholder="Title" formControlName="title"/>
                                                 </td>
                                                 <td>
-                                                    <input type="text" placeholder="Amount" formControlName="amount"/>
+                                                    <input type="text" placeholder="Amount" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
                                                 </td>
                                                 <td class="combo-box-field">
                                                     <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" formControlName="chart_of_account_id" (valueChanged)="setCOAForNewItem($event)">
@@ -182,13 +182,13 @@
                             <div class="small-12 medium-6 column">
                                 <label>Title
                                     <input type="text" formControlName="title" placeholder="Title*"/>
-                                    <div class="error" [hidden]="expenseForm.controls.title.untouched || expenseForm.controls.title.valid">Item Title is required</div>
+                                    <div class="error" [hidden]="editItemForm.controls.title.untouched || editItemForm.controls.title.valid">Item Title is required</div>
                                 </label>
                             </div>
                             <div class="small-12 medium-6 column">
                                 <label>Amount
-                                    <input type="text" formControlName="amount" placeholder="Amount*"/>
-                                    <div class="error" [hidden]="expenseForm.controls.amount.untouched || expenseForm.controls.amount.valid">Item Amount is required</div>
+                                    <input type="text" formControlName="amount" placeholder="Amount*" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                    <div class="error" [hidden]="editItemForm.controls.amount.untouched || editItemForm.controls.amount.valid">Item Amount is required</div>
                                 </label>
                             </div>
                         </div>
@@ -209,9 +209,9 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="small-12 medium-12 column">
+                            <div class="small-12 medium-12 column" style="margin-top: 20px;">
                                 <label>Notes
-                                    <textarea formControlName="notes" placeholder="Notes"></textarea>
+                                    <textarea formControlName="notes" placeholder="Notes" style="height: 100px;"></textarea>
                                 </label>
                             </div>
                         </div>

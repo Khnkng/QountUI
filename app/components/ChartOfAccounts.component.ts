@@ -49,13 +49,15 @@ export class ChartOfAccountsComponent{
   sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices"];
   hasParentOrChild: boolean = false;
   showFlyout:boolean = false;
-
+  coaId:any;
+  confirmSubscription:any;
   constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard,
               private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private toastService: ToastService, private companiesService: CompaniesService){
     this.coaForm = this._fb.group(_coaForm.getForm());
     let companyId = Session.getCurrentCompany();
     this.loadingService.triggerLoadingEvent(true);
+    this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteCOA(toast));
     this.companiesService.companies().subscribe(companies => {
       this.allCompanies = companies;
 
@@ -72,6 +74,9 @@ export class ChartOfAccountsComponent{
     }, error => this.handleError(error));
   }
 
+  ngOnDestroy(){
+    this.confirmSubscription.unsubscribe();
+  }
   handleError(error){
     this.row = {};
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
@@ -170,16 +175,18 @@ export class ChartOfAccountsComponent{
       }
     }
   }
-
+deleteCOA(toast){
+  this.loadingService.triggerLoadingEvent(true);
+  this.coaService.removeCOA(this.coaId, this.currentCompany.id)
+      .subscribe(coa => {
+        this.loadingService.triggerLoadingEvent(false);
+        this.toastService.pop(TOAST_TYPE.error, "Deleted Chart of Account successfully");
+        this.chartOfAccounts.splice(_.findIndex(this.chartOfAccounts, {id: this.coaId}, 1));
+      }, error => this.handleError(error));
+}
   removeCOA(row: any){
-    this.loadingService.triggerLoadingEvent(true);
-    let coaId = row.id;
-    this.coaService.removeCOA(coaId, this.currentCompany.id)
-        .subscribe(coa => {
-          this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.success, "Deleted Chart of Account successfully");
-          this.chartOfAccounts.splice(_.findIndex(this.chartOfAccounts, {id: coaId}, 1));
-        }, error => this.handleError(error));
+     this.coaId = row.id;
+    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Chart of Account?");
   }
 
   newForm(){
