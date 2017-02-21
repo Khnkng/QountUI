@@ -95,6 +95,10 @@ export class AppComponent  implements OnInit{
         this.removeToast(toast.toastId);
         this.confirmClass = "";
     }
+    error(toast){
+        this.removeToast(toast.toastId);
+        // this.confirmClass = "";
+    }
 
     loggedIn(user: UserModel) {
         this.user = user;

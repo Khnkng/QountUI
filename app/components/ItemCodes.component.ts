@@ -141,7 +141,9 @@ export class ItemCodesComponent{
         .subscribe(coa => {
           this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.error, "Deleted Item code successfully");
-          this.itemCodes.splice(_.findIndex(this.itemCodes, {id: this.itemCodeId}, 1));
+          //this.itemCodes.splice(_.findIndex(this.itemCodes, {id: this.itemCodeId}, 1));
+          this.codeService.itemCodes(this.currentCompany.id)
+              .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));
         }, error => this.handleError(error));
   }
   removeItemCode(row: any){

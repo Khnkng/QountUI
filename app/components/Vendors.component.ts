@@ -85,6 +85,7 @@ export class VendorComponent {
   }
   ngOnDestroy(){
     this.confirmSubscription.unsubscribe();
+    jQuery('.ui-autocomplete').remove();
   }
   getCompanyName(companyId){
     let company = _.find(this.companies, {id: companyId});
@@ -168,7 +169,7 @@ export class VendorComponent {
     if(action == 'edit') {
       this.showEditVendor($event);
     } else if(action == 'delete'){
-      this.removeVendor($event);
+      this.vendorDelete($event);
     }
   }
 
@@ -201,19 +202,21 @@ deleteVendor(toast){
             .subscribe(vendors  => {
               this.buildTableData(vendors);
               this.loadingService.triggerLoadingEvent(false);
-            }, error =>  this.handleError(error));
+              this._toastService.pop(TOAST_TYPE.error, "Vendor deleted successfully");
+            }, error =>  this.handleError1(error));
       }, error =>  this.handleError(error));
-  this._toastService.pop(TOAST_TYPE.error, "Vendor deleted successfully");
+
 }
-  removeVendor(row:any) {
+  handleError1(error){
+
+  }
+  vendorDelete(row:any) {
     let vendor:VendorModel = row;
     this.vendorId=row.id;
     this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Vendor?");
   }
 
-  ngOnDestroy(){
-    jQuery('.ui-autocomplete').remove();
-  }
+
 
   active1:boolean=true;
   newForm1(){
