@@ -141,7 +141,7 @@
                                                     <label class="text-right">Starting Balance Date</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" custom-datepicker [format]="'DD/MM/YYYY'" [mindate]="'past'" (valueChanged)="setBalanceDate($event)" formControlName="starting_balance_date" placeholder="Starting Balance Date"/>
+                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setBalanceDate($event)" formControlName="starting_balance_date" placeholder="Starting Balance Date"/>
                                                     <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Starting balance date is required.</div>
                                                 </div>
                                             </div>

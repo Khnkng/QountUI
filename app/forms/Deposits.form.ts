@@ -30,7 +30,6 @@ export class DepositsLineForm extends abstractForm{
             title: [model? model.title: ''],
             chart_of_account_id: [model? model.chart_of_account_id: ''],
             customer_id: [model? model.customer_id: ''],
-            date: [model? model.date: ''],
             id: [model? model.id: null],
             invoice_id: [model? model.invoice_id: ''],
             notes: [model? model.notes: ''],
