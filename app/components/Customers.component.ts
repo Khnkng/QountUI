@@ -29,6 +29,7 @@ export class CustomersComponent {
     tableData:any = {};
     tableOptions:any = {};
     status:any;
+    customerId:any;
     customers:Array<any>;
     editMode:boolean = false;
     @ViewChild('createVendor') createVendor;
@@ -48,11 +49,13 @@ export class CustomersComponent {
     showAddress:boolean;
     showFlyout:boolean = false;
     chartOfAccounts:any;
+    confirmSubscription:any;
 
     constructor(private _fb: FormBuilder, private customersService: CustomersService,
                 private _customersForm:CustomersForm, private _router: Router, private _toastService: ToastService,
                 private switchBoard: SwitchBoard, private loadingService:LoadingService,private coaService: ChartOfAccountsService) {
         this.customerForm = this._fb.group(_customersForm.getForm());
+        this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteVendor(toast));
         this.companyId = Session.getCurrentCompany();
         this.coaService.chartOfAccounts(this.companyId)
             .subscribe(chartOfAccounts => {
@@ -72,6 +75,7 @@ export class CustomersComponent {
     }
 
     ngOnDestroy(){
+        this.confirmSubscription.unsubscribe();
     }
 
     buildTableData(customers) {
@@ -138,20 +142,20 @@ export class CustomersComponent {
         this.showAddress = false;
         setTimeout(()=> this.showAddress=true, 0);
     }
-
+deleteVendor(toast){
+    this.loadingService.triggerLoadingEvent(true);
+    this.customersService.removeCustomer(this.customerId, this.companyId)
+        .subscribe(success  => {
+            this.loadingService.triggerLoadingEvent(false);
+            this._toastService.pop(TOAST_TYPE.success, "Customer deleted successfully");
+            this.customersService.customers(this.companyId)
+                .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
+        }, error =>  this.handleError(error));
+}
     removeVendor(row:any) {
         let customer:CustomersModel = row;
-        this.loadingService.triggerLoadingEvent(true);
-        this.customersService.removeCustomer(customer.customer_id, this.companyId)
-            .subscribe(success  => {
-                this.loadingService.triggerLoadingEvent(false);
-                this._toastService.pop(TOAST_TYPE.success, "Customer deleted successfully");
-                this.customersService.customers(this.companyId)
-                    .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
-            }, error =>  this.handleError(error));
-        _.remove(this.customers, function (_customer) {
-            return customer.customer_id == _customer.customer_id;
-        });
+        this.customerId=customer.customer_id;
+        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
     }
 
     active1:boolean=true;
@@ -286,7 +290,7 @@ export class CustomersComponent {
 
 
     handleError(error) {
-
+        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }
     hideFlyout(){
         this.row = {};

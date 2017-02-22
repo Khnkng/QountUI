@@ -86,7 +86,7 @@
               </div>
             </div>
 
-            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasDeposits" [data]="depositsTableData" [options]="depositsTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasDeposits" [data]="depositsTableData" [options]="depositsTableOptions" (onRowAction)="handleDepositAction($event)"></foo-table>
             <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasDeposits">
               <div class="woo-woo">Woot Woot!</div>
               <p>There are no Deposits.</p>

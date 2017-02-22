@@ -54,12 +54,15 @@ export class TaxesComponent {
     countryCode:string;
     showAddress:boolean;
     showFlyout:boolean = false;
+    taxId:any;
+    confirmSubscription:any;
 
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _taxesForm:TaxesForm,
                 private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
                 private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
         this.TaxesForm = this._fb.group(_taxesForm.getTax());
         this.companyId = Session.getCurrentCompany();
+        this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteTax(toast));
         this.loadingService.triggerLoadingEvent(true);
         // this.companyService.companies().subscribe(companies => {
         //     this.companies = companies;
@@ -176,22 +179,26 @@ export class TaxesComponent {
         }
         this._taxesForm.updateForm(this.TaxesForm, data);
     }
-
-    removeTax(row:any) {
-        let vendor:VendorModel = row;
+    deleteTax(toast) {
         this.loadingService.triggerLoadingEvent(true);
-        this.companyService.removeTax(row.id, this.companyId)
+        this.companyService.removeTax(this.taxId, this.companyId)
             .subscribe(success  => {
-                this._toastService.pop(TOAST_TYPE.success, "Tax deleted successfully");
+                this._toastService.pop(TOAST_TYPE.error, "Tax deleted successfully");
                 this.companyService.getTaxofCompany(this.companyId)
                     .subscribe(taxesList  => {
                         this.buildTableData(taxesList);
                         this.loadingService.triggerLoadingEvent(false);
-                    }, error =>  this.handleError(error));
+                        return;
+                    }, error =>  this.handleError1(error));
             }, error =>  this.handleError(error));
-        _.remove(this.vendors, function (_vendor) {
-            return vendor.id == _vendor.id;
-        });
+    }
+    handleError1(error){
+
+    }
+    removeTax(row:any) {
+        let vendor:VendorModel = row;
+        this.taxId=row.id;
+        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Tax?");
     }
 
     active1:boolean=true;
@@ -206,7 +213,9 @@ export class TaxesComponent {
         this.TaxesForm = this._fb.group(this._taxesForm.getTax());
         this.getTaxDetails(row.id);
     }
-
+    ngOnDestroy(){
+        this.confirmSubscription.unsubscribe();
+    }
     submit($event) {
         let data = this._taxesForm.getData(this.TaxesForm);
         this.companyId = Session.getCurrentCompany();
@@ -231,13 +240,18 @@ export class TaxesComponent {
             if(data.taxRate.includes("%")){
                 var res=data.taxRate.split('%')
                 data.taxRate=res[0];
-            };
+            }
+            else{
+                data.taxRate=data.taxRate;
+            }
+
             this.companyService.addTax(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
+
         }
     }
 
@@ -316,7 +330,7 @@ export class TaxesComponent {
     }
 
     handleError(error) {
-
+        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }
 
     ratetax(){

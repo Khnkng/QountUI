@@ -133,6 +133,7 @@ gulp.task('watch', ['serve'], function () {
   gulp.watch('node_modules/reportsUI/app/**/*.*', ['typescript-compile']);
   gulp.watch('node_modules/billsUI/app/**/*.*', ['typescript-compile']);
   gulp.watch('node_modules/invoicesUI/app/**/*.*', ['typescript-compile']);
+  gulp.watch('node_modules/qCommon/app/**/*.*', ['typescript-compile']);
   gulp.watch(['./index.html', './app/views/*.html'], ['html']);
   gulp.watch('app/**/*.css', ['css']);
   gulp.watch('images/**/*.*', ['images']);

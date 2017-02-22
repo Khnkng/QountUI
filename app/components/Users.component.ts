@@ -11,7 +11,7 @@ import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
 import {UsersModel} from "qCommon/app/models/Users.model";
 import {UsersForm} from "../forms/Users.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
-
+import {ToastService} from "qCommon/app/services/Toast.service";
 declare var jQuery:any;
 declare var _:any;
 
@@ -37,12 +37,14 @@ export class UsersComponent {
     roles:Array<any>;
     canAddUsers:boolean = false;
     showFlyout:boolean = false;
-
+    confirmSubscription:any;
+    userId:any;
     constructor(private _fb: FormBuilder, private usersService: CompanyUsers, private _usersForm:UsersForm,
                 private _router: Router, private _toastService: ToastService, private loadingService:LoadingService,
-                private switchBoard: SwitchBoard) {
+                private switchBoard: SwitchBoard,private toastService: ToastService) {
         this.userForm = this._fb.group(_usersForm.getForm());
         this.companyId = Session.getCurrentCompany();
+        this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteUser(toast));
         let defaultCompany:any = Session.getUser().default_company || {};
         if(!_.isEmpty(defaultCompany)){
             let roles = defaultCompany.roles;
@@ -64,6 +66,7 @@ export class UsersComponent {
     }
 
     ngOnDestroy(){
+        this.confirmSubscription.unsubscribe();
     }
 
     buildTableData(users) {
@@ -116,20 +119,21 @@ export class UsersComponent {
         let countryControl:any = this.userForm.controls['roleID'];
         countryControl.patchValue(role.id);
     }
-
-    removeUser(row:any) {
+    deleteUser(toast){
         this.loadingService.triggerLoadingEvent(true);
-        let user:UsersModel = row;
-        this.usersService.removeUser(user.id, this.companyId)
+        this.usersService.removeUser(this.userId, this.companyId)
             .subscribe(success  => {
                 this.loadingService.triggerLoadingEvent(false);
                 this._toastService.pop(TOAST_TYPE.success, "User deleted successfully");
                 this.usersService.users(this.companyId)
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
             }, error =>  this.handleError(error));
-        _.remove(this.users, function (_user) {
-            return user.id == _user.id;
-        });
+    }
+    removeUser(row:any) {
+        let user:UsersModel = row;
+        this.userId=user.id;
+
+        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
     }
 
     active1:boolean=true;
@@ -200,7 +204,7 @@ export class UsersComponent {
     }
 
     handleError(error) {
-
+        this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Item code?");
     }
 
     hideFlyout(){

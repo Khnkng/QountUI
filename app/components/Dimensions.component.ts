@@ -12,6 +12,7 @@ import {DimensionService} from "qCommon/app/services/DimensionService.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {DimensionForm} from "../forms/Dimension.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 
 declare let jQuery:any;
 declare let _:any;
@@ -33,15 +34,19 @@ export class DimensionsComponent{
   showFlyout:boolean = false;
   allCompanies:Array<any>;
   row:any;
+  confirmSubscription:any;
   values:Array<any> = [];
+  dimensionName:any;
   tableColumns:Array<string> = ['name', 'id', 'values', 'desc'];
 
   constructor(private _fb: FormBuilder, private _dimensionForm: DimensionForm, private dimensionService: DimensionService,
-               private loadingService:LoadingService,
+               private loadingService:LoadingService,private switchBoard: SwitchBoard,
         private toastService: ToastService, private companiesService: CompaniesService){
     this.dimensionForm = this._fb.group(_dimensionForm.getForm());
     let companyId = Session.getCurrentCompany();
+    this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteDimensions(toast));
     this.loadingService.triggerLoadingEvent(true);
+
     this.companiesService.companies().subscribe(companies => {
       this.allCompanies = companies;
       if(companyId){
@@ -56,7 +61,9 @@ export class DimensionsComponent{
           }, error => this.handleError(error));
     }, error => this.handleError(error));
   }
-
+  ngOnDestroy(){
+    this.confirmSubscription.unsubscribe();
+  }
   handleError(error){
     this.row = {};
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
@@ -111,17 +118,19 @@ export class DimensionsComponent{
   onValueChange(valueObj, $event){
     valueObj.newValue = $event.target.value;
   }
-
-  removeDimension(row: any){
+  deleteDimensions(toast){
     this.loadingService.triggerLoadingEvent(true);
-    let dimensionName = row.name;
-    this.dimensionService.removeDimension(dimensionName, this.currentCompany.id)
+    this.dimensionService.removeDimension(this.dimensionName, this.currentCompany.id)
         .subscribe(coa => {
-            this.loadingService.triggerLoadingEvent(false);
-            this.toastService.pop(TOAST_TYPE.success, "Deleted Dimension successfully");
-            this.dimensions.splice(_.findIndex(this.dimensions, {name: dimensionName}), 1);
-            this.buildTableData(this.dimensions);
+          this.loadingService.triggerLoadingEvent(false);
+          this.toastService.pop(TOAST_TYPE.success, "Dimension deleted successfully");
+          this.dimensions.splice(_.findIndex(this.dimensions, {name: this.dimensionName}), 1);
+          this.buildTableData(this.dimensions);
         }, error => this.handleError(error));
+  }
+  removeDimension(row: any){
+     this.dimensionName = row.name;
+    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
   }
 
   newForm(){
