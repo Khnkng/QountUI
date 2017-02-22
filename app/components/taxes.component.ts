@@ -183,7 +183,7 @@ export class TaxesComponent {
         this.loadingService.triggerLoadingEvent(true);
         this.companyService.removeTax(this.taxId, this.companyId)
             .subscribe(success  => {
-                this._toastService.pop(TOAST_TYPE.error, "Tax deleted successfully");
+                this._toastService.pop(TOAST_TYPE.success, "Tax deleted successfully");
                 this.companyService.getTaxofCompany(this.companyId)
                     .subscribe(taxesList  => {
                         this.buildTableData(taxesList);
@@ -198,7 +198,7 @@ export class TaxesComponent {
     removeTax(row:any) {
         let vendor:VendorModel = row;
         this.taxId=row.id;
-        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Tax?");
+        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
     }
 
     active1:boolean=true;
@@ -217,6 +217,8 @@ export class TaxesComponent {
         this.confirmSubscription.unsubscribe();
     }
     submit($event) {
+        let base = this;
+        $event && $event.preventDefault();
         let data = this._taxesForm.getData(this.TaxesForm);
         this.companyId = Session.getCurrentCompany();
         if(data.taxLiabilityCoa=='--None--'||_.isEmpty(data.taxLiabilityCoa)){
