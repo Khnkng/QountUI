@@ -202,7 +202,7 @@ deleteVendor(toast){
             .subscribe(vendors  => {
               this.buildTableData(vendors);
               this.loadingService.triggerLoadingEvent(false);
-              this._toastService.pop(TOAST_TYPE.error, "Vendor deleted successfully");
+              this._toastService.pop(TOAST_TYPE.success, "Vendor deleted successfully");
             }, error =>  this.handleError1(error));
       }, error =>  this.handleError(error));
 
@@ -213,7 +213,7 @@ deleteVendor(toast){
   vendorDelete(row:any) {
     let vendor:VendorModel = row;
     this.vendorId=row.id;
-    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Vendor?");
+    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
   }
 
 
