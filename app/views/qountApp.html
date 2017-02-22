@@ -30,8 +30,8 @@
 <div id="toast-container" [ngClass]="confirmClass">
   <div class="toast-wrapper" *ngFor="let toast of toasts">
     <div class="toast" [ngClass]="toast.toastClass" *ngIf="toast.toastClass != 'toast-confirm'">
-      <div class='toast-title' style="color:#33AEBD">{{toast.title}}</div>
-      <div class='toast-message' style="color:#33AEBD">{{toast.message}}
+      <div class='toast-title' >{{toast.title}}</div>
+      <div class='toast-message' >{{toast.message}}
       </div>
     </div>
     <div class="toast toast-confirm row" style="background-color: #EFEDE8" *ngIf="toast.toastClass == 'toast-confirm'">
