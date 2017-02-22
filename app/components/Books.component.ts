@@ -11,6 +11,7 @@ import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ExpenseService} from "qCommon/app/services/Expense.service";
+import {DepositService} from "qCommon/app/services/Deposit.service";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 
 declare var _:any;
@@ -59,7 +60,7 @@ export class BooksComponent{
 
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
                 private toastService: ToastService, private loadingService:LoadingService, private companiesService: CompaniesService,
-                private expenseService: ExpenseService, private accountsService: FinancialAccountsService) {
+                private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService) {
         let companyId = Session.getCurrentCompany();
         this.companiesService.companies().subscribe(companies => {
             this.allCompanies = companies;
@@ -116,6 +117,19 @@ export class BooksComponent{
         this.tabBackground = this.bgColors[tabNo];
         if(this.selectedTab == 0){
             this.isLoading = false;
+            this.isLoading = true;
+            this.loadingService.triggerLoadingEvent(true);
+            this.accountsService.financialAccounts(this.currentCompany.id)
+                .subscribe(accounts => {
+                    this.accounts = accounts.accounts;
+                    this.depositService.deposits(this.currentCompany.id)
+                        .subscribe(deposits => {
+                            this.loadingService.triggerLoadingEvent(false);
+                            this.buildDepositTableData(deposits.deposits);
+                        }, error => this.handleError(error));
+                }, error=> {
+
+                });
         } else if(this.selectedTab == 1){
             this.isLoading = true;
             this.loadingService.triggerLoadingEvent(true);
@@ -186,7 +200,12 @@ export class BooksComponent{
     }
 
     handleBadges(length, selectedTab){
-        if(selectedTab == 1){
+        if(selectedTab ==0 ){
+            this.badges.deposits = length;
+            this.localBadges['deposits'] = length;
+            sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+        }
+        else if(selectedTab == 1){
             this.badges.expenses = length;
             this.localBadges['expenses'] = length;
             sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
@@ -211,7 +230,7 @@ export class BooksComponent{
             {"name": "amount", "title": "Amount"},
             //{"name": "status", "title": "Status", "type": "html", "sortable": false},
             //{"name": "paid_date", "title": "Paid Date"},
-            {"name": "due_date", "title": "Due Date"},
+            {"name": "due_date", "title": "Expense Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false},
             {"name": "actions", "title": "", "type": "html", "sortable": false}];
@@ -242,6 +261,38 @@ export class BooksComponent{
         });
         if(this.expensesTableData.rows.length > 0){
             this.hasExpenses = true;
+        }
+    }
+
+    buildDepositTableData(data){
+        let base = this;
+        this.isLoading = false;
+        this.handleBadges(data.length, 0);
+        this.depositsTableData.columns = [
+            {"name": "title", "title": "Title"},
+            {"name": "amount", "title": "Amount"},
+            {"name": "date", "title": "Date"},
+            {"name": "bank_account_id", "title": "Bank Account"},
+            {"name": "id", "title": "id", 'visible': false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false}];
+        this.depositsTableData.rows = [];
+        data.forEach(function(expense){
+            let row:any = {};
+            _.each(Object.keys(expense), function(key){
+                if(key == 'bank_account_id'){
+                    row[key] = base.getBankAccountName(expense[key]);
+                } else if(key == 'amount'){
+                    let amount = parseFloat(expense[key]);
+                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                } else{
+                    row[key] = expense[key];
+                }
+            });
+            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            base.depositsTableData.rows.push(row);
+        });
+        if(this.depositsTableData.rows.length > 0){
+            this.hasDeposits = true;
         }
     }
 
@@ -299,6 +350,33 @@ export class BooksComponent{
             let link = ['/expense', $event.id];
             this._router.navigate(link);
         }
+    }
+
+    handleDepositAction($event){
+        let action = $event.action;
+        delete $event.action;
+        delete $event.actions;
+        if(action == 'delete'){
+            this.removeDeposit($event);
+        } else if(action == 'edit'){
+            let link = ['/deposit', $event.id];
+            this._router.navigate(link);
+        }
+    }
+
+    removeDeposit($event){
+        this.loadingService.triggerLoadingEvent(true);
+        this.depositService.removeDeposit($event.id, this.currentCompany)
+            .subscribe(response=> {
+                this.loadingService.triggerLoadingEvent(false);
+                this.badges.deposits = this.badges.deposits-1;
+                this.localBadges['deposits'] = this.localBadges['deposits']-1;
+                sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+                this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
+            }, error=>{
+                this.loadingService.triggerLoadingEvent(false);
+                this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
+            });
     }
 
     removeExpense($event){

@@ -56,7 +56,7 @@
                                             </label>
                                         </div>-->
                                     </div>
-                                    <header class="form-section-header">Expense Items Info</header>
+                                    <header class="form-section-header">Expense Lines</header>
                                     <div class="text-right">
                                         <span (click)="showNewItem()">
                                             <i class="icon ion-ios-plus-outline"></i> Item
@@ -66,9 +66,9 @@
                                         <table>
                                             <thead>
                                             <tr>
-                                                <th style="width: 15%;">Title</th>
+                                                <th style="width: 15%;">Line Title</th>
                                                 <th style="width: 15%;">Amount</th>
-                                                <th style="width: 20%;">COA</th>
+                                                <th style="width: 20%;">Exp. COA</th>
                                                 <th style="width: 20%;">Vendor</th>
                                                 <th style="width: 8%;"></th>
                                             </tr>
@@ -80,7 +80,7 @@
                                             <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="!newExpense && itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
                                                 <td *ngIf="!itemForm.editable">{{itemForm.controls.title.value}}</td>
                                                 <td *ngIf="itemForm.editable">
-                                                    <input type="text" placeholder="Title" [formControl]="itemForm.controls.title"/>
+                                                    <input type="text" placeholder="Line Title" [formControl]="itemForm.controls.title"/>
                                                 </td>
                                                 <td *ngIf="!itemForm.editable">{{itemForm.controls.amount.value? (itemForm.controls.amount.value| currency:companyCurrency:true:'1.2-2'):null}}</td>
                                                 <td *ngIf="itemForm.editable">
@@ -180,8 +180,8 @@
                     <div class="small-12 medium-6 columns">
                         <div class="row">
                             <div class="small-12 medium-6 column">
-                                <label>Title
-                                    <input type="text" formControlName="title" placeholder="Title*"/>
+                                <label>Line Title
+                                    <input type="text" formControlName="title" placeholder="Line Title*"/>
                                     <div class="error" [hidden]="editItemForm.controls.title.untouched || editItemForm.controls.title.valid">Item Title is required</div>
                                 </label>
                             </div>
@@ -194,7 +194,7 @@
                         </div>
                         <div class="row">
                             <div class="small-12 medium-6 column">
-                                <label>Chart of Account
+                                <label>Exp. Chart of Account
                                     <select combo-box #editCOAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" formControlName="chart_of_account_id" (valueChanged)="setCOAForEditingItem($event)">
                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                     </select>
