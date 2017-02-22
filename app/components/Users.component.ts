@@ -124,7 +124,7 @@ export class UsersComponent {
         this.usersService.removeUser(this.userId, this.companyId)
             .subscribe(success  => {
                 this.loadingService.triggerLoadingEvent(false);
-                this._toastService.pop(TOAST_TYPE.error, "User deleted successfully");
+                this._toastService.pop(TOAST_TYPE.success, "User deleted successfully");
                 this.usersService.users(this.companyId)
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
             }, error =>  this.handleError(error));
@@ -133,7 +133,7 @@ export class UsersComponent {
         let user:UsersModel = row;
         this.userId=user.id;
 
-        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete User?");
+        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
     }
 
     active1:boolean=true;

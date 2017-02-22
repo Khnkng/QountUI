@@ -33,7 +33,9 @@ export class DepositsLineForm extends abstractForm{
             date: [model? model.date: ''],
             id: [model? model.id: null],
             invoice_id: [model? model.invoice_id: ''],
-            notes: [model? model.notes: '']
+            notes: [model? model.notes: ''],
+            "destroy": [model? model.destroy: false],
+            "dimensions": [model? model.dimensions: []]
         };
     }
 

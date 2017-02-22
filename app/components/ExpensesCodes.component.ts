@@ -117,13 +117,13 @@ deleteExpense(toast){
   this.expensesSerice.removeExpense(this.currentCompany.id,this.itemCodeId)
       .subscribe(coa => {
         this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.error, "Deleted Expense code successfully");
+        this.toastService.pop(TOAST_TYPE.success, "Expense code deleted successfully");
         this.expenses.splice(_.findIndex(this.expenses, {id: this.itemCodeId}, 1));
       }, error => this.handleError(error));
 }
   removeExpense(row: any){
      this.itemCodeId = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Expense code?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
   }
 
   newForm(){
@@ -157,7 +157,6 @@ deleteExpense(toast){
   }
 
   submit($event){
-
     let base = this;
     $event && $event.preventDefault();
     let data = this._expensesForm.getData(this.expensesForm);

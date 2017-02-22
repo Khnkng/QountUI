@@ -155,7 +155,7 @@ export class RulesComponent {
     RuleDelete(toast){
         this.ruleservice.removeRule(this.ruleToDelete, this.companyId)
             .subscribe(success  => {
-                this._toastService.pop(TOAST_TYPE.error, "Rule deleted successfully");
+                this._toastService.pop(TOAST_TYPE.success, "Rule deleted successfully");
                 this.ruleservice.getRulesofCompany(this.companyId)
                     .subscribe(RulesList  => {
                         this.buildTableData(RulesList);
@@ -289,7 +289,7 @@ export class RulesComponent {
     }
     removeRule(row:any){
         this.ruleToDelete = row.id;
-        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Rule?");
+        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
     }
     deleteAction(index){
         let indexValue=this.actions.controls.splice(index,1);

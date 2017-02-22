@@ -147,7 +147,7 @@ deleteVendor(toast){
     this.customersService.removeCustomer(this.customerId, this.companyId)
         .subscribe(success  => {
             this.loadingService.triggerLoadingEvent(false);
-            this._toastService.pop(TOAST_TYPE.error, "Customer deleted successfully");
+            this._toastService.pop(TOAST_TYPE.success, "Customer deleted successfully");
             this.customersService.customers(this.companyId)
                 .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
         }, error =>  this.handleError(error));
@@ -155,7 +155,7 @@ deleteVendor(toast){
     removeVendor(row:any) {
         let customer:CustomersModel = row;
         this.customerId=customer.customer_id;
-        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Customer?");
+        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
     }
 
     active1:boolean=true;
