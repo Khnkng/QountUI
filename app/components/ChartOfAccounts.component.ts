@@ -180,13 +180,13 @@ deleteCOA(toast){
   this.coaService.removeCOA(this.coaId, this.currentCompany.id)
       .subscribe(coa => {
         this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.error, "Deleted Chart of Account successfully");
+        this.toastService.pop(TOAST_TYPE.success, "Chart of Account deleted successfully");
         this.chartOfAccounts.splice(_.findIndex(this.chartOfAccounts, {id: this.coaId}, 1));
       }, error => this.handleError(error));
 }
   removeCOA(row: any){
      this.coaId = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Chart of Account?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
   }
 
   newForm(){

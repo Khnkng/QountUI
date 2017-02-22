@@ -140,7 +140,7 @@ export class ItemCodesComponent{
     this.codeService.removeItemCode(this.itemCodeId)
         .subscribe(coa => {
           this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.error, "Deleted Item code successfully");
+          this.toastService.pop(TOAST_TYPE.success, "Item code deleted successfully");
           //this.itemCodes.splice(_.findIndex(this.itemCodes, {id: this.itemCodeId}, 1));
           this.codeService.itemCodes(this.currentCompany.id)
               .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));
@@ -148,7 +148,7 @@ export class ItemCodesComponent{
   }
   removeItemCode(row: any){
      this.itemCodeId = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Item code?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
   }
 
   newForm(){

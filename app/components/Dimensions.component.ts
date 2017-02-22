@@ -123,14 +123,14 @@ export class DimensionsComponent{
     this.dimensionService.removeDimension(this.dimensionName, this.currentCompany.id)
         .subscribe(coa => {
           this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.error, "Deleted Dimension successfully");
+          this.toastService.pop(TOAST_TYPE.success, "Dimension deleted successfully");
           this.dimensions.splice(_.findIndex(this.dimensions, {name: this.dimensionName}), 1);
           this.buildTableData(this.dimensions);
         }, error => this.handleError(error));
   }
   removeDimension(row: any){
      this.dimensionName = row.name;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Dimension?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
   }
 
   newForm(){
