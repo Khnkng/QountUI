@@ -200,7 +200,12 @@ export class BooksComponent{
     }
 
     handleBadges(length, selectedTab){
-        if(selectedTab == 1){
+        if(selectedTab ==0 ){
+            this.badges.deposits = length;
+            this.localBadges['deposits'] = length;
+            sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+        }
+        else if(selectedTab == 1){
             this.badges.expenses = length;
             this.localBadges['expenses'] = length;
             sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
@@ -262,7 +267,7 @@ export class BooksComponent{
     buildDepositTableData(data){
         let base = this;
         this.isLoading = false;
-        this.handleBadges(data.length, 1);
+        this.handleBadges(data.length, 0);
         this.depositsTableData.columns = [
             {"name": "title", "title": "Title"},
             {"name": "amount", "title": "Amount"},
@@ -276,6 +281,9 @@ export class BooksComponent{
             _.each(Object.keys(expense), function(key){
                 if(key == 'bank_account_id'){
                     row[key] = base.getBankAccountName(expense[key]);
+                } else if(key == 'amount'){
+                    let amount = parseFloat(expense[key]);
+                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 } else{
                     row[key] = expense[key];
                 }

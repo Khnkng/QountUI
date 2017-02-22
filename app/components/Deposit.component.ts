@@ -36,7 +36,6 @@ export class DepositComponent{
     customers:Array<any> = [];
     invoices:Array<any> = [];
     chartOfAccounts:Array<any> = [];
-    isExpensePaid:boolean = false;
     addNewItemFlag:boolean = false;
     editingItems:any={};
     dimensionFlyoutCSS:any;
@@ -44,6 +43,7 @@ export class DepositComponent{
     dimensions:Array<any> = [];
     selectedDimensions:Array<any> = [];
     editItemIndex:number;
+    companyCurrency: string;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
@@ -64,6 +64,7 @@ export class DepositComponent{
                 this.newDeposit = true;
             }
         });
+        this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
     showDepositsPage(){
@@ -80,6 +81,7 @@ export class DepositComponent{
         let coa = _.find(this.chartOfAccounts, {'id': data.chart_of_account_id});
         let customer = _.find(this.customers, {'customer_id': data.customer_id});
         let invoice = _.find(this.invoices, {'id': data.invoice_id});
+        this.selectedDimensions = data.dimensions;
         setTimeout(function(){
             base.editCOAComboBox.setValue(coa, 'name');
             base.editCustomerComboBox.setValue(customer, 'customer_name');
@@ -93,6 +95,7 @@ export class DepositComponent{
         this.dimensionFlyoutCSS = "collapsed";
         this.itemActive = false;
         this.editItemIndex = null;
+        this.selectedDimensions = [];
     }
 
     setCOAForEditingItem(coa){
@@ -146,8 +149,9 @@ export class DepositComponent{
     processDeposits(deposits){
         let base = this;
         let itemsControl:any = this.depositForm.controls['payments'];
-        _.each(deposits.payments, function(expenseItem){
-            itemsControl.controls.push(base._fb.group(base._depositLineForm.getForm(expenseItem)));
+        _.each(deposits.payments, function(depositItem){
+            depositItem.amount = parseFloat(depositItem.amount);
+            itemsControl.controls.push(base._fb.group(base._depositLineForm.getForm(depositItem)));
         });
         let account = _.find(this.accounts, {'id': deposits.bank_account_id});
         setTimeout(function(){
@@ -375,11 +379,11 @@ export class DepositComponent{
         itemControl.controls['date'].patchValue(item.date);
     }
 
-    getExpenseItemData(depositForm){
+    getDepositItemData(depositForm){
         let base = this;
         let data = [];
-        _.each(depositForm.controls, function(expenseItemControl){
-            data.push(base._depositLineForm.getData(expenseItemControl));
+        _.each(depositForm.controls, function(depositItemControl){
+            data.push(base._depositLineForm.getData(depositItemControl));
         });
         return data;
     }
@@ -387,7 +391,12 @@ export class DepositComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._depositForm.getData(this.depositForm);
-        data.payments = this.getExpenseItemData(this.depositForm.controls['payments']);
+        data.payments = this.getDepositItemData(this.depositForm.controls['payments']);
+        let itemTotal = _.sumBy(data.payments, 'amount');
+                if(itemTotal != data.amount){
+                        this.toastService.pop(TOAST_TYPE.error, "Deposit amount and Item total did not match.");
+                        return;
+                    }
         this.loadingService.triggerLoadingEvent(true);
         if(this.newDeposit){
             this.depositService.addDeposit(data, this.currentCompanyId)
@@ -434,7 +443,10 @@ export class DepositComponent{
             });
         this.coaService.chartOfAccounts(this.currentCompanyId)
             .subscribe(chartOfAccounts=> {
-                this.chartOfAccounts = chartOfAccounts;
+                this.chartOfAccounts = _.filter(chartOfAccounts, function(chartOfAccount){
+                                        return chartOfAccount.type == 'income' || chartOfAccount.type == 'otherIncome';
+                                    })
+
             }, error => {
 
             });
