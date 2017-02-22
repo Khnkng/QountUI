@@ -66,12 +66,16 @@ export class ChartOfAccountsComponent{
       } else if(this.allCompanies.length> 0){
         this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
       }
-      this.coaService.chartOfAccounts(this.currentCompany.id)
-          .subscribe(chartOfAccounts => {
-            this.loadingService.triggerLoadingEvent(false);
-            this.buildTableData(chartOfAccounts);
-          }, error=> this.handleError(error));
+      this.fetchChartOfAccountData();
     }, error => this.handleError(error));
+  }
+
+  fetchChartOfAccountData(){
+    this.coaService.chartOfAccounts(this.currentCompany.id)
+        .subscribe(chartOfAccounts => {
+          this.loadingService.triggerLoadingEvent(false);
+          this.buildTableData(chartOfAccounts);
+        }, error=> this.handleError(error));
   }
 
   ngOnDestroy(){
@@ -79,6 +83,7 @@ export class ChartOfAccountsComponent{
   }
   handleError(error){
     this.row = {};
+    this.loadingService.triggerLoadingEvent(false);
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
   }
 
@@ -175,15 +180,15 @@ export class ChartOfAccountsComponent{
       }
     }
   }
-deleteCOA(toast){
-  this.loadingService.triggerLoadingEvent(true);
-  this.coaService.removeCOA(this.coaId, this.currentCompany.id)
-      .subscribe(coa => {
-        this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.success, "Chart of Account deleted successfully");
-        this.chartOfAccounts.splice(_.findIndex(this.chartOfAccounts, {id: this.coaId}, 1));
-      }, error => this.handleError(error));
-}
+  deleteCOA(toast){
+    this.loadingService.triggerLoadingEvent(true);
+    this.coaService.removeCOA(this.coaId, this.currentCompany.id)
+        .subscribe(coa => {
+          this.loadingService.triggerLoadingEvent(false);
+          this.toastService.pop(TOAST_TYPE.success, "Chart of Account deleted successfully");
+          this.fetchChartOfAccountData();
+        }, error => this.handleError(error));
+  }
   removeCOA(row: any){
      this.coaId = row.id;
     this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
@@ -237,9 +242,7 @@ deleteCOA(toast){
             base.loadingService.triggerLoadingEvent(false);
             base.row = {};
             base.toastService.pop(TOAST_TYPE.success, "Chart of Account updated successfully");
-            let index = _.findIndex(base.chartOfAccounts, {id: data.id});
-            base.chartOfAccounts[index] = coa;
-            base.buildTableData(base.chartOfAccounts);
+            this.fetchChartOfAccountData();
           }, error => this.handleCOAError(error));
     } else{
       this.coaService.addChartOfAccount(data, this.currentCompany.id)

@@ -55,10 +55,12 @@ export class JournalEntryComponent{
     selectedDimensions:Array<any> = [];
     editingLine:any;
     newCOAActive:boolean = true;
+    companyCurrency:string;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
             private companiesService: CompaniesService, private dimensionService: DimensionService, private loadingService: LoadingService) {
+        this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.routeSub = this._route.params.subscribe(params => {
             this.journalID=params['journalID'];
             let tempReverse=params['reverse'];

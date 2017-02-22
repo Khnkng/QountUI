@@ -45,12 +45,15 @@ export class ItemCodesComponent{
   allCOAList:Array<any> = [];
   showFlyout:boolean = false;
   confirmSubscription:any;
+  companyCurrency:string;
+
   constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard,
               private codeService: CodesService, private toastService: ToastService, private loadingService:LoadingService,
         private coaService: ChartOfAccountsService, private companiesService: CompaniesService){
     this.itemcodeForm = this._fb.group(_itemCodeForm.getForm());
     this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteItemCode(toast));
     let companyId = Session.getCurrentCompany();
+    this.companyCurrency = Session.getCurrentCompanyCurrency();
     this.loadingService.triggerLoadingEvent(true);
     this.companiesService.companies().subscribe(companies => {
       this.allCompanies = companies;
