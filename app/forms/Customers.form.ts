@@ -12,7 +12,7 @@ export class CustomersForm extends abstractForm{
     getForm() {
         return {
             "customer_name": ['', Validators.required],
-            "customer_ein": ['', Validators.required],
+            "customer_ein": [''],
             "customer_country": ['', Validators.required],
             "email_id": ['', Validators.required],
              "coa":['', Validators.required],
