@@ -200,12 +200,6 @@ export class DepositComponent{
         this._depositLineForm.updateForm(this.newItemForm, data);
     }
 
-    setDate(date){
-        let data = this._depositLineForm.getData(this.newItemForm);
-        data.date = date;
-        this._depositLineForm.updateForm(this.newItemForm, data);
-    }
-
     setCustomerForNewItem(customer){
         let data = this._depositLineForm.getData(this.newItemForm);
         data.customer_id = customer.customer_id;
@@ -264,7 +258,6 @@ export class DepositComponent{
         itemControl.controls['customer_id'].patchValue(data.customer_id);
         itemControl.controls['invoice_id'].patchValue(data.invoice_id);
         itemControl.controls['notes'].patchValue(data.notes);
-        itemControl.controls['date'].patchValue(data.date);
         itemForm.editable = !itemForm.editable;
     }
 
@@ -376,7 +369,6 @@ export class DepositComponent{
         itemControl.controls['invoice_id'].patchValue(item.invoice_id);
         itemControl.controls['notes'].patchValue(item.notes);
         itemControl.controls['dimensions'].patchValue(item.dimensions);
-        itemControl.controls['date'].patchValue(item.date);
     }
 
     getDepositItemData(depositForm){

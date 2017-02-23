@@ -30,20 +30,20 @@
 <div id="toast-container" [ngClass]="confirmClass">
   <div class="toast-wrapper" *ngFor="let toast of toasts">
     <div class="toast" [ngClass]="toast.toastClass" *ngIf="toast.toastClass != 'toast-confirm'">
-      <div class='toast-title'>{{toast.title}}</div>
-      <div class='toast-message'>{{toast.message}}
+      <div class='toast-title' >{{toast.title}}</div>
+      <div class='toast-message' >{{toast.message}}
       </div>
     </div>
-    <div class="toast toast-confirm row" *ngIf="toast.toastClass == 'toast-confirm'">
+    <div class="toast toast-confirm row" style="background-color: #EFEDE8" *ngIf="toast.toastClass == 'toast-confirm'">
       <!--<div class="medium-1 column align-right confirm-icon">-->
         <!--<i class="icon ion-help"></i>-->
       <!--</div>-->
       <div class="medium-7 columns">
-        <div class='toast-title'>{{toast.message}}</div>
+        <div class='toast-title' style="color:#33AEBD">{{toast.message}}</div>
       </div>
       <div class="medium-5 columns btn-wrapper">
-        <a class="button success" (click)="confirm(toast)">Yes</a>
-        <a class="button alert" (click)="cancel(toast)">No</a>
+        <a class="button success" style="background-color: #2CB1BF;font-color:#fefefe" (click)="confirm(toast)">Yes</a>
+        <a class="button alert" style="background-color: #F9534C;font-color:#fefefe" (click)="cancel(toast)">No</a>
       </div>
     </div>
   </div>

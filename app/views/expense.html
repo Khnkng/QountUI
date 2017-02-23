@@ -20,7 +20,7 @@
                                         </div>
                                         <div class="small-12 medium-3 columns">
                                             <label>Date
-                                                <input type="text" custom-datepicker [format]="'YYYY/MM/DD'" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="due_date" placeholder="Date*">
+                                                <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="due_date" placeholder="Date*">
                                                 <div class="error" [hidden]="expenseForm.controls.due_date.untouched || expenseForm.controls.due_date.valid">Date is required</div>
                                             </label>
                                         </div>
@@ -59,7 +59,7 @@
                                     <header class="form-section-header">Expense Lines</header>
                                     <div class="text-right">
                                         <span (click)="showNewItem()">
-                                            <i class="icon ion-ios-plus-outline"></i> Item
+                                            <i class="icon ion-ios-plus-outline"></i> Line
                                         </span>
                                     </div>
                                     <div formArrayName="expense_items">

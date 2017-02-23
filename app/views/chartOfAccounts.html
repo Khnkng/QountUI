@@ -44,8 +44,7 @@
                           <label class="text-right">Number</label>
                         </div>
                         <div class="small-6 columns">
-                          <input type="text" formControlName="number" placeholder="Number*" *ngIf="editMode" disabled/>
-                          <input type="text" formControlName="number" placeholder="Number*" *ngIf="!editMode"/>
+                          <input type="text" formControlName="number" placeholder="Number*"/>
                           <div class="error" [hidden]="coaForm.controls.number.untouched || coaForm.controls.number.valid">Number is required.</div>
                         </div>
                       </div>
