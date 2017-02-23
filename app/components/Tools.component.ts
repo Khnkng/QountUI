@@ -33,6 +33,7 @@ export class ToolsComponent {
   usersCount:number=0;
   accountsCount:number = 0;
   ruleCount:number = 0;
+  employeesCount:number = 0;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private usersService:CompanyUsers) {
     let currentCompany = Session.getCurrentCompany();
@@ -137,6 +138,11 @@ export class ToolsComponent {
       break;
       case 'rules': {
         let link = ['rules'];
+        this._router.navigate(link);
+      }
+      break;
+      case 'employees': {
+        let link = ['employees'];
         this._router.navigate(link);
       }
     }
