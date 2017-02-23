@@ -63,7 +63,7 @@ export class SideBarComponent {
       }
         break;
       case PAGES.BOOKS: {
-        let link = ['books', 'deposit'];
+        let link = ['books', 'deposits'];
         this._router.navigate(link);
         this.isBooks = true;
       }

@@ -43,7 +43,7 @@ export class BooksComponent{
 
     tabHeight:string;
     badges:any = [];
-    selectedTab:any='deposit';
+    selectedTab:any='deposits';
     isLoading:boolean=true;
     localBadges:any={};
     boxInfo;
@@ -70,15 +70,15 @@ export class BooksComponent{
                 this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
             }
             this.routeSub = this._route.params.subscribe(params => {
-                if(params['tabId']=='deposit'){
+                if(params['tabId']=='deposits'){
                     this.selectTab(0,"");
                     this.hasJournalEntries = false;
                 }
-                else if(params['tabId']=='Expense'){
+                else if(params['tabId']=='expenses'){
                     this.selectTab(1,"");
                     this.hasJournalEntries = false;
                 }
-                else if(params['tabId']=='JournalEntry'){
+                else if(params['tabId']=='journalEntries'){
                     this.selectTab(2,"");
                     this.hasJournalEntries = false;
                 }
@@ -432,17 +432,17 @@ console.log("error");
 
     reRoutePage(tabId) {
    if(tabId==0){
-    let link = ['books', 'deposit'];
+    let link = ['books', 'deposits'];
     this._router.navigate(link);
     return;
 }
        else if(tabId==1){
-            let link = ['books', 'Expense'];
+            let link = ['books', 'expenses'];
             this._router.navigate(link);
             return;
         }
         else{
-    let link = ['books', 'JournalEntry'];
+    let link = ['books', 'journalEntries'];
     this._router.navigate(link);
     return;
 }
