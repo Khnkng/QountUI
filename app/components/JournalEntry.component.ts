@@ -615,4 +615,9 @@ export class JournalEntryComponent{
                 }, error=> this.handleError(error));
         }, error => this.handleError(error));
     }
+
+    showDashboard(){
+        let link = ['books', 'journalEntries'];
+        this._router.navigate(link);
+    }
 }

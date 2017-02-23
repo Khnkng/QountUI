@@ -184,6 +184,21 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 10px;
 }
 
+.je-badge{
+  background-color: #5d9cec;
+  padding: 4px 5px;
+  font-size: 8px;
+  margin-top: -5px;
+}
+.payment-je-badge{
+  background-color:#81c868;
+  margin-top: -5px;
+}
+
+a:hover, a:focus .je-badge{
+  color: #ffffff;
+}
+
 [hidden]{
   display: none !important;
 }
