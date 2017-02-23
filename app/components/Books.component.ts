@@ -43,7 +43,7 @@ export class BooksComponent{
 
     tabHeight:string;
     badges:any = [];
-    selectedTab:any=0;
+    selectedTab:any='deposit';
     isLoading:boolean=true;
     localBadges:any={};
     boxInfo;
@@ -70,9 +70,24 @@ export class BooksComponent{
                 this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
             }
             this.routeSub = this._route.params.subscribe(params => {
-                this.selectedTab=params['tabId'];
-                this.selectTab(this.selectedTab,"");
-                this.hasJournalEntries = false;
+                if(params['tabId']=='deposit'){
+                    this.selectTab(0,"");
+                    this.hasJournalEntries = false;
+                }
+                else if(params['tabId']=='Expense'){
+                    this.selectTab(1,"");
+                    this.hasJournalEntries = false;
+                }
+                else if(params['tabId']=='JournalEntry'){
+                    this.selectTab(2,"");
+                    this.hasJournalEntries = false;
+                }
+                else{
+
+console.log("error");
+                }
+
+
             });
             this.localBadges=JSON.parse(sessionStorage.getItem("localBooksBadges"));
             if(!this.localBadges){
@@ -116,7 +131,6 @@ export class BooksComponent{
         this.tabDisplay[tabNo] = {'display':'block'};
         this.tabBackground = this.bgColors[tabNo];
         if(this.selectedTab == 0){
-            this.isLoading = false;
             this.isLoading = true;
             this.loadingService.triggerLoadingEvent(true);
             this.accountsService.financialAccounts(this.currentCompany.id)
@@ -202,16 +216,16 @@ export class BooksComponent{
     handleBadges(length, selectedTab){
         if(selectedTab ==0 ){
             this.badges.deposits = length;
-            this.localBadges['deposits'] = length;
+            this.localBadges[0] = length;
             sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
         }
         else if(selectedTab == 1){
             this.badges.expenses = length;
-            this.localBadges['expenses'] = length;
+            this.localBadges[1] = length;
             sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
         } else if(selectedTab == 2){
             this.badges.journalEntries = length;
-            this.localBadges['journalEntries'] = length;
+            this.localBadges[2] = length;
             sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
         }
     }
@@ -417,8 +431,22 @@ export class BooksComponent{
     }
 
     reRoutePage(tabId) {
-        let link = ['books', tabId];
-        this._router.navigate(link);
+   if(tabId==0){
+    let link = ['books', 'deposit'];
+    this._router.navigate(link);
+    return;
+}
+       else if(tabId==1){
+            let link = ['books', 'Expense'];
+            this._router.navigate(link);
+            return;
+        }
+        else{
+    let link = ['books', 'JournalEntry'];
+    this._router.navigate(link);
+    return;
+}
+
     }
 
     ngOnInit() {
