@@ -30,10 +30,12 @@ export class EmployeesComponent {
     tableOptions:any = {};
     status:any;
     customerId:any;
-    employees:Array<any>;
+    customers:Array<any>;
     editMode:boolean = false;
     @ViewChild('createVendor') createVendor;
-
+    @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
+    @ViewChild('addressDir') addressDir: Address;
+    @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     row:any;
     customerForm: FormGroup;
     countries:Array<any> = PROVINCES.COUNTRIES;
@@ -62,9 +64,9 @@ export class EmployeesComponent {
             }, error=> this.handleError(error));
         if(this.companyId){
             this.loadingService.triggerLoadingEvent(true);
-            this.employeeService.customers(this.companyId).subscribe(employees => {
+            this.employeeService.customers(this.companyId).subscribe(customers => {
 
-                this.buildTableData(employees);
+                this.buildTableData(customers);
                 this.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
         }else {
@@ -76,25 +78,30 @@ export class EmployeesComponent {
         this.confirmSubscription.unsubscribe();
     }
 
-    buildTableData(employees) {
-        this.employees = employees;
+    buildTableData(customers) {
+        this.customers = customers;
         this.hasEmployeesList = false;
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
         this.tableData.rows = [];
         this.tableData.columns = [
-            {"name": "first_name", "title": "FirstName"},
-            {"name": "last_name", "title": "LastName"},
-            {"name": "ssn", "title": "SSN"},
+            {"name": "customer_id", "title": "ID","visible": false},
+            {"name": "customer_name", "title": "Name"},
+            {"name": "customer_ein", "title": "Ein"},
             {"name": "email_id", "title": "Email"},
-            {"name": "phone", "title": "Phone"},
+            {"name": "phone_number", "title": "Phone Number"},
+            {"name": "customer_address", "title": "Address","visible": false},
+            {"name": "customer_country", "title": "Country","visible": false},
+            {"name": "customer_state", "title": "State","visible": false},
+            {"name": "customer_city", "title": "City","visible": false},
+            {"name": "customer_zipcode", "title": "Zip code","visible": false},
             {"name": "actions", "title": "", "type": "html", "filterable": false}
         ];
         let base = this;
-        this.employees.forEach(function(employees) {
+        this.customers.forEach(function(customers) {
             let row:any = {};
-            for(let key in base.employees[0]) {
-                row[key] = employees[key];
+            for(let key in base.customers[0]) {
+                row[key] = customers[key];
                 row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             }
             base.tableData.rows.push(row);
@@ -104,7 +111,7 @@ export class EmployeesComponent {
         }, 0)
     }
 
-    showCreateEmployee() {
+    showCreateVendor() {
         let self = this;
         let defaultCountry  = {name:'United States', code:'US'};
         this.editMode = false;
