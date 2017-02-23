@@ -15,7 +15,6 @@ import {EmployeeService} from "qCommon/app/services/Employees.service";
 import {EmployeesModel} from "../models/Employees.model";
 import {EmployeesForm} from "../forms/Employees.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
-import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -30,14 +29,12 @@ export class EmployeesComponent {
     tableOptions:any = {};
     status:any;
     customerId:any;
-    customers:Array<any>;
+    employees:Array<any>;
     editMode:boolean = false;
     @ViewChild('createVendor') createVendor;
-    @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
-    @ViewChild('addressDir') addressDir: Address;
-    @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
+
     row:any;
-    customerForm: FormGroup;
+    employeesForm: FormGroup;
     countries:Array<any> = PROVINCES.COUNTRIES;
     @ViewChild('fooTableDir') fooTableDir:FTable;
     hasEmployeesList:boolean = false;
@@ -53,20 +50,16 @@ export class EmployeesComponent {
 
     constructor(private _fb: FormBuilder, private employeeService: EmployeeService,
                 private _employeesForm:EmployeesForm, private _router: Router, private _toastService: ToastService,
-                private switchBoard: SwitchBoard, private loadingService:LoadingService,private coaService: ChartOfAccountsService) {
-        this.customerForm = this._fb.group(_employeesForm.getForm());
+                private switchBoard: SwitchBoard, private loadingService:LoadingService) {
+        this.employeesForm = this._fb.group(_employeesForm.getForm());
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteVendor(toast));
         this.companyId = Session.getCurrentCompany();
-        this.coaService.chartOfAccounts(this.companyId)
-            .subscribe(chartOfAccounts => {
-                this.chartOfAccounts=chartOfAccounts?_.filter(chartOfAccounts, {'type': 'accountsReceivable'}):[];
-                _.sortBy(this.chartOfAccounts, ['number', 'name']);
-            }, error=> this.handleError(error));
+
         if(this.companyId){
             this.loadingService.triggerLoadingEvent(true);
-            this.employeeService.customers(this.companyId).subscribe(customers => {
+            this.employeeService.customers(this.companyId).subscribe(employees => {
 
-                this.buildTableData(customers);
+                this.buildTableData(employees);
                 this.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
         }else {
@@ -78,30 +71,25 @@ export class EmployeesComponent {
         this.confirmSubscription.unsubscribe();
     }
 
-    buildTableData(customers) {
-        this.customers = customers;
+    buildTableData(employees) {
+        this.employees = employees;
         this.hasEmployeesList = false;
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
         this.tableData.rows = [];
         this.tableData.columns = [
-            {"name": "customer_id", "title": "ID","visible": false},
-            {"name": "customer_name", "title": "Name"},
-            {"name": "customer_ein", "title": "Ein"},
+            {"name": "first_name", "title": "FirstName"},
+            {"name": "last_name", "title": "LastName"},
+            {"name": "ssn", "title": "SSN"},
             {"name": "email_id", "title": "Email"},
-            {"name": "phone_number", "title": "Phone Number"},
-            {"name": "customer_address", "title": "Address","visible": false},
-            {"name": "customer_country", "title": "Country","visible": false},
-            {"name": "customer_state", "title": "State","visible": false},
-            {"name": "customer_city", "title": "City","visible": false},
-            {"name": "customer_zipcode", "title": "Zip code","visible": false},
+            {"name": "phone", "title": "Phone"},
             {"name": "actions", "title": "", "type": "html", "filterable": false}
         ];
         let base = this;
-        this.customers.forEach(function(customers) {
+        this.employees.forEach(function(employees) {
             let row:any = {};
-            for(let key in base.customers[0]) {
-                row[key] = customers[key];
+            for(let key in base.employees[0]) {
+                row[key] = employees[key];
                 row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             }
             base.tableData.rows.push(row);
@@ -111,16 +99,11 @@ export class EmployeesComponent {
         }, 0)
     }
 
-    showCreateVendor() {
+    showCreateEmployee() {
         let self = this;
-        let defaultCountry  = {name:'United States', code:'US'};
         this.editMode = false;
-        this.customerForm = this._fb.group(this._employeesForm.getForm());
+        this.employeesForm = this._fb.group(this._employeesForm.getForm());
         this.newForm1();
-        setTimeout(function () {
-            self.vendorCountryComboBox.setValue(defaultCountry, 'name');
-        },100);
-        this.showVendorProvince(defaultCountry);
         this.showFlyout = true;
     }
 
@@ -135,13 +118,7 @@ export class EmployeesComponent {
         }
     }
 
-    showVendorProvince(country:any) {
-        let countryControl:any = this.customerForm.controls['customer_country'];
-        countryControl.patchValue(country.name);
-        this.countryCode = country.code;
-        this.showAddress = false;
-        setTimeout(()=> this.showAddress=true, 0);
-    }
+
     deleteVendor(toast){
         this.loadingService.triggerLoadingEvent(true);
         this.employeeService.removeCustomer(this.customerId, this.companyId)
@@ -163,15 +140,7 @@ export class EmployeesComponent {
         this.active1 = false;
         setTimeout(()=> this.active1=true, 0);
     }
-    showCOA(coa:any) {
-        let data= this._employeesForm.getData(this.customerForm);
-        if(coa && coa.id){
-            data.coa = coa.id;
-        }else if(!coa||coa=='--None--'){
-            data.coa='--None--';
-        }
-        this._employeesForm.updateForm(this.customerForm, data);
-    }
+
     showEditVendor(row:any) {
         this.editMode = true;
         this.showFlyout = true;
@@ -179,49 +148,30 @@ export class EmployeesComponent {
         this.employeeService.customer(row.customer_id, this.companyId)
             .subscribe(customer => {
                 this.row = customer;
-                let email_id:any = this.customerForm.controls['email_id'];
+                let email_id:any = this.employeesForm.controls['email_id'];
                 email_id.patchValue(customer.email_id);
-                let customer_address:any = this.customerForm.controls['customer_address'];
+                let customer_address:any = this.employeesForm.controls['customer_address'];
                 customer_address.patchValue(customer.customer_address);
-                let customer_city:any = this.customerForm.controls['customer_city'];
+                let customer_city:any = this.employeesForm.controls['customer_city'];
                 customer_city.patchValue(customer.customer_city);
-                let customer_state:any = this.customerForm.controls['customer_state'];
+                let customer_state:any = this.employeesForm.controls['customer_state'];
                 customer_state.patchValue(customer.customer_state);
-                let customer_zipcode:any = this.customerForm.controls['customer_zipcode'];
+                let customer_zipcode:any = this.employeesForm.controls['customer_zipcode'];
                 customer_zipcode.patchValue(customer.customer_zipcode);
-                let phone_number:any = this.customerForm.controls['phone_number'];
+                let phone_number:any = this.employeesForm.controls['phone_number'];
                 phone_number.patchValue(customer.phone_number);
-                let coa = _.find(this.chartOfAccounts, function(_coa) {
-                    return _coa.id == customer.coa;
-                });
-                if(!_.isEmpty(coa)){
-                    setTimeout(function(){
-                        base.coaComboBox.setValue(coa, 'name');
-                    });
-                }
 
-                let countryName = row.customer_country;
-                let country = _.find(PROVINCES.COUNTRIES, function(_country) {
-                    return _country.name == countryName;
-                });
-                let stateName = row.state;
                 var base=this;
 
-                setTimeout(function () {
-                    base.vendorCountryComboBox.setValue(country, 'name');
-                },100);
-                this._employeesForm.updateForm(this.customerForm, row);
+                this._employeesForm.updateForm(this.employeesForm, row);
             }, error => this.handleError(error));
     }
 
     submit($event) {
         $event && $event.preventDefault();
-        var data = this._employeesForm.getData(this.customerForm);
+        var data = this._employeesForm.getData(this.employeesForm);
         this.companyId = Session.getCurrentCompany();
-        if(data.coa=='--None--'||data.coa==''){
-            this._toastService.pop(TOAST_TYPE.error, "Please select payment COA");
-            return;
-        }
+
         this.loadingService.triggerLoadingEvent(true);
         if(this.editMode) {
             data.customer_id=this.row.customer_id;
@@ -268,12 +218,6 @@ export class EmployeesComponent {
         }
     }
 
-    addressValid() {
-        if(this.addressDir) {
-            return this.addressDir.isValid();
-
-        } return false;
-    }
 
 
     // Reset the form with a new hero AND restore 'pristine' class state
