@@ -472,7 +472,7 @@ export class JournalEntryComponent{
             this.journalService.addJournalEntry(this.cleanData(data), this.currentCompany.id)
                 .subscribe(journalEntry => {
                     this.stopLoaderAndShowMessage(false, "Journal Entry created successfully");
-                    let link = ['books', 2];
+                    let link = ['books', 'journalEntries'];
                     this._router.navigate(link);
                 }, error=> this.handleError(error));
         } else{
@@ -480,7 +480,7 @@ export class JournalEntryComponent{
             this.journalService.updateJournalEntry(this.cleanData(data), this.currentCompany.id)
                 .subscribe(journalEntry => {
                     this.stopLoaderAndShowMessage(false, "Journal Entry updated successfully");
-                    let link = ['books', 2];
+                    let link = ['books', 'journalEntries'];
                     this._router.navigate(link);
                 }, error=> this.handleError(error));
         }
