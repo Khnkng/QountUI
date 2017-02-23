@@ -102,7 +102,7 @@ export class SideBarComponent {
   }
 
   toggleMenu(){
-    this.isExpanded = !this.isExpanded;
+    this.isExpanded = false;
     this.switchBoard.onSideBarExpand.next(this.isExpanded)
   }
 
