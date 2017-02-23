@@ -1,4 +1,13 @@
 <div class="bill row" foundation>
+    <section style="margin-bottom: 10px;">
+        <header>
+            <div class="columns small-12 right">
+                <button class="button small text-button" style="top: 0px" (click)="showDashboard()">
+                    <i class="ion-ios-close-empty"></i>
+                </button>
+            </div>
+        </header>
+    </section>
     <div class="column small-12 medium-12 large-12 qount-form-backgorund">
         <form *ngIf="active" (ngSubmit)="submit($event)" novalidate [formGroup]="jeForm">
             <ul class="tabs bill-form-tabs" data-tabs id="bill-form-tabs">
