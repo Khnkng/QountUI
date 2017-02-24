@@ -28,7 +28,7 @@ export class EmployeesComponent {
     tableData:any = {};
     tableOptions:any = {};
     status:any;
-    customerId:any;
+    employeeId:any;
     employees:Array<any>;
     editMode:boolean = false;
     @ViewChild('createVendor') createVendor;
@@ -52,12 +52,12 @@ export class EmployeesComponent {
                 private _employeesForm:EmployeesForm, private _router: Router, private _toastService: ToastService,
                 private switchBoard: SwitchBoard, private loadingService:LoadingService) {
         this.employeesForm = this._fb.group(_employeesForm.getForm());
-        this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteVendor(toast));
+        this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteEmployee(toast));
         this.companyId = Session.getCurrentCompany();
 
         if(this.companyId){
             this.loadingService.triggerLoadingEvent(true);
-            this.employeeService.customers(this.companyId).subscribe(employees => {
+            this.employeeService.employees(this.companyId).subscribe(employees => {
 
                 this.buildTableData(employees);
                 this.loadingService.triggerLoadingEvent(false);
@@ -82,7 +82,7 @@ export class EmployeesComponent {
             {"name": "last_name", "title": "LastName"},
             {"name": "ssn", "title": "SSN"},
             {"name": "email_id", "title": "Email"},
-            {"name": "phone", "title": "Phone"},
+            {"name": "phone_number", "title": "Phone"},
             {"name": "actions", "title": "", "type": "html", "filterable": false}
         ];
         let base = this;
@@ -112,26 +112,27 @@ export class EmployeesComponent {
         delete $event.action;
         delete $event.actions;
         if(action == 'edit') {
-            this.showEditVendor($event);
+            this.showEditEmployee($event);
         } else if(action == 'delete'){
-            this.removeVendor($event);
+            this.removeEmployee($event);
         }
     }
 
 
-    deleteVendor(toast){
+    deleteEmployee(toast){
         this.loadingService.triggerLoadingEvent(true);
-        this.employeeService.removeCustomer(this.customerId, this.companyId)
+        this.employeeService.removeEmployee(this.employeeId, this.companyId)
             .subscribe(success  => {
                 this.loadingService.triggerLoadingEvent(false);
                 this._toastService.pop(TOAST_TYPE.success, "Customer deleted successfully");
-                this.employeeService.customers(this.companyId)
+                this.employeeService.employees(this.companyId)
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
             }, error =>  this.handleError(error));
     }
-    removeVendor(row:any) {
-        let customer:EmployeesModel = row;
-        this.customerId=customer.customer_id;
+
+    removeEmployee(row:any) {
+        let employee:EmployeesModel = row;
+        this.employeeId=employee.id;
         this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
     }
 
@@ -141,25 +142,17 @@ export class EmployeesComponent {
         setTimeout(()=> this.active1=true, 0);
     }
 
-    showEditVendor(row:any) {
+    showEditEmployee(row:any) {
         this.editMode = true;
         this.showFlyout = true;
         this.row = row;
-        this.employeeService.customer(row.customer_id, this.companyId)
-            .subscribe(customer => {
-                this.row = customer;
+        this.employeeService.employee(row.id, this.companyId)
+            .subscribe(employee => {
+                this.row = employee;
                 let email_id:any = this.employeesForm.controls['email_id'];
-                email_id.patchValue(customer.email_id);
-                let customer_address:any = this.employeesForm.controls['customer_address'];
-                customer_address.patchValue(customer.customer_address);
-                let customer_city:any = this.employeesForm.controls['customer_city'];
-                customer_city.patchValue(customer.customer_city);
-                let customer_state:any = this.employeesForm.controls['customer_state'];
-                customer_state.patchValue(customer.customer_state);
-                let customer_zipcode:any = this.employeesForm.controls['customer_zipcode'];
-                customer_zipcode.patchValue(customer.customer_zipcode);
+                email_id.patchValue(employee.email_id);
                 let phone_number:any = this.employeesForm.controls['phone_number'];
-                phone_number.patchValue(customer.phone_number);
+                phone_number.patchValue(employee.phone_number);
 
                 var base=this;
 
@@ -174,15 +167,15 @@ export class EmployeesComponent {
 
         this.loadingService.triggerLoadingEvent(true);
         if(this.editMode) {
-            data.customer_id=this.row.customer_id;
-            this.employeeService.updateCustomer(<EmployeesModel>data, this.companyId)
+            data.id=this.row.id;
+            this.employeeService.updateEmployee(<EmployeesModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                 }, error =>  this.showMessage(false, error));
             this.showFlyout = false;
         } else {
-            this.employeeService.addCustomer(<EmployeesModel>data, this.companyId)
+            this.employeeService.addEmployee(<EmployeesModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
@@ -199,21 +192,21 @@ export class EmployeesComponent {
             this.status['success'] = true;
             this.hasEmployeesList=false;
             if(this.editMode) {
-                this.employeeService.customers(this.companyId)
-                    .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
+                this.employeeService.employees(this.companyId)
+                    .subscribe(employees  => this.buildTableData(employees), error =>  this.handleError(error));
                 this.newForm1();
-                this._toastService.pop(TOAST_TYPE.success, "Customer updated successfully.");
+                this._toastService.pop(TOAST_TYPE.success, "Employee updated successfully.");
             } else {
                 this.newForm1();
-                this.employeeService.customers(this.companyId)
-                    .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
-                this._toastService.pop(TOAST_TYPE.success, "Customer created successfully.");
+                this.employeeService.employees(this.companyId)
+                    .subscribe(employees  => this.buildTableData(employees), error =>  this.handleError(error));
+                this._toastService.pop(TOAST_TYPE.success, "Employee created successfully.");
             }
             this.newCustomer();
         } else {
             this.status = {};
             this.status['error'] = true;
-            this._toastService.pop(TOAST_TYPE.error, "Failed to update the customer");
+            this._toastService.pop(TOAST_TYPE.error, "Failed to update the Employee");
             this.message = obj;
         }
     }

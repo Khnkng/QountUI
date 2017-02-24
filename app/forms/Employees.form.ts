@@ -11,11 +11,12 @@ export class EmployeesForm extends abstractForm{
 
     getForm() {
         return {
+            "id": [''],
             "first_name": ['', Validators.required],
             "last_name": ['', Validators.required],
             "ssn": ['', Validators.required],
             "email_id": ['', Validators.required],
-            "phone_number":['', Validators.required]
+            "phone_number":['', Validators.required],
         }
     }
 }
