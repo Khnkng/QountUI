@@ -68,7 +68,7 @@ export class DepositComponent{
     }
 
     showDepositsPage(){
-        let link = ['books', 0];
+        let link = ['books', 'deposits'];
         this._router.navigate(link);
     }
 

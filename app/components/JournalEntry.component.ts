@@ -28,6 +28,7 @@ declare let moment:any;
 export class JournalEntryComponent{
     jeForm: FormGroup;
     lineForm: FormGroup;
+    newJournalLineForm: FormGroup;
     active:boolean = true;
     lineActive:boolean = true;
     disableReversalDate:boolean = true;
@@ -56,6 +57,7 @@ export class JournalEntryComponent{
     editingLine:any;
     newCOAActive:boolean = true;
     companyCurrency:string;
+    addNewLineFlag:boolean = false;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -114,6 +116,11 @@ export class JournalEntryComponent{
         setTimeout(function(){
             base.newCOAActive=true;
         }, 0);
+    }
+
+    showNewLine(){
+        this.addNewLineFlag = true;
+        this.newJournalLineForm = this._fb.group(this._lineListForm.getForm());
     }
 
     selectValue($event, dimension, value){
@@ -472,7 +479,7 @@ export class JournalEntryComponent{
             this.journalService.addJournalEntry(this.cleanData(data), this.currentCompany.id)
                 .subscribe(journalEntry => {
                     this.stopLoaderAndShowMessage(false, "Journal Entry created successfully");
-                    let link = ['books', 2];
+                    let link = ['books', 'journalEntries'];
                     this._router.navigate(link);
                 }, error=> this.handleError(error));
         } else{
@@ -480,7 +487,7 @@ export class JournalEntryComponent{
             this.journalService.updateJournalEntry(this.cleanData(data), this.currentCompany.id)
                 .subscribe(journalEntry => {
                     this.stopLoaderAndShowMessage(false, "Journal Entry updated successfully");
-                    let link = ['books', 2];
+                    let link = ['books', 'journalEntries'];
                     this._router.navigate(link);
                 }, error=> this.handleError(error));
         }
@@ -522,6 +529,30 @@ export class JournalEntryComponent{
             currentLineData.coa='--None--';
         }
         this._lineListForm.updateForm(currentLineForm, currentLineData);
+    }
+
+    updateNewLineCOA(chartOfAccount){
+        let lineData = this._lineListForm.getData(this.newJournalLineForm);
+        if(chartOfAccount&&chartOfAccount.id){
+            lineData.coa = chartOfAccount.id;
+        }else if(!chartOfAccount||chartOfAccount=='--None--'){
+            lineData.coa='--None--';
+        }
+        this._lineListForm.updateForm(this.newJournalLineForm, lineData);
+    }
+
+    saveNewItem(){
+        this.addNewLineFlag = !this.addNewLineFlag;
+        let lineData = this._lineListForm.getData(this.newJournalLineForm);
+        if(this.newJournalEntry){
+            this.saveLineInView(lineData);
+        } else{
+            this.saveLineData(lineData);
+        }
+    }
+
+    hideNewItem(){
+        this.addNewLineFlag = false;
     }
 
     processJournalEntry(journalEntry){
@@ -614,5 +645,10 @@ export class JournalEntryComponent{
                     }
                 }, error=> this.handleError(error));
         }, error => this.handleError(error));
+    }
+
+    showDashboard(){
+        let link = ['books', 'journalEntries'];
+        this._router.navigate(link);
     }
 }

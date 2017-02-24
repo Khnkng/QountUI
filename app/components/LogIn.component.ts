@@ -77,7 +77,7 @@ export class LogInComponent implements OnInit {
 
   setComapnies(companies){
     if(companies.length > 0){
-      let defaultCompany = Session.getUser().default_company;
+      let defaultCompany:any = Session.getUser().default_company;
       if(!_.isEmpty(defaultCompany)){
         Session.setCurrentCompany(defaultCompany.id);
         Session.setCurrentCompanyName(defaultCompany.name);
@@ -114,7 +114,7 @@ export class LogInComponent implements OnInit {
     if(Session.get('user').tempPassword){
       link= 'activate';
     } else{
-      let defaultCompany = Session.getUser().default_company;
+      let defaultCompany:any = Session.getUser().default_company;
       if(!_.isEmpty(defaultCompany) && defaultCompany.roles.indexOf('Owner') != -1){
         if(!defaultCompany.tcAccepted){
           link = 'termsAndConditions';

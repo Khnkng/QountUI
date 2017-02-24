@@ -1,4 +1,13 @@
 <div class="bill row" foundation>
+    <section style="margin-bottom: 10px;">
+        <header>
+            <div class="columns small-12 right">
+                <button class="button small text-button" style="top: 0px" (click)="showDashboard()">
+                    <i class="ion-ios-close-empty"></i>
+                </button>
+            </div>
+        </header>
+    </section>
     <div class="column small-12 medium-12 large-12 qount-form-backgorund">
         <form *ngIf="active" (ngSubmit)="submit($event)" novalidate [formGroup]="jeForm">
             <ul class="tabs bill-form-tabs" data-tabs id="bill-form-tabs">
@@ -154,7 +163,7 @@
                     <div class="row">
                         <div class="columns">
                             <label class="float-right">
-                                <i class="icon ion-ios-plus-outline" (click)="showFlyout('NEW')"></i> Line
+                                <i class="icon ion-ios-plus-outline" (click)="showNewLine()"></i> Line
                             </label>
                         </div>
                     </div>
@@ -171,51 +180,85 @@
                         </tr>
                         </thead>
                         <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
-                        <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem, index)">
-                            <td [hidden]="lineListItem.editable">{{lineListItem.controls.type.value}}</td>
-                            <td [hidden]="!lineListItem.editable">
-                                <select [formControl]="lineListItem.controls.type" (change)="filterChartOfAccounts(lineListItem, $event.target.value)">
-                                    <option value="Assets">Assets</option>
-                                    <option value="Liability">Liability</option>
-                                    <option value="Income">Income</option>
-                                    <option value="Expenses">Expenses</option>
-                                    <option value="Equity">Equity</option>
-                                </select>
-                            </td>
-                            <td [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
-                            <td class="coa-field" [hidden]="!lineListItem.editable">
-                                <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="getFilteredCOA(lineListItem.controls.type.value)" (valueChanged)="updateLineCOA($event, index)">
-                                    <option *ngFor="let chartOfAccount of getFilteredCOA(lineListItem.controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
-                                </select>
-                            </td>
-                            <td [hidden]="lineListItem.editable">
-                                {{lineListItem.controls.entryType.value}}
-                            </td>
-                            <td [hidden]="!lineListItem.editable">
-                                <select [formControl]="lineListItem.controls.entryType">
-                                    <option value="Credit">Credit</option>
-                                    <option value="Debit">Debit</option>
-                                </select>
-                            </td>
-                            <td [hidden]="lineListItem.editable">
-                                {{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):null}}
-                            </td>
-                            <td [hidden]="!lineListItem.editable">
-                                <input type="text" [formControl]="lineListItem.controls.amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
-                            </td>
-                            <td [hidden]="lineListItem.editable">{{lineListItem.controls.memo.value}}</td>
-                            <td [hidden]="!lineListItem.editable">
-                                <textarea [formControl]="lineListItem.controls.memo"></textarea>
-                            </td>
-                            <td>
-                                <i class="icon ion-checkmark-circled" (click)="updateLine(lineListItem, index)" *ngIf="lineListItem.editable"></i>
-                                <i class="icon ion-close" *ngIf="lineListItem.editable" (click)="toggleLineEdit(lineListItem)"></i>
-                                <i class="icon ion-edit" *ngIf="!lineListItem.editable" (click)="showFlyout('UPDATE', index)"></i>
-                                <i class="icon ion-ios-trash-outline" *ngIf="!lineListItem.editable" (click)="deleteLine(index)"></i>
-                            </td>
-                        </tr>
+                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem, index)">
+                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.type.value}}</td>
+                                <td [hidden]="!lineListItem.editable">
+                                    <select [formControl]="lineListItem.controls.type" (change)="filterChartOfAccounts($event.target.value)">
+                                        <option value="Assets">Assets</option>
+                                        <option value="Liability">Liability</option>
+                                        <option value="Income">Income</option>
+                                        <option value="Expenses">Expenses</option>
+                                        <option value="Equity">Equity</option>
+                                    </select>
+                                </td>
+                                <td [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
+                                <td class="coa-field" [hidden]="!lineListItem.editable">
+                                    <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="getFilteredCOA(lineListItem.controls.type.value)" (valueChanged)="updateLineCOA($event, index)">
+                                        <option *ngFor="let chartOfAccount of getFilteredCOA(lineListItem.controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                    </select>
+                                </td>
+                                <td [hidden]="lineListItem.editable">
+                                    {{lineListItem.controls.entryType.value}}
+                                </td>
+                                <td [hidden]="!lineListItem.editable">
+                                    <select [formControl]="lineListItem.controls.entryType">
+                                        <option value="Credit">Credit</option>
+                                        <option value="Debit">Debit</option>
+                                    </select>
+                                </td>
+                                <td [hidden]="lineListItem.editable">
+                                    {{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):null}}
+                                </td>
+                                <td [hidden]="!lineListItem.editable">
+                                    <input type="text" [formControl]="lineListItem.controls.amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                </td>
+                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.memo.value}}</td>
+                                <td [hidden]="!lineListItem.editable">
+                                    <textarea [formControl]="lineListItem.controls.memo"></textarea>
+                                </td>
+                                <td>
+                                    <i class="icon ion-checkmark-circled" (click)="updateLine(lineListItem, index)" *ngIf="lineListItem.editable"></i>
+                                    <i class="icon ion-close" *ngIf="lineListItem.editable" (click)="toggleLineEdit(lineListItem)"></i>
+                                    <i class="icon ion-edit" *ngIf="!lineListItem.editable" (click)="showFlyout('UPDATE', index)"></i>
+                                    <i class="icon ion-ios-trash-outline" *ngIf="!lineListItem.editable" (click)="deleteLine(index)"></i>
+                                </td>
+                            </tr>
                         </tbody>
-                        <tbody *ngIf="jeForm.controls.journalLines.controls.length == 0">
+                        <tbody *ngIf="addNewLineFlag" [formGroup]="newJournalLineForm">
+                            <tr>
+                                <td>
+                                    <select formControlName="type" (change)="filterChartOfAccounts($event.target.value)">
+                                        <option value="Assets">Assets</option>
+                                        <option value="Liability">Liability</option>
+                                        <option value="Income">Income</option>
+                                        <option value="Expenses">Expenses</option>
+                                        <option value="Equity">Equity</option>
+                                    </select>
+                                </td>
+                                <td class="coa-field">
+                                    <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select COA" formControlName="coa" [listObject]="getFilteredCOA(newJournalLineForm.controls.type.value)" (valueChanged)="updateNewLineCOA($event)">
+                                        <option *ngFor="let chartOfAccount of getFilteredCOA(newJournalLineForm.controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select formControlName="entryType">
+                                        <option value="Credit">Credit</option>
+                                        <option value="Debit">Debit</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" formControlName="amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                </td>
+                                <td>
+                                    <textarea formControlName="memo"></textarea>
+                                </td>
+                                <td>
+                                    <i class="icon ion-ios-checkmark-outline" (click)="saveNewItem()"></i>
+                                    <i class="icon ion-ios-close-outline" (click)="hideNewItem()"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="jeForm.controls.journalLines.controls.length == 0 && !addNewLineFlag">
                         <tr>
                             <td colspan="6" class="text-center">No lines found</td>
                         </tr>
