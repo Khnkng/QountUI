@@ -78,6 +78,7 @@ export class EmployeesComponent {
         this.tableOptions.pageSize = 9;
         this.tableData.rows = [];
         this.tableData.columns = [
+            {"name": "id", "title": "ID","visible":false},
             {"name": "first_name", "title": "FirstName"},
             {"name": "last_name", "title": "LastName"},
             {"name": "ssn", "title": "SSN"},
