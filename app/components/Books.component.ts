@@ -185,6 +185,14 @@ export class BooksComponent{
             this.showReverseBill($event);
         } else if(action == 'delete'){
             this.removeJournalEntry($event);
+        } else if(action=='billNavigation'){
+            if($event.sourceID&&$event.sourceType=='bill'){
+                let link = ['payments/bill',Session.getCurrentCompany(),$event.sourceID,'enter'];
+                this._router.navigate(link);
+            }else if($event.sourceID&&$event.sourceType=='credit'){
+                let link = ['payments/credit',Session.getCurrentCompany(),$event.sourceID];
+                this._router.navigate(link);
+            }
         }
     }
 
@@ -328,6 +336,8 @@ export class BooksComponent{
             {"name": "reversalDate", "title": "Reversal Date","visible": false},
             {"name": "recurring", "title": "Recurring","visible": false},
             {"name": "nextJEDate", "title": "Next JE Date","visible": false},
+            {"name": "sourceID", "title": "Bill ID","visible": false},
+            {"name": "sourceType", "title": "Type","visible": false},
             {"name": "id", "title": "Jounral ID","visible": false},
             {"name": "recurringFrequency", "title": "Recurring Frequency","visible": false},
             {"name": "actions", "title": "", "type": "html"},
@@ -341,7 +351,11 @@ export class BooksComponent{
                 }
                 row[key] = journalEntry[key];
             });
-            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            if(journalEntry['sourceID']){
+                action="<a class='action' data-action='billNavigation'><span class='icon badge je-badge'>B</span></a>"+action;
+            }
+            row['actions'] = action;
             if(row['type'] == 'Original'){
                 row['reverse'] = "<a style='font-size:0.6rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action' data-action='reverse'>Reverse</a>";
             }
