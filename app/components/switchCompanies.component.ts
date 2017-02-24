@@ -63,6 +63,7 @@ export class SwitchCompanyComponent{
 
     ngOnDestroy(){
         this.subscription.unsubscribe();
+        jQuery("#SwitchCompany-modal").remove();
     }
 
     handleError(error){
@@ -125,10 +126,6 @@ export class SwitchCompanyComponent{
         }, 0);
     }
 
-    ngOnDestroy(){
-        jQuery("#SwitchCompany-modal").remove();
-    }
-
     refreshTable(){
         let base = this;
         this.buildTableData(this.allCompanies);
@@ -152,6 +149,7 @@ export class SwitchCompanyComponent{
     changeCompany(company){
         Session.setCurrentCompany(company.id);
         Session.setCurrentCompanyName(company.name);
+        Session.setCurrentCompanyCurrency(company.defaultCurrency);
         this.currentCompanyName = company.name;
         this.currentCompanyId = company.id;
         this.currentCompany = company;
