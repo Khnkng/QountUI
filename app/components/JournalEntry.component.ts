@@ -466,14 +466,23 @@ export class JournalEntryComponent{
         return false;
     }
 
+    updateJournalLinesData(data){
+        _.each(data.journalLines, function(line){
+            if(line.coa=='--None--'||line.coa==''){
+                line.coa=null;
+            }
+        });
+    }
+
     submit($event){
-        let base = this;
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
         if(!this.validateLineAmount(data.journalLines)){
             this.toastService.pop(TOAST_TYPE.error, "Credit and debit totals doesn't match");
             return false;
         }
+        this.updateJournalLinesData(data);
+
         this.loadingService.triggerLoadingEvent(true);
         if(this.newJournalEntry){
             this.journalService.addJournalEntry(this.cleanData(data), this.currentCompany.id)

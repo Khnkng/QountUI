@@ -206,7 +206,7 @@ export class ItemCodesComponent{
       data.invoice_coa_mapping=null;
     }
 
-    if(!data.payment_coa_mapping&&!data.invoice_coa_mapping){
+    if(!data.payment_coa_mapping && !data.invoice_coa_mapping){
       this.toastService.pop(TOAST_TYPE.error, "Please select payment COA or invoice COA");
       return;
     }

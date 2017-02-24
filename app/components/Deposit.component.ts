@@ -98,10 +98,12 @@ export class DepositComponent{
         this.selectedDimensions = [];
     }
 
-    setCOAForEditingItem(coa){
+    setCOAForEditingItem(chartOfAccount){
         let data = this._depositLineForm.getData(this.editItemForm);
-        if(coa && coa.id){
-            data.chart_of_account_id = coa.id;
+        if(chartOfAccount && chartOfAccount.id){
+            data.chart_of_account_id = chartOfAccount.id;
+        }else if(!chartOfAccount||chartOfAccount=='--None--'){
+            data.chart_of_account_id='--None--';
         }
         this._depositLineForm.updateForm(this.editItemForm, data);
     }
@@ -110,6 +112,8 @@ export class DepositComponent{
         let data = this._depositLineForm.getData(this.editItemForm);
         if(customer && customer.customer_id){
             data.customer_id = customer.customer_id;
+        }else if(!customer||customer=='--None--'){
+            data.customer_id='--None--';
         }
         this._depositLineForm.updateForm(this.editItemForm, data);
     }
@@ -118,6 +122,8 @@ export class DepositComponent{
         let data = this._depositLineForm.getData(this.editItemForm);
         if(invoice && invoice.id){
             data.invoice_id = invoice.id;
+        }else if(!invoice||invoice=='--None--'){
+            data.invoice_id='--None--';
         }
         this._depositLineForm.updateForm(this.editItemForm, data);
     }
@@ -134,8 +140,8 @@ export class DepositComponent{
         let data = this._depositForm.getData(this.depositForm);
         if(account && account.id){
             data.bank_account_id = account.id;
-        } else{
-            data.bank_account_id = '';
+        }else if(!account||account=='--None--'){
+            data.bank_account_id='--None--';
         }
         this._depositForm.updateForm(this.depositForm, data);
     }
@@ -194,42 +200,45 @@ export class DepositComponent{
         itemsControl.controls.push(tempItemForm);
     }
 
-    setCOAForNewItem(coa){
+    setCOAForNewItem(chartOfAccount){
         let data = this._depositLineForm.getData(this.newItemForm);
-        data.chart_of_account_id = coa.id;
+        if(chartOfAccount && chartOfAccount.id){
+            data.chart_of_account_id = chartOfAccount.id;
+        }else if(!chartOfAccount||chartOfAccount=='--None--'){
+            data.chart_of_account_id='--None--';
+        }
         this._depositLineForm.updateForm(this.newItemForm, data);
     }
 
     setCustomerForNewItem(customer){
         let data = this._depositLineForm.getData(this.newItemForm);
-        data.customer_id = customer.customer_id;
+        if(customer && customer.customer_id){
+            data.customer_id = customer.customer_id;
+        }else if(!customer||customer=='--None--'){
+            data.customer_id='--None--';
+        }
         this._depositLineForm.updateForm(this.newItemForm, data);
     }
 
     setInvoiceForNewItem(invoice){
         let data = this._depositLineForm.getData(this.newItemForm);
-        data.invoice_id = invoice.id;
+        if(invoice && invoice.id){
+            data.invoice_id = invoice.id;
+        }else if(!invoice||invoice=='--None--'){
+            data.invoice_id='--None--';
+        }
         this._depositLineForm.updateForm(this.newItemForm, data);
     }
 
-    setCOA(coa, index){
+    setCOA(chartOfAccount, index){
         let data = this._depositLineForm.getData(this.depositForm.controls[index]);
-        data.chart_of_account_id = coa.id;
+        if(chartOfAccount && chartOfAccount.id){
+            data.chart_of_account_id = chartOfAccount.id;
+        }else if(!chartOfAccount||chartOfAccount=='--None--'){
+            data.chart_of_account_id='--None--';
+        }
         let tempForm = this._fb.group(this.depositForm.controls[index]);
         this._depositLineForm.updateForm(tempForm, data);
-    }
-
-    setVendor(vendor, index){
-        let data = this._depositLineForm.getData(this.depositForm.controls[index]);
-        data.customer_id = vendor.id;
-        let tempForm = this._fb.group(this.depositForm.controls[index]);
-        this._depositLineForm.updateForm(tempForm, data);
-    }
-
-    setVendorForNewItem(vendor){
-        let data = this._depositLineForm.getData(this.newItemForm);
-        data.customer_id = vendor.id;
-        this._depositLineForm.updateForm(this.newItemForm, data);
     }
 
     getCOAName(chartOfAccountId){
@@ -246,7 +255,6 @@ export class DepositComponent{
         let invoice = _.find(this.invoices, {'id': invoiceId});
         return invoice? invoice.po_number: '';
     }
-
 
     updateItem(index, itemForm){
         let data = _.cloneDeep(this._depositLineForm.getData(itemForm));
@@ -375,7 +383,17 @@ export class DepositComponent{
         let base = this;
         let data = [];
         _.each(depositForm.controls, function(depositItemControl){
-            data.push(base._depositLineForm.getData(depositItemControl));
+            let itemData = base._depositLineForm.getData(depositItemControl);
+            if(itemData.chart_of_account_id=='--None--'||itemData.chart_of_account_id==''){
+                itemData.chart_of_account_id=null;
+            }
+            if(itemData.customer_id=='--None--'||itemData.customer_id==''){
+                itemData.customer_id=null;
+            }
+            if(itemData.invoice_id=='--None--'||itemData.invoice_id==''){
+                itemData.invoice_id=null;
+            }
+            data.push(itemData);
         });
         return data;
     }
@@ -436,9 +454,8 @@ export class DepositComponent{
         this.coaService.chartOfAccounts(this.currentCompanyId)
             .subscribe(chartOfAccounts=> {
                 this.chartOfAccounts = _.filter(chartOfAccounts, function(chartOfAccount){
-                                        return chartOfAccount.type == 'income' || chartOfAccount.type == 'otherIncome';
-                                    })
-
+                    return chartOfAccount.type == 'income' || chartOfAccount.type == 'otherIncome';
+                })
             }, error => {
 
             });
@@ -461,7 +478,7 @@ export class DepositComponent{
                     this.loadingService.triggerLoadingEvent(false);
                     this.processDeposits(deposit.deposit);
                 }, error =>{
-                    this.toastService.pop(TOAST_TYPE.error, "Failed to load deposits details");
+                    this.toastService.pop(TOAST_TYPE.error, "Failed to load deposit details");
                 })
         } else{
             this.loadingService.triggerLoadingEvent(false);
