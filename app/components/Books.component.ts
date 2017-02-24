@@ -83,11 +83,8 @@ export class BooksComponent{
                     this.hasJournalEntries = false;
                 }
                 else{
-
-console.log("error");
+                    console.log("error");
                 }
-
-
             });
             this.localBadges=JSON.parse(sessionStorage.getItem("localBooksBadges"));
             if(!this.localBadges){
@@ -98,6 +95,11 @@ console.log("error");
             }
         }, error => this.handleError(error));
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+    }
+
+    showCategorizationScreen(){
+        let link = ['categorization'];
+        this._router.navigate(link);
     }
 
     animateBoxInfo(boxInfo) {
