@@ -1,9 +1,6 @@
 
 import {Component, ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
-import {Address} from "qCommon/app/directives/address.directive";
-import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
-import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {FTable} from "qCommon/app/directives/footable.directive";
 import {Router} from "@angular/router";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
@@ -35,17 +32,13 @@ export class EmployeesComponent {
 
     row:any;
     employeesForm: FormGroup;
-    countries:Array<any> = PROVINCES.COUNTRIES;
     @ViewChild('fooTableDir') fooTableDir:FTable;
     hasEmployeesList:boolean = false;
     message:string;
     companyId:string;
     companies:Array<CompanyModel> = [];
     companyName:string;
-    countryCode:string;
-    showAddress:boolean;
     showFlyout:boolean = false;
-    chartOfAccounts:any;
     confirmSubscription:any;
 
     constructor(private _fb: FormBuilder, private employeeService: EmployeeService,
@@ -213,7 +206,10 @@ export class EmployeesComponent {
     }
 
 
-
+    setDateOfBirth(date: string){
+        let empDateControl:any = this.employeesForm.controls['dob'];
+        empDateControl.patchValue(date);
+    }
     // Reset the form with a new hero AND restore 'pristine' class state
     // by toggling 'active' flag which causes the form
     // to be removed/re-added in a tick via NgIf
@@ -222,7 +218,6 @@ export class EmployeesComponent {
 
     newCustomer() {
         this.active = false;
-        this.showAddress = false;
         setTimeout(()=> this.active=true, 0);
     }
 

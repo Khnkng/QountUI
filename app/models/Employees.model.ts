@@ -7,5 +7,6 @@ export class EmployeesModel {
     last_name:string;
     ssn:string;
     email_id:string;
-    phone_number:string;
+    phone_number:number;
+    dob:string;
 }

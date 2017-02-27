@@ -17,6 +17,7 @@ export class EmployeesForm extends abstractForm{
             "ssn": ['', Validators.required],
             "email_id": ['', Validators.required],
             "phone_number":['', Validators.required],
+            "dob":[''],
         }
     }
 }
