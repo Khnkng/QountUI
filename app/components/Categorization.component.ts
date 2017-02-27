@@ -43,12 +43,12 @@ export class CategorizationComponent{
     }
 
     showPreviousPage(){
-        let link = [Session.getLastVisitedUrl()];
+        let link = ['books', 'deposits'];
         this._router.navigate(link);
     }
 
     ngOnInit(){
-        //console.log("last url: ", this.gloablService.getLastVisitedUrl());
+        
     }
 
     fetchUncategorizedEntries(){
