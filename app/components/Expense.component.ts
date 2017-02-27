@@ -91,10 +91,12 @@ export class ExpenseComponent{
         this.selectedDimensions = [];
     }
 
-    setCOAForEditingItem(coa){
+    setCOAForEditingItem(chartOfAccount){
         let data = this._expenseItemForm.getData(this.editItemForm);
-        if(coa && coa.id){
-            data.chart_of_account_id = coa.id;
+        if(chartOfAccount && chartOfAccount.id){
+            data.chart_of_account_id = chartOfAccount.id;
+        }else if(!chartOfAccount||chartOfAccount=='--None--'){
+            data.chart_of_account_id='--None--';
         }
         this._expenseItemForm.updateForm(this.editItemForm, data);
     }
@@ -118,8 +120,8 @@ export class ExpenseComponent{
         let data = this._expenseForm.getData(this.expenseForm);
         if(account && account.id){
             data.bank_account_id = account.id;
-        } else{
-            data.bank_account_id = '';
+        }else if(!account||account=='--None--'){
+            data.bank_account_id='--None--';
         }
         this._expenseForm.updateForm(this.expenseForm, data);
     }
@@ -190,15 +192,23 @@ export class ExpenseComponent{
         itemsControl.controls.push(tempItemForm);
     }
 
-    setCOAForNewItem(coa){
+    setCOAForNewItem(chartOfAccount){
         let data = this._expenseItemForm.getData(this.newItemForm);
-        data.chart_of_account_id = coa.id;
+        if(chartOfAccount&&chartOfAccount.id){
+            data.chart_of_account_id = chartOfAccount.id;
+        }else if(!chartOfAccount||chartOfAccount=='--None--'){
+            data.chart_of_account_id='--None--';
+        }
         this._expenseItemForm.updateForm(this.newItemForm, data);
     }
 
-    setCOA(coa, index){
+    setCOA(chartOfAccount, index){
         let data = this._expenseItemForm.getData(this.expenseForm.controls[index]);
-        data.chart_of_account_id = coa.id;
+        if(chartOfAccount&&chartOfAccount.id){
+            data.chart_of_account_id = chartOfAccount.id;
+        }else if(!chartOfAccount||chartOfAccount=='--None--'){
+            data.chart_of_account_id='--None--';
+        }
         let tempForm = this._fb.group(this.expenseForm.controls[index]);
         this._expenseItemForm.updateForm(tempForm, data);
     }
@@ -244,28 +254,24 @@ export class ExpenseComponent{
         this.updateItem(index, tempForm);
     }
 
-    setCOAForItem(coa, itemForm){
-        if(coa && coa.id){
-            let data = this._expenseItemForm.getData(itemForm);
-            data.chart_of_account_id= coa.id;
-            this._expenseItemForm.updateForm(itemForm, data);
-        } else{
-            let data = this._expenseItemForm.getData(itemForm);
-            data.chart_of_account_id= null;
-            this._expenseItemForm.updateForm(itemForm, data);
+    setCOAForItem(chartOfAccount, itemForm){
+        let data = this._expenseItemForm.getData(itemForm);
+        if(chartOfAccount && chartOfAccount.id){
+            data.chart_of_account_id = chartOfAccount.id;
+        }else if(!chartOfAccount || chartOfAccount=='--None--'){
+            data.chart_of_account_id='--None--';
         }
+        this._expenseItemForm.updateForm(itemForm, data);
     }
 
     setVendorForItem(vendor, itemForm){
+        let data = this._expenseItemForm.getData(itemForm);
         if(vendor && vendor.id){
-            let data = this._expenseItemForm.getData(itemForm);
-            data.vendor_id= vendor.id;
-            this._expenseItemForm.updateForm(itemForm, data);
-        } else{
-            let data = this._expenseItemForm.getData(itemForm);
-            data.vendor_id= null;
-            this._expenseItemForm.updateForm(itemForm, data);
+            data.vendor_id = vendor.id;
+        }else if(!vendor || vendor=='--None--'){
+            data.vendor_id='--None--';
         }
+        this._expenseItemForm.updateForm(itemForm, data);
     }
 
     selectValue($event, dimension, value){
@@ -339,7 +345,14 @@ export class ExpenseComponent{
         let base = this;
         let data = [];
         _.each(expenseForm.controls, function(expenseItemControl){
-            data.push(base._expenseItemForm.getData(expenseItemControl));
+            let itemData = base._expenseItemForm.getData(expenseItemControl);
+            if(itemData.chart_of_account_id=='--None--'||itemData.chart_of_account_id==''){
+                itemData.chart_of_account_id=null;
+            }
+            if(itemData.vendor_id=='--None--'||itemData.vendor_id==''){
+                itemData.vendor_id=null;
+            }
+            data.push(itemData);
         });
         return data;
     }

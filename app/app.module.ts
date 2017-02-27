@@ -43,6 +43,7 @@ import {PaymentsModule} from "billsUI/app/payments.module";
 import {InvoicesModule} from "invoicesUI/app/invoices.module";
 import {RulesService} from "qCommon/app/services/Rules.service";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
+import {CategorizationComponent} from "./components/Categorization.component";
 import {CustomersComponent} from "./components/Customers.component";
 import {CustomersForm} from "./forms/Customers.form";
 import {DimensionsComponent} from "./components/Dimensions.component";
@@ -227,13 +228,18 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: EmployeesComponent,
             canActivate: [LoggedInActivator]
         },
+        {
+            path: 'categorization',
+            component: CategorizationComponent,
+            canActivate: [LoggedInActivator]
+        },
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
-        ResetPasswordComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent],
+        ResetPasswordComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent, CategorizationComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,

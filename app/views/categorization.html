@@ -1,0 +1,15 @@
+<div foundation>
+    <div class="row">
+        <div class="column small-12 medium-6">
+            <h5>Categorize</h5>
+        </div>
+        <div class="column small-12 medium-6 text-right">
+        </div>
+    </div>
+    <div class="row">
+        <div class="column large-12 medium-12 small-12 foo-container">
+            <foo-table class="bighalf-footable" *ngIf="hasEntries" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)">
+            </foo-table>
+        </div>
+    </div>
+</div>
