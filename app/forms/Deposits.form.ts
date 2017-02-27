@@ -17,7 +17,7 @@ export class DepositsForm extends abstractForm{
             "bank_account_id": [''],
             "notes": [''],
             "id": [''],
-            "deposit_refund":[false]
+            "expense_refund":[false]
         }
     }
 }
