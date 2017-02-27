@@ -63,7 +63,7 @@ export class ExpenseComponent{
     }
 
     showExpensesPage(){
-        let link = ['books', 'expenses'];
+        let link = [Session.getLastVisitedUrl()];
         this._router.navigate(link);
     }
 

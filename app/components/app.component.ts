@@ -14,7 +14,6 @@ import "rxjs/add/operator/filter";
 import {SocketService} from "qCommon/app/services/Socket.service";
 
 
-
 declare var jQuery:any;
 declare var _:any;
 
@@ -121,6 +120,7 @@ export class AppComponent  implements OnInit{
         } else {
             this.hasLoggedIn = false;
         }
+        Session.setLastVisitedUrl(this.currentPath);
         this.isLoginPath = routeChange.url == 'login';
         this.currentPath = routeChange.url;
         console.log("currentpath", this.currentPath);
