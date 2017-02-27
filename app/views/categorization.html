@@ -1,15 +1,20 @@
-<div foundation>
-    <div class="row">
-        <div class="column small-12 medium-6">
-            <h5>Categorize</h5>
-        </div>
-        <div class="column small-12 medium-6 text-right">
-        </div>
-    </div>
-    <div class="row">
-        <div class="column large-12 medium-12 small-12 foo-container">
-            <foo-table class="bighalf-footable" *ngIf="hasEntries" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)">
-            </foo-table>
-        </div>
+<div class="qount-off-canvas-menu" foundation>
+    <div class="flyout expanded" [ngClass]="{'expanded':true}">
+        <section class="flyout-placeholder categorize-flyout">
+            <header class="flyout-header">
+                <h6> Categorization</h6>
+            </header>
+            <div class="row">
+                <div class="column large-12 medium-12 small-12 foo-container">
+                    <foo-table class="bighalf-footable" *ngIf="hasEntries" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)">
+                    </foo-table>
+                </div>
+            </div>
+            <button class="close-flyout" aria-label="Close modal" type="button" (click)="showPreviousPage()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+            </button>
+        </section>
     </div>
 </div>

@@ -68,7 +68,7 @@ export class DepositComponent{
     }
 
     showDepositsPage(){
-        let link = ['books', 'deposits'];
+        let link = [Session.getLastVisitedUrl()];
         this._router.navigate(link);
     }
 
