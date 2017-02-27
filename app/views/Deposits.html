@@ -18,13 +18,13 @@
                                                 <div class="error" [hidden]="depositForm.controls.title.untouched || depositForm.controls.title.valid">Deposit Title is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-3 columns">
+                                        <div class="small-12 medium-2 columns">
                                             <label>Date
                                                 <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="date" placeholder="Date*">
                                                 <div class="error" [hidden]="depositForm.controls.date.untouched || depositForm.controls.date.valid">Date is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-3 columns">
+                                        <div class="small-12 medium-2 columns">
                                             <label>Amount
                                                 <input type="text" formControlName="amount" placeholder="Amount*" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
                                                 <div class="error" [hidden]="depositForm.controls.amount.untouched || depositForm.controls.amount.valid">Amount is required</div>
@@ -37,6 +37,10 @@
                                                 </select>
                                                 <div class="error" [hidden]="depositForm.controls.bank_account_id.untouched || depositForm.controls.bank_account_id.valid">Please select bank account</div>
                                             </label>
+                                        </div>
+                                        <div class="small-12 medium-2 columns">
+                                                <legend>Deposit Refund</legend>
+                                                <input type="checkbox" formControlName="deposit_refund" >
                                         </div>
                                     </div>
                                     <header class="form-section-header">Deposit Lines</header>

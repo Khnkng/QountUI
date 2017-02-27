@@ -19,7 +19,8 @@ export class ExpenseForm extends abstractForm{
             "paid_date": [''],
             "due_date": [''],
             "bank_account_id": [''],
-            "id": ['']
+            "id": [''],
+            "sales_refund":[false]
         }
     }
 }
