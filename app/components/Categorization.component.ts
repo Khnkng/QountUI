@@ -48,7 +48,7 @@ export class CategorizationComponent{
     }
 
     ngOnInit(){
-        
+
     }
 
     fetchUncategorizedEntries(){
