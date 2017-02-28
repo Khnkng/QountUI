@@ -57,7 +57,6 @@
                                                 <th style="width: 15%;">Amount</th>
                                                 <th style="width: 15%;">COA</th>
                                                 <th style="width: 15%;">Customer</th>
-                                                <th style="width: 15%;">Invoice</th>
                                                 <th style="width: 8%;"></th>
                                             </tr>
                                             </thead>
@@ -124,11 +123,6 @@
                                                 <td class="combo-box-field">
                                                     <select combo-box #newCustomerComboBoxDir="comboBox" data-placeholder="Select Customer" [listObject]="customers" formControlName="customer_id" (valueChanged)="setCustomerForNewItem($event)">
                                                         <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
-                                                    </select>
-                                                </td>
-                                                <td class="combo-box-field">
-                                                    <select combo-box #newInvoiceComboBoxDir="comboBox" data-placeholder="Select Invoice" [listObject]="invoices" formControlName="invoice_id" (valueChanged)="setInvoiceForNewItem($event)">
-                                                        <option *ngFor="let invoice of invoices" [value]="invoice.id">{{invoice.po_number}}</option>
                                                     </select>
                                                 </td>
                                                 <td>
