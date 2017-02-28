@@ -7,7 +7,7 @@ import {Router} from "@angular/router";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {PAGES} from "qCommon/app/constants/Qount.constants";
 import {Session} from "qCommon/app/services/Session";
-import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
+import {BadgeService} from "qCommon/app/services/Badge.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -35,7 +35,7 @@ export class ToolsComponent {
   ruleCount:number = 0;
   employeesCount:number = 0;
 
-  constructor(private switchBoard:SwitchBoard, private _router:Router, private usersService:CompanyUsers) {
+  constructor(private switchBoard:SwitchBoard, private _router:Router, private badgeService: BadgeService) {
     let currentCompany = Session.getCurrentCompany();
     if(currentCompany){
       this.refreshCompany({id: currentCompany});
@@ -43,7 +43,7 @@ export class ToolsComponent {
   }
 
   refreshCompany(company){
-    this.usersService.getBadgeCount(company.id).subscribe(badges => {
+    this.badgeService.getToolsBadgeCount(company.id).subscribe(badges => {
       this.coaCount = badges.chartOfAccounts;
       this.companyCount = badges.companies;
       this.customerCount = badges.customers;
@@ -56,7 +56,6 @@ export class ToolsComponent {
       this.usersCount= badges.companyUsers;
       this.dimensionCount = badges.dimensions;
     }, error => this.handleError(error));
-
   }
 
   handleError(error){

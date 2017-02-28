@@ -13,6 +13,7 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ExpenseService} from "qCommon/app/services/Expense.service";
 import {DepositService} from "qCommon/app/services/Deposit.service";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
+import {BadgeService} from "qCommon/app/services/Badge.service";
 
 declare var _:any;
 declare var jQuery:any;
@@ -60,7 +61,8 @@ export class BooksComponent{
 
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
                 private toastService: ToastService, private loadingService:LoadingService, private companiesService: CompaniesService,
-                private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService) {
+                private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService,
+                private badgesService: BadgeService) {
         let companyId = Session.getCurrentCompany();
         this.companiesService.companies().subscribe(companies => {
             this.allCompanies = companies;
@@ -93,8 +95,19 @@ export class BooksComponent{
             } else{
                 this.localBadges = JSON.parse(sessionStorage.getItem("localBooksBadges"));
             }
+            this.getBookBadges();
         }, error => this.handleError(error));
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+    }
+
+    getBookBadges(){
+        this.badgesService.getBooksBadgeCount(this.currentCompany.id).subscribe(badges => {
+            let journalCount = badges.journals;
+            let depositCount = badges.deposits;
+            let expenseCount = badges.expenses;
+            this.localBadges = {'deposits':depositCount,'expenses':expenseCount,'journalEntries':journalCount};
+            sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+        }, error => this.handleError(error));
     }
 
     showCategorizationScreen(){
