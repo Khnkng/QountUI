@@ -85,12 +85,6 @@
                                                         <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
                                                     </select>
                                                 </td>
-                                                <td *ngIf="!itemForm.editable">{{getInvoiceName(itemForm.controls.invoice_id.value)}}</td>
-                                                <td *ngIf="itemForm.editable" class="combo-box-field">
-                                                    <select id="invoice-{{index}}" combo-box #InvoiceComboBoxDir="comboBox" data-placeholder="Select Invoice" [listObject]="invoices" [formControl]="itemForm.controls.invoice_id" (valueChanged)="setInvoiceForItem($event, itemForm)">
-                                                        <option *ngFor="let invoice of invoices" [value]="invoice.id">{{invoice.po_number}}</option>
-                                                    </select>
-                                                </td>
                                                 <td>
                                                         <span *ngIf="!itemForm.editable" (click)="showFlyout(index)">
                                                             <i class="icon ion-edit"></i>
