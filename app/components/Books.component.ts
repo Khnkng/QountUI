@@ -442,6 +442,12 @@ export class BooksComponent{
             case 'inventory':
                 result = 'Inventory';
                 break;
+            case 'inflow':
+                result = 'Inflow';
+                break;
+            case 'outflow':
+                result = 'Outflow';
+                break;
         }
         return result;
     }
