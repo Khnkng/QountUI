@@ -53,6 +53,8 @@
                                                         <option value="accountsPayable">Accounts Payable</option>
                                                         <option value="accountsReceivable">Accounts Receivable</option>
                                                         <option value="inventory">Inventory</option>
+                                                        <option value="inflow">Inflow</option>
+                                                        <option value="outflow">Outflow</option>
                                                     </select>
                                                     <div class="error" [hidden]="jeForm.controls.source.untouched || jeForm.controls.source.valid"><small>Journal Source is required.</small></div>
                                                 </label>
@@ -72,6 +74,8 @@
                                                         <option value="credit">Credit</option>
                                                         <option value="bill">Bill</option>
                                                         <option value="billPayment">Bill Payment</option>
+                                                        <option value="deposit">Deposit</option>
+                                                        <option value="expense">Expense</option>
                                                     </select>
                                                     <div class="error" [hidden]="jeForm.controls.category.untouched || jeForm.controls.category.valid"><small>Please select category.</small></div>
                                                 </label>
