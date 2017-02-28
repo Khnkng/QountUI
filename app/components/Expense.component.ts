@@ -412,9 +412,7 @@ export class ExpenseComponent{
             });
         this.coaService.chartOfAccounts(this.currentCompanyId)
             .subscribe(chartOfAccounts=> {
-                this.chartOfAccounts = _.filter(chartOfAccounts, function(chartOfAccount){
-                    return chartOfAccount.type == 'expenses' || chartOfAccount.type == 'otherExpense';
-                });
+                this.chartOfAccounts = chartOfAccounts;
             }, error => {
 
             });

@@ -453,9 +453,7 @@ export class DepositComponent{
             });
         this.coaService.chartOfAccounts(this.currentCompanyId)
             .subscribe(chartOfAccounts=> {
-                this.chartOfAccounts = _.filter(chartOfAccounts, function(chartOfAccount){
-                    return chartOfAccount.type == 'income' || chartOfAccount.type == 'otherIncome';
-                })
+                this.chartOfAccounts = chartOfAccounts;
             }, error => {
 
             });
