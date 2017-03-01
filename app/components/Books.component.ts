@@ -200,7 +200,7 @@ export class BooksComponent{
             this.removeJournalEntry($event);
         } else if(action=='Navigation'){
             console.log($event.sourceID,$event.sourceType);
-            if($event.sourceID&&$event.sourceType=='bills'){
+            if($event.sourceID&&$event.sourceType=='bill'){
                 let link = ['payments/bill',Session.getCurrentCompany(),$event.sourceID,'enter'];
                 this._router.navigate(link);
             }else if($event.sourceID&&$event.sourceType=='credit'){
