@@ -3122,3 +3122,18 @@ form select.ng-dirty.ng-valid {
 .refund-field{
   margin: 7px;
 }
+
+.payment-details{
+  .accordion-title {
+    padding: .75rem 0.5rem;
+  }
+  .bill-navigation{
+    text-decoration: underline;
+    color: #1f7cf9;
+  }
+  span:hover, span:focus .bill-navigation{
+    color: #1f7cf9;
+    cursor: pointer;
+  }
+}
+
