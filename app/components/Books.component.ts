@@ -198,12 +198,19 @@ export class BooksComponent{
             this.showReverseBill($event);
         } else if(action == 'delete'){
             this.removeJournalEntry($event);
-        } else if(action=='billNavigation'){
-            if($event.sourceID&&$event.sourceType=='bill'){
+        } else if(action=='Navigation'){
+            console.log($event.sourceID,$event.sourceType);
+            if($event.sourceID&&$event.sourceType=='bills'){
                 let link = ['payments/bill',Session.getCurrentCompany(),$event.sourceID,'enter'];
                 this._router.navigate(link);
             }else if($event.sourceID&&$event.sourceType=='credit'){
                 let link = ['payments/credit',Session.getCurrentCompany(),$event.sourceID];
+                this._router.navigate(link);
+            }else if($event.sourceID&&$event.sourceType=='inflow'){
+                let link = ['/deposit',$event.sourceID];
+                this._router.navigate(link);
+            }else if($event.sourceID&&$event.sourceType=='outflow'){
+                let link = ['/expense',$event.sourceID];
                 this._router.navigate(link);
             }
         }
@@ -351,6 +358,7 @@ export class BooksComponent{
             {"name": "nextJEDate", "title": "Next JE Date","visible": false},
             {"name": "sourceID", "title": "Bill ID","visible": false},
             {"name": "sourceType", "title": "Type","visible": false},
+            {"name": "source", "title": "source","visible": false},
             {"name": "id", "title": "Jounral ID","visible": false},
             {"name": "recurringFrequency", "title": "Recurring Frequency","visible": false},
             {"name": "actions", "title": "", "type": "html"},
@@ -360,18 +368,18 @@ export class BooksComponent{
             let row: any = {};
             _.each(Object.keys(journalEntry), function (key) {
                 if(key == 'source'){
-                    console.log(base.getSourceName(journalEntry[key]));
+                    console.log(journalEntry['sourceValue']);
                     row['sourceValue']=base.getSourceName(journalEntry[key]);
                 }
                 row[key] = journalEntry[key];
             });
             let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
-            if(journalEntry['sourceID'] && row['sourceValue'] === 'Accounts Payable'){
-                action="<a class='action' data-action='billNavigation'><span class='icon badge je-badge'>B</span></a>"+action;
-            }else if(journalEntry['sourceID'] && row['sourceValue'] === 'Outflow'){
-                action="<a class='action' data-action='outFlowNavigation'><span class='icon badge je-badge'>E</span></a>"+action;
-            }else if(journalEntry['sourceID'] && row['sourceValue'] === 'Inflow'){
-                action="<a class='action' data-action='inFlowNavigation'><span class='icon badge je-badge'>D</span></a>"+action;
+            if(journalEntry['sourceID'] && journalEntry['source'] === 'accountsPayable'){
+                action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>B</span></a>"+action;
+            }else if(journalEntry['sourceID'] && journalEntry['source'] === 'outflow'){
+                action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>E</span></a>"+action;
+            }else if(journalEntry['sourceID'] && journalEntry['source'] === 'inflow'){
+                action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>D</span></a>"+action;
             }
             row['actions'] = action;
             if(row['type'] == 'Original'){
