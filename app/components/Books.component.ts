@@ -360,13 +360,18 @@ export class BooksComponent{
             let row: any = {};
             _.each(Object.keys(journalEntry), function (key) {
                 if(key == 'source'){
+                    console.log(base.getSourceName(journalEntry[key]));
                     row['sourceValue']=base.getSourceName(journalEntry[key]);
                 }
                 row[key] = journalEntry[key];
             });
             let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
-            if(journalEntry['sourceID']){
+            if(journalEntry['sourceID'] && row['sourceValue'] === 'Accounts Payable'){
                 action="<a class='action' data-action='billNavigation'><span class='icon badge je-badge'>B</span></a>"+action;
+            }else if(journalEntry['sourceID'] && row['sourceValue'] === 'Outflow'){
+                action="<a class='action' data-action='outFlowNavigation'><span class='icon badge je-badge'>E</span></a>"+action;
+            }else if(journalEntry['sourceID'] && row['sourceValue'] === 'Inflow'){
+                action="<a class='action' data-action='inFlowNavigation'><span class='icon badge je-badge'>D</span></a>"+action;
             }
             row['actions'] = action;
             if(row['type'] == 'Original'){
