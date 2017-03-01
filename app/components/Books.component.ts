@@ -206,10 +206,10 @@ export class BooksComponent{
             }else if($event.sourceID&&$event.sourceType=='credit'){
                 let link = ['payments/credit',Session.getCurrentCompany(),$event.sourceID];
                 this._router.navigate(link);
-            }else if($event.sourceID&&$event.sourceType=='inflow'){
+            }else if($event.sourceID&&$event.sourceType=='deposit'){
                 let link = ['/deposit',$event.sourceID];
                 this._router.navigate(link);
-            }else if($event.sourceID&&$event.sourceType=='outflow'){
+            }else if($event.sourceID&&$event.sourceType=='expense'){
                 let link = ['/expense',$event.sourceID];
                 this._router.navigate(link);
             }
