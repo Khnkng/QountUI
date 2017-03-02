@@ -88,6 +88,13 @@ export class RulesComponent {
                 this.loadingService.triggerLoadingEvent(false);
                 this.banks=response.accounts;
                 console.log("this.banks",this.banks);
+                this.ruleservice.getRulesofCompany(this.companyId)
+                    .subscribe(RulesList  => {
+                        this.loadingService.triggerLoadingEvent(false);
+                        this.RulesList=RulesList;
+                        this.buildTableData(RulesList);
+                        this.showFlyout = false;
+                    }, error =>  this.handleError(error));
             }, error => this.handleError(error));
         this.companyService.vendors(this.companyId)
             .subscribe(vendors  => {
