@@ -248,9 +248,9 @@ export class RulesComponent {
     showCOA(coa:any) {
         let data= this._ruleForm.getData(this.ruleForm);
         data.chartOfAccount = coa.id;
-        if(data.chartOfAccount!=''){
+        if(data.chartOfAccount!='' && data.chartOfAccount!='--None--'){
             data.chartOfAccount = coa.id;
-        }else if(!data.chartOfAccount||data.chartOfAccount=='--None--' || data.chartOfAccount==''){
+        }else if(data.chartOfAccount=='--None--' || data.chartOfAccount==''){
             data.chartOfAccount = '--None--';
         }
         this._ruleForm.updateForm(this.ruleForm, data);
@@ -258,9 +258,9 @@ export class RulesComponent {
 
     showVendor(vendor:any) {
         let data= this._ruleForm.getData(this.ruleForm);
-        if(data.vendorValue!=''){
+        if(data.vendorValue!=''&& data.vendorValue!='--None--'){
             data.vendorValue = vendor.id;
-        }else if(!data.vendorValue||data.vendorValue=='--None--' || data.vendorValue==''){
+        }else if(data.vendorValue=='--None--' || data.vendorValue==''){
             data.vendorValue = '--None--';
         }
         this._ruleForm.updateForm(this.ruleForm, data);
@@ -268,9 +268,9 @@ export class RulesComponent {
     showSource(bank:any) {
         let data= this._ruleForm.getData(this.ruleForm);
         data.source = bank.id;
-        if(data.source!=''){
+        if(data.source!=''&& data.source!='--None--'){
             data.source = bank.id;
-        }else if(!data.source||data.source=='--None--' || data.source==''){
+        }else if(data.source=='--None--' || data.source==''){
             data.source = '--None--';
         }
         this._ruleForm.updateForm(this.ruleForm, data);
@@ -278,9 +278,9 @@ export class RulesComponent {
     showCustomer(customer:any) {
         let data= this._ruleForm.getData(this.ruleForm);
         data.customerValue = customer.customer_id;
-        if(data.customerValue!=''){
+        if(data.customerValue!=''&& data.customerValue!='--None--'){
             data.customerValue = customer.customer_id;
-        }else if(!data.customerValue||data.customerValue=='--None--' || data.customerValue==''){
+        }else if(data.customerValue=='--None--' || data.customerValue==''){
             data.customerValue = '--None--';
         }
         this._ruleForm.updateForm(this.ruleForm, data);
@@ -372,11 +372,8 @@ export class RulesComponent {
 
     }
     isValid(ruleForm){
-        if((ruleForm.value.sourceType==null) && (ruleForm.value.source==null)
-            && (ruleForm.value.comparisionType &&  ruleForm.value.comparisionValue)  ||
-            (ruleForm.value.comparisionType1 && ruleForm.value.comparisionValue1) ||
-            (ruleForm.value.vendorValue)||
-            (ruleForm.value.customerValue)){
+        if(((ruleForm.value.sourceType!=null)&&((ruleForm.value.comparisionType!=null &&  ruleForm.value.comparisionValue!=null)  ||
+            (ruleForm.value.comparisionType1!=null && ruleForm.value.comparisionValue1!=null) )  || (ruleForm.value.customerValue!=null)|| (ruleForm.value.vendorValue!=null)|| (ruleForm.value.source!=null))){
             return false;
         }
             return true;
