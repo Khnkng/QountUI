@@ -40,19 +40,19 @@
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label >Source</label></td>
-                                                    <td><select  style="height: 2.4375rem;width:205%;" formControlName="source">
+                                                    <td><select  style="height: 2.4375rem;width:205%;" formControlName="source" (valueChanged)="showSource($event)">
                                                         <option *ngFor="let bank of banks;"  value="{{bank.id}}">{{bank.name}}</option>
                                                     </select></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
-                                                    <td><label >Vendors</label></td>
+                                                    <td><label >Vendor</label></td>
                                                     <td><label style="margin-left: 5px;width:205%;">
                                                         <select style="margin-left: 5px;" combo-box #vendorCountryComboBoxDir="comboBox" title="" data-placeholder="Select Vendor" formControlName="vendorValue" [listObject]="vendors" (valueChanged)="showVendor($event)">
                                                             <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
                                                         </select></label></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
-                                                    <td><label >Customers</label></td>
+                                                    <td><label >Customer</label></td>
                                                     <td> <label style="margin-left: 5px;width:205%;"><select  combo-box #selectedCOAComboBoxDir="comboBox" title="" data-placeholder="Select Customer" formControlName="customerValue" [listObject]="customernames" (valueChanged)="showCustomer($event)">
                                                         <option *ngFor="let customer of customernames" [value]="customer.customer_id">{{customer.customer_name}}</option>
                                                     </select></label></td>
@@ -89,7 +89,11 @@
                                                 </tr>
                                                 <tr style="border:0px;border-color:white;">
                                                     <td><label>Effective Date</label></td>
-                                                    <td><input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event)" [format]="'YYYY-MM-DD'" [mindate]="'past'"  value="{{todaysDate}}"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
+                                                    <td><input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event)" [format]="'MM/DD/YYYY'" [mindate]="'past'"  value="{{todaysDate}}"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
+                                                </tr>
+                                                <tr style="border:0px;border-color:white;">
+                                                    <td><label>End Date</label></td>
+                                                    <td><input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setEndDate($event)" [format]="'MM/DD/YYYY'" [mindate]="'past'"  value="{{todaysDate}}"   type="text" formControlName="endDate" placeholder="Action Date*"/></td>
                                                 </tr>
                                                 </tbody>
                                             </table>

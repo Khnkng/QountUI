@@ -22,6 +22,7 @@ export class RuleForm extends abstractForm{
             "comparisionValue": ['', Validators.required],
             "logicalOperator":[''],
             "effectiveDate": [''],
+            "endDate":[''],
             "attributeName1": [''],
             "chartOfAccount":[''],
             "comparisionType1": ['', Validators.required],
