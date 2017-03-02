@@ -1,0 +1,63 @@
+<div class="payment-details" foundation>
+    <div class="row" >
+        <div class="column small-12 medium-6">
+            <h5>Payments</h5>
+        </div>
+        <div class="columns small-6 small-offset-6 right">
+
+        </div>
+    </div>
+    <div class="row chart-of-accounts" foundation>
+        <div class="column large-12 medium-12 small-12 foo-container">
+            <foo-table #fooTableDir="fooTable" class="bighalf-footable search-right" *ngIf="hasPayments" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+        </div>
+    </div>
+
+    <div class="report-wrapper journal-flyout">
+        <div class="sidenav customization-panel" [ngClass]="dimensionFlyoutCSS" foundation>
+            <button class="close-button " data-close aria-label="Close modal" type="button">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty" (click)="hideFlyout()"></i>
+                </span>
+            </button>
+            <div class="row collapse dimension-flyout">
+                <div class="row">
+                    <div class="small-12 medium-12 small-centered column">
+                        <h5>Payments Details</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="payments-accordion-wrapper">
+                <ul class="accordion" data-accordion *ngIf="bills.length != 0" foundation>
+                    <li class="accordion-item" data-accordion-item *ngFor="let bill of bills">
+                        <a  class="accordion-title">{{bill.type=='bill'?"Bill":"Credit"}} - {{bill.sourceName}}</a>
+                        <div class="accordion-content" data-tab-content>
+                            <div class="row">
+                                <div class="small-12 medium-12 columns">
+                                    <div class="small-12 medium-4 columns">
+                                        <label><b> Number : </b><span class="bill-navigation" (click)="moveToBills(bill)"> {{bill.sourceID}} </span>
+                                        </label>
+                                    </div>
+                                    <div class="small-12 medium-3 columns">
+                                        <label> <b> Vendor : </b>{{bill.vendorName}}
+                                        </label>
+                                    </div>
+                                    <div class="small-12 medium-3 columns">
+                                        <label><b> Amount : </b>{{bill.amount|currency:companyCurrency:true:'1.2-2'}}
+                                        </label></div>
+
+                                    <div class="small-12 medium-2 columns">
+                                        <label><b> Paid Date : </b>{{bill.date}}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+</div>

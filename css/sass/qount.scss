@@ -3131,9 +3131,16 @@ form select.ng-dirty.ng-valid {
     text-decoration: underline;
     color: #1f7cf9;
   }
-  span:hover, span:focus .bill-navigation{
+  span:hover .bill-navigation, span:focus .bill-navigation{
     color: #1f7cf9;
     cursor: pointer;
   }
+
+  .payments-accordion-wrapper{
+    padding:0rem 2rem;
+  }
 }
 
+.je-footable .footable tbody tr td{
+  padding: 4px 8px!important;
+}

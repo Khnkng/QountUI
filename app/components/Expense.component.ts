@@ -179,6 +179,12 @@ export class ExpenseComponent{
     showNewItem(){
         this.addNewItemFlag = true;
         this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
+        let base=this;
+        let account = _.find(this.chartOfAccounts, {'name': 'Uncategorized Expenses'});
+        setTimeout(function(){
+            if(account)
+                base.newCOAComboBox.setValue(account,'name');
+        });
     }
 
     hideNewItem(){
@@ -360,6 +366,10 @@ export class ExpenseComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._expenseForm.getData(this.expenseForm);
+        if(data.amount <= 0){
+            this.toastService.pop(TOAST_TYPE.error, "expense amount must be greater than zero.");
+            return;
+        }
         data.expense_items = this.getExpenseItemData(this.expenseForm.controls['expense_items']);
         let itemTotal = _.sumBy(data.expense_items, 'amount');
         if(itemTotal != data.amount){
