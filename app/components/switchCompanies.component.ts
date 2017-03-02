@@ -93,6 +93,7 @@ export class SwitchCompanyComponent{
             {"name": "companyType", "title": "Type"},
             {"name": "owner", "title": "Owner"},
             {"name": "accountManager", "title": "Account Manager"},
+            {"name": "defaultCurrency", "title": "Currency","visible": false},
             {"name": "actions", "title": "", "type": "html", "filterable": false}
         ];
         this.tableData.rows = [];
@@ -114,6 +115,7 @@ export class SwitchCompanyComponent{
             row.einNumber=company.einNumber;
             row.companyType=company.companyType;
             row.accountManager=company.accountManager;
+            row.defaultCurrency=company.defaultCurrency;
 
             if(row.id != base.currentCompanyId){
                 row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Hop</span></a>";
