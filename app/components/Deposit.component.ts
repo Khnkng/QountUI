@@ -187,6 +187,12 @@ export class DepositComponent{
     showNewItem(){
         this.addNewItemFlag = true;
         this.newItemForm = this._fb.group(this._depositLineForm.getForm());
+        let base=this;
+        let account = _.find(this.chartOfAccounts, {'name': 'Uncategorized Income'});
+        setTimeout(function(){
+            if(account)
+                base.newCOAComboBox.setValue(account,'name');
+        });
     }
 
     hideNewItem(){

@@ -70,6 +70,7 @@ import {DepositsForm} from "./forms/Deposits.form";
 import {DepositsLineForm} from "./forms/Deposits.form";
 import {EmployeesComponent} from "./components/Employees.component";
 import {EmployeesForm} from "./forms/Employees.form";
+import {PaymentsComponent} from "./components/payments.component";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -233,13 +234,18 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: CategorizationComponent,
             canActivate: [LoggedInActivator]
         },
+        {
+            path: 'payments',
+            component: PaymentsComponent,
+            canActivate: [LoggedInActivator]
+        },
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
-        ResetPasswordComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent, CategorizationComponent],
+        ResetPasswordComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent, CategorizationComponent,PaymentsComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,

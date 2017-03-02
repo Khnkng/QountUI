@@ -179,6 +179,12 @@ export class ExpenseComponent{
     showNewItem(){
         this.addNewItemFlag = true;
         this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
+        let base=this;
+        let account = _.find(this.chartOfAccounts, {'name': 'Uncategorized Expenses'});
+        setTimeout(function(){
+            if(account)
+                base.newCOAComboBox.setValue(account,'name');
+        });
     }
 
     hideNewItem(){
