@@ -360,6 +360,10 @@ export class ExpenseComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._expenseForm.getData(this.expenseForm);
+        if(data.amount <= 0){
+            this.toastService.pop(TOAST_TYPE.error, "Deposit amount must be greater than zero.");
+            return;
+        }
         data.expense_items = this.getExpenseItemData(this.expenseForm.controls['expense_items']);
         let itemTotal = _.sumBy(data.expense_items, 'amount');
         if(itemTotal != data.amount){
