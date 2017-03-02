@@ -69,6 +69,7 @@ export class RulesComponent {
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
     @ViewChild('selectedCOAComboBoxDir') selectedCOAComboBox: ComboBox;
+    @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     constructor(private _router:Router, private customersService: CustomersService, private switchBoard:SwitchBoard,private companyService: CompaniesService,private _toastService: ToastService, private _fb: FormBuilder,private ruleservice:RulesService,private _ruleForm: RuleForm, private coaService: ChartOfAccountsService,
         private dimensionService: DimensionService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
         this.companyId = Session.getCurrentCompany();
@@ -82,7 +83,19 @@ export class RulesComponent {
         var mm = today.getMonth()+1; //January is 0!
         var yyyy = today.getFullYear();
         this.todaysDate= mm+"/"+dd+"/"+yyyy;
-
+        this.financialAccountsService.financialAccounts(this.companyId)
+            .subscribe(response => {
+                this.loadingService.triggerLoadingEvent(false);
+                this.banks=response.accounts;
+                console.log("this.banks",this.banks);
+                this.ruleservice.getRulesofCompany(this.companyId)
+                    .subscribe(RulesList  => {
+                        this.loadingService.triggerLoadingEvent(false);
+                        this.RulesList=RulesList;
+                        this.buildTableData(RulesList);
+                        this.showFlyout = false;
+                    }, error =>  this.handleError(error));
+            }, error => this.handleError(error));
         this.companyService.vendors(this.companyId)
             .subscribe(vendors  => {
                 this.vendors = vendors;
@@ -91,18 +104,18 @@ export class RulesComponent {
             .subscribe(customernames  => {
                 this.customernames=customernames;
             }, error =>  this.handleError(error));
-        this.financialAccountsService.financialInstitutions()
-            .subscribe(banks => {
-                this.banks = banks;
-                this.ruleservice.getRulesofCompany(this.companyId)
-                    .subscribe(RulesList  => {
-                        this.loadingService.triggerLoadingEvent(false);
-                        this.RulesList=RulesList;
-                        this.buildTableData(RulesList);
-                        this.showFlyout = false;
-                    }, error =>  this.handleError(error));
-                console.log("banks",banks);
-            }, error => this.handleError(error));
+        // this.financialAccountsService.financialInstitutions()
+        //     .subscribe(banks => {
+        //         this.banks = banks;
+        //         this.ruleservice.getRulesofCompany(this.companyId)
+        //             .subscribe(RulesList  => {
+        //                 this.loadingService.triggerLoadingEvent(false);
+        //                 this.RulesList=RulesList;
+        //                 this.buildTableData(RulesList);
+        //                 this.showFlyout = false;
+        //             }, error =>  this.handleError(error));
+        //         console.log("banks",banks);
+        //     }, error => this.handleError(error));
         this.ruleservice.getattributes(this.companyId)
             .subscribe(AttributeList  => {
                 this.loadingService.triggerLoadingEvent(false);
@@ -235,22 +248,41 @@ export class RulesComponent {
     showCOA(coa:any) {
         let data= this._ruleForm.getData(this.ruleForm);
         data.chartOfAccount = coa.id;
+        if(coa.id!='' && coa!='--None--'){
+            data.chartOfAccount = coa.id;
+        }else if(coa=='--None--' || coa.id==''){
+            data.chartOfAccount = '--None--';
+        }
         this._ruleForm.updateForm(this.ruleForm, data);
     }
 
-    showVendor(coa:any) {
+    showVendor(vendor:any) {
         let data= this._ruleForm.getData(this.ruleForm);
-        data.vendorValue = coa.id;
+        if(vendor.id!=''&& vendor!='--None--'){
+            data.vendorValue = vendor.id;
+        }else if(vendor=='--None--' || vendor.id==''){
+            data.vendorValue = '--None--';
+        }
         this._ruleForm.updateForm(this.ruleForm, data);
     }
-    // showSource(coa:any) {
-    //     let data= this._ruleForm.getData(this.ruleForm);
-    //     data.vendorValue = coa.id;
-    //     this._ruleForm.updateForm(this.ruleForm, data);
-    // }
-    showCustomer(coa:any) {
+    showSource(bank:any) {
         let data= this._ruleForm.getData(this.ruleForm);
-        data.customerValue = coa.customer_id;
+        data.source = bank.id;
+        if(bank.id!=''&& bank!='--None--'){
+            data.source = bank.id;
+        }else if(bank=='--None--' || bank.id==''){
+            data.source = '--None--';
+        }
+        this._ruleForm.updateForm(this.ruleForm, data);
+    }
+    showCustomer(customer:any) {
+        let data= this._ruleForm.getData(this.ruleForm);
+        data.customerValue = customer.customer_id;
+        if(customer.customer_id!=''&& customer!='--None--'){
+            data.customerValue = customer.customer_id;
+        }else if(customer=='--None--' || customer.customer_id==''){
+            data.customerValue = '--None--';
+        }
         this._ruleForm.updateForm(this.ruleForm, data);
     }
     buildTableData(RulesList){
@@ -340,11 +372,8 @@ export class RulesComponent {
 
     }
     isValid(ruleForm){
-        if((ruleForm.value.sourceType==null) && (ruleForm.value.source==null)
-            && (ruleForm.value.comparisionType &&  ruleForm.value.comparisionValue)  ||
-            (ruleForm.value.comparisionType1 && ruleForm.value.comparisionValue1) ||
-            (ruleForm.value.vendorValue)||
-            (ruleForm.value.customerValue)){
+        if(((ruleForm.value.sourceType!=null)&&((ruleForm.value.comparisionType!=null &&  ruleForm.value.comparisionValue!=null)  ||
+            (ruleForm.value.comparisionType1!=null && ruleForm.value.comparisionValue1!=null) )  || (ruleForm.value.customerValue!=null)|| (ruleForm.value.vendorValue!=null)|| (ruleForm.value.source!=null))){
             return false;
         }
             return true;
@@ -363,11 +392,15 @@ export class RulesComponent {
             let coa = _.find(this.chartOfAccounts, function(_coa) {
                 return _coa.id == rule.chartOfAccount;
             });
-            if(!_.isEmpty(coa)){
-                setTimeout(function(){
+            if(!_.isEmpty(coa)&&(rule.chartOfAccount!='--None--')||(rule.chartOfAccount!='') ) {
+                setTimeout(function () {
                     base.coaComboBox.setValue(coa, 'name');
                 });
             }
+                else{
+                base.coaComboBox.setValue(coa, '--None--');
+                }
+
 
             let chartOfAccount:any = this.ruleForm.controls['chartOfAccount'];
             chartOfAccount.patchValue(rule.chartOfAccount);
@@ -389,10 +422,13 @@ export class RulesComponent {
                     let coa = _.find(base.vendors, function(_coa) {
                         return _coa.id == rule.conditions[i].comparisionValue;
                     });
-                    if(!_.isEmpty(coa)){
+                    if(!_.isEmpty(coa) && (rule.conditions[i].comparisionValue!='--None--')||(rule.conditions[i].comparisionValue!='') ){
                         setTimeout(function(){
                             base.vendorCountryComboBox.setValue(coa, 'name');
                         });
+                    }
+                    else{
+                        base.vendorCountryComboBox.setValue(coa, '--None--');
                     }
 
                 }
@@ -400,13 +436,16 @@ export class RulesComponent {
                     let customer = _.find(base.customernames, function(_customer) {
                         return _customer.customer_id == rule.conditions[i].comparisionValue;
                     });
-                    if(!_.isEmpty(customer)){
-                        setTimeout(function(){
+                    if(!_.isEmpty(customer)&&(rule.conditions[i].comparisionValue!='--None--')||(rule.conditions[i].comparisionValue!='') ) {
+                        setTimeout(function () {
                             base.selectedCOAComboBox.setValue(customer, 'customer_name');
                         });
                     }
+                    else{
+                            base.selectedCOAComboBox.setValue(customer, '--None--');
+                        }
+                    }
 
-                }
                 else if(rule.conditions[i].attributeName=='Amount'){
                     let comparisionType1: any = this.ruleForm.controls['comparisionType1'];
                     comparisionType1.patchValue(rule.conditions[i].comparisionType);
@@ -415,8 +454,17 @@ export class RulesComponent {
                     comparisionValue1.patchValue(rule.conditions[i].comparisionValue);
                 }
                 else if(rule.conditions[i].attributeName=='Source'){
-                    let source:any = this.ruleForm.controls['source'];
-                    source.patchValue(rule.conditions[i].comparisionValue);
+                    let source = _.find(base.banks, function(_bank) {
+                        return _bank.id == rule.conditions[i].comparisionValue;
+                    });
+                    if(!_.isEmpty(source)&&(rule.conditions[i].comparisionValue!='--None--')||(rule.conditions[i].comparisionValue!='') ) {
+                        setTimeout(function () {
+                            base.accountComboBox.setValue(source, 'name');
+                        });
+                    }
+                    else{
+                        base.accountComboBox.setValue(source, '--None--');
+                    }
                 }
                 else{
 console.log("end");
