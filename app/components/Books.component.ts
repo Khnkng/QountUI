@@ -136,6 +136,22 @@ export class BooksComponent{
         });
     }
 
+    fetchExpenses(){
+        this.expenseService.expenses(this.currentCompany.id)
+            .subscribe(expenses => {
+                this.loadingService.triggerLoadingEvent(false);
+                this.buildExpenseTableData(expenses.expenses);
+            }, error => this.handleError(error));
+    }
+
+    fetchDeposits(){
+        this.depositService.deposits(this.currentCompany.id)
+            .subscribe(deposits => {
+                this.loadingService.triggerLoadingEvent(false);
+                this.buildDepositTableData(deposits.deposits);
+            }, error => this.handleError(error));
+    }
+
     selectTab(tabNo, color) {
         this.selectedTab=tabNo;
         this.selectedColor=color;
@@ -151,11 +167,7 @@ export class BooksComponent{
             this.accountsService.financialAccounts(this.currentCompany.id)
                 .subscribe(accounts => {
                     this.accounts = accounts.accounts;
-                    this.depositService.deposits(this.currentCompany.id)
-                        .subscribe(deposits => {
-                            this.loadingService.triggerLoadingEvent(false);
-                            this.buildDepositTableData(deposits.deposits);
-                        }, error => this.handleError(error));
+                    this.fetchDeposits();
                 }, error=> {
 
                 });
@@ -165,11 +177,7 @@ export class BooksComponent{
             this.accountsService.financialAccounts(this.currentCompany.id)
                 .subscribe(accounts => {
                     this.accounts = accounts.accounts;
-                    this.expenseService.expenses(this.currentCompany.id)
-                        .subscribe(expenses => {
-                            this.loadingService.triggerLoadingEvent(false);
-                            this.buildExpenseTableData(expenses.expenses);
-                        }, error => this.handleError(error));
+                    this.fetchExpenses();
                 }, error=> {
 
                 });
@@ -187,6 +195,11 @@ export class BooksComponent{
                 this.buildTableData(journalEntries);
             }, error => this.handleError(error));
     }
+
+
+
+
+
 
     handleAction($event){
         let action = $event.action;
@@ -429,6 +442,8 @@ export class BooksComponent{
                 this.localBadges['deposits'] = this.localBadges['deposits']-1;
                 sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
                 this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
+                this.fetchDeposits();
+
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
                 this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
@@ -444,6 +459,7 @@ export class BooksComponent{
                 this.localBadges['expenses'] = this.localBadges['expenses']-1;
                 sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
                 this.toastService.pop(TOAST_TYPE.success, "Deleted expense successfully");
+                this.fetchExpenses();
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
                 this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
