@@ -111,10 +111,10 @@ export class PaymentsComponent{
 
     moveToBills(bill){
         if(bill.type=='bill'){
-            let link = ['payments/bill',Session.getCurrentCompany(),bill.billID,'enter'];
+            let link = ['payments/bill',Session.getCurrentCompany(),bill.sourceID,'enter'];
             this._router.navigate(link);
         }else if(bill.type=='credit'){
-            let link = ['payments/credit',Session.getCurrentCompany(),bill.billID];
+            let link = ['payments/credit',Session.getCurrentCompany(),bill.sourceID];
             this._router.navigate(link);
         }
     }

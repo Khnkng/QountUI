@@ -180,7 +180,7 @@ export class ExpenseComponent{
         this.addNewItemFlag = true;
         this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
         let base=this;
-        let account = _.find(this.chartOfAccounts, {'name': 'Uncategorized Expenses'});
+        let account = _.find(this.chartOfAccounts, {'number': '699999'});
         setTimeout(function(){
             if(account)
                 base.newCOAComboBox.setValue(account,'name');
