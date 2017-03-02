@@ -74,14 +74,14 @@ export class RulesComponent {
         this.companyId = Session.getCurrentCompany();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.RuleDelete(toast));
         this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO'];
-        this.conparisionAmountArray=['EQUALS_TO','LESS_THAN','GREATER_THAN',' GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
+        this.conparisionAmountArray=['EQUALS_TO','LESS_THAN','GREATER_THAN','GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
         this.vendorsArray=['EQUALS_TO'];
         this.customersArray=['EQUALS_TO'];
         var today = new Date();
         var dd = today.getDate();
         var mm = today.getMonth()+1; //January is 0!
         var yyyy = today.getFullYear();
-        this.todaysDate=yyyy +"-"+mm+"-"+dd;
+        this.todaysDate= mm+"-"+dd+"-"+yyyy;
 
         this.companyService.vendors(this.companyId)
             .subscribe(vendors  => {
@@ -243,6 +243,11 @@ export class RulesComponent {
         data.vendorValue = coa.id;
         this._ruleForm.updateForm(this.ruleForm, data);
     }
+    // showSource(coa:any) {
+    //     let data= this._ruleForm.getData(this.ruleForm);
+    //     data.vendorValue = coa.id;
+    //     this._ruleForm.updateForm(this.ruleForm, data);
+    // }
     showCustomer(coa:any) {
         let data= this._ruleForm.getData(this.ruleForm);
         data.customerValue = coa.customer_id;
@@ -368,6 +373,8 @@ export class RulesComponent {
             chartOfAccount.patchValue(rule.chartOfAccount);
             let effectiveDate:any= this.ruleForm.controls['effectiveDate'];
             effectiveDate.patchValue(rule.effectiveDate);
+            let endDate:any= this.ruleForm.controls['endDate'];
+            endDate.patchValue(rule.endDate);
             for(var i=0;i<rule.conditions.length;i++){
                 if(rule.conditions[i].attributeName=='Title'){
                     let comparisionType: any = this.ruleForm.controls['comparisionType'];
@@ -377,7 +384,7 @@ export class RulesComponent {
                     comparisionValue.patchValue(rule.conditions[i].comparisionValue);
 
                 }
-                else if(rule.conditions[i].attributeName=='vendor'){
+                else if(rule.conditions[i].attributeName=='Vendor'){
                     let base=this;
                     let coa = _.find(base.vendors, function(_coa) {
                         return _coa.id == rule.conditions[i].comparisionValue;
@@ -389,7 +396,7 @@ export class RulesComponent {
                     }
 
                 }
-                else if(rule.conditions[i].attributeName=='customer'){
+                else if(rule.conditions[i].attributeName=='Customer'){
                     let customer = _.find(base.customernames, function(_customer) {
                         return _customer.customer_id == rule.conditions[i].comparisionValue;
                     });
@@ -407,7 +414,7 @@ export class RulesComponent {
                     let comparisionValue1: any = this.ruleForm.controls['comparisionValue1'];
                     comparisionValue1.patchValue(rule.conditions[i].comparisionValue);
                 }
-                else if(rule.conditions[i].attributeName=='source'){
+                else if(rule.conditions[i].attributeName=='Source'){
                     let source:any = this.ruleForm.controls['source'];
                     source.patchValue(rule.conditions[i].comparisionValue);
                 }
@@ -425,6 +432,10 @@ console.log("end");
     }
     setDate(date: string){
         let jeDateControl:any = this.ruleForm.controls['effectiveDate'];
+        jeDateControl.patchValue(date);
+    }
+    setEndDate(date: string){
+        let jeDateControl:any = this.ruleForm.controls['endDate'];
         jeDateControl.patchValue(date);
     }
     isActionCOA(actionForm){
@@ -456,6 +467,11 @@ console.log("end");
             data.effectiveDate=this.todaysDate;
         }else{
             console.log("data.effectiveDate",data.effectiveDate);
+        }
+        if(data.endDate=="" || data.endDate==null){
+            data.endDate=this.todaysDate;
+        }else{
+            console.log("data.endDate",data.endDate);
         }
 
         if(this.editMode){
@@ -509,7 +525,7 @@ console.log("end");
             vendorType.patchValue(vendorType.value);
             let vendor:any = this.ruleForm.controls['vendorValue'];
             vendor.patchValue(vendor.value);
-            condition3['attributeName']="vendor";
+            condition3['attributeName']="Vendor";
             condition3['comparisionType']="EQUALS_TO";
             condition3['comparisionValue']=vendor.value;
             var conditionrow3=data.conditions.push(condition3);
@@ -518,13 +534,13 @@ console.log("end");
             customerType.patchValue(customerType.value);
             let customer:any = this.ruleForm.controls['customerValue'];
             customer.patchValue(customer.value);
-            condition4['attributeName']="customer";
+            condition4['attributeName']="Customer";
             condition4['comparisionType']="EQUALS_TO";
             condition4['comparisionValue']=customer.value;
             var conditionrow4=data.conditions.push(condition4);
             let source:any = this.ruleForm.controls['source'];
             source.patchValue(source.value);
-            condition5['attributeName']="source";
+            condition5['attributeName']="Source";
             condition5['comparisionType']="EQUALS_TO";
             condition5['comparisionValue']=source.value;
             var conditionrow5=data.conditions.push(condition5);
@@ -587,7 +603,7 @@ console.log("end");
             vendorType.patchValue(vendorType.value);
             let vendor:any = this.ruleForm.controls['vendorValue'];
             vendor.patchValue(vendor.value);
-            condition3['attributeName']="vendor";
+            condition3['attributeName']="Vendor";
             condition3['comparisionType']="EQUALS_TO";
             condition3['comparisionValue']=vendor.value;
             var conditionrow3=data.conditions.push(condition3);
@@ -596,13 +612,13 @@ console.log("end");
             customerType.patchValue(customerType.value);
             let customer:any = this.ruleForm.controls['customerValue'];
             customer.patchValue(customer.value);
-            condition4['attributeName']="customer";
+            condition4['attributeName']="Customer";
             condition4['comparisionType']="EQUALS_TO";
             condition4['comparisionValue']=customer.value;
             var conditionrow4=data.conditions.push(condition4);
             let source:any = this.ruleForm.controls['source'];
             source.patchValue(source.value);
-            condition5['attributeName']="source";
+            condition5['attributeName']="Source";
             condition5['comparisionType']="EQUALS_TO";
             condition5['comparisionValue']=source.value;
             var conditionrow5=data.conditions.push(condition5);
