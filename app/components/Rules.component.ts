@@ -81,7 +81,7 @@ export class RulesComponent {
         var dd = today.getDate();
         var mm = today.getMonth()+1; //January is 0!
         var yyyy = today.getFullYear();
-        this.todaysDate= mm+"-"+dd+"-"+yyyy;
+        this.todaysDate= mm+"/"+dd+"/"+yyyy;
 
         this.companyService.vendors(this.companyId)
             .subscribe(vendors  => {
