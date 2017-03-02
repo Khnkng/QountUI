@@ -140,7 +140,7 @@ export class BooksComponent{
         this.expenseService.expenses(this.currentCompany.id)
             .subscribe(expenses => {
                 this.loadingService.triggerLoadingEvent(false);
-                this.buildExpenseTableData(expenses);
+                this.buildExpenseTableData(expenses.expenses);
             }, error => this.handleError(error));
     }
 
@@ -148,7 +148,7 @@ export class BooksComponent{
         this.depositService.deposits(this.currentCompany.id)
             .subscribe(deposits => {
                 this.loadingService.triggerLoadingEvent(false);
-                this.buildDepositTableData(deposits);
+                this.buildDepositTableData(deposits.deposits);
             }, error => this.handleError(error));
     }
 
