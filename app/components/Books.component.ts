@@ -140,7 +140,7 @@ export class BooksComponent{
         this.expenseService.expenses(this.currentCompany.id)
             .subscribe(expenses => {
                 this.loadingService.triggerLoadingEvent(false);
-                this.buildExpenseTableData(expenses.expenses);
+                this.buildExpenseTableData(expenses);
             }, error => this.handleError(error));
     }
 
@@ -148,7 +148,7 @@ export class BooksComponent{
         this.depositService.deposits(this.currentCompany.id)
             .subscribe(deposits => {
                 this.loadingService.triggerLoadingEvent(false);
-                this.buildDepositTableData(deposits.deposits);
+                this.buildDepositTableData(deposits);
             }, error => this.handleError(error));
     }
 
@@ -239,9 +239,9 @@ export class BooksComponent{
         this.loadingService.triggerLoadingEvent(true);
         this.journalService.removeJournalEntry(journalEntry.id, this.currentCompany.id)
             .subscribe(response => {
+                this.fetchJournalEntries();
                 this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully");
-                this.fetchJournalEntries();
             }, error => {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to delete Journal Entry");
             });
@@ -438,11 +438,11 @@ export class BooksComponent{
         this.depositService.removeDeposit($event.id, this.currentCompany)
             .subscribe(response=> {
                 this.loadingService.triggerLoadingEvent(false);
+                this.fetchDeposits();
                 this.badges.deposits = this.badges.deposits-1;
                 this.localBadges['deposits'] = this.localBadges['deposits']-1;
                 sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
                 this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
-                this.fetchDeposits();
 
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
