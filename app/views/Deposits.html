@@ -14,7 +14,7 @@
                                     <div class="row">
                                         <div class="small-12 medium-3 columns">
                                             <label>Title
-                                                <input type="text" formControlName="title" placeholder="Title*"/>
+                                                <input type="text" formControlName="title" placeholder="Title*" maxlength="30"/>
                                                 <div class="error" [hidden]="depositForm.controls.title.untouched || depositForm.controls.title.valid">Deposit Title is required</div>
                                             </label>
                                         </div>

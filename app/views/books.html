@@ -12,8 +12,8 @@
       <div class="box-notifier">
         <div class="box-border blue centered" (click)="showCategorizationScreen()">
           <div class="box-icon categorize"></div>
-          <div class="box-notification-circle">
-            3
+          <div class="box-notification-circle" [hidden]="!uncategorizedEntries">
+            {{uncategorizedEntries}}
           </div>
         </div>
         <div class="box-label">
