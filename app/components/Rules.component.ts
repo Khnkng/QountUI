@@ -248,9 +248,9 @@ export class RulesComponent {
     showCOA(coa:any) {
         let data= this._ruleForm.getData(this.ruleForm);
         data.chartOfAccount = coa.id;
-        if(data.chartOfAccount!='' && data.chartOfAccount!='--None--'){
+        if(coa.id!='' && coa!='--None--'){
             data.chartOfAccount = coa.id;
-        }else if(data.chartOfAccount=='--None--' || data.chartOfAccount==''){
+        }else if(coa=='--None--' || coa.id==''){
             data.chartOfAccount = '--None--';
         }
         this._ruleForm.updateForm(this.ruleForm, data);
@@ -258,9 +258,9 @@ export class RulesComponent {
 
     showVendor(vendor:any) {
         let data= this._ruleForm.getData(this.ruleForm);
-        if(data.vendorValue!=''&& data.vendorValue!='--None--'){
+        if(vendor.id!=''&& vendor!='--None--'){
             data.vendorValue = vendor.id;
-        }else if(data.vendorValue=='--None--' || data.vendorValue==''){
+        }else if(vendor=='--None--' || vendor.id==''){
             data.vendorValue = '--None--';
         }
         this._ruleForm.updateForm(this.ruleForm, data);
@@ -268,9 +268,9 @@ export class RulesComponent {
     showSource(bank:any) {
         let data= this._ruleForm.getData(this.ruleForm);
         data.source = bank.id;
-        if(data.source!=''&& data.source!='--None--'){
+        if(bank.id!=''&& bank!='--None--'){
             data.source = bank.id;
-        }else if(data.source=='--None--' || data.source==''){
+        }else if(bank=='--None--' || bank.id==''){
             data.source = '--None--';
         }
         this._ruleForm.updateForm(this.ruleForm, data);
@@ -278,9 +278,9 @@ export class RulesComponent {
     showCustomer(customer:any) {
         let data= this._ruleForm.getData(this.ruleForm);
         data.customerValue = customer.customer_id;
-        if(data.customerValue!=''&& data.customerValue!='--None--'){
+        if(customer.customer_id!=''&& customer!='--None--'){
             data.customerValue = customer.customer_id;
-        }else if(data.customerValue=='--None--' || data.customerValue==''){
+        }else if(customer=='--None--' || customer.customer_id==''){
             data.customerValue = '--None--';
         }
         this._ruleForm.updateForm(this.ruleForm, data);
