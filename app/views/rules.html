@@ -40,9 +40,10 @@
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label >Source</label></td>
-                                                    <td><select  style="height: 2.4375rem;width:205%;" formControlName="source" (valueChanged)="showSource($event)">
+                                                    <td><label style="margin-left: 5px;width:205%;">
+                                                        <select   style="margin-left: 5px;width:205%;" combo-box #accountComboBoxDir="comboBox" formControlName="source"  title="" [listObject]="banks" data-placeholder="Select Source" (valueChanged)="showSource($event)">
                                                         <option *ngFor="let bank of banks;"  value="{{bank.id}}">{{bank.name}}</option>
-                                                    </select></td>
+                                                    </select></label></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label >Vendor</label></td>
