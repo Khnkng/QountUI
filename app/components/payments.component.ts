@@ -73,7 +73,7 @@ export class PaymentsComponent{
                 this.dimensionFlyoutCSS = "expanded";
             }, error => this.handleError(error));
     }
-    
+
     buildTableData(payments) {
         this.hasPayments = false;
         this.payments = payments;

@@ -118,7 +118,7 @@
                 <button class="button small float-right" (click)="addNewJE()"><i class="icon ion-plus-round"></i>Journal Entry</button>
               </div>
             </div>
-            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasJournalEntries" [data]="jeTableData" [options]="jeTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <foo-table class="bigpay-dashboard bighalf-footable je-footable" *ngIf="hasJournalEntries" [data]="jeTableData" [options]="jeTableOptions" (onRowAction)="handleAction($event)"></foo-table>
             <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasJournalEntries">
               <div class="woo-woo">Woot Woot!</div>
               <p>There are no Journal entries.</p>

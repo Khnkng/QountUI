@@ -407,6 +407,10 @@ export class DepositComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._depositForm.getData(this.depositForm);
+        if(data.amount <= 0){
+            this.toastService.pop(TOAST_TYPE.error, "Deposit amount must be greater than zero.");
+            return;
+        }
         data.payments = this.getDepositItemData(this.depositForm.controls['payments']);
         let itemTotal = _.sumBy(data.payments, 'amount');
                 if(itemTotal != data.amount){
