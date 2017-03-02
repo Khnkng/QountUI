@@ -137,19 +137,31 @@ export class BooksComponent{
     }
 
     fetchExpenses(){
-        this.expenseService.expenses(this.currentCompany.id)
+        this.accountsService.financialAccounts(this.currentCompany.id)
+            .subscribe(accounts => {
+                this.accounts = accounts.accounts;
+                this.expenseService.expenses(this.currentCompany.id)
             .subscribe(expenses => {
                 this.loadingService.triggerLoadingEvent(false);
                 this.buildExpenseTableData(expenses.expenses);
             }, error => this.handleError(error));
+            }, error=> {
+
+            });
     }
 
     fetchDeposits(){
-        this.depositService.deposits(this.currentCompany.id)
+        this.accountsService.financialAccounts(this.currentCompany.id)
+            .subscribe(accounts => {
+                this.accounts = accounts.accounts;
+                this.depositService.deposits(this.currentCompany.id)
             .subscribe(deposits => {
                 this.loadingService.triggerLoadingEvent(false);
                 this.buildDepositTableData(deposits.deposits);
             }, error => this.handleError(error));
+            }, error=> {
+
+            });
     }
 
     selectTab(tabNo, color) {
@@ -164,23 +176,13 @@ export class BooksComponent{
         if(this.selectedTab == 0){
             this.isLoading = true;
             this.loadingService.triggerLoadingEvent(true);
-            this.accountsService.financialAccounts(this.currentCompany.id)
-                .subscribe(accounts => {
-                    this.accounts = accounts.accounts;
-                    this.fetchDeposits();
-                }, error=> {
+            this.fetchDeposits();
 
-                });
         } else if(this.selectedTab == 1){
             this.isLoading = true;
             this.loadingService.triggerLoadingEvent(true);
-            this.accountsService.financialAccounts(this.currentCompany.id)
-                .subscribe(accounts => {
-                    this.accounts = accounts.accounts;
-                    this.fetchExpenses();
-                }, error=> {
+            this.fetchExpenses();
 
-                });
         } else if(this.selectedTab == 2){
             this.isLoading = true;
             this.loadingService.triggerLoadingEvent(true);
@@ -239,9 +241,9 @@ export class BooksComponent{
         this.loadingService.triggerLoadingEvent(true);
         this.journalService.removeJournalEntry(journalEntry.id, this.currentCompany.id)
             .subscribe(response => {
-                this.fetchJournalEntries();
                 this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully");
+                this.fetchJournalEntries();
             }, error => {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to delete Journal Entry");
             });
@@ -319,6 +321,11 @@ export class BooksComponent{
         if(this.expensesTableData.rows.length > 0){
             this.hasExpenses = true;
         }
+        this.hasExpenses = false;
+        setTimeout(function(){
+            base.hasExpenses = true;
+        });
+
     }
 
     buildDepositTableData(data){
@@ -351,6 +358,10 @@ export class BooksComponent{
         if(this.depositsTableData.rows.length > 0){
             this.hasDeposits = true;
         }
+        this.hasDeposits = false;
+        setTimeout(function(){
+            base.hasDeposits = true;
+        });
     }
 
     buildTableData(data){
@@ -438,11 +449,11 @@ export class BooksComponent{
         this.depositService.removeDeposit($event.id, this.currentCompany)
             .subscribe(response=> {
                 this.loadingService.triggerLoadingEvent(false);
-                this.fetchDeposits();
                 this.badges.deposits = this.badges.deposits-1;
                 this.localBadges['deposits'] = this.localBadges['deposits']-1;
                 sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
                 this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
+                this.fetchDeposits();
 
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
