@@ -35,6 +35,7 @@ export class BooksComponent{
         '#3dc36f'
     ];
 
+    uncategorizedEntries:any = 0;
     depositsTableData:any = {};
     depositsTableOptions:any = {search:false, pageSize:7};
     expensesTableData:any = {};
@@ -105,6 +106,7 @@ export class BooksComponent{
             let journalCount = badges.journals;
             let depositCount = badges.deposits;
             let expenseCount = badges.expenses;
+            this.uncategorizedEntries = badges.total_uncategorized;
             this.localBadges = {'deposits':depositCount,'expenses':expenseCount,'journalEntries':journalCount};
             sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
         }, error => this.handleError(error));
