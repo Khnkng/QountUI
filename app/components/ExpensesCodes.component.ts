@@ -117,8 +117,9 @@ deleteExpense(toast){
   this.expensesSerice.removeExpense(this.currentCompany.id,this.itemCodeId)
       .subscribe(coa => {
         this.loadingService.triggerLoadingEvent(false);
+        this.expensesSerice.getAllExpenses(this.currentCompany.id)
+            .subscribe(expenseCodes => this.buildTableData(expenseCodes), error=> this.handleError(error));
         this.toastService.pop(TOAST_TYPE.success, "Expense code deleted successfully");
-        this.expenses.splice(_.findIndex(this.expenses, {id: this.itemCodeId}, 1));
       }, error => this.handleError(error));
 }
   removeExpense(row: any){
