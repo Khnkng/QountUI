@@ -385,8 +385,8 @@ export class BooksComponent{
             {"name": "source", "title": "source","visible": false},
             {"name": "id", "title": "Jounral ID","visible": false},
             {"name": "recurringFrequency", "title": "Recurring Frequency","visible": false},
-            {"name": "actions", "title": "", "type": "html"},
-            {"name": "reverse", "title": "", "type": "html"}];
+            {"name": "reverse", "title": "", "type": "html"},
+            {"name": "actions", "title": "", "type": "html"}];
         this.jeTableData.rows = [];
         data.forEach(function(journalEntry) {
             let row: any = {};
