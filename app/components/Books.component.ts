@@ -343,7 +343,7 @@ export class BooksComponent{
                     row[key] = expense.is_paid? "PAID": "UNPAID";
                 }*/
             });
-            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            row['actions'] = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.expensesTableData.rows.push(row);
         });
         if(this.expensesTableData.rows.length > 0){
@@ -380,7 +380,7 @@ export class BooksComponent{
                     row[key] = expense[key];
                 }
             });
-            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            row['actions'] = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.depositsTableData.rows.push(row);
         });
         if(this.depositsTableData.rows.length > 0){
@@ -457,17 +457,23 @@ export class BooksComponent{
         } else if(action == 'edit'){
             let link = ['/expense', $event.id];
             this._router.navigate(link);
+        }else if(action=='Navigation') {
+            let link = ['journalEntry', $event.id];
+            this._router.navigate(link);
         }
     }
 
-    handleDepositAction($event){
+    handleDepositAction($event) {
         let action = $event.action;
         delete $event.action;
         delete $event.actions;
-        if(action == 'delete'){
+        if (action == 'delete') {
             this.removeDeposit($event);
-        } else if(action == 'edit'){
+        } else if (action == 'edit') {
             let link = ['/deposit', $event.id];
+            this._router.navigate(link);
+        } else if (action == 'Navigation') {
+            let link = ['journalEntry', $event.id];
             this._router.navigate(link);
         }
     }
