@@ -318,6 +318,7 @@ export class BooksComponent{
             {"name": "due_date", "title": "Expense Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false},
+            {"name": "journal_id", "title": "Journal ID", 'visible': false},
             {"name": "actions", "title": "", "type": "html", "sortable": false}];
         this.expensesTableData.rows = [];
         data.forEach(function(expense){
@@ -341,7 +342,11 @@ export class BooksComponent{
                     row[key] = expense.is_paid? "PAID": "UNPAID";
                 }*/
             });
-            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            if(expense.journal_id){
+                row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            } else{
+                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            }
             base.expensesTableData.rows.push(row);
         });
         if(this.expensesTableData.rows.length > 0){
@@ -364,6 +369,7 @@ export class BooksComponent{
             {"name": "date", "title": "Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false},
+            {"name": "journal_id", "title": "Journal ID", 'visible': false},
             {"name": "actions", "title": "", "type": "html", "sortable": false}];
         this.depositsTableData.rows = [];
         data.forEach(function(expense){
@@ -378,7 +384,11 @@ export class BooksComponent{
                     row[key] = expense[key];
                 }
             });
-            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            if(expense.journal_id){
+                row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            } else{
+                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            }
             base.depositsTableData.rows.push(row);
         });
         if(this.depositsTableData.rows.length > 0){
@@ -454,6 +464,9 @@ export class BooksComponent{
         } else if(action == 'edit'){
             let link = ['/expense', $event.id];
             this._router.navigate(link);
+        } else if(action == 'navigation'){
+            let link = ['journalEntry', $event.journal_id];
+            this._router.navigate(link);
         }
     }
 
@@ -465,6 +478,9 @@ export class BooksComponent{
             this.removeDeposit($event);
         } else if(action == 'edit'){
             let link = ['/deposit', $event.id];
+            this._router.navigate(link);
+        }  else if(action == 'navigation'){
+            let link = ['journalEntry', $event.journal_id];
             this._router.navigate(link);
         }
     }
