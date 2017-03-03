@@ -238,17 +238,16 @@ export class BooksComponent{
         } else if(action == 'delete'){
             this.removeJournalEntry($event);
         } else if(action=='Navigation'){
-            console.log($event.sourceID,$event.sourceType);
-            if($event.sourceID&&$event.sourceType=='bill'){
+            if($event.sourceID&&$event.sourceType=='bill'&&$event.source=='accountsPayable'){
                 let link = ['payments/bill',Session.getCurrentCompany(),$event.sourceID,'enter'];
                 this._router.navigate(link);
             }else if($event.sourceID&&$event.sourceType=='credit'){
                 let link = ['payments/credit',Session.getCurrentCompany(),$event.sourceID];
                 this._router.navigate(link);
-            }else if($event.sourceID&&$event.sourceType=='deposit'){
+            }else if($event.sourceID&&$event.sourceType=='deposit'&&$event.source=='inflow'){
                 let link = ['/deposit',$event.sourceID];
                 this._router.navigate(link);
-            }else if($event.sourceID&&$event.sourceType=='expense'){
+            }else if($event.sourceID&&$event.sourceType=='expense'&&$event.source=='outflow'){
                 let link = ['/expense',$event.sourceID];
                 this._router.navigate(link);
             }
