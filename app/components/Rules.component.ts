@@ -408,6 +408,8 @@ export class RulesComponent {
             effectiveDate.patchValue(rule.effectiveDate);
             let endDate:any= this.ruleForm.controls['endDate'];
             endDate.patchValue(rule.endDate);
+            let ruleName:any= this.ruleForm.controls['ruleName'];
+            ruleName.patchValue(rule.ruleName);
             for(var i=0;i<rule.conditions.length;i++){
                 if(rule.conditions[i].attributeName=='Title'){
                     let comparisionType: any = this.ruleForm.controls['comparisionType'];
@@ -515,11 +517,6 @@ console.log("end");
             data.effectiveDate=this.todaysDate;
         }else{
             console.log("data.effectiveDate",data.effectiveDate);
-        }
-        if(data.endDate=="" || data.endDate==null){
-            data.endDate=this.todaysDate;
-        }else{
-            console.log("data.endDate",data.endDate);
         }
 
         if(this.editMode){

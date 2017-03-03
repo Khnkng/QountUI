@@ -14,6 +14,7 @@ import {ExpenseService} from "qCommon/app/services/Expense.service";
 import {DepositService} from "qCommon/app/services/Deposit.service";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {BadgeService} from "qCommon/app/services/Badge.service";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 
 declare var _:any;
 declare var jQuery:any;
@@ -35,6 +36,7 @@ export class BooksComponent{
         '#3dc36f'
     ];
 
+    uncategorizedEntries:any = 0;
     depositsTableData:any = {};
     depositsTableOptions:any = {search:false, pageSize:7};
     expensesTableData:any = {};
@@ -58,12 +60,33 @@ export class BooksComponent{
     currentCompany:any;
     accounts:Array<any>;
     companyCurrency: string;
-
+    ruleToDelete:any;
+    confirmSubscription: any;
+    DepositToDelete:any;
+    journalToDelete:any;
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
-                private toastService: ToastService, private loadingService:LoadingService, private companiesService: CompaniesService,
+                private toastService: ToastService,private switchBoard:SwitchBoard, private loadingService:LoadingService, private companiesService: CompaniesService,
                 private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService,
                 private badgesService: BadgeService) {
         let companyId = Session.getCurrentCompany();
+        this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => {
+            console.log("this.selectedTab",this.selectedTab);
+            switch (this.selectedTab) {
+                case 0:
+                    this.removeDepo(toast);
+                    break;
+                case 1:
+                    this.removeExp(toast);
+                    break;
+                case 2:
+                    this.removeJournal(toast);
+                    break;
+                default:
+                    this.removeDepo(toast);
+                    break;
+
+            }
+        });
         this.companiesService.companies().subscribe(companies => {
             this.allCompanies = companies;
             if(companyId){
@@ -105,6 +128,7 @@ export class BooksComponent{
             let journalCount = badges.journals;
             let depositCount = badges.deposits;
             let expenseCount = badges.expenses;
+            this.uncategorizedEntries = badges.total_uncategorized;
             this.localBadges = {'deposits':depositCount,'expenses':expenseCount,'journalEntries':journalCount};
             sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
         }, error => this.handleError(error));
@@ -236,10 +260,15 @@ export class BooksComponent{
         this._router.navigate(link);
     }
 
-    removeJournalEntry(journalEntry){
+
+    removeJournalEntry(row:any){
+        this.journalToDelete = row.id;
+        this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    }
+    removeJournal(toast){
         let base = this;
         this.loadingService.triggerLoadingEvent(true);
-        this.journalService.removeJournalEntry(journalEntry.id, this.currentCompany.id)
+        this.journalService.removeJournalEntry(this.journalToDelete, this.currentCompany.id)
             .subscribe(response => {
                 this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully");
@@ -444,9 +473,9 @@ export class BooksComponent{
         }
     }
 
-    removeDeposit($event){
+    removeDepo(toast){
         this.loadingService.triggerLoadingEvent(true);
-        this.depositService.removeDeposit($event.id, this.currentCompany)
+        this.depositService.removeDeposit(this.DepositToDelete, this.currentCompany)
             .subscribe(response=> {
                 this.loadingService.triggerLoadingEvent(false);
                 this.badges.deposits = this.badges.deposits-1;
@@ -460,10 +489,17 @@ export class BooksComponent{
                 this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
             });
     }
-
-    removeExpense($event){
+    removeDeposit(row:any){
+        this.DepositToDelete = row.id;
+        this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    }
+    removeExpense(row:any){
+        this.ruleToDelete = row.id;
+        this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    }
+    removeExp(toast){
         this.loadingService.triggerLoadingEvent(true);
-        this.expenseService.removeExpense($event.id, this.currentCompany)
+        this.expenseService.removeExpense(this.ruleToDelete, this.currentCompany)
             .subscribe(response=> {
                 this.loadingService.triggerLoadingEvent(false);
                 this.badges.expenses = this.badges.expenses-1;
@@ -555,6 +591,7 @@ export class BooksComponent{
 
     ngOnDestroy(){
         this.routeSub.unsubscribe();
+        this.confirmSubscription.unsubscribe();
     }
 
     addNewJE(){

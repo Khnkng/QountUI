@@ -12,6 +12,7 @@ export class RuleForm extends abstractForm{
         return {
             "sourceType": ['Expense', Validators.required],
             "source":['', Validators.required],
+            "ruleName":[''],
             "attributeName": [''],
             "vendorValue":[''],
             "vendorType":[''],
