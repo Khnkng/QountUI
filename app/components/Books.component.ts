@@ -464,13 +464,8 @@ export class BooksComponent{
         } else if(action == 'edit'){
             let link = ['/expense', $event.id];
             this._router.navigate(link);
-<<<<<<< HEAD
         } else if(action == 'navigation'){
             let link = ['journalEntry', $event.journal_id];
-=======
-        }else if(action=='Navigation') {
-            let link = ['journalEntry', $event.id];
->>>>>>> 50c8601c96bf93aa03689a583b52a14d41cd576c
             this._router.navigate(link);
         }
     }
@@ -484,13 +479,8 @@ export class BooksComponent{
         } else if (action == 'edit') {
             let link = ['/deposit', $event.id];
             this._router.navigate(link);
-<<<<<<< HEAD
         }  else if(action == 'navigation'){
             let link = ['journalEntry', $event.journal_id];
-=======
-        } else if (action == 'Navigation') {
-            let link = ['journalEntry', $event.id];
->>>>>>> 50c8601c96bf93aa03689a583b52a14d41cd576c
             this._router.navigate(link);
         }
     }
