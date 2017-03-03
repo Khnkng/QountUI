@@ -122,6 +122,7 @@ export class BooksComponent{
     }
 
     getBookBadges(){
+        this.loadingService.triggerLoadingEvent(false);
         this.badgesService.getBooksBadgeCount(this.currentCompany.id).subscribe(badges => {
             let journalCount = badges.journals;
             let depositCount = badges.deposits;
@@ -220,11 +221,6 @@ export class BooksComponent{
             }, error => this.handleError(error));
     }
 
-
-
-
-
-
     handleAction($event){
         let action = $event.action;
         delete $event.action;
@@ -318,6 +314,7 @@ export class BooksComponent{
             {"name": "due_date", "title": "Expense Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false},
+            {"name": "journal_id", "title": "Journal ID", 'visible': false},
             {"name": "actions", "title": "", "type": "html", "sortable": false}];
         this.expensesTableData.rows = [];
         data.forEach(function(expense){
@@ -331,7 +328,6 @@ export class BooksComponent{
                 } else{
                     row[key] = expense[key];
                 }
-
                 /*else if(key == 'is_paid'){
                     if(expense.is_paid || expense.paid_date){
                         row['status']= "<button class='hollow button success'>Paid</button>";
@@ -341,7 +337,11 @@ export class BooksComponent{
                     row[key] = expense.is_paid? "PAID": "UNPAID";
                 }*/
             });
-            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            if(expense.journal_id){
+                row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            } else{
+                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            }
             base.expensesTableData.rows.push(row);
         });
         if(this.expensesTableData.rows.length > 0){
@@ -364,6 +364,7 @@ export class BooksComponent{
             {"name": "date", "title": "Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false},
+            {"name": "journal_id", "title": "Journal ID", 'visible': false},
             {"name": "actions", "title": "", "type": "html", "sortable": false}];
         this.depositsTableData.rows = [];
         data.forEach(function(expense){
@@ -378,7 +379,11 @@ export class BooksComponent{
                     row[key] = expense[key];
                 }
             });
-            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            if(expense.journal_id){
+                row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            } else{
+                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            }
             base.depositsTableData.rows.push(row);
         });
         if(this.depositsTableData.rows.length > 0){
@@ -454,17 +459,23 @@ export class BooksComponent{
         } else if(action == 'edit'){
             let link = ['/expense', $event.id];
             this._router.navigate(link);
+        } else if(action == 'navigation'){
+            let link = ['journalEntry', $event.journal_id];
+            this._router.navigate(link);
         }
     }
 
-    handleDepositAction($event){
+    handleDepositAction($event) {
         let action = $event.action;
         delete $event.action;
         delete $event.actions;
-        if(action == 'delete'){
+        if (action == 'delete') {
             this.removeDeposit($event);
-        } else if(action == 'edit'){
+        } else if (action == 'edit') {
             let link = ['/deposit', $event.id];
+            this._router.navigate(link);
+        }  else if(action == 'navigation'){
+            let link = ['journalEntry', $event.journal_id];
             this._router.navigate(link);
         }
     }
@@ -473,12 +484,9 @@ export class BooksComponent{
         this.loadingService.triggerLoadingEvent(true);
         this.depositService.removeDeposit(this.DepositToDelete, this.currentCompany)
             .subscribe(response=> {
-                this.loadingService.triggerLoadingEvent(false);
-                this.badges.deposits = this.badges.deposits-1;
-                this.localBadges['deposits'] = this.localBadges['deposits']-1;
-                sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
                 this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
                 this.fetchDeposits();
+                this.getBookBadges();
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
                 this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
@@ -496,12 +504,9 @@ export class BooksComponent{
         this.loadingService.triggerLoadingEvent(true);
         this.expenseService.removeExpense(this.ruleToDelete, this.currentCompany)
             .subscribe(response=> {
-                this.loadingService.triggerLoadingEvent(false);
-                this.badges.expenses = this.badges.expenses-1;
-                this.localBadges['expenses'] = this.localBadges['expenses']-1;
-                sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
                 this.toastService.pop(TOAST_TYPE.success, "Deleted expense successfully");
                 this.fetchExpenses();
+                this.getBookBadges();
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
                 this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
