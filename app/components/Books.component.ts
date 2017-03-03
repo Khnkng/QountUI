@@ -70,7 +70,6 @@ export class BooksComponent{
                 private badgesService: BadgeService) {
         let companyId = Session.getCurrentCompany();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => {
-            console.log("this.selectedTab",this.selectedTab);
             switch (this.selectedTab) {
                 case 0:
                     this.removeDepo(toast);
@@ -84,7 +83,6 @@ export class BooksComponent{
                 default:
                     this.removeDepo(toast);
                     break;
-
             }
         });
         this.companiesService.companies().subscribe(companies => {
@@ -421,7 +419,6 @@ export class BooksComponent{
             let row: any = {};
             _.each(Object.keys(journalEntry), function (key) {
                 if(key == 'source'){
-                    console.log(journalEntry['sourceValue']);
                     row['sourceValue']=base.getSourceName(journalEntry[key]);
                 }
                 row[key] = journalEntry[key];
@@ -483,7 +480,6 @@ export class BooksComponent{
                 sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
                 this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
                 this.fetchDeposits();
-
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
                 this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");

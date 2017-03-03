@@ -482,7 +482,11 @@ export class JournalEntryComponent{
             return false;
         }
         this.updateJournalLinesData(data);
-
+        if(data.reversalDate){
+            data.autoReverse = true;
+        } else{
+            data.autoReverse = false;
+        }
         this.loadingService.triggerLoadingEvent(true);
         if(this.newJournalEntry){
             this.journalService.addJournalEntry(this.cleanData(data), this.currentCompany.id)

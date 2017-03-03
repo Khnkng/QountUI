@@ -2753,13 +2753,13 @@ tbody{
   color: red;
   text-align: center;
 }
-#lineDetails{
-  .coa-field{
-    input, a{
-      margin-top: -11px;
-    }
+
+.coa-field{
+  input, a{
+    margin-top: -16px !important;
   }
 }
+
 
 .dimension-field{
   #dimension-selectized{
@@ -3143,4 +3143,10 @@ form select.ng-dirty.ng-valid {
 
 .je-footable .footable tbody tr td{
   padding: 4px 8px!important;
+}
+
+.line-table{
+  select, input{
+    margin: 0;
+  }
 }
