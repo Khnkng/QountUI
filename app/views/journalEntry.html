@@ -1,69 +1,25 @@
-<div class="bill row" foundation>
-    <section style="margin-bottom: 10px;">
-        <header>
-            <div class="columns small-12 right">
-                <button class="button small text-button" style="top: 0px" (click)="showDashboard()">
-                    <i class="ion-ios-close-empty"></i>
-                </button>
-            </div>
-        </header>
-    </section>
-    <div class="column small-12 medium-12 large-12 qount-form-backgorund">
-        <form *ngIf="active" (ngSubmit)="submit($event)" novalidate [formGroup]="jeForm">
-            <ul class="tabs bill-form-tabs" data-tabs id="bill-form-tabs">
-                <li class="tabs-title is-active"><a href="#journalDetails" aria-selected="true"><h6>Journal Details</h6></a></li>
-                <li class="tabs-title"><a href="#lineDetails"><h6>Line Details</h6></a></li>
-            </ul>
-
-            <div class="tabs-content bill-form-tabs-content" data-tabs-content="bill-form-tabs">
-                <div class="tabs-panel is-active" id="journalDetails">
-                    <div class="bill-form-data">
-                        <div class="row collapse">
-                            <div class="small-12 medium-8 columns">
-                                <div class="row">
-                                    <div class="small-12 medium-6 columns">
-                                        <div class="row">
-                                            <div class="small-12 medium-12 columns">
+<div class="qount-off-canvas-menu">
+    <div class="flyout expanded" [ngClass]="{'expanded':true}">
+        <section class="flyout-placeholder">
+            <header class="flyout-header">
+                <h6> {{newJournalEntry ? "Create Journal Entry" : "Update Journal Entry"}}</h6>
+            </header>
+            <div class="flyout-body flyout-shadow-effect">
+                <form *ngIf="active" (ngSubmit)="submit($event)" novalidate [formGroup]="jeForm">
+                    <section class="form-section clearfix">
+                        <div class="row">
+                            <div class="small-12 medium-12 columns">
+                                <div class="form-section-left expense-row">
+                                    <header class="form-section-header">Journal Details</header>
+                                    <div class="row">
+                                        <div class="small-12 medium-8 columns">
+                                            <div class="small-12 medium-3 columns">
                                                 <label>Number
                                                     <input type="text" formControlName="number" placeholder="Journal Number*">
                                                     <div class="error" [hidden]="jeForm.controls.number.untouched || jeForm.controls.number.valid"><small>Journal Number is required.</small></div>
                                                 </label>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="small-12 medium-6 columns">
-                                        <div class="row">
-                                            <div class="small-12 medium-12 columns">
-                                                <label>Date
-                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*">
-                                                    <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="small-12 medium-6 columns">
-                                        <div class="row">
-                                            <div class="small-12 medium-12 columns">
-                                                <label>Source
-                                                    <select formControlName="source">
-                                                        <option value="manual">Manual</option>
-                                                        <option value="payroll">Payroll</option>
-                                                        <option value="accountsPayable">Accounts Payable</option>
-                                                        <option value="accountsReceivable">Accounts Receivable</option>
-                                                        <option value="inventory">Inventory</option>
-                                                        <option value="inflow">Inflow</option>
-                                                        <option value="outflow">Outflow</option>
-                                                    </select>
-                                                    <div class="error" [hidden]="jeForm.controls.source.untouched || jeForm.controls.source.valid"><small>Journal Source is required.</small></div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="small-12 medium-6 columns">
-                                        <div class="row">
-                                            <div class="small-12 medium-12 columns">
+                                            <div class="small-12 medium-3 columns">
                                                 <label>Category
                                                     <select formControlName="category" placeholder="Category">
                                                         <option value="depreciation">Depreciation, Tax Adj, Other</option>
@@ -80,13 +36,32 @@
                                                     <div class="error" [hidden]="jeForm.controls.category.untouched || jeForm.controls.category.valid"><small>Please select category.</small></div>
                                                 </label>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="small-12 medium-12 columns">
-                                        <div class="row">
-                                            <div class="small-12 medium-2 columns">
+                                            <div class="small-12 medium-3 columns">
+                                                <label>Date
+                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*">
+                                                    <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
+                                                </label>
+                                            </div>
+                                            <div class="small-12 medium-3 columns">
+                                                <!--<div class="small-4 medium-3 columns">
+                                                    <label>Auto Reverse
+                                                        <div class="switch tiny">
+                                                            <input class="switch-input" id="auto-reverse" type="checkbox" formControlName="autoReverse" (click)="toggleAutoReverse($event)"/>
+                                                            <label class="switch-paddle" for="auto-reverse">
+                                                                <span class="show-for-sr">Auto Reverse switch</span>
+                                                            </label>
+                                                        </div>
+                                                        <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select auto reverse.</small></div>
+                                                    </label>
+                                                </div>
+                                                <div class="small-8 medium-9 columns">
+                                                </div>-->
+                                                <label>Reversal Date
+                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setReversalDate($event)" formControlName="reversalDate" placeholder="Reversal Date*"/>
+                                                    <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select Reversal Date.</small></div>
+                                                </label>
+                                            </div>
+                                            <div class="small-12 medium-3 columns">
                                                 <label>Recurring
                                                     <div class="switch tiny">
                                                         <input class="switch-input" id="recurring" type="checkbox" formControlName="recurring" (change)="toggleRecurring($event)"/>
@@ -97,14 +72,17 @@
                                                     <div class="error" [hidden]="jeForm.controls.recurring.untouched || jeForm.controls.recurring.valid"><small>Recurring is required.</small></div>
                                                 </label>
                                             </div>
-                                            <div class="small-12 medium-3 columns" [hidden]="disableRecurring">
-                                                <label>Next JE Date
+                                            <div class="small-12 medium-3 columns">
+                                                <label [hidden]="disableRecurring">Next JE Date
                                                     <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setNextJEDate($event)" formControlName="nextJEDate" placeholder="Next JE Date*">
                                                     <div class="error" [hidden]="jeForm.controls.nextJEDate.untouched || jeForm.controls.nextJEDate.valid"><small>Next JE Date is required.</small></div>
                                                 </label>
+                                                <label [hidden]="!disableRecurring">Next JE Date
+                                                    <input type="text" disabled placeholder="Next JE Date*"/>
+                                                </label>
                                             </div>
-                                            <div class="small-12 medium-3 columns" [hidden]="disableRecurring">
-                                                <label>Frequency
+                                            <div class="small-12 medium-3 columns">
+                                                <label [hidden]="disableRecurring">Frequency
                                                     <select formControlName="recurringFrequency">
                                                         <option value="daily">Daily</option>
                                                         <option value="weekly">Weekly</option>
@@ -114,123 +92,174 @@
                                                     </select>
                                                     <div class="error" [hidden]="jeForm.controls.recurringFrequency.untouched || jeForm.controls.recurringFrequency.valid"><small>Please select Frequency.</small></div>
                                                 </label>
+                                                <label [hidden]="!disableRecurring">Frequency
+                                                    <select disabled>
+                                                        <option value=""></option>
+                                                    </select>
+                                                </label>
                                             </div>
-                                            <div class="small-12 medium-3 columns" [hidden]="disableRecurring">
-                                                <label>End Date
+                                            <div class="small-12 medium-3 columns">
+                                                <label [hidden]="disableRecurring">End Date
                                                     <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setEndDate($event)" formControlName="endDate" placeholder="End Date*">
                                                     <div class="error" [hidden]="jeForm.controls.endDate.untouched || jeForm.controls.endDate.valid"><small>End Date is required.</small></div>
                                                 </label>
+                                                <label [hidden]="!disableRecurring">End Date
+                                                    <input type="text" disabled placeholder="End Date*"/>
+                                                </label>
                                             </div>
+                                        </div>
+                                        <div class="small-12 medium-4 columns">
+                                            <label>Description
+                                                <textarea formControlName="desc" style="height: 130px;"></textarea>
+                                                <div class="error" [hidden]="jeForm.controls.desc.untouched || jeForm.controls.desc.valid"><small>Please enter Description.</small></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngIf="!newJournalEntry">
+                                        <div class="columns">
+                                            <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)"><i class="icon ion-edit"></i>Journal</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="columns">
+                                            <label class="float-right">
+                                                <i class="icon ion-ios-plus-outline" (click)="showNewLine()"></i> Line
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <table class="stack line-table">
+                                        <thead>
+                                            <tr>
+                                                <th width="15%">Category</th>
+                                                <th width="15%">COA</th>
+                                                <th width="10%">Entry Type</th>
+                                                <th width="10%">Amount</th>
+                                                <!--<th width="17%">Memo</th>-->
+                                                <th width="5%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
+                                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem, index)">
+                                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.type.value}}</td>
+                                                <td [hidden]="!lineListItem.editable">
+                                                    <select [formControl]="lineListItem.controls.type" (change)="filterChartOfAccounts($event.target.value)">
+                                                        <option value="Assets">Assets</option>
+                                                        <option value="Liability">Liability</option>
+                                                        <option value="Income">Income</option>
+                                                        <option value="Expenses">Expenses</option>
+                                                        <option value="Equity">Equity</option>
+                                                    </select>
+                                                </td>
+                                                <td [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
+                                                <td [hidden]="!lineListItem.editable">
+                                                    <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="getFilteredCOA(lineListItem.controls.type.value)" (valueChanged)="updateLineCOA($event, index)">
+                                                        <option *ngFor="let chartOfAccount of getFilteredCOA(lineListItem.controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                                    </select>
+                                                </td>
+                                                <td [hidden]="lineListItem.editable">
+                                                    {{lineListItem.controls.entryType.value}}
+                                                </td>
+                                                <td [hidden]="!lineListItem.editable">
+                                                    <select [formControl]="lineListItem.controls.entryType">
+                                                        <option value="Credit">Credit</option>
+                                                        <option value="Debit">Debit</option>
+                                                    </select>
+                                                </td>
+                                                <td [hidden]="lineListItem.editable">
+                                                    {{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):null}}
+                                                </td>
+                                                <td [hidden]="!lineListItem.editable">
+                                                    <input type="text" [formControl]="lineListItem.controls.amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                                </td>
+                                                <!--<td [hidden]="lineListItem.editable">{{lineListItem.controls.memo.value}}</td>
+                                                <td [hidden]="!lineListItem.editable">
+                                                    <textarea [formControl]="lineListItem.controls.memo"></textarea>
+                                                </td>-->
+                                                <td>
+                                                    <i class="icon ion-checkmark-circled" (click)="updateLine(lineListItem, index)" *ngIf="lineListItem.editable"></i>
+                                                    <i class="icon ion-close" *ngIf="lineListItem.editable" (click)="toggleLineEdit(lineListItem)"></i>
+                                                    <i class="icon ion-edit" *ngIf="!lineListItem.editable" (click)="showFlyout('UPDATE', index)"></i>
+                                                    <i class="icon ion-ios-trash-outline" *ngIf="!lineListItem.editable" (click)="deleteLine(index)"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody *ngIf="addNewLineFlag" [formGroup]="newJournalLineForm">
+                                            <tr>
+                                                <td>
+                                                    <select formControlName="type" (change)="filterChartOfAccounts($event.target.value)">
+                                                        <option value="Assets">Assets</option>
+                                                        <option value="Liability">Liability</option>
+                                                        <option value="Income">Income</option>
+                                                        <option value="Expenses">Expenses</option>
+                                                        <option value="Equity">Equity</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select COA" formControlName="coa" [listObject]="getFilteredCOA(newJournalLineForm.controls.type.value)" (valueChanged)="updateNewLineCOA($event)">
+                                                        <option *ngFor="let chartOfAccount of getFilteredCOA(newJournalLineForm.controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select formControlName="entryType">
+                                                        <option value="Credit">Credit</option>
+                                                        <option value="Debit">Debit</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" formControlName="amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                                </td>
+                                                <td>
+                                                    <i class="icon ion-ios-checkmark-outline" (click)="saveNewItem()"></i>
+                                                    <i class="icon ion-ios-close-outline" (click)="hideNewItem()"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody *ngIf="jeForm.controls.journalLines.controls.length == 0 && !addNewLineFlag">
+                                            <tr>
+                                                <td colspan="6" class="text-center">No lines found</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="row" *ngIf="newJournalEntry">
+                                        <div class="columns">
+                                            <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)">Submit</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="small-12 medium-4 columns">
-                                <div class="row" style="height: 60px;">
-                                    <div class="small-12 medium-4 columns">
-                                        <label>Auto Reverse
-                                            <div class="switch tiny">
-                                                <input class="switch-input" id="auto-reverse" type="checkbox" formControlName="autoReverse" (click)="toggleAutoReverse($event)"/>
-                                                <label class="switch-paddle" for="auto-reverse">
-                                                    <span class="show-for-sr">Auto Reverse switch</span>
-                                                </label>
-                                            </div>
-                                            <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select auto reverse.</small></div>
-                                        </label>
-                                    </div>
-                                    <div class="small-12 medium-8 columns" [hidden]="disableReversalDate">
-                                        <label>Reversal Date
-                                            <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setReversalDate($event)" formControlName="reversalDate" placeholder="Reversal Date*"/>
-                                            <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select Reversal Date.</small></div>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="small-12 medium-12 columns">
-                                        <label>Description
-                                            <textarea formControlName="desc" style="height: 140px;"></textarea>
-                                            <div class="error" [hidden]="jeForm.controls.desc.untouched || jeForm.controls.desc.valid"><small>Please enter Description.</small></div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
-
-                    </div>
-                    <div class="row" *ngIf="!newJournalEntry">
-                        <div class="columns">
-                            <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)"><i class="icon ion-edit"></i>Journal</button>
-                        </div>
-                    </div>
+                    </section>
+                </form>
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="showDashboard()">
+                    <span aria-hidden="true">
+                      <i class="ion-ios-close-empty"></i>
+                    </span>
+                </button>
+            </div>
+        </section>
+    </div>
+</div>
+<div class="report-wrapper journal-flyout">
+    <div class="sidenav customization-panel" [ngClass]="dimensionFlyoutCSS" foundation>
+        <button class="close-button " data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">
+              <i class="ion-ios-close-empty" (click)="hideFlyout()"></i>
+            </span>
+        </button>
+        <div class="row collapse dimension-flyout">
+            <div class="row">
+                <div class="small-12 medium-12 small-centered column">
+                    <h5>Line Details</h5>
                 </div>
-                <div class="tabs-panel" id="lineDetails" foundation>
-                    <div class="row">
-                        <div class="columns">
-                            <label class="float-right">
-                                <i class="icon ion-ios-plus-outline" (click)="showNewLine()"></i> Line
-                            </label>
-                        </div>
-                    </div>
-                    <table class="stack">
-                        <thead>
-                        <tr>
-                            <th width="15%">Category</th>
-                            <th width="15%">COA</th>
-                            <th width="10%">Entry Type</th>
-                            <th width="10%">Amount</th>
-                            <th width="17%">Memo</th>
-                            <!--<th width="13%">Dimensions</th>-->
-                            <th width="5%"></th>
-                        </tr>
-                        </thead>
-                        <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
-                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem, index)">
-                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.type.value}}</td>
-                                <td [hidden]="!lineListItem.editable">
-                                    <select [formControl]="lineListItem.controls.type" (change)="filterChartOfAccounts($event.target.value)">
-                                        <option value="Assets">Assets</option>
-                                        <option value="Liability">Liability</option>
-                                        <option value="Income">Income</option>
-                                        <option value="Expenses">Expenses</option>
-                                        <option value="Equity">Equity</option>
-                                    </select>
-                                </td>
-                                <td [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
-                                <td class="coa-field" [hidden]="!lineListItem.editable">
-                                    <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="getFilteredCOA(lineListItem.controls.type.value)" (valueChanged)="updateLineCOA($event, index)">
-                                        <option *ngFor="let chartOfAccount of getFilteredCOA(lineListItem.controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
-                                    </select>
-                                </td>
-                                <td [hidden]="lineListItem.editable">
-                                    {{lineListItem.controls.entryType.value}}
-                                </td>
-                                <td [hidden]="!lineListItem.editable">
-                                    <select [formControl]="lineListItem.controls.entryType">
-                                        <option value="Credit">Credit</option>
-                                        <option value="Debit">Debit</option>
-                                    </select>
-                                </td>
-                                <td [hidden]="lineListItem.editable">
-                                    {{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):null}}
-                                </td>
-                                <td [hidden]="!lineListItem.editable">
-                                    <input type="text" [formControl]="lineListItem.controls.amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
-                                </td>
-                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.memo.value}}</td>
-                                <td [hidden]="!lineListItem.editable">
-                                    <textarea [formControl]="lineListItem.controls.memo"></textarea>
-                                </td>
-                                <td>
-                                    <i class="icon ion-checkmark-circled" (click)="updateLine(lineListItem, index)" *ngIf="lineListItem.editable"></i>
-                                    <i class="icon ion-close" *ngIf="lineListItem.editable" (click)="toggleLineEdit(lineListItem)"></i>
-                                    <i class="icon ion-edit" *ngIf="!lineListItem.editable" (click)="showFlyout('UPDATE', index)"></i>
-                                    <i class="icon ion-ios-trash-outline" *ngIf="!lineListItem.editable" (click)="deleteLine(index)"></i>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody *ngIf="addNewLineFlag" [formGroup]="newJournalLineForm">
-                            <tr>
-                                <td>
+            </div>
+        </div>
+        <form *ngIf="lineActive" novalidate [formGroup]="lineForm">
+            <div class="row collapse dimension-flyout">
+                <div class="row">
+                    <div class="small-12 medium-6 columns">
+                        <div class="row">
+                            <div class="small-12 medium-6 column">
+                                <label>Category
                                     <select formControlName="type" (change)="filterChartOfAccounts($event.target.value)">
                                         <option value="Assets">Assets</option>
                                         <option value="Liability">Liability</option>
@@ -238,147 +267,71 @@
                                         <option value="Expenses">Expenses</option>
                                         <option value="Equity">Equity</option>
                                     </select>
-                                </td>
-                                <td class="coa-field">
-                                    <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select COA" formControlName="coa" [listObject]="getFilteredCOA(newJournalLineForm.controls.type.value)" (valueChanged)="updateNewLineCOA($event)">
-                                        <option *ngFor="let chartOfAccount of getFilteredCOA(newJournalLineForm.controls.type.value)" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                </label>
+                            </div>
+                            <div class="small-12 medium-6 column">
+                                <label>Chart of Account
+                                    <select combo-box #newCoaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="filteredChartOfAccounts"  formControlName="coa" (valueChanged)="updateChartOfAccount($event)">
+                                        <option *ngFor="let chartOfAccount of filteredChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                     </select>
-                                </td>
-                                <td>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-6 column">
+                                <label>Entry Type
                                     <select formControlName="entryType">
                                         <option value="Credit">Credit</option>
                                         <option value="Debit">Debit</option>
                                     </select>
-                                </td>
-                                <td>
-                                    <input type="text" formControlName="amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
-                                </td>
-                                <td>
+                                </label>
+                            </div>
+                            <div class="small-12 medium-6 column">
+                                <label>Amount
+                                    <input type="text" placeholder="Amount" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-12 column">
+                                <label>Memo
                                     <textarea formControlName="memo"></textarea>
-                                </td>
-                                <td>
-                                    <i class="icon ion-ios-checkmark-outline" (click)="saveNewItem()"></i>
-                                    <i class="icon ion-ios-close-outline" (click)="hideNewItem()"></i>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <tbody *ngIf="jeForm.controls.journalLines.controls.length == 0 && !addNewLineFlag">
-                        <tr>
-                            <td colspan="6" class="text-center">No lines found</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <!--<div class="row" *ngIf="!newJournalEntry">
-                        <div class="columns">
-                            <button type="submit" class="button small float-right" (click)="updateLineData($event)">
-                                <i class="icon ion-edit"></i>Line data
-                            </button>
+                                </label>
+                            </div>
                         </div>
-                    </div>-->
-                </div>
-            </div>
-            <div class="row" *ngIf="newJournalEntry">
-                <div class="columns">
-                    <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)">Submit</button>
-                </div>
-            </div>
-        </form>
-    </div>
-
-    <div class="report-wrapper journal-flyout">
-        <div class="sidenav customization-panel" [ngClass]="dimensionFlyoutCSS" foundation>
-            <button class="close-button " data-close aria-label="Close modal" type="button">
-                <span aria-hidden="true">
-                  <i class="ion-ios-close-empty" (click)="hideFlyout()"></i>
-                </span>
-            </button>
-            <div class="row collapse dimension-flyout">
-                <div class="row">
-                    <div class="small-12 medium-12 small-centered column">
-                        <h5>Line Details</h5>
                     </div>
-                </div>
-            </div>
-            <form *ngIf="lineActive" novalidate [formGroup]="lineForm">
-                <div class="row collapse dimension-flyout">
-                    <div class="row">
-                        <div class="small-12 medium-6 columns">
-                            <div class="row">
-                                <div class="small-12 medium-6 column">
-                                    <label>Category
-                                        <select formControlName="type" (change)="filterChartOfAccounts($event.target.value)">
-                                            <option value="Assets">Assets</option>
-                                            <option value="Liability">Liability</option>
-                                            <option value="Income">Income</option>
-                                            <option value="Expenses">Expenses</option>
-                                            <option value="Equity">Equity</option>
-                                        </select>
-                                    </label>
-                                </div>
-                                <div class="small-12 medium-6 column">
-                                    <label>Chart of Account
-                                        <select combo-box #newCoaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="filteredChartOfAccounts"  formControlName="coa" (valueChanged)="updateChartOfAccount($event)">
-                                            <option *ngFor="let chartOfAccount of filteredChartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
-                                        </select>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="small-12 medium-6 column">
-                                    <label>Entry Type
-                                        <select formControlName="entryType">
-                                            <option value="Credit">Credit</option>
-                                            <option value="Debit">Debit</option>
-                                        </select>
-                                    </label>
-                                </div>
-                                <div class="small-12 medium-6 column">
-                                    <label>Amount
-                                        <input type="text" placeholder="Amount" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="small-12 medium-12 column">
-                                    <label>Memo
-                                        <textarea formControlName="memo"></textarea>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="small-12 medium-6 columns">
-                            <label>Dimensions
-                                <div class="row dimension-grids" (click)="doNothing($event)">
-                                    <div class="small-12 medium-4 columns dimension-grid" *ngFor="let dimension of dimensions">
-                                        <div class="dimension-header">
-                                            <div>
-                                                <span class="float-left">{{dimension.name}}</span>
-                                                <span class="float-right">
-                                                    <i class="icon ion-checkmark-circled" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"
-                                                       (click)="selectDimension($event, dimension.name)"></i>
-                                                </span>
-                                            </div>
-                                            <div class="bottom" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"></div>
+                    <div class="small-12 medium-6 columns">
+                        <label>Dimensions
+                            <div class="row dimension-grids" (click)="doNothing($event)">
+                                <div class="small-12 medium-4 columns dimension-grid" *ngFor="let dimension of dimensions">
+                                    <div class="dimension-header">
+                                        <div>
+                                            <span class="float-left">{{dimension.name}}</span>
+                                            <span class="float-right">
+                                                <i class="icon ion-checkmark-circled" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"
+                                                   (click)="selectDimension($event, dimension.name)"></i>
+                                            </span>
                                         </div>
-                                        <div class="dimension-values" [ngClass]="{'selected': isDimensionSelected(dimension.name)}">
-                                            <div class="dimension-value" *ngFor="let value of dimension.values; let index = index;">
-                                                <label (click)="selectValue($event, dimension, value)">
-                                                    <input type="checkbox" [checked]="isValueSelected(dimension, value)"/>{{value}}
-                                                </label>
-                                            </div>
+                                        <div class="bottom" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"></div>
+                                    </div>
+                                    <div class="dimension-values" [ngClass]="{'selected': isDimensionSelected(dimension.name)}">
+                                        <div class="dimension-value" *ngFor="let value of dimension.values; let index = index;">
+                                            <label (click)="selectValue($event, dimension, value)">
+                                                <input type="checkbox" [checked]="isValueSelected(dimension, value)"/>{{value}}
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="small-12 medium-12 columns">
-                            <input type="button" class="button small float-right" value="Save" (click)="saveLine()"/>
-                        </div>
+                            </div>
+                        </label>
                     </div>
                 </div>
-            </form>
-        </div>
+                <div class="row">
+                    <div class="small-12 medium-12 columns">
+                        <input type="button" class="button small float-right" value="Save" (click)="saveLine()"/>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>

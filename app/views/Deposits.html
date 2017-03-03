@@ -65,7 +65,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr *ngIf="depositForm.controls.payments.controls.length == 0">
+                                            <tr *ngIf="depositForm.controls.payments.controls.length == 0 && !addNewItemFlag">
                                                 <td colspan="7" class="text-center">No Deposits items found</td>
                                             </tr>
                                             <tr *ngFor="let itemForm of depositForm.controls.payments.controls;let index=index;" [hidden]="!newDeposit && itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
