@@ -464,23 +464,33 @@ export class BooksComponent{
         } else if(action == 'edit'){
             let link = ['/expense', $event.id];
             this._router.navigate(link);
+<<<<<<< HEAD
         } else if(action == 'navigation'){
             let link = ['journalEntry', $event.journal_id];
+=======
+        }else if(action=='Navigation') {
+            let link = ['journalEntry', $event.id];
+>>>>>>> 50c8601c96bf93aa03689a583b52a14d41cd576c
             this._router.navigate(link);
         }
     }
 
-    handleDepositAction($event){
+    handleDepositAction($event) {
         let action = $event.action;
         delete $event.action;
         delete $event.actions;
-        if(action == 'delete'){
+        if (action == 'delete') {
             this.removeDeposit($event);
-        } else if(action == 'edit'){
+        } else if (action == 'edit') {
             let link = ['/deposit', $event.id];
             this._router.navigate(link);
+<<<<<<< HEAD
         }  else if(action == 'navigation'){
             let link = ['journalEntry', $event.journal_id];
+=======
+        } else if (action == 'Navigation') {
+            let link = ['journalEntry', $event.id];
+>>>>>>> 50c8601c96bf93aa03689a583b52a14d41cd576c
             this._router.navigate(link);
         }
     }
