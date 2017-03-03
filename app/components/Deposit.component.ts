@@ -281,16 +281,14 @@ export class DepositComponent{
         this.updateItem(index, tempForm);
     }
 
-    setCOAForItem(coa, itemForm){
-        if(coa && coa.id){
-            let data = this._depositLineForm.getData(itemForm);
-            data.chart_of_account_id= coa.id;
-            this._depositLineForm.updateForm(itemForm, data);
-        } else{
-            let data = this._depositLineForm.getData(itemForm);
-            data.chart_of_account_id= null;
-            this._depositLineForm.updateForm(itemForm, data);
+    setCOAForItem(chartOfAccount, itemForm){
+        let data = this._depositLineForm.getData(itemForm);
+        if(chartOfAccount && chartOfAccount.id){
+            data.chart_of_account_id = chartOfAccount.id;
+        }else if(!chartOfAccount || chartOfAccount=='--None--'){
+            data.chart_of_account_id='--None--';
         }
+        this._depositLineForm.updateForm(itemForm, data);
     }
 
     setCustomerForItem(customer, itemForm){

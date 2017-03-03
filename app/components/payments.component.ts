@@ -36,6 +36,7 @@ export class PaymentsComponent{
         this.loadingService.triggerLoadingEvent(true);
         this.paymentsService.payments(companyId)
             .subscribe(payments => {
+                let payments=payments?payments:[]
                 this.buildTableData(payments);
                 this.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
