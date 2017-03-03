@@ -122,6 +122,7 @@ export class BooksComponent{
     }
 
     getBookBadges(){
+        this.loadingService.triggerLoadingEvent(false);
         this.badgesService.getBooksBadgeCount(this.currentCompany.id).subscribe(badges => {
             let journalCount = badges.journals;
             let depositCount = badges.deposits;
@@ -219,11 +220,6 @@ export class BooksComponent{
                 this.buildTableData(journalEntries);
             }, error => this.handleError(error));
     }
-
-
-
-
-
 
     handleAction($event){
         let action = $event.action;
@@ -332,7 +328,6 @@ export class BooksComponent{
                 } else{
                     row[key] = expense[key];
                 }
-
                 /*else if(key == 'is_paid'){
                     if(expense.is_paid || expense.paid_date){
                         row['status']= "<button class='hollow button success'>Paid</button>";
@@ -489,12 +484,9 @@ export class BooksComponent{
         this.loadingService.triggerLoadingEvent(true);
         this.depositService.removeDeposit(this.DepositToDelete, this.currentCompany)
             .subscribe(response=> {
-                this.loadingService.triggerLoadingEvent(false);
-                this.badges.deposits = this.badges.deposits-1;
-                this.localBadges['deposits'] = this.localBadges['deposits']-1;
-                sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
                 this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
                 this.fetchDeposits();
+                this.getBookBadges();
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
                 this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
@@ -512,12 +504,9 @@ export class BooksComponent{
         this.loadingService.triggerLoadingEvent(true);
         this.expenseService.removeExpense(this.ruleToDelete, this.currentCompany)
             .subscribe(response=> {
-                this.loadingService.triggerLoadingEvent(false);
-                this.badges.expenses = this.badges.expenses-1;
-                this.localBadges['expenses'] = this.localBadges['expenses']-1;
-                sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
                 this.toastService.pop(TOAST_TYPE.success, "Deleted expense successfully");
                 this.fetchExpenses();
+                this.getBookBadges();
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
                 this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
