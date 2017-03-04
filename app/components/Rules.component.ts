@@ -430,6 +430,15 @@ export class RulesComponent {
                     comparisionValue.patchValue(rule.conditions[i].comparisionValue);
 
                 }
+                
+                else if(rule.conditions[i].attributeName=='Notes'){
+                    let comparisionType: any = this.ruleForm.controls['notesType'];
+                    comparisionType.patchValue(rule.conditions[i].comparisionType);
+
+                    let comparisionValue: any = this.ruleForm.controls['notesValue'];
+                    comparisionValue.patchValue(rule.conditions[i].comparisionValue);
+
+                }
                 else if(rule.conditions[i].attributeName=='Vendor'){
                     let base=this;
                     let coa = _.find(base.vendors, function(_coa) {
@@ -550,6 +559,7 @@ console.log("end");
             var condition3={};
             var condition4={};
             var condition5={};
+            var condition6={};
             data.actions=this.selectedDimensions;
             let chartOfAccount:any = this.ruleForm.controls['chartOfAccount'];
             chartOfAccount.patchValue(chartOfAccount.value);
@@ -600,6 +610,14 @@ console.log("end");
             condition5['comparisionType']="EQUALS_TO";
             condition5['comparisionValue']=source.value;
             var conditionrow5=data.conditions.push(condition5);
+            let notesType:any = this.ruleForm.controls['notesType'];
+            notesType.patchValue(notesType.value);
+            let notesValue:any = this.ruleForm.controls['notesValue'];
+            notesValue.patchValue(notesValue.value);
+            condition6['attributeName']="Notes";
+            condition6['comparisionType']=notesType.value;
+            condition6['comparisionValue']=notesValue.value;
+            var conditionrow6=data.conditions.push(condition6);
             data.id = this.row.id;
             this.ruleservice.updateRule(data, this.companyId)
                 .subscribe(success  => {
@@ -629,6 +647,7 @@ console.log("end");
             var condition3={};
             var condition4={};
             var condition5={};
+            var condition6={};
             data.actions=this.selectedDimensions;
             let chartOfAccount:any = this.ruleForm.controls['chartOfAccount'];
             chartOfAccount.patchValue(chartOfAccount.value);
@@ -679,6 +698,15 @@ console.log("end");
             condition5['comparisionType']="EQUALS_TO";
             condition5['comparisionValue']=source.value;
             var conditionrow5=data.conditions.push(condition5);
+            let notesType:any = this.ruleForm.controls['notesType'];
+            notesType.patchValue(notesType.value);
+            let notesValue:any = this.ruleForm.controls['notesValue'];
+            notesValue.patchValue(notesValue.value);
+            condition6['attributeName']="Notes";
+            condition6['comparisionType']=notesType.value;
+            condition6['comparisionValue']=notesValue.value;
+            var conditionrow6=data.conditions.push(condition6);
+
             this.ruleservice.addRule(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
