@@ -60,6 +60,7 @@ export class RulesComponent {
     tableOptions:any = {};
     chartOfAccounts:Array<any>= [];
     dimensions:Array<any> = [];
+    dimensionFlyoutCSS:any;
     companyId:string;
     vendors:Array<any>;
     conparisionArray:Array<any>;
@@ -180,12 +181,13 @@ export class RulesComponent {
     showAddRule(){
         this.editMode = false;
         this.showFlyout = true;
+        this.isDimensionSelected(null);
         this.selectedDimensions==[];
         this.actions = new FormArray([]);
+        this.ruleForm.reset();
         let _form = this._ruleForm.getForm();
         this.ruleForm = this._fb.group(_form);
         this.selectedDimensions==[];
-        this.ruleForm.reset();
     }
     showMessage(status, obj) {
         if(status) {
@@ -235,8 +237,10 @@ export class RulesComponent {
     }
     hideFlyout(){
         this.selectedDimensions=[];
+        this.dimensionFlyoutCSS = "collapsed";
         this.row = {};
         this.selectedDimensions=[];
+        this.isDimensionSelected(null);
         this.showFlyout = !this.showFlyout;
     }
 
@@ -381,12 +385,10 @@ export class RulesComponent {
 
     }
     isValid(ruleForm){
-        if(((ruleForm.value.sourceType!=null)&&((ruleForm.value.comparisionType!=null &&  ruleForm.value.comparisionValue!=null)  ||
-            (ruleForm.value.comparisionType1!=null && ruleForm.value.comparisionValue1!=null) )  || (ruleForm.value.customerValue!=null)|| (ruleForm.value.vendorValue!=null)|| (ruleForm.value.source!=null))){
+        if((ruleForm.value.ruleName) && (ruleForm.value.chartOfAccount)){
             return false;
         }
             return true;
-
     }
 
     getRowDetails(RuleID){
@@ -603,6 +605,7 @@ console.log("end");
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
+                    this.selectedDimensions==[];
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
         } else{
@@ -680,6 +683,7 @@ console.log("end");
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
+                    this.selectedDimensions==[];
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
         }
