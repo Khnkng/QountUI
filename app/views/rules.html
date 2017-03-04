@@ -73,6 +73,21 @@
                                                     <input type="text" class="condition-value" formControlName="comparisionValue" placeholder="Title*" />
                                                     </td>
                                                 </tr>
+
+
+                                                <tr style="border:0px;border-color:white">
+                                                    <td><label>Notes</label></td>
+                                                    <td>
+                                                        <select style="height: 2.4375rem;width: 100%" class="condition" formControlName="notesType">
+                                                            <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="condition-value" formControlName="notesValue" placeholder="Notes*" />
+                                                    </td>
+                                                </tr>
+
+
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Amount</label></td>
                                                     <td><select style="height: 2.4375rem;width: 100%" class="condition" formControlName="comparisionType1">

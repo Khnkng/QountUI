@@ -163,7 +163,6 @@ export class RulesComponent {
         else{
             this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO','GREATER_THAN_OR_EQUALS_TO','LESS_THAN','GREATER_THAN','LESS_THAN_OR_EQUALS_TO'];
         }
-
     }
     RuleDelete(toast){
         this.ruleservice.removeRule(this.ruleToDelete, this.companyId)
@@ -199,6 +198,7 @@ export class RulesComponent {
                         this.RulesList=RulesList;
                         this.buildTableData(RulesList);
                         this.showFlyout = false;
+
                     }, error =>  this.handleError(error));
 
                 this._toastService.pop(TOAST_TYPE.success, "Rule updated successfully.");
@@ -293,7 +293,9 @@ export class RulesComponent {
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
             {"name":"id","title":"id","visible": false},
-            {"name": "ruleText", "title": "Rule"},
+            {"name": "ruleName", "title": "Rule Name"},
+            {"name": "chartOfAccount", "title": "COA"},
+            {"name": "effectiveDate", "title": "Effective Date"},
             {"name": "conditions", "title": "conditions","visible": false},
             {"name": "action", "title": "action","visible": false},
             {"name": "actionValue", "title": "actionValue","visible": false},
@@ -304,8 +306,15 @@ export class RulesComponent {
         let base = this;
         _.each(RulesList, function(RulesList) {
              let row:any = {};
+            let coa = _.find(base.chartOfAccounts, function(_coa) {
+                return _coa.id == RulesList.chartOfAccount;
+            });
             row['id']=RulesList.id;
-            row['ruleText']=RulesList.ruleText;
+            row['ruleName']=RulesList.ruleName;
+            if(coa) {
+                row['chartOfAccount'] = coa.name;
+            }
+            row['effectiveDate']=RulesList.effectiveDate;
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.tableData.rows.push(row);
         });
