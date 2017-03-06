@@ -180,6 +180,8 @@ export class RulesComponent {
 
     showAddRule(){
         this.editMode = false;
+        this.isDimensionSelected(null);
+        this.selectedDimensions=[];
         this.showFlyout = true;
         this.isDimensionSelected(null);
         this.selectedDimensions==[];
@@ -236,7 +238,9 @@ export class RulesComponent {
         $event && $event.stopImmediatePropagation();
     }
     hideFlyout(){
+        this.isDimensionSelected(null);
         this.selectedDimensions=[];
+        this.selectDimension=('','');
         this.dimensionFlyoutCSS = "collapsed";
         this.row = {};
         this.selectedDimensions=[];
@@ -297,6 +301,7 @@ export class RulesComponent {
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
             {"name":"id","title":"id","visible": false},
+            {"name": "sourceType", "title": "Source Type"},
             {"name": "ruleName", "title": "Rule Name"},
             {"name": "chartOfAccount", "title": "COA"},
             {"name": "effectiveDate", "title": "Effective Date"},
@@ -314,6 +319,7 @@ export class RulesComponent {
                 return _coa.id == RulesList.chartOfAccount;
             });
             row['id']=RulesList.id;
+            row['sourceType']=RulesList.sourceType;
             row['ruleName']=RulesList.ruleName;
             if(coa) {
                 row['chartOfAccount'] = coa.name;
@@ -430,7 +436,7 @@ export class RulesComponent {
                     comparisionValue.patchValue(rule.conditions[i].comparisionValue);
 
                 }
-                
+
                 else if(rule.conditions[i].attributeName=='Notes'){
                     let comparisionType: any = this.ruleForm.controls['notesType'];
                     comparisionType.patchValue(rule.conditions[i].comparisionType);
