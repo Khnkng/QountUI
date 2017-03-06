@@ -115,11 +115,6 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="row" *ngIf="!newJournalEntry">
-                                        <div class="columns">
-                                            <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)"><i class="icon ion-edit"></i>Journal</button>
-                                        </div>
-                                    </div>
                                     <div class="row">
                                         <div class="columns">
                                             <label class="float-right">
@@ -208,6 +203,11 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                    <div class="row" *ngIf="!newJournalEntry">
+                                        <div class="columns">
+                                            <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)"><i class="icon ion-edit"></i>Journal</button>
+                                        </div>
+                                    </div>
                                     <div class="row" *ngIf="newJournalEntry">
                                         <div class="columns">
                                             <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)">Submit</button>
@@ -218,7 +218,7 @@
                         </div>
                     </section>
                 </form>
-                <button class="close-flyout" aria-label="Close modal" type="button" (click)="showDashboard()">
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="goToPreviousPage()">
                     <span aria-hidden="true">
                       <i class="ion-ios-close-empty"></i>
                     </span>

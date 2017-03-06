@@ -570,7 +570,6 @@ export class JournalEntryComponent{
     }
 
     processJournalEntry(journalEntry){
-        this.stopLoaderAndShowMessage(false);
         journalEntry.journalLines = _.orderBy(journalEntry.journalLines, ['entryType'], ['desc']);
         let base = this;
         this.journalEntry = journalEntry;
@@ -593,6 +592,7 @@ export class JournalEntryComponent{
             let lineListForm = base._fb.group(base._lineListForm.getForm(line));
             base.journalLinesArray.push(lineListForm);
         });
+        this.stopLoaderAndShowMessage(false);
         this._jeForm.updateForm(this.jeForm, this.journalEntry);
     }
 
@@ -664,6 +664,11 @@ export class JournalEntryComponent{
 
     showDashboard(){
         let link = ['books', 'journalEntries'];
+        this._router.navigate(link);
+    }
+
+    goToPreviousPage(){
+        let link = [Session.getLastVisitedUrl()];
         this._router.navigate(link);
     }
 }
