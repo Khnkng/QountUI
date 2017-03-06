@@ -419,6 +419,7 @@ export class DepositComponent{
         if(this.newDeposit){
             this.depositService.addDeposit(data, this.currentCompanyId)
                 .subscribe(response=>{
+                    this.toastService.pop(TOAST_TYPE.success, "Deposit Added successfully");
                     this.loadingService.triggerLoadingEvent(false);
                     this.showDepositsPage();
                 }, error => {

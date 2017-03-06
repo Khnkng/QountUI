@@ -380,6 +380,7 @@ export class ExpenseComponent{
         if(this.newExpense){
             this.expenseService.addExpense(data, this.currentCompanyId)
                 .subscribe(response=>{
+                    this.toastService.pop(TOAST_TYPE.success, "Expense Added successfully");
                     this.loadingService.triggerLoadingEvent(false);
                     this.showExpensesPage();
                 }, error => {

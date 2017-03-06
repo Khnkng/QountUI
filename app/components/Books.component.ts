@@ -38,11 +38,11 @@ export class BooksComponent{
 
     uncategorizedEntries:any = 0;
     depositsTableData:any = {};
-    depositsTableOptions:any = {search:false, pageSize:7};
+    depositsTableOptions:any = {search:true, pageSize:7};
     expensesTableData:any = {};
-    expensesTableOptions:any = {search:false, pageSize:7};
+    expensesTableOptions:any = {search:true, pageSize:7};
     jeTableData:any = {};
-    jeTableOptions:any = {search:false, pageSize:7};
+    jeTableOptions:any = {search:true, pageSize:7};
 
     tabHeight:string;
     badges:any = [];
@@ -305,6 +305,7 @@ export class BooksComponent{
     buildExpenseTableData(data){
         let base = this;
         this.isLoading = false;
+        this.expensesTableData.search = true;
         this.handleBadges(data.length, 1);
         this.expensesTableData.columns = [
             {"name": "title", "title": "Title"},
@@ -358,6 +359,7 @@ export class BooksComponent{
         let base = this;
         this.isLoading = false;
         this.handleBadges(data.length, 0);
+        this.depositsTableData.search = true;
         this.depositsTableData.columns = [
             {"name": "title", "title": "Title"},
             {"name": "amount", "title": "Amount"},

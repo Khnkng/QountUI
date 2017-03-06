@@ -79,9 +79,9 @@
     <div class="row collapse tab-content ">
       <div *ngIf="tabDisplay[0].display == 'block'" class="column small-12 medium-12 large-12" id="deposits">
         <div class="row">
-          <div class="column">
+          <div class="column foo-container">
             <div class="row">
-              <div class="column">
+              <div class="foo-toolbar">
                 <button class="button small float-right add-bill-button" style="margin-left: 10px;" (click)="createDeposit()"><i class="icon ion-plus-round"></i>Deposit</button>
               </div>
             </div>
@@ -96,9 +96,9 @@
       </div>
       <div *ngIf="tabDisplay[1].display == 'block'" class="column small-12 medium-12 large-12" id="expenses">
         <div class="row">
-          <div class="column">
+          <div class="column foo-container">
             <div class="row">
-              <div class="column">
+              <div class="foo-toolbar">
                 <button class="button small float-right" (click)="createNewExpense()"><i class="icon ion-plus-round"></i>Expense</button>
               </div>
             </div>
@@ -112,9 +112,9 @@
       </div>
       <div *ngIf="tabDisplay[2].display == 'block'" class="column small-12 medium-12 large-12" id="journalEntries">
         <div class="row">
-          <div class="column">
+          <div class="column foo-container">
             <div class="row">
-              <div class="column">
+              <div class="foo-toolbar">
                 <button class="button small float-right" (click)="addNewJE()"><i class="icon ion-plus-round"></i>Journal Entry</button>
               </div>
             </div>
