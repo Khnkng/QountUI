@@ -444,6 +444,7 @@ export class JournalEntryComponent{
         delete data.newDimensions;
         delete data.newAmount;
         delete data.newCoa;
+        delete data.newTitle;
         delete data.newMemo;
 
         return data;
@@ -570,6 +571,7 @@ export class JournalEntryComponent{
 
     processJournalEntry(journalEntry){
         this.stopLoaderAndShowMessage(false);
+        journalEntry.journalLines = _.orderBy(journalEntry.journalLines, ['entryType'], ['desc']);
         let base = this;
         this.journalEntry = journalEntry;
         if(this.isReverse){
