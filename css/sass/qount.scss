@@ -3150,3 +3150,12 @@ form select.ng-dirty.ng-valid {
     margin: 0;
   }
 }
+
+.company-country-input>.custom-combobox>input {
+  margin:0 0 1rem;
+}
+
+.company-section-left {
+  width:50%;
+  float:left;
+}
