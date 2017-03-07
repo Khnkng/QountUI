@@ -188,7 +188,7 @@ export class JournalEntryComponent{
         coaControl.patchValue('');
         let amountControl:any = this.lineForm.controls['amount'];
         amountControl.patchValue('');
-        let memoControl:any = this.lineForm.controls['memo'];
+        let memoControl:any = this.lineForm.controls['notes'];
         memoControl.patchValue('');
         let dimensionsControl:any = this.lineForm.controls['dimensions'];
         dimensionsControl.patchValue([]);
@@ -317,7 +317,7 @@ export class JournalEntryComponent{
         }
         let journalLines:any = this.jeForm.controls['journalLines'];
         let lineControl:any = journalLines.controls[this.editingLine.index];
-        lineControl.controls['memo'].patchValue(line.memo);
+        lineControl.controls['notes'].patchValue(line.notes);
         lineControl.controls['type'].patchValue(line.type);
         lineControl.controls['coa'].patchValue(line.coa);
         lineControl.controls['entryType'].patchValue(line.entryType);

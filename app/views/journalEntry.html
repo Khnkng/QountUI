@@ -135,7 +135,8 @@
                                         </thead>
                                         <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
                                             <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem, index)">
-                                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.title.value}}</td>
+
+                                                <td>{{lineListItem.controls.title.value}}</td>
                                                 <td [hidden]="!lineListItem.editable">
                                                     <input type="text" [formControl]="lineListItem.controls.title" placeholder="Title"/>
                                                 </td>
@@ -276,8 +277,8 @@
                         </div>
                         <div class="row">
                             <div class="small-12 medium-12 column">
-                                <label>Memo
-                                    <textarea formControlName="memo"></textarea>
+                                <label>Notes
+                                    <textarea formControlName="notes"></textarea>
                                 </label>
                             </div>
                         </div>
