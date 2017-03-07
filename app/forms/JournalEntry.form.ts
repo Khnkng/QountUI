@@ -29,6 +29,7 @@ export class JournalEntryForm extends abstractForm{
       "desc": [''],
 
       "newType": [],
+      "newTitle": [],
       "newCoa": [],
       "newDimensions": [],
       "newEntryType": [],
@@ -44,10 +45,11 @@ export class JournalLineForm extends abstractForm{
   getForm(model?:any) {
     return {
       type: [model? model.type: ''],
+      title: [model? model.title: ''],
       coa: [model? model.coa: ''],
       entryType: [model? model.entryType: ''],
       amount: [model? model.amount: 0],
-      memo: [model? model.memo: ''],
+      notes: [model? model.notes: ''],
       id: [model? model.id: null],
       dimensions: [model? model.dimensions: []]
     };

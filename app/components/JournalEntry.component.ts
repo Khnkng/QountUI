@@ -188,7 +188,7 @@ export class JournalEntryComponent{
         coaControl.patchValue('');
         let amountControl:any = this.lineForm.controls['amount'];
         amountControl.patchValue('');
-        let memoControl:any = this.lineForm.controls['memo'];
+        let memoControl:any = this.lineForm.controls['notes'];
         memoControl.patchValue('');
         let dimensionsControl:any = this.lineForm.controls['dimensions'];
         dimensionsControl.patchValue([]);
@@ -317,7 +317,7 @@ export class JournalEntryComponent{
         }
         let journalLines:any = this.jeForm.controls['journalLines'];
         let lineControl:any = journalLines.controls[this.editingLine.index];
-        lineControl.controls['memo'].patchValue(line.memo);
+        lineControl.controls['notes'].patchValue(line.notes);
         lineControl.controls['type'].patchValue(line.type);
         lineControl.controls['coa'].patchValue(line.coa);
         lineControl.controls['entryType'].patchValue(line.entryType);
@@ -444,6 +444,7 @@ export class JournalEntryComponent{
         delete data.newDimensions;
         delete data.newAmount;
         delete data.newCoa;
+        delete data.newTitle;
         delete data.newMemo;
 
         return data;
@@ -569,7 +570,7 @@ export class JournalEntryComponent{
     }
 
     processJournalEntry(journalEntry){
-        this.stopLoaderAndShowMessage(false);
+        journalEntry.journalLines = _.orderBy(journalEntry.journalLines, ['entryType'], ['desc']);
         let base = this;
         this.journalEntry = journalEntry;
         if(this.isReverse){
@@ -591,6 +592,7 @@ export class JournalEntryComponent{
             let lineListForm = base._fb.group(base._lineListForm.getForm(line));
             base.journalLinesArray.push(lineListForm);
         });
+        this.stopLoaderAndShowMessage(false);
         this._jeForm.updateForm(this.jeForm, this.journalEntry);
     }
 
@@ -662,6 +664,11 @@ export class JournalEntryComponent{
 
     showDashboard(){
         let link = ['books', 'journalEntries'];
+        this._router.navigate(link);
+    }
+
+    goToPreviousPage(){
+        let link = [Session.getLastVisitedUrl()];
         this._router.navigate(link);
     }
 }
