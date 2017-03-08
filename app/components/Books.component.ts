@@ -244,6 +244,7 @@ export class BooksComponent{
             }else if($event.sourceID&&$event.sourceType=='expense'&&$event.source=='outflow'){
                 let link = ['/expense',$event.sourceID];
                 this._router.navigate(link);
+            }else if($event.sourceID&&$event.sourceType=='payment'&&$event.source=='accountsPayable'){
             }
         }
     }
@@ -431,7 +432,11 @@ export class BooksComponent{
             });
             let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             if(journalEntry['sourceID'] && journalEntry['source'] === 'accountsPayable'){
-                action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>B</span></a>"+action;
+                if(journalEntry['source'] === 'payment'){
+                    action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>P</span></a>"+action;
+                }else{
+                    action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>B</span></a>"+action;
+                }
             }else if(journalEntry['sourceID'] && journalEntry['source'] === 'outflow'){
                 action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>E</span></a>"+action;
             }else if(journalEntry['sourceID'] && journalEntry['source'] === 'inflow'){

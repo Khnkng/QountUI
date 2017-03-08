@@ -23,7 +23,7 @@ export class PaymentsComponent{
     tableOptions:any = {};
     currentCompany:any;
     row:any;
-    tableColumns:Array<string> = [ 'groupID', 'amount', 'date', 'vendorName'];
+    tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date', 'vendorName'];
     confirmSubscription:any;
     companyCurrency:string;
     dimensionFlyoutCSS:any;
@@ -36,7 +36,7 @@ export class PaymentsComponent{
         this.loadingService.triggerLoadingEvent(true);
         this.paymentsService.payments(companyId)
             .subscribe(payments => {
-                let payments=payments?payments:[]
+                let payments=payments?payments:[];
                 this.buildTableData(payments);
                 this.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
@@ -82,7 +82,8 @@ export class PaymentsComponent{
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
-            {"name": "groupID", "title": "Id"},
+            {"name": "groupID", "title": "Id","visible":false},
+            {"name": "title", "title": "Payment Title"},
             {"name": "amount", "title": "Amount"},
             {"name": "date", "title": "Date"},
             {"name": "vendorName", "title": "Vendor"},
