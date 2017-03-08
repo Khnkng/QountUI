@@ -2154,7 +2154,7 @@ table.footable-editing-right tr.footable-editing td {
   form.company-form {
     padding: 50px 0 50px 0;
     @media #{$medium-up} {
-      padding: 0 0 50px 0;
+      padding: 0 0 10px 0;
     }
     section {
       &.item-expense-info {
@@ -3158,4 +3158,8 @@ form select.ng-dirty.ng-valid {
 .company-section-left {
   width:50%;
   float:left;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .customers-flyout {
+  min-height: calc(100vh - 300px);
 }
