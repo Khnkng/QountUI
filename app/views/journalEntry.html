@@ -116,7 +116,7 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="columns">
+                                        <div class="columns" *ngIf="!isSystemCreatedJE">
                                             <label class="float-right">
                                                 <i class="icon ion-ios-plus-outline" (click)="showNewLine()"></i> Line
                                             </label>
@@ -135,8 +135,7 @@
                                         </thead>
                                         <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
                                             <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem, index)">
-
-                                                <td>{{lineListItem.controls.title.value}}</td>
+                                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.title.value}}</td>
                                                 <td [hidden]="!lineListItem.editable">
                                                     <input type="text" [formControl]="lineListItem.controls.title" placeholder="Title"/>
                                                 </td>
@@ -169,7 +168,7 @@
                                                     <i class="icon ion-checkmark-circled" (click)="updateLine(lineListItem, index)" *ngIf="lineListItem.editable"></i>
                                                     <i class="icon ion-close" *ngIf="lineListItem.editable" (click)="toggleLineEdit(lineListItem)"></i>
                                                     <i class="icon ion-edit" *ngIf="!lineListItem.editable" (click)="showFlyout('UPDATE', index)"></i>
-                                                    <i class="icon ion-ios-trash-outline" *ngIf="!lineListItem.editable" (click)="deleteLine(index)"></i>
+                                                    <i class="icon ion-ios-trash-outline" *ngIf="!lineListItem.editable&&!isSystemCreatedJE" (click)="deleteLine(index)"></i>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -204,9 +203,14 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <div class="row" *ngIf="!newJournalEntry">
+                                    <div class="row" *ngIf="!newJournalEntry&&!isSystemCreatedJE">
                                         <div class="columns">
                                             <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)"><i class="icon ion-edit"></i>Journal</button>
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngIf="isSystemCreatedJE">
+                                        <div class="columns">
+                                            <button type="submit" class="button small float-right" [disabled]="true"><i class="icon ion-edit"></i>View Only</button>
                                         </div>
                                     </div>
                                     <div class="row" *ngIf="newJournalEntry">
@@ -311,7 +315,8 @@
                 </div>
                 <div class="row">
                     <div class="small-12 medium-12 columns">
-                        <input type="button" class="button small float-right" value="Save" (click)="saveLine()"/>
+                        <input *ngIf="!isSystemCreatedJE" type="button" class="button small float-right" value="Save" (click)="saveLine()"/>
+                        <button *ngIf="isSystemCreatedJE" type="submit" class="button small float-right" [disabled]="true">View Only</button>
                     </div>
                 </div>
             </div>

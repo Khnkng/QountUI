@@ -58,6 +58,7 @@ export class JournalEntryComponent{
     newCOAActive:boolean = true;
     companyCurrency:string;
     addNewLineFlag:boolean = false;
+    isSystemCreatedJE:boolean=false;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -330,6 +331,7 @@ export class JournalEntryComponent{
         let data = this._jeForm.getData(lineListItem);
         //It works. Not sure whether it has better ways to do.
         jQuery('#coa-'+index).siblings().children('input').val(this.getCOAName(data.coa));
+        if(!this.isSystemCreatedJE)
         lineListItem.editable = true;
     }
 
@@ -584,6 +586,9 @@ export class JournalEntryComponent{
                     line.entryType = 'Debit';
                 }
             });
+        }
+        if(journalEntry['createdBY']==='system'){
+           this.isSystemCreatedJE=true;
         }
         this.disableReversalDate = !Boolean(journalEntry.autoReverse);
         this.disableRecurring = !Boolean(journalEntry.recurring);

@@ -3164,6 +3164,25 @@ form select.ng-dirty.ng-valid {
   min-height: calc(100vh - 300px);
 }
 
+input:disabled, input[readonly], textarea:disabled, textarea[readonly] {
+  background-color: #eee;
+}
+
+.payments-table {
+  thead{
+    background: $qount-brand-grey-light !important;
+  }
+  margin-bottom: 10px;
+  .report-cell-value{
+    color: $qount-text;
+    &:hover{
+      //text-decoration: underline;
+      color: $qount-brand-primary-medium;
+      cursor:pointer;
+    }
+  }
+}
+
 .foo-container .bills-footable .footable-filtering .footable-filtering {
   right: 260px !important;
 }
