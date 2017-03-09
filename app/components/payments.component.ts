@@ -62,9 +62,15 @@ export class PaymentsComponent{
         delete $event.actions;
         if(action == 'edit') {
             this.getPaymentDetails($event.groupID)
+        }else {
+            this.navigateToJE($event.groupID);
         }
     }
 
+    navigateToJE(jeID){
+        let link = ['journalEntry',jeID];
+        this._router.navigate(link);
+    }
     getPaymentDetails(id){
         //this.loadingService.triggerLoadingEvent(true);
         this.paymentsService.paymentDetails(id,Session.getCurrentCompany())
@@ -98,7 +104,7 @@ export class PaymentsComponent{
                     let amount = parseFloat(pyment[key]);
                     row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 }
-                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+                row['actions'] = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             });
             base.tableData.rows.push(row);
         });
