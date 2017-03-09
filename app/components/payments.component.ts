@@ -96,11 +96,11 @@ export class PaymentsComponent{
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
-            {"name": "groupID", "title": "Id","visible":false},
+            {"name": "groupID", "title": "Id","visible":false,"filterable": false},
             {"name": "title", "title": "Payment Title"},
             {"name": "amount", "title": "Amount"},
             {"name": "date", "title": "Date"},
-            {"name": "journalID", "title": "journalId","visible":false},
+            {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
             {"name": "vendorName", "title": "Vendor"},
             {"name": "actions", "title": ""}
         ];

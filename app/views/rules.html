@@ -63,7 +63,7 @@
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Title</label></td>
                                                     <td>
-                                                    <select style="height: 2.4375rem;width: 100%" class="condition" formControlName="comparisionType">
+                                                    <select style="height: 2.4375rem;width: 95%" class="condition" formControlName="comparisionType">
                                                         <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                     </select>
                                                     </td>
@@ -74,7 +74,7 @@
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Notes</label></td>
                                                     <td>
-                                                        <select style="height: 2.4375rem;width: 100%" class="condition" formControlName="notesType">
+                                                        <select style="height: 2.4375rem;width: 95%" class="condition" formControlName="notesType">
                                                             <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                         </select>
                                                     </td>
@@ -84,16 +84,16 @@
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Amount</label></td>
-                                                    <td><select style="height: 2.4375rem;width: 100%" class="condition" formControlName="comparisionType1" (change)="showAmount($event)">
+                                                    <td><select style="height: 2.4375rem;width: 95%" class="condition" formControlName="comparisionType1" (change)="showAmount($event)">
                                                         <option *ngFor="let comparisiontypeAmount of conparisionAmountArray;" value="{{comparisiontypeAmount}}">{{comparisiontypeAmount}}</option>
                                                     </select></td>
                                                     <td><input  type="text" formControlName="comparisionValue1" placeholder="Amount*" class="condition-value"/>
                                                     </td>
                                                     </tr>
                                                 <tr *ngIf="hasAmount" style="border:0px;border-color:white">
-                                                    <td></td>
-                                                    <td style="height: 2.4375rem;width: 100%"><input  type="text" formControlName="comparisionValue2" placeholder="Amount*" class="condition-value"/>
-                                                    </td>
+                                                    <td><label></label></td>
+                                                    <td id="amount"><input style="margin-left: 5px;" type="text" formControlName="comparisionValue2" placeholder="Amount2*" class="condition-value"/>
+                                                     </td>
 
                                                 </tr>
                                                 <tr style="border:0px;border-color:white;">
