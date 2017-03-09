@@ -6,8 +6,7 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {PaymentsService} from "qCommon/app/services/Payments.service";
-import {Router} from "@angular/router";
-import {Router, ActivatedRoute} from "@angular/router";
+import {Router,ActivatedRoute} from "@angular/router";
 
 declare let jQuery:any;
 declare let _:any;
