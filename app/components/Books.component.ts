@@ -245,6 +245,9 @@ export class BooksComponent{
                 let link = ['/expense',$event.sourceID];
                 this._router.navigate(link);
             }else if($event.sourceID&&$event.sourceType=='payment'&&$event.source=='accountsPayable'){
+                let link = ['/payments', $event.sourceID];
+                this._router.navigate(link);
+
             }
         }
     }
@@ -432,7 +435,7 @@ export class BooksComponent{
             });
             let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             if(journalEntry['sourceID'] && journalEntry['source'] === 'accountsPayable'){
-                if(journalEntry['source'] === 'payment'){
+                if(journalEntry['sourceType'] === 'payment'){
                     action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>P</span></a>"+action;
                 }else{
                     action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>B</span></a>"+action;

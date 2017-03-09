@@ -239,6 +239,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: PaymentsComponent,
             canActivate: [LoggedInActivator]
         },
+        {
+            path: 'payments/:paymentID',
+            component: PaymentsComponent,
+            canActivate: [LoggedInActivator]
+        },
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,

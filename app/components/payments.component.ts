@@ -5,8 +5,9 @@ import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {LoadingService} from "qCommon/app/services/LoadingService";
-import {PaymentsService} from "qCommon/app/services/Payments.service"
+import {PaymentsService} from "qCommon/app/services/Payments.service";
 import {Router} from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
 
 declare let jQuery:any;
 declare let _:any;
@@ -28,19 +29,27 @@ export class PaymentsComponent{
     companyCurrency:string;
     dimensionFlyoutCSS:any;
     bills:Array<any>=[];
+    routeSub:any;
 
     constructor(private switchBoard: SwitchBoard, private toastService: ToastService, private loadingService:LoadingService
-                ,private paymentsService:PaymentsService,private _router:Router){
+                ,private paymentsService:PaymentsService,private _router:Router, private _route: ActivatedRoute,){
         let companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.loadingService.triggerLoadingEvent(true);
-        this.paymentsService.payments(companyId)
-            .subscribe(payments => {
-                let payments=payments?payments:[];
-                this.buildTableData(payments);
-                this.loadingService.triggerLoadingEvent(false);
-            }, error => this.handleError(error));
+        this.routeSub = this._route.params.subscribe(params => {
+            if(params['paymentID']){
+                this.getPaymentDetails(params['paymentID'])
+            }else {
+                this.paymentsService.payments(companyId)
+                    .subscribe(payments => {
+                        let payments=payments?payments:[];
+                        this.buildTableData(payments);
+                        this.loadingService.triggerLoadingEvent(false);
+                    }, error => this.handleError(error));
+            }
+        });
     }
+
     ngOnDestroy(){
     }
 
@@ -63,7 +72,7 @@ export class PaymentsComponent{
         if(action == 'edit') {
             this.getPaymentDetails($event.groupID)
         }else {
-            this.navigateToJE($event.groupID);
+            this.navigateToJE($event.journalID);
         }
     }
 
@@ -127,4 +136,8 @@ export class PaymentsComponent{
         }
     }
 
+    goToPreviousPage(){
+        let link = [Session.getLastVisitedUrl()];
+        this._router.navigate(link);
+    }
 }
