@@ -41,6 +41,7 @@ export class RulesComponent {
     vendors:any;
     AttributeList:any;
     hasRuleList:boolean = false;
+    hasAmount:boolean=false;
     actions: FormArray = new FormArray([]);
     depositlist:Array<any> = [];
     expenxeArray:Array<any>=[];
@@ -76,7 +77,7 @@ export class RulesComponent {
         this.companyId = Session.getCurrentCompany();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.RuleDelete(toast));
         this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO'];
-        this.conparisionAmountArray=['EQUALS_TO','LESS_THAN','GREATER_THAN','GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
+        this.conparisionAmountArray=['EQUALS_TO','LESS_THAN','BETWEEN','GREATER_THAN','GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
         this.vendorsArray=['EQUALS_TO'];
         this.customersArray=['EQUALS_TO'];
         var today = new Date();
@@ -239,6 +240,7 @@ export class RulesComponent {
     }
     hideFlyout(){
         this.isDimensionSelected(null);
+        this.hasAmount=false;
         this.selectedDimensions=[];
         this.selectDimension=('','');
         this.dimensionFlyoutCSS = "collapsed";
@@ -252,6 +254,15 @@ export class RulesComponent {
         let tempLineForm = this._fb.group(this._actionForm.getForm());
         let actionsControl:any = this.ruleForm.controls['actions'];
         actionsControl.push(tempLineForm);
+    }
+    showAmount(amount:any){
+        let data= this._ruleForm.getData(this.ruleForm);
+        if(data.comparisionType1=='BETWEEN'){
+            this.hasAmount=true;
+        }
+        else{
+            this.hasAmount=false;
+        }
     }
     showCOA(coa:any) {
         let data= this._ruleForm.getData(this.ruleForm);
@@ -480,6 +491,14 @@ export class RulesComponent {
 
                     let comparisionValue1: any = this.ruleForm.controls['comparisionValue1'];
                     comparisionValue1.patchValue(rule.conditions[i].comparisionValue);
+                    if(rule.conditions[i].comparisionValue2) {
+                        this.hasAmount=true;
+                        let comparisionValue2: any = this.ruleForm.controls['comparisionValue2'];
+                        comparisionValue2.patchValue(rule.conditions[i].comparisionValue2);
+                    }
+                    else{
+                        this.hasAmount=false;
+                    }
                 }
                 else if(rule.conditions[i].attributeName=='Source'){
                     let source = _.find(base.banks, function(_bank) {
@@ -557,6 +576,7 @@ console.log("end");
                 delete data.vendorValue;
                 delete data.customerValue;
                 delete data.comparisionValue1;
+                delete data.comparisionValue2;
                 delete data.source;
             }
             data.conditions=[];
@@ -588,9 +608,12 @@ console.log("end");
             selectedAmountControl1.patchValue(selectedAmountControl1.value);
             let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
             selectedValueControl1.patchValue(selectedValueControl1.value);
+            let comparisionValue2:any = this.ruleForm.controls['comparisionValue2'];
+            comparisionValue2.patchValue(comparisionValue2.value);
             condition2['attributeName']="Amount";
             condition2['comparisionType']=selectedAmountControl1.value;
             condition2['comparisionValue']=selectedValueControl1.value;
+            condition2['comparisionValue2']=comparisionValue2.value;
             var conditionrow2=data.conditions.push(condition2);
 
             let vendorType:any = this.ruleForm.controls['vendorType'];
@@ -676,11 +699,13 @@ console.log("end");
             selectedAmountControl1.patchValue(selectedAmountControl1.value);
             let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
             selectedValueControl1.patchValue(selectedValueControl1.value);
+            let comparisionValue2:any = this.ruleForm.controls['comparisionValue2'];
+            comparisionValue2.patchValue(comparisionValue2.value);
             condition2['attributeName']="Amount";
             condition2['comparisionType']=selectedAmountControl1.value;
             condition2['comparisionValue']=selectedValueControl1.value;
+            condition2['comparisionValue2']=comparisionValue2.value;
             var conditionrow2=data.conditions.push(condition2);
-
             let vendorType:any = this.ruleForm.controls['vendorType'];
             vendorType.patchValue(vendorType.value);
             let vendor:any = this.ruleForm.controls['vendorValue'];

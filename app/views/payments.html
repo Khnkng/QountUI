@@ -4,7 +4,9 @@
             <h5>Payments</h5>
         </div>
         <div class="columns small-6 small-offset-6 right">
-
+            <button class="button small text-button" (click)="goToPreviousPage()">
+                <i class="ion-ios-close-empty"></i>
+            </button>
         </div>
     </div>
     <div class="row chart-of-accounts" foundation>
@@ -17,7 +19,7 @@
         <div class="sidenav customization-panel" [ngClass]="dimensionFlyoutCSS" foundation>
             <button class="close-button " data-close aria-label="Close modal" type="button">
                 <span aria-hidden="true">
-                  <i class="ion-ios-close-empty" (click)="hideFlyout()"></i>
+                  <i class="ion-ios-close-empty" (click)="goToPreviousPage()"></i>
                 </span>
             </button>
             <div class="row collapse dimension-flyout">

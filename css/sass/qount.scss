@@ -3181,5 +3181,8 @@ input:disabled, input[readonly], textarea:disabled, textarea[readonly] {
       cursor:pointer;
     }
   }
+}
 
+.foo-container .bills-footable .footable-filtering .footable-filtering {
+  right: 260px !important;
 }
