@@ -27,6 +27,7 @@ export class RuleForm extends abstractForm{
             "notesType":[''],
             "endDate":[''],
             "attributeName1": [''],
+            "comparisionValue2":[''],
             "chartOfAccount":[''],
             "comparisionType1": ['', Validators.required],
             "comparisionValue1": ['', Validators.required]
