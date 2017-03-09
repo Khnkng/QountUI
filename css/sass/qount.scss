@@ -3164,8 +3164,13 @@ form select.ng-dirty.ng-valid {
   min-height: calc(100vh - 300px);
 }
 
-input:disabled, input[readonly], textarea:disabled, textarea[readonly] {
+input:disabled, textarea:disabled {
   background-color: #eee;
+}
+
+input[readonly], textarea[readonly]{
+  background-color: #ffffff;
+  cursor: not-allowed;
 }
 
 .payments-table {
