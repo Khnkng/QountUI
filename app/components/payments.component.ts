@@ -24,7 +24,7 @@ export class PaymentsComponent{
     tableOptions:any = {};
     currentCompany:any;
     row:any;
-    tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date', 'vendorName'];
+    tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName'];
     confirmSubscription:any;
     companyCurrency:string;
     dimensionFlyoutCSS:any;
@@ -101,6 +101,7 @@ export class PaymentsComponent{
             {"name": "title", "title": "Payment Title"},
             {"name": "amount", "title": "Amount"},
             {"name": "date", "title": "Date"},
+            {"name": "journalID", "title": "journalId","visible":false},
             {"name": "vendorName", "title": "Vendor"},
             {"name": "actions", "title": ""}
         ];
@@ -113,7 +114,11 @@ export class PaymentsComponent{
                     let amount = parseFloat(pyment[key]);
                     row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 }
-                row['actions'] = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+                let action ="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+                if(pyment.journalID){
+                    action = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>JE</span></a>"+ action;
+                }
+                row["actions"] = action;
             });
             base.tableData.rows.push(row);
         });
