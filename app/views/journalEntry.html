@@ -135,8 +135,7 @@
                                         </thead>
                                         <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
                                             <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem, index)">
-
-                                                <td>{{lineListItem.controls.title.value}}</td>
+                                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.title.value}}</td>
                                                 <td [hidden]="!lineListItem.editable">
                                                     <input type="text" [formControl]="lineListItem.controls.title" placeholder="Title"/>
                                                 </td>
