@@ -491,8 +491,14 @@ export class RulesComponent {
 
                     let comparisionValue1: any = this.ruleForm.controls['comparisionValue1'];
                     comparisionValue1.patchValue(rule.conditions[i].comparisionValue);
-                    let comparisionValue2: any = this.ruleForm.controls['comparisionValue2'];
-                    comparisionValue2.patchValue(rule.conditions[i].comparisionValue2);
+                    if(rule.conditions[i].comparisionValue2) {
+                        this.hasAmount=true;
+                        let comparisionValue2: any = this.ruleForm.controls['comparisionValue2'];
+                        comparisionValue2.patchValue(rule.conditions[i].comparisionValue2);
+                    }
+                    else{
+                        this.hasAmount=false;
+                    }
                 }
                 else if(rule.conditions[i].attributeName=='Source'){
                     let source = _.find(base.banks, function(_bank) {
