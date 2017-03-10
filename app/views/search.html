@@ -1,0 +1,68 @@
+<a foundation data-open="search-modal" (click)="toggleSearch()"><i class="icon ion-search"></i></a>
+<div foundation class="reveal search-reveal" id="search-modal" data-reveal>
+    <div class="row">
+        <label>Search in:
+            <div class="stacked-for-small small button-group">
+                <a class="button" [ngClass]="isCompSelected('Bill')? 'selected-button': 'hollow'" (click)="selectComponent('Bill')">Bill</a>
+                <a class="button" [ngClass]="isCompSelected('Expense')? 'selected-button': 'hollow'" (click)="selectComponent('Expense')">Expense</a>
+                <a class="button" [ngClass]="isCompSelected('Deposit')? 'selected-button': 'hollow'" (click)="selectComponent('Deposit')">Deposit</a>
+                <a class="button" [ngClass]="isCompSelected('Journal')? 'selected-button': 'hollow'" (click)="selectComponent('Journal')">Journal</a>
+                <a class="button" [ngClass]="isCompSelected('Payments')? 'selected-button': 'hollow'" (click)="selectComponent('Payments')">Payments</a>
+            </div>
+        </label>
+    </div>
+    <div class="row amount">
+        <label>Amount
+            <div>
+                <div class="small-12 medium-4 columns">
+                    <select [(ngModel)]="amountCondition">
+                        <option value=""></option>
+                        <option value="greaterthan">&gt;</option>
+                        <option value="lessthan">&lt;</option>
+                        <option value="equalto">=</option>
+                        <option value="between">between</option>
+                    </select>
+                </div>
+                <div class="small-12 medium-8 columns" [hidden]="amountCondition == 'between'">
+                    <input type="text" [(ngModel)]="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                </div>
+                <div class="small-12 medium-8 columns between" [hidden]="amountCondition != 'between'">
+                    <div class="small-12 medium-5 columns">
+                        <input type="text" [(ngModel)]="lowerLimit" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                    </div>
+                    <div class="small-12 medium-2 columns">and</div>
+                    <div class="small-12 medium-5 columns">
+                        <input type="text" [(ngModel)]="upperLimit" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                    </div>
+                </div>
+            </div>
+        </label>
+    </div>
+    <div class="row">
+        <label>Title/Number
+            <div class="small-12 medium-12 columns">
+                <input type="text" [(ngModel)]="title" placeholder="Title/Number"/>
+            </div>
+        </label>
+    </div>
+    <div class="row">
+        <label>Dates
+            <div>
+                <div class="float-left date-field">
+                    <input type="text" [(ngModel)]="beginDate" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setBeginDate($event)" placeholder="Begin Date"/>
+                </div>
+                <div class="float-left text">
+                    <span>and</span>
+                </div>
+                <div class="float-left date-field">
+                    <input type="text" [(ngModel)]="endDate" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setEndDate($event)" placeholder="End Date"/>
+                </div>
+            </div>
+        </label>
+    </div>
+    <button type="button" class="close-flyout float-right" (click)="closeSearchWidget()">
+      <span aria-hidden="true">
+        <i class="ion-ios-close-empty"></i>
+      </span>
+    </button>
+</div>
