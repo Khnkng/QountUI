@@ -242,7 +242,7 @@ export class RulesComponent {
         this.isDimensionSelected(null);
         this.hasAmount=false;
         this.selectedDimensions=[];
-        this.selectDimension=('','');
+        // this.selectDimension=('','');
         this.dimensionFlyoutCSS = "collapsed";
         this.row = {};
         this.selectedDimensions=[];
@@ -553,7 +553,33 @@ console.log("end");
         return false;
     }
 
+cleanData(data){
+    delete data.attributeName;
+    delete data.comparisionType;
+    delete data.comparisionValue;
+    delete data.logicalOperator;
+    delete data.attributeName1;
+    delete data.comparisionType1;
+    delete data.vendorValue;
+    delete data.customerValue;
+    delete data.comparisionValue1;
+    delete data.comparisionValue2;
+    delete data.source;
+    delete data.vendorValue;
+    delete data.vendorType;
+    delete data.customerValue;
+    delete data.customerType;
+    delete data.comparisionType;
+    delete data.comparisionValue;
+    delete data.logicalOperator;
+    delete data.notesValue;
+    delete data.notesType;
+    delete data.attributeName1;
+    delete data.comparisionValue2;
+    delete data.attributeName;
+    return data;
 
+}
     submit($event, dateFlag){
         $event && $event.preventDefault();
         let data = this._ruleForm.getData(this.ruleForm);
@@ -565,20 +591,6 @@ console.log("end");
         }
 
         if(this.editMode){
-            if(data.attributeName|| data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1
-            || data.vendorValue || data.customerValue ||  data.source){
-                delete data.attributeName;
-                delete data.comparisionType;
-                delete data.comparisionValue;
-                delete data.logicalOperator;
-                delete data.attributeName1;
-                delete data.comparisionType1;
-                delete data.vendorValue;
-                delete data.customerValue;
-                delete data.comparisionValue1;
-                delete data.comparisionValue2;
-                delete data.source;
-            }
             data.conditions=[];
             var condition1={};
             var condition2={};
@@ -648,6 +660,8 @@ console.log("end");
             condition6['comparisionValue']=notesValue.value;
             var conditionrow6=data.conditions.push(condition6);
             data.id = this.row.id;
+            console.log("data",data);
+            this.cleanData(data);
             this.ruleservice.updateRule(data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
@@ -737,7 +751,7 @@ console.log("end");
             condition6['comparisionType']=notesType.value;
             condition6['comparisionValue']=notesValue.value;
             var conditionrow6=data.conditions.push(condition6);
-
+            this.cleanData(data);
             this.ruleservice.addRule(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
