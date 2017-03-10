@@ -4,7 +4,9 @@
             <h5>Payments</h5>
         </div>
         <div class="columns small-6 small-offset-6 right">
-
+            <button class="button small text-button" (click)="goToPreviousPage()">
+                <i class="ion-ios-close-empty"></i>
+            </button>
         </div>
     </div>
     <div class="row chart-of-accounts" foundation>
@@ -17,7 +19,7 @@
         <div class="sidenav customization-panel" [ngClass]="dimensionFlyoutCSS" foundation>
             <button class="close-button " data-close aria-label="Close modal" type="button">
                 <span aria-hidden="true">
-                  <i class="ion-ios-close-empty" (click)="goToPreviousPage()"></i>
+                  <i class="ion-ios-close-empty" (click)="hideFlyout()"></i>
                 </span>
             </button>
             <div class="row collapse dimension-flyout">
@@ -29,11 +31,11 @@
             </div>
 
             <div class="payments-accordion-wrapper">
-                <table class="report-table">
+                <table class="payments-table">
                     <thead>
                     <tr>
                         <th>Type</th>
-                        <th>Name</th>
+                        <th>Number</th>
                         <th>Vendor</th>
                         <th>Amount</th>
                         <th>Paid date</th>
@@ -41,7 +43,7 @@
                     </thead>
                     <tbody>
                     <tr *ngFor="let bill of bills;let i=index" style="cursor: pointer" (click)="moveToBills(bill)">
-                        <td >{{bill.type}}</td>
+                        <td >{{bill.type=='bill'?'Bill':'Credit'}}</td>
                         <td >{{bill.sourceName}}</td>
                         <td >{{bill.vendorName}}</td>
                         <td >{{bill.amount|currency:companyCurrency:true:'1.2-2'}}</td>
