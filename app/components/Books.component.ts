@@ -444,9 +444,11 @@ export class BooksComponent{
                 action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>E</span></a>"+action;
             }else if(journalEntry['sourceID'] && journalEntry['source'] === 'inflow'){
                 action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>D</span></a>"+action;
+            }else if(journalEntry['sourceID'] && journalEntry['sourceType'] === 'credit'){
+                action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>C</span></a>"+action;
             }
             row['actions'] = action;
-            if(row['type'] == 'Original'){
+            if(row['type'] == 'Original' && journalEntry['source'] === 'manual'){
                 row['reverse'] = "<a style='font-size:0.6rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action' data-action='reverse'>Reverse</a>";
             }
             base.jeTableData.rows.push(row);
