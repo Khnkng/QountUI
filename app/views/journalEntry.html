@@ -216,7 +216,7 @@
                                     </div>
                                     <div class="row" *ngIf="isSystemCreatedJE">
                                         <div class="columns">
-                                            <span class="label float-right warning"  ><i class="icon ion-edit"></i>View Only</span>
+                                            <span class="label float-right vew-only"  ><i class="icon ion-edit"></i>View Only</span>
                                         </div>
                                     </div>
                                     <div class="row" *ngIf="newJournalEntry">
@@ -322,7 +322,7 @@
                 <div class="row">
                     <div class="small-12 medium-12 columns">
                         <input *ngIf="!isSystemCreatedJE" type="button" class="button small float-right" value="Save" (click)="saveLine()"/>
-                        <span *ngIf="isSystemCreatedJE" class="label float-right warning">View Only</span>
+                        <span *ngIf="isSystemCreatedJE" class="label float-right vew-only">View Only</span>
                     </div>
                 </div>
             </div>

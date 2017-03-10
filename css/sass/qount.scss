@@ -1819,6 +1819,10 @@ table.footable-editing-right tr.footable-editing td {
     &.secondary{
       background-color: $qount-form-border-hover;
     }
+    &.vewOnly{
+      background-color: $qount-btn-primary;
+      color: white !important;
+    }
 
   }
 
@@ -3255,3 +3259,56 @@ input[readonly], textarea[readonly]{
 .bills-main-div {
   margin-top: 50px;
 }
+
+
+.vew-only{
+  padding: 0.5rem 1rem;
+  background: #4B96FA;
+  color: white;
+}
+
+.dropbtn {
+  border: none;
+  cursor: pointer;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.cust-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  margin-top: -17px;
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 155px;
+  right: 0;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: #4B96FA;
+  padding: 8px 10px;
+  text-decoration: none;
+  display: block;
+  border-bottom: 1px solid #adabab;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu on hover */
+.cust-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/*
+!* Change the background color of the dropdown button when the dropdown content is shown *!
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}*/
