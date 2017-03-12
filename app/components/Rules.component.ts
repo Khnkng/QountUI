@@ -76,8 +76,8 @@ export class RulesComponent {
         private dimensionService: DimensionService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
         this.companyId = Session.getCurrentCompany();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.RuleDelete(toast));
-        this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO'];
-        this.conparisionAmountArray=['EQUALS_TO','LESS_THAN','BETWEEN','GREATER_THAN','GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
+        this.conparisionArray=['--None--','BEGINS_WITH','CONTAINS','EQUALS_TO'];
+        this.conparisionAmountArray=['--None--','EQUALS_TO','LESS_THAN','BETWEEN','GREATER_THAN','GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
         this.vendorsArray=['EQUALS_TO'];
         this.customersArray=['EQUALS_TO'];
         var today = new Date();
@@ -160,10 +160,10 @@ export class RulesComponent {
     selectChange(){
         let attributeRate:any = this.ruleForm.controls['attributeName'];
         if(attributeRate.value=='Title' ||attributeRate.value=='Notes' ){
-            this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO'];
+            this.conparisionArray=['--None--','BEGINS_WITH','CONTAINS','EQUALS_TO'];
         }
         else{
-            this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO','GREATER_THAN_OR_EQUALS_TO','LESS_THAN','GREATER_THAN','LESS_THAN_OR_EQUALS_TO'];
+            this.conparisionArray=['--None--','BEGINS_WITH','CONTAINS','EQUALS_TO','GREATER_THAN_OR_EQUALS_TO','LESS_THAN','GREATER_THAN','LESS_THAN_OR_EQUALS_TO'];
         }
     }
     RuleDelete(toast){
