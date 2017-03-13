@@ -76,8 +76,8 @@ export class RulesComponent {
         private dimensionService: DimensionService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
         this.companyId = Session.getCurrentCompany();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.RuleDelete(toast));
-        this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO'];
-        this.conparisionAmountArray=['EQUALS_TO','LESS_THAN','BETWEEN','GREATER_THAN','GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
+        this.conparisionArray=['--None--','BEGINS_WITH','CONTAINS','EQUALS_TO'];
+        this.conparisionAmountArray=['--None--','EQUALS_TO','LESS_THAN','BETWEEN','GREATER_THAN','GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
         this.vendorsArray=['EQUALS_TO'];
         this.customersArray=['EQUALS_TO'];
         var today = new Date();
@@ -160,10 +160,10 @@ export class RulesComponent {
     selectChange(){
         let attributeRate:any = this.ruleForm.controls['attributeName'];
         if(attributeRate.value=='Title' ||attributeRate.value=='Notes' ){
-            this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO'];
+            this.conparisionArray=['--None--','BEGINS_WITH','CONTAINS','EQUALS_TO'];
         }
         else{
-            this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO','GREATER_THAN_OR_EQUALS_TO','LESS_THAN','GREATER_THAN','LESS_THAN_OR_EQUALS_TO'];
+            this.conparisionArray=['--None--','BEGINS_WITH','CONTAINS','EQUALS_TO','GREATER_THAN_OR_EQUALS_TO','LESS_THAN','GREATER_THAN','LESS_THAN_OR_EQUALS_TO'];
         }
     }
     RuleDelete(toast){
@@ -260,8 +260,46 @@ export class RulesComponent {
         if(data.comparisionType1=='BETWEEN'){
             this.hasAmount=true;
         }
+
         else{
             this.hasAmount=false;
+        }
+        if(data.comparisionType1=='--None--'){
+            data.comparisionType1="";
+            let comparisionValue1:any = this.ruleForm.controls['comparisionValue1'];
+            comparisionValue1.patchValue("");
+        }
+        else{
+            data.comparisionValue1=data.comparisionValue1;
+            let comparisionValue1:any = this.ruleForm.controls['comparisionValue1'];
+            comparisionValue1.patchValue(data.comparisionValue1);
+        }
+    }
+    showTitle(amount:any){
+        let data= this._ruleForm.getData(this.ruleForm);
+        if(data.comparisionType=='--None--'){
+            data.comparisionValue="";
+            let comparisionValue:any = this.ruleForm.controls['comparisionValue'];
+            comparisionValue.patchValue("");
+        }
+        else{
+            data.comparisionValue=data.comparisionValue;
+            let comparisionValue:any = this.ruleForm.controls['comparisionValue'];
+            comparisionValue.patchValue(data.comparisionValue);
+        }
+
+    }
+    showNotes(amount:any){
+        let data= this._ruleForm.getData(this.ruleForm);
+        if(data.notesType=='--None--'){
+            data.notesType="";
+            let notesValue:any = this.ruleForm.controls['notesValue'];
+            notesValue.patchValue("");
+        }
+        else{
+            data.notesValue=data.notesValue;
+            let notesValue:any = this.ruleForm.controls['notesValue'];
+            notesValue.patchValue(data.notesValue);
         }
     }
     showCOA(coa:any) {
@@ -412,7 +450,6 @@ export class RulesComponent {
         let base=this;
         this.ruleservice.rule(this.companyId,RuleID).subscribe(rule => {
             this.row = rule;
-            console.log("rule",rule);
             this.selectedDimensions=rule.actions;
             let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
             selectedCOAControl.patchValue(rule.sourceType);

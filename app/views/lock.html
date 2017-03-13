@@ -1,0 +1,61 @@
+<div>
+    <header>
+        <div class="header">
+            <div class="row">
+                <div class="small-6"><h5>Lock</h5></div>
+            </div>
+        </div>
+    </header>
+    <div class="column large-12 medium-12 small-12 foo-container">
+        <div class="foo-toolbar">
+            <button class="button small" (click)="showCreateLock()"><i class="icon ion-plus-round"></i>Lock</button>
+        </div>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    </div>
+
+    <div class="qount-off-canvas-menu">
+        <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+            <section class="flyout-placeholder">
+                <header class="flyout-header">
+                    <h6>Create Lock</h6>
+                </header>
+                <div class="flyout-body flyout-shadow-effect">
+                    <!--here comes actual flyout code-->
+                    <div #createtaxes id="createtaxes" class="create-vendor">
+                        <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="LockForm">
+
+                            <section class="form-section clearfix">
+                                    <div class="row">
+                                        <div class="small-12 medium-12 columns">
+                                            <div class="form-section-left">
+                                                <header class="form-section-header">Basic Info</header>
+                                                <div class="row">
+                                                    <div class="small-4 columns">
+                                                        <label class="text-right">Books Closed Date</label>
+                                                    </div>
+                                                    <div class="small-6 columns">
+                                                        <input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event)" [format]="'MM/DD/YYYY'" [mindate]="'past'"  value="{{todaysDate}}"   type="text" formControlName="lock_created_at" placeholder="Action Date*"/>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <button class="button create small float-right" [disabled]="!isValid(LockForm)" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+                </div>
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+                </button>
+            </section>
+        </div>
+    </div>
+</div>

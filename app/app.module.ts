@@ -25,7 +25,8 @@ import {CommonModule, APP_BASE_HREF} from "@angular/common";
 import {SignUpService} from "./services/SignUp.service";
 import {LoginForm} from "./forms/Login.form";
 import {SignUpForm} from "./forms/SignUp.form";
-import {TaxesForm} from "./forms/Taxes.form"
+import {TaxesForm} from "./forms/Taxes.form";
+import {LockForm} from "./forms/lock.form"
 import {ForgotPassword} from "./forms/ForgotPassword.form";
 import {VendorComponent} from "./components/Vendors.component";
 import {UserProfileComponent} from "qCommon/app/components/UserProfile.component";
@@ -62,6 +63,7 @@ import {ChangePasswordComponent} from "./components/changePassword.component";
 import {TermsAndConditionsComponent} from "./components/TermsAndConditions.component";
 import {ResetPasswordComponent} from "./components/resetpassword.component";
 import {RulesComponent} from "./components/Rules.component";
+import {lockComponent} from "./components/lock.component";
 import {RuleForm, RuleActionForm} from "./forms/Rule.form";
 import {ExpenseComponent} from "./components/Expense.component";
 import {ExpenseForm, ExpenseItemForm} from "./forms/Expenses.form";
@@ -206,6 +208,10 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: RulesComponent,
             canActivate: [LoggedInActivator]
         },{
+            path: 'lock',
+            component: lockComponent,
+            canActivate: [LoggedInActivator]
+        },{
             path: 'activate',
             component: ChangePasswordComponent,
             canActivate: [LoggedInActivator]
@@ -250,15 +256,16 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
-        ResetPasswordComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent, CategorizationComponent,PaymentsComponent],
+        ResetPasswordComponent,lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent, CategorizationComponent,PaymentsComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
-        TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm,
+        TaxesForm,LockForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm,
         FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
 
 }
+
 

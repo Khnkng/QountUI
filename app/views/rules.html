@@ -63,7 +63,7 @@
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Title</label></td>
                                                     <td>
-                                                    <select style="height: 2.4375rem;width: 95%" class="condition" formControlName="comparisionType">
+                                                    <select style="height: 2.4375rem;width: 95%" class="condition" formControlName="comparisionType" (change)="showTitle($event)">
                                                         <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                     </select>
                                                     </td>
@@ -74,7 +74,7 @@
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Notes</label></td>
                                                     <td>
-                                                        <select style="height: 2.4375rem;width: 95%" class="condition" formControlName="notesType">
+                                                        <select style="height: 2.4375rem;width: 95%" class="condition" formControlName="notesType" (change)="showNotes($event)">
                                                             <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                         </select>
                                                     </td>
