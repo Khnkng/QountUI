@@ -4,11 +4,9 @@
 
 import {Component, Output, EventEmitter, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
-import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
-import {FullScreenService} from "qCommon/app/services/fullscreen.service";
-import {NotificationService} from "qCommon/app/services/Notification.service";
 import {Session} from "qCommon/app/services/Session";
-
+import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -29,9 +27,29 @@ export class SearchComponent implements  OnInit{
     title:string;
     beginDate:string;
     endDate:string;
+    companyId:string;
+    chartOfAccount:string;
+    vendor: string;
 
-    constructor(private _router: Router, private switchBoard: SwitchBoard, private _fullscreen: FullScreenService, private notificationServie: NotificationService) {
+    chartOfAccounts:Array<any> = [];
+    vendors:Array<any> = [];
+
+    constructor(private _router: Router, private coaService: ChartOfAccountsService, private companyService: CompaniesService) {
         this.companyCurrency=Session.getCurrentCompanyCurrency();
+        this.companyId=Session.getCurrentCompany();
+
+        this.coaService.chartOfAccounts(this.companyId)
+            .subscribe(chartOfAccounts => {
+                this.chartOfAccounts = chartOfAccounts;
+            }, error => {
+
+            });
+        this.companyService.vendors(this.companyId)
+            .subscribe(vendors => {
+                this.vendors = vendors;
+            }, error => {
+
+            });
     }
 
     ngOnInit() {
@@ -74,5 +92,13 @@ export class SearchComponent implements  OnInit{
         this.upperLimit = 0;
         this.title = '';
         this.amountCondition = '';
+    }
+
+    setChartOfAccount(chartOfAccount){
+        this.chartOfAccount = chartOfAccount.id;
+    }
+
+    setVendor(vendor){
+        this.vendor = vendor.id;
     }
 }

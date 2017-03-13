@@ -1,5 +1,5 @@
 <a foundation data-open="search-modal" (click)="toggleSearch()"><i class="icon ion-search"></i></a>
-<div foundation class="reveal search-reveal" id="search-modal" data-reveal>
+<div foundation class="reveal search-reveal" id="search-modal" data-reveal data-overlay="false">
     <div class="row">
         <label>Search in:
             <div class="stacked-for-small small button-group">
@@ -58,6 +58,20 @@
                     <input type="text" [(ngModel)]="endDate" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setEndDate($event)" placeholder="End Date"/>
                 </div>
             </div>
+        </label>
+    </div>
+    <div class="row">
+        <label>Chart of Accounts
+            <select combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" (valueChanged)="setChartOfAccount($event)">
+                <option *ngFor="let account of chartOfAccounts" [value]="account.id">{{account.name}}</option>
+            </select>
+        </label>
+    </div>
+    <div class="row">
+        <label>Vendors
+            <select combo-box #vendorComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors" (valueChanged)="setVendor($event)">
+                <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
+            </select>
         </label>
     </div>
     <button type="button" class="close-flyout float-right" (click)="closeSearchWidget()">

@@ -302,13 +302,11 @@ a:hover, a:focus .je-badge{
   color: #36404a;
 }
 
-.search-widget{
-  position: absolute;
-  right: 9rem;
-  width: 20rem;
-  background-color: #fff;
-  box-shadow: 0px 1px 10px $qount-form-border;
+.search-reveal{
+  right: 8rem !important;
   padding: 10px;
+  left: 550px !important;
+  top: 50px !important;
 
   input{
     max-width: none;
