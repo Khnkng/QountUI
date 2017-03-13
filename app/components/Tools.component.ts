@@ -144,6 +144,10 @@ export class ToolsComponent {
         let link = ['employees'];
         this._router.navigate(link);
       }
+      case 'lock': {
+        let link = ['lock'];
+        this._router.navigate(link);
+      }
     }
   }
 }

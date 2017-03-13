@@ -1,0 +1,69 @@
+<div>
+    <header>
+        <div class="header">
+            <div class="row">
+                <div class="small-6"><h5>Lock</h5></div>
+            </div>
+        </div>
+    </header>
+    <div class="column large-12 medium-12 small-12 foo-container">
+        <div class="foo-toolbar">
+            <button class="button small" (click)="showCreateLock()"><i class="icon ion-plus-round"></i>Lock</button>
+        </div>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    </div>
+
+    <div class="qount-off-canvas-menu">
+        <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+            <section class="flyout-placeholder">
+                <header class="flyout-header">
+                    <h6>Create Lock</h6>
+                </header>
+                <div class="flyout-body flyout-shadow-effect">
+                    <!--here comes actual flyout code-->
+                    <div #createtaxes id="createtaxes" class="create-vendor">
+                        <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="LockForm">
+
+                            <section class="form-section clearfix">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <div class="form-section-left">
+                                            <header class="form-section-header">Rule</header>
+                                            <div class="row">
+                                                <div class="small-12 medium-12 columns rule-row">
+                                                    <table id="ruletable" style="width:40%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
+                                                        <tbody style="border-color: white">
+
+                                                        <tr style="border:0px;border-color:white;">
+                                                            <td><label>Effective Date</label></td>
+                                                            <td><input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event)" [format]="'MM/DD/YYYY'" [mindate]="'past'"  value="{{todaysDate}}"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-section-left">
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <button class="button create small float-right" [disabled]="!isValid(LockForm)" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+                </div>
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+                </button>
+            </section>
+        </div>
+    </div>
+</div>
