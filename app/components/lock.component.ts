@@ -79,7 +79,7 @@ export class lockComponent {
         this.showFlyout = !this.showFlyout;
     }
     isValid(LockForm){
-        if(LockForm.value.effectiveDate=="" ){
+        if(LockForm.value.lock_created_at=="" ){
             return false;
         }
         return true;
@@ -93,14 +93,30 @@ export class lockComponent {
         this.loadingService.triggerLoadingEvent(true);
         if(this.editMode){
             data.id = this.row.id;
+            this.companyService.updateLock(<VendorModel>data, this.companyId)
+                .subscribe(success  => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    //this.showMessage(true, success);
+                    this.showFlyout = false;
+                }, error =>  console.log("error")
+                );
 
         } else{
+            var currentdate = new Date();
+            var datetime=currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":" + currentdate.getSeconds();
             console.log("<VendorModel>data",<VendorModel>data);
-
+            data.lock_created_at=data.lock_created_at+' '+datetime
+            this.companyService.addLock(<VendorModel>data, this.companyId)
+                .subscribe(success  => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    //this.showMessage(true, success);
+                    this.showFlyout = false;
+                }, error =>  console.log("mnmnm"));
         }
     }
     setDate(date: string){
-        let jeDateControl:any = this.LockForm.controls['effectiveDate'];
+        let jeDateControl:any = this.LockForm.controls['lock_created_at'];
         jeDateControl.patchValue(date);
     }
 }

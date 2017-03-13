@@ -25,30 +25,22 @@
                         <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="LockForm">
 
                             <section class="form-section clearfix">
-                                <div class="row">
-                                    <div class="small-12 medium-12 columns">
-                                        <div class="form-section-left">
-                                            <header class="form-section-header">Rule</header>
-                                            <div class="row">
-                                                <div class="small-12 medium-12 columns rule-row">
-                                                    <table id="ruletable" style="width:40%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
-                                                        <tbody style="border-color: white">
+                                    <div class="row">
+                                        <div class="small-12 medium-12 columns">
+                                            <div class="form-section-left">
+                                                <header class="form-section-header">Basic Info</header>
+                                                <div class="row">
+                                                    <div class="small-4 columns">
+                                                        <label class="text-right">Books Closed Date</label>
+                                                    </div>
+                                                    <div class="small-6 columns">
+                                                        <input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event)" [format]="'MM/DD/YYYY'" [mindate]="'past'"  value="{{todaysDate}}"   type="text" formControlName="lock_created_at" placeholder="Action Date*"/>
 
-                                                        <tr style="border:0px;border-color:white;">
-                                                            <td><label>Effective Date</label></td>
-                                                            <td><input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event)" [format]="'MM/DD/YYYY'" [mindate]="'past'"  value="{{todaysDate}}"   type="text" formControlName="effectiveDate" placeholder="Action Date*"/></td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="form-section-left">
-
-                                        </div>
                                     </div>
-                                </div>
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
                                         <button class="button create small float-right" [disabled]="!isValid(LockForm)" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
