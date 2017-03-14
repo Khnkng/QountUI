@@ -302,6 +302,64 @@ a:hover, a:focus .je-badge{
   color: #36404a;
 }
 
+.search-reveal{
+  right: 8rem !important;
+  padding: 10px;
+  left: 550px !important;
+  top: 50px !important;
+
+  input{
+    max-width: none;
+  }
+
+  .date-field{
+    width: 42%;
+    margin: 3px 3px;
+  }
+
+  div.text{
+    margin-top: 6px;
+  }
+
+  button.close-flyout{
+    margin-right: 10px;
+    font-size: 1.5rem;
+    outline: none !important;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    .ion-ios-close-empty{
+
+    }
+  }
+
+  .button-group{
+    margin-top: 5px;
+
+    .button{
+      margin-left: 5px;
+      font-size: 9px !important;
+    }
+  }
+
+  .selected-button{
+    color: #fff;
+  }
+
+  .amount{
+    .columns{
+      padding: 3px;
+    }
+
+    .between{
+      input{
+        margin-top: -3px;
+      }
+    }
+  }
+}
+
 .main-canvas {
   -webkit-transition : all 0.5s;
   -moz-transition : all 0.5s;

@@ -111,7 +111,7 @@ export class FinancialAccountsComponent{
     this.loadingService.triggerLoadingEvent(true);
     this.financialAccountsService.removeAccount(accountId, this.currentCompany)
         .subscribe(response => {
-          console.log(response);
+          this.getFinancialAccounts(this.currentCompany);
           this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.success, "Deleted Account successfully");
         }, error =>{
@@ -164,21 +164,24 @@ export class FinancialAccountsComponent{
     let base = this;
     $event && $event.preventDefault();
     let data = this._financialAccountForm.getData(this.accountForm);
+    this.loadingService.triggerLoadingEvent(true);
     if(data.chart_of_account_id=='--None--'||data.chart_of_account_id==''){
-      this.toastService.pop(TOAST_TYPE.error, "Please select Chart of Account");
+      this.toastService.pop(TOAST_TYPE.warning, "Please select Chart of Account");
+      this.loadingService.triggerLoadingEvent(false);
       return;
     }if(data.transit_chart_of_account_id=='--None--'||data.transit_chart_of_account_id==''){
-      this.toastService.pop(TOAST_TYPE.error, "Please select Transit COA");
+      this.toastService.pop(TOAST_TYPE.warning, "Please select Transit COA");
+      this.loadingService.triggerLoadingEvent(false);
       return;
     }
     delete data.importType;
     if(this.editMode){
       this.financialAccountsService.updateAccount(data, this.currentCompany)
           .subscribe(response => {
-            console.log(response);
             this.toastService.pop(TOAST_TYPE.success, "Updated Financial account successfully");
             this.getFinancialAccounts(this.currentCompany);
           }, error =>{
+            this.loadingService.triggerLoadingEvent(true);
             this.toastService.pop(TOAST_TYPE.error, "Failed to update financial account");
           });
     } else{
@@ -187,6 +190,7 @@ export class FinancialAccountsComponent{
             this.toastService.pop(TOAST_TYPE.success, "Financial account created successfully");
             this.getFinancialAccounts(this.currentCompany);
           }, error => {
+            this.loadingService.triggerLoadingEvent(true);
             this.toastService.pop(TOAST_TYPE.error, "Failed to create Account");
           });
     }

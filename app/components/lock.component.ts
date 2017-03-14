@@ -35,6 +35,7 @@ export class lockComponent {
     status:any;
     vendors:Array<any>;
     hasItemCodes: boolean = false;
+    // tableColumns:Array<string> = ['id','lock_created_at', 'lock_created_by'];
     editMode:boolean = false;
     @ViewChild('createtaxes') createtaxes;
     @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
@@ -47,31 +48,118 @@ export class lockComponent {
     companies:Array<CompanyModel> = [];
     currentCompany:any = {};
     chartOfAccounts:any;
-    tableColumns:Array<string> = ['id','name', 'tin', 'visibleOnInvoices', 'taxAuthorityName', 'taxRate','coa_name','recoverableTax','compoundTax'];
-    taxesList:any;
+    lockList:any;
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     @ViewChild("newVendorComboBoxDir") newVendorComboBox: ComboBox;
     @ViewChild('addressDir') addressDir: Address;
     countryCode:string;
     showAddress:boolean;
     showFlyout:boolean = false;
-    taxId:any;
+    lockId:any;
     confirmSubscription:any;
+
 
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _lockform:LockForm,
                 private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
                 private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
         console.log("dhfgadwf");
         this.LockForm = this._fb.group(_lockform.getLock());
-        this.companyId = Session.getCurrentCompany();
+        this.companyId = Session.getCurrentCompany();this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteLock(toast));
+
+        this.companyService.getLockofCompany(this.companyId)
+            .subscribe(lockList  => {
+                this.buildTableData(lockList);
+                this.loadingService.triggerLoadingEvent(false);
+                this.lockList=lockList;
+                console.log("lockListlockList",lockList);
+                // this.showMessage(true, success);
+                this.showFlyout = false;
+            }, error =>  this.handleError(error));
 
     }
 
+    buildTableData(lockList){
+        this.hasItemCodes = false;
+        this.lockList = lockList;
+        this.tableData.rows = [];
+        this.tableOptions.search = true;
+        this.tableOptions.pageSize = 9;
+        this.tableData.columns = [
+            {"name":"id","title":"id","visible": false},
+            {"name": "lock_created_at", "title": "Lock"},
+            {"name": "lock_created_by", "title": "Created By"},
+            {"name": "actions", "title": ""}
+        ];
+        let base = this;
+        _.each(lockList, function(lockList) {
+            let row:any = {};
+            row['id']=lockList.id;
+            row['lock_created_at']=lockList.lock_created_at;
+            row['lock_created_by']=lockList.lock_created_by;
+            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            base.tableData.rows.push(row);
+        });
+        base.hasItemCodes = false;
+        setTimeout(function(){
+            base.hasItemCodes = true;
+        });
+    }
+    handleAction($event){
+        let action = $event.action;
+        delete $event.action;
+        delete $event.actions;
+        if(action == 'edit') {
+            this.showEditLock($event);
+        } else if(action == 'delete'){
+            this.removeLock($event);
+        }
+    }
+    showEditLock(row:any) {
+        this.showFlyout = true;
+        this.editMode = true;
+        this.LockForm = this._fb.group(this._lockform.getLock());
+        this.getLockDetails(row.id);
+    }
+    removeLock(row:any){
+        let vendor:VendorModel = row;
+        this.lockId=row.id;
+        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    }
+
+    deleteLock(toast){
+        console.log("this.companyId",this.companyId);
+        this.loadingService.triggerLoadingEvent(true);
+        this.companyService.removeLock(this.lockId, this.companyId)
+            .subscribe(success  => {
+                this._toastService.pop(TOAST_TYPE.success, "Lock deleted successfully");
+                this.companyService.getLockofCompany(this.companyId)
+                    .subscribe(lockList  => {
+                        this.buildTableData(lockList);
+                        this.loadingService.triggerLoadingEvent(false);
+                        return;
+                    }, error =>  this.handleError(error));
+            }, error =>  this.handleError(error));
+    }
+    ngOnDestroy(){
+        this.confirmSubscription.unsubscribe();
+    }
+    getLockDetails(vendorID){
+        let base=this;
+        this.companyService.lock(this.companyId,vendorID).subscribe(tax => {
+            this.row = tax;
+            console.log("taxtax",tax);
+
+            let lock_created_at:any=this.LockForm.controls['lock_created_at'];
+            lock_created_at.patchValue(tax.lock_created_at);
+            this._lockform.updateForm(this.LockForm, tax);
+
+        }, error => this.handleError(error));
+    }
     showCreateLock(){
 
         let self = this;
         this.editMode = false;
-        // this.TaxesForm.reset();
+        this.LockForm.reset();
         this.showFlyout = true;
     }
     hideFlyout(){
@@ -96,27 +184,66 @@ export class lockComponent {
             this.companyService.updateLock(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
-                    //this.showMessage(true, success);
+                    this.showMessage(true, success);
                     this.showFlyout = false;
-                }, error =>  console.log("error")
-                );
-
-        } else{
-            var currentdate = new Date();
-            var datetime=currentdate.getHours() + ":"
-                + currentdate.getMinutes() + ":" + currentdate.getSeconds();
-            console.log("<VendorModel>data",<VendorModel>data);
-            data.lock_created_at=data.lock_created_at+' '+datetime
-            this.companyService.addLock(<VendorModel>data, this.companyId)
-                .subscribe(success  => {
-                    this.loadingService.triggerLoadingEvent(false);
-                    //this.showMessage(true, success);
-                    this.showFlyout = false;
-                }, error =>  console.log("mnmnm"));
+                }, error => this.showMessage(false, error));
         }
+        else
+          {
+    this.companyService.addLock(<VendorModel>data, this.companyId)
+        .subscribe(success => {
+            this.loadingService.triggerLoadingEvent(false);
+            this.showMessage(true, success);
+            this.showFlyout = false;
+        }, error => this.showMessage(false, error));
+}
     }
     setDate(date: string){
         let jeDateControl:any = this.LockForm.controls['lock_created_at'];
         jeDateControl.patchValue(date);
     }
+    handleError(error) {
+        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+    }
+    showMessage(status, obj) {
+        if(status) {
+            this.status = {};
+            this.status['success'] = true;
+            this.hasItemCodes=false;
+            if(this.editMode) {
+                this.companyService.getLockofCompany(this.companyId)
+                    .subscribe(lockList  => {
+                        this.buildTableData(lockList);
+                        this.loadingService.triggerLoadingEvent(false);
+                        this.lockList=lockList;
+                    }, error =>  this.handleError(error));
+                this.LockForm.reset();
+                this._toastService.pop(TOAST_TYPE.success, "Lock updated successfully.");
+            } else {
+                this.companyService.getLockofCompany(this.companyId)
+                    .subscribe(lockList  => {
+                        this.buildTableData(lockList);
+                        this.loadingService.triggerLoadingEvent(false);
+                        this.lockList=lockList;
+                    }, error =>  this.handleError(error));
+
+                this.LockForm.reset();
+                this._toastService.pop(TOAST_TYPE.success, "Lock created successfully.");
+            }
+        } else {
+            this.status = {};
+            this.status['error'] = true;
+            try {
+                let resp = JSON.parse(obj);
+                if(resp.message){
+                    this._toastService.pop(TOAST_TYPE.error, resp.message);
+                } else{
+                    this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+                }
+            }catch(err){
+                this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+            }
+        }
+    }
+
 }
