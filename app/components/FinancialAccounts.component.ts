@@ -242,6 +242,16 @@ export class FinancialAccountsComponent{
         }if(key=='transit_chart_of_account_id'){
           row['transit_chart_of_account_id'] = base.getCOAName(account[key]);
         }
+        if(key=='starting_balance'){
+          let starting_balance=account['starting_balance']?Number(account['starting_balance']):0;
+          row['starting_balance'] =starting_balance.toLocaleString(Session.getCurrentCompanyCurrency(), { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        if(key=='current_balance'){
+          let current_balance=account['current_balance']?Number(account['current_balance']):0;
+          row['current_balance'] =current_balance.toLocaleString(Session.getCurrentCompanyCurrency(), { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       });
       base.tableData.rows.push(row);
