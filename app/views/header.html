@@ -7,15 +7,7 @@
 <div class="top-bar-right">
   <ul class="menu">
     <li>
-      <div [hidden]="!showSearch" class="search">
-        <i class="icon ion-search"></i>
-        <input [(ngModel)]="searchText" (keyup)="getTextValue($event,searchText)"
-               type="search" placeholder="Search" [focus]="showSearch" (blur)="toggleSearch()"/>
-        <i class="icon ion-ios-close-outline"  [hidden]="!searchText.length>0" (click)="removeSearch()"></i>
-      </div>
-    </li>
-    <li>
-      <a ripple [hidden]="showSearch" (click)="toggleSearch()"><i class="icon ion-search"></i></a>
+      <search-widget></search-widget>
     </li>
     <li>
       <a ripple data-toggle="opt-notification" class="icon-notification">
@@ -26,9 +18,6 @@
     <li class="switchcompany-grid">
       <switch-company></switch-company>
     </li>
-    <!--<li><a ripple (click)="showFullScreen()"><i class="icon" [ngClass]="fullScreenIcon"></i></a></li>
-    <li><a ripple (click)="viewUserProfilePage()"><i class="icon ion-person"></i></a></li>-->
-
   </ul>
 </div>
 
