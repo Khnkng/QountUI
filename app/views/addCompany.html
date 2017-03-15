@@ -91,7 +91,6 @@
                   <label>Date of Birth
                     <div>
                       <input custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDOB($event)" type="text" formControlName="contact_date_of_birth" placeholder="Date">
-                      <div class="error" [hidden]="companyForm.controls.contact_date_of_birth.untouched || companyForm.controls.contact_date_of_birth.valid"><small>Contact Date of Birth is required.</small></div>
                     </div>
                   </label>
                 </div>
