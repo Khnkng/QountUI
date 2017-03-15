@@ -37,7 +37,7 @@ export class FinancialAccountsComponent{
   tempValues:Array<string> = [];
   tableColumns:Array<string> = ['name', 'id', 'starting_balance', 'current_balance', 'no_effect_on_pl', 'is_credit_account', 'starting_balance_date', 'chart_of_account_id','transit_chart_of_account_id'];
   importType:string = 'MANUAL';
-  banks:Array<any> = [];
+  /*banks:Array<any> = [];*/
   showFlyout:boolean = false;
   chartOfAccounts:Array<any>=[];
 
@@ -54,10 +54,10 @@ export class FinancialAccountsComponent{
           }, error =>{
             this.toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
           });
-      this.financialAccountsService.financialInstitutions()
+      /*this.financialAccountsService.financialInstitutions()
           .subscribe(banks => {
             this.banks = banks;
-          }, error => this.handleError(error));
+          }, error => this.handleError(error));*/
     } else{
       this.toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
     }

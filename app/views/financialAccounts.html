@@ -50,7 +50,7 @@
                                                     <div class="error" [hidden]="accountForm.controls.name.untouched || accountForm.controls.name.valid">Name is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <!--<div class="row">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Select bank</label>
                                                 </div>
@@ -59,7 +59,7 @@
                                                         <option *ngFor="let bank of banks;" value="{{bank.id}}">{{bank.name}}</option>
                                                     </select>
                                                 </div>
-                                            </div>
+                                            </div>-->
                                             <div class="row">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Account Holder Type</label>
@@ -92,8 +92,8 @@
                                                     <label class="text-right">Name on Account</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" formControlName="signatory" placeholder="Name On Account*"/>
-                                                    <div class="error" [hidden]="accountForm.controls.signatory.untouched || accountForm.controls.signatory.valid">Signatory is required.</div>
+                                                    <input type="text" formControlName="name_on_account" placeholder="Name On Account*"/>
+                                                    <div class="error" [hidden]="accountForm.controls.name_on_account.untouched || accountForm.controls.name_on_account.valid">Name on account is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
