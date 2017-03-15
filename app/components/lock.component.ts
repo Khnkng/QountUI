@@ -77,7 +77,7 @@ export class lockComponent {
                         this.lockdate=lockList[i].active_lock_date;
                     }
                 };
-                console.log("this.lockdate",this.lockdate);
+                console.log("this.dfdfdfdfd",this.lockdate);
                 this.showFlyout = false;
             }, error =>  this.handleError(error));
 
@@ -188,11 +188,12 @@ export class lockComponent {
         this.showFlyout = !this.showFlyout;
     }
     isValid(LockForm){
-        if(LockForm.value.lock_created_at=="" ){
-            return false;
+        if((LockForm.value.lock_date) && (LockForm.value.key)){
+            return true;
         }
-        return true;
+        return false;
     }
+    
     submit($event) {
         let base = this;
         $event && $event.preventDefault();
@@ -218,6 +219,18 @@ export class lockComponent {
         .subscribe(success => {
             this.loadingService.triggerLoadingEvent(false);
             this.showMessage(true, success);
+            this.companyService.getLockofCompany(this.companyId)
+                .subscribe(lockList  => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.lockList=lockList;
+                    for(var i=0;i<lockList.length;i++)
+                    {
+                        if(lockList[i].active_lock_date){
+                            this.lockdate=lockList[i].active_lock_date;
+                        }
+                    };
+                    console.log("this.lockdatecreated",this.lockdate);
+                }, error =>  this.handleError(error));
             this.showFlyout = false;
         }, error => this.showMessage(false, error));
 }
