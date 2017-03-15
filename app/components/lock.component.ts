@@ -57,6 +57,7 @@ export class lockComponent {
     showFlyout:boolean = false;
     lockId:any;
     confirmSubscription:any;
+    lockdate:any;
 
 
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _lockform:LockForm,
@@ -65,14 +66,18 @@ export class lockComponent {
         console.log("dhfgadwf");
         this.LockForm = this._fb.group(_lockform.getLock());
         this.companyId = Session.getCurrentCompany();this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteLock(toast));
-
         this.companyService.getLockofCompany(this.companyId)
             .subscribe(lockList  => {
                 this.buildTableData(lockList);
                 this.loadingService.triggerLoadingEvent(false);
                 this.lockList=lockList;
-                console.log("lockListlockList",lockList);
-                // this.showMessage(true, success);
+                for(var i=0;i<lockList.length;i++)
+                {
+                    if(lockList[i].active_lock_date){
+                        this.lockdate=lockList[i].active_lock_date;
+                    }
+                };
+                console.log("this.lockdate",this.lockdate);
                 this.showFlyout = false;
             }, error =>  this.handleError(error));
 
@@ -86,18 +91,22 @@ export class lockComponent {
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
             {"name":"id","title":"id","visible": false},
-            {"name": "lock_created_at", "title": "Lock"},
-            {"name": "lock_created_by", "title": "Created By"},
+            {"name": "lock_date", "title": "Lock"},
+            {"name": "created_at", "title": "Created Date"},
+            {"name": "created_by", "title": "Created By"},
             {"name": "actions", "title": ""}
         ];
         let base = this;
         _.each(lockList, function(lockList) {
-            let row:any = {};
-            row['id']=lockList.id;
-            row['lock_created_at']=lockList.lock_created_at;
-            row['lock_created_by']=lockList.lock_created_by;
-            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
-            base.tableData.rows.push(row);
+            if(lockList.lock_date) {
+                let row: any = {};
+                row['id'] = lockList.id;
+                row['lock_date'] = lockList.lock_date;
+                row['created_at'] = lockList.created_at;
+                row['created_by'] = lockList.created_by;
+                row['actions'] = "<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+                base.tableData.rows.push(row);
+            }
         });
         base.hasItemCodes = false;
         setTimeout(function(){
@@ -147,19 +156,31 @@ export class lockComponent {
         let base=this;
         this.companyService.lock(this.companyId,vendorID).subscribe(tax => {
             this.row = tax;
-            console.log("taxtax",tax);
-
+           this.lockdate=tax.lock_created_at;
             let lock_created_at:any=this.LockForm.controls['lock_created_at'];
             lock_created_at.patchValue(tax.lock_created_at);
+            this.lockdate=tax.lock_created_at;
             this._lockform.updateForm(this.LockForm, tax);
 
         }, error => this.handleError(error));
+        this.lockdate="";
     }
     showCreateLock(){
-
         let self = this;
         this.editMode = false;
         this.LockForm.reset();
+        this.companyService.getLockofCompany(this.companyId)
+            .subscribe(lockList  => {
+                this.loadingService.triggerLoadingEvent(false);
+                this.lockList=lockList;
+                for(var i=0;i<lockList.length;i++)
+                {
+                    if(lockList[i].active_lock_date){
+                        this.lockdate=lockList[i].active_lock_date;
+                    }
+                };
+                console.log("this.lockdate",this.lockdate);
+            }, error =>  this.handleError(error));
         this.showFlyout = true;
     }
     hideFlyout(){
@@ -177,7 +198,6 @@ export class lockComponent {
         $event && $event.preventDefault();
         let data = this._lockform.getData(this.LockForm);
         this.companyId = Session.getCurrentCompany();
-
         this.loadingService.triggerLoadingEvent(true);
         if(this.editMode){
             data.id = this.row.id;
@@ -190,6 +210,10 @@ export class lockComponent {
         }
         else
           {
+              delete data.created_at;
+              delete data.created_by;
+              var Emailaddress=jQuery('#shared_with').tagit("assignedTags");
+              data.shared_with=Emailaddress;
     this.companyService.addLock(<VendorModel>data, this.companyId)
         .subscribe(success => {
             this.loadingService.triggerLoadingEvent(false);
@@ -198,10 +222,11 @@ export class lockComponent {
         }, error => this.showMessage(false, error));
 }
     }
-    setDate(date: string){
-        let jeDateControl:any = this.LockForm.controls['lock_created_at'];
+    setDate(date: string,lockdate){
+        let jeDateControl:any = this.LockForm.controls['lock_date'];
         jeDateControl.patchValue(date);
     }
+
     handleError(error) {
         this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }

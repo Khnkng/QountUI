@@ -13,7 +13,11 @@ export class LockForm extends abstractForm{
         numberValidator.push(Validators.required);
 
         return {
-            "lock_created_at": ['']
+            "lock_date": [''],
+            "key":[''],
+            "created_at":[''],
+            "created_by":[''],
+            "shared_with":['']
         }
     }
 }
