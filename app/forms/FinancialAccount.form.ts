@@ -21,13 +21,13 @@ export class FinancialAccountForm extends abstractForm{
       "user_name": [''],
       "id": [''],
       "password": [''],
+      "account_holder_type":['',Validators.required],
       "type":['', Validators.required],
       "importType":['MANUAL'],
       "chart_of_account_id": [''],
       "account_number":[''],
       "routing_number":[''],
       "signatory":[''],
-      "is_payment_accout_type":[false],
       "transit_chart_of_account_id":['']
     }
   }
