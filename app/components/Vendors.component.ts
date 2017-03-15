@@ -121,6 +121,11 @@ export class VendorComponent {
       {"name": "accountNumbers", "title": "Reference Numbers","visible": false},
       {"name": "routingNumber", "title": "RoutingNumber","visible": false},
       {"name": "coa", "title": "COA","visible": false},
+      {"name": "name_on_bank_account", "title": "name on bank account","visible": false},
+      {"name": "bank_account_type", "title": "bank account type","visible": false},
+      {"name": "bank_account_holder_type", "title": "accountholder type","visible": false},
+      {"name": "bank_account_number", "title": "bank account number","visible": false},
+      {"name": "bank_account_routing_number", "title": "account routing number","visible": false},
       {"name": "creditCardNumber", "title": "Credit Card Number","visible": false},
       {"name": "actions", "title": "", "type": "html", "filterable": false}
     ];

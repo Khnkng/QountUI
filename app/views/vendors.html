@@ -138,9 +138,71 @@
                           <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('pattern')">Please check email format</div>
                         </div>
                       </div>
+
+
+
                     </div>
                   </div>
                 </div>
+                <div class="row">
+                  <div class="small-12 medium-12 columns">
+                    <div class="form-section-left">
+                      <header class="form-section-header">Bank Info</header>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Account Holder Type</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <select formControlName="bank_account_holder_type" placeholder="Account Holder Type">
+                            <option value="company">Company</option>
+                            <option value="individual">Individual</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Type</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <select formControlName="bank_account_type" placeholder="Account Holder Type">
+                            <option value="paypal">Paypal</option>
+                            <option value="stripe">Stripe</option>
+                            <option value="credit">Credit</option>
+                            <option value="checking">Checking</option>
+                            <option value="savings">Savings</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Name on Account</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="name_on_bank_account" placeholder="Name On Account*"/>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Routing Number</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="bank_account_routing_number" placeholder="Routing Number*"/>
+                        </div>
+                      </div>
+                      <div class="row" >
+                        <div class="small-4 columns">
+                          <label class="text-right">Account Number</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="bank_account_number" placeholder="Account Number*"/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+
 
                 <div class="row">
                   <div class="small-12 medium-12 columns">
