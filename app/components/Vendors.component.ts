@@ -19,6 +19,8 @@ import {CompanyModel} from "../models/Company.model";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {Address} from "qCommon/app/directives/address.directive";
+import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
+import {UsersModel} from "../models/Users.model";
 
 declare var jQuery:any;
 declare var _:any;
@@ -57,10 +59,12 @@ export class VendorComponent {
     company : "Business",
     individual: "Individual"
   };
+  mailID:string;
 
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
               private _router: Router, private loadingService:LoadingService,
-              private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
+              private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService,
+              private usersService: CompanyUsers) {
     this.vendorForm = this._fb.group(_vendorForm.getForm());
     this.companyId = Session.getCurrentCompany(); ;
     this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteVendor(toast));
@@ -86,6 +90,7 @@ export class VendorComponent {
   ngOnDestroy(){
     this.confirmSubscription.unsubscribe();
     jQuery('.ui-autocomplete').remove();
+    jQuery('#invite-vendor').remove();
   }
   getCompanyName(companyId){
     let company = _.find(this.companies, {id: companyId});
@@ -388,5 +393,36 @@ deleteVendor(toast){
       accountNumbersControl.patchValue(vendor.accountNumbers);
       this._vendorForm.updateForm(this.vendorForm, vendor);
     }, error => this.handleError(error));
+  }
+
+  inviteVendor(){
+    jQuery('#invite-vendor').foundation('open');
+  }
+
+  closeVendor(){
+    jQuery('#invite-vendor').foundation('close');
+  }
+
+  checkValidation(){
+    if(this.mailID)
+        return true;
+    return false;
+  }
+
+  saveInvitedVendor(){
+    this.loadingService.triggerLoadingEvent(true);
+    let userObj={
+      id:this.mailID,
+      roleID:'Vendor',
+      email:this.mailID
+    };
+    this.usersService.addUser(<UsersModel>userObj, this.companyId)
+        .subscribe(success  => {
+          this.loadingService.triggerLoadingEvent(false);
+          this._toastService.pop(TOAST_TYPE.success, "vendor invited successfully.");
+        }, error =>  {
+          this.loadingService.triggerLoadingEvent(false);
+          this._toastService.pop(TOAST_TYPE.success, "failed to invite vendor.");
+        });
   }
 }
