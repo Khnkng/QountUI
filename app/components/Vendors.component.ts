@@ -131,6 +131,8 @@ export class VendorComponent {
       {"name": "bank_account_holder_type", "title": "accountholder type","visible": false},
       {"name": "bank_account_number", "title": "bank account number","visible": false},
       {"name": "bank_account_routing_number", "title": "account routing number","visible": false},
+      {"name": "contact_first_name", "title": "First Name","visible": false},
+      {"name": "contact_last_name", "title": "Last Name","visible": false},
       {"name": "creditCardNumber", "title": "Credit Card Number","visible": false},
       {"name": "actions", "title": "", "type": "html", "filterable": false}
     ];

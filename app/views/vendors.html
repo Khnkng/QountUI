@@ -135,6 +135,24 @@
                     </div>
                     <div class="form-section-left">
                       <header class="form-section-header">Contact Info</header>
+                      <div class="row">
+                        <div class="small-3 columns">
+                          <label class="float-right">First Name</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="contact_first_name" placeholder="First Name">
+                          <div class="error" [hidden]="vendorForm.controls.contact_first_name.untouched || vendorForm.controls.contact_first_name.valid"><small>Contact First Name is required.</small></div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-3 columns">
+                          <label class="float-right">Last Name</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="contact_last_name" placeholder="Last Name">
+                          <div class="error" [hidden]="vendorForm.controls.contact_last_name.untouched || vendorForm.controls.contact_last_name.valid"><small>Contact Last Name is required.</small></div>
+                        </div>
+                      </div>
                       <Address [code]="countryCode" #addressDir="address"></Address>
                       <div class="row">
                         <div class="small-3 columns">
@@ -146,8 +164,6 @@
                           <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('pattern')">Please check email format</div>
                         </div>
                       </div>
-
-
 
                     </div>
                   </div>
