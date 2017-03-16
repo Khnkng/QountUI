@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
+import {CustomersService} from "qCommon/app/services/Customers.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -17,24 +18,27 @@ declare var _:any;
 })
 
 export class SearchComponent implements  OnInit{
-    showSearch:boolean = false;
-    selectedComponents:Array<string> = [];
+    source:Array<string> = [];
     amountCondition:string;
     companyCurrency:string;
     amount:number = 0;
     lowerLimit:number = 0;
     upperLimit:number = 0;
-    title:string;
+    text:string;
     beginDate:string;
     endDate:string;
     companyId:string;
+
     chartOfAccount:string;
     vendor: string;
+    customer: string;
 
     chartOfAccounts:Array<any> = [];
     vendors:Array<any> = [];
+    customers:Array<any> = [];
 
-    constructor(private _router: Router, private coaService: ChartOfAccountsService, private companyService: CompaniesService) {
+    constructor(private _router: Router, private coaService: ChartOfAccountsService, private companyService: CompaniesService,
+                private customersService: CustomersService) {
         this.companyCurrency=Session.getCurrentCompanyCurrency();
         this.companyId=Session.getCurrentCompany();
 
@@ -50,6 +54,12 @@ export class SearchComponent implements  OnInit{
             }, error => {
 
             });
+        this.customersService.customers(this.companyId)
+            .subscribe(customers => {
+                this.customers = customers;
+            }, error => {
+
+            });
     }
 
     ngOnInit() {
@@ -58,39 +68,41 @@ export class SearchComponent implements  OnInit{
         });
     }
 
-    toggleSearch(){
-        this.showSearch = !this.showSearch;
-    }
 
     isCompSelected(component){
-        return this.selectedComponents.indexOf(component) != -1;
+        let url = window.location.href.toLowerCase();
+        if(url.indexOf(component.toLowerCase()) != -1){
+            this.source = [];
+            this.source.push(component);
+            return 'selected-button';
+        }
+        return 'hollow';
     }
 
     selectComponent(component){
-        if(this.selectedComponents.indexOf(component) == -1){
-            this.selectedComponents.push(component);
+        if(this.source.indexOf(component) == -1){
+            this.source.push(component);
         } else{
-            this.selectedComponents.splice(this.selectedComponents.indexOf(component), 1);
+            this.source.splice(this.source.indexOf(component), 1);
         }
     }
 
-    setBeginDate(data){
-
+    setBeginDate(date){
+        this.beginDate = date;
     }
 
     setEndDate(date){
-
+        this.endDate = date;
     }
 
-    closeSearchWidget(){
-        this.showSearch = !this.showSearch;
-        this.selectedComponents = [];
+    resetCriteria(){
+        this.source = [];
         this.beginDate = '';
         this.endDate = '';
         this.amount = 0;
         this.lowerLimit = 0;
         this.upperLimit = 0;
-        this.title = '';
+        this.text = '';
         this.amountCondition = '';
     }
 
@@ -100,5 +112,33 @@ export class SearchComponent implements  OnInit{
 
     setVendor(vendor){
         this.vendor = vendor.id;
+    }
+
+    setCustomer(customer){
+        this.customer = customer.id;
+    }
+
+    doSearch(){
+        this.resetCriteria();
+        let data = {
+            source: this.source,
+            criteria: {
+                amount: {
+                    "condition": this.amountCondition,
+                    "value": this.amountCondition == 'between'? [this.upperLimit, this.lowerLimit]: this.amount
+                },
+                date: {
+                    "condition": "between",
+                    "value": [this.beginDate, this.endDate]
+                },
+                text: this.text,
+                chartOfAccount: this.chartOfAccount,
+                vendor: this.vendor,
+                customer: this.customer
+            }
+        };
+        sessionStorage.setItem("searchcriteria", JSON.stringify(data));
+        let link = ['searchResults'];
+        this._router.navigate(link);
     }
 }
