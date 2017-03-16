@@ -340,6 +340,7 @@ a:hover, a:focus .je-badge{
     .button{
       margin-left: 5px;
       font-size: 9px !important;
+      width: calc(14% - 1px) !important;
     }
   }
 
@@ -357,6 +358,10 @@ a:hover, a:focus .je-badge{
         margin-top: -3px;
       }
     }
+  }
+
+  .combo-box-row{
+    margin-top: 10px;
   }
 }
 
@@ -3251,7 +3256,7 @@ input[readonly], textarea[readonly]{
 }
 
 .foo-container .bills-footable .footable-filtering .footable-filtering {
-  right: 260px !important;
+  right: 180px !important;
 }
 
 .bills-main-div {
