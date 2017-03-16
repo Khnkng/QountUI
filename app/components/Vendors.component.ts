@@ -420,9 +420,10 @@ deleteVendor(toast){
         .subscribe(success  => {
           this.loadingService.triggerLoadingEvent(false);
           this._toastService.pop(TOAST_TYPE.success, "vendor invited successfully.");
+          this.mailID=null;
         }, error =>  {
           this.loadingService.triggerLoadingEvent(false);
-          this._toastService.pop(TOAST_TYPE.success, "failed to invite vendor.");
+          this._toastService.pop(TOAST_TYPE.error, "failed to invite vendor.");
         });
   }
 }
