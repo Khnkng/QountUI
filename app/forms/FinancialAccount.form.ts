@@ -20,7 +20,7 @@ export class FinancialAccountForm extends abstractForm{
       "user_name": [''],
       "id": [''],
       "password": [''],
-      "account_holder_type":['',Validators.required],
+      "account_holder_type":['company',Validators.required],
       "type":['', Validators.required],
       "importType":['MANUAL'],
       "chart_of_account_id": [''],

@@ -93,8 +93,7 @@ export class lockComponent {
             {"name":"id","title":"id","visible": false},
             {"name": "lock_date", "title": "Lock"},
             {"name": "created_at", "title": "Created Date"},
-            {"name": "created_by", "title": "Created By"},
-            {"name": "actions", "title": ""}
+            {"name": "created_by", "title": "Created By"}
         ];
         let base = this;
         _.each(lockList, function(lockList) {
@@ -136,18 +135,18 @@ export class lockComponent {
     }
 
     deleteLock(toast){
-        console.log("this.companyId",this.companyId);
-        this.loadingService.triggerLoadingEvent(true);
-        this.companyService.removeLock(this.lockId, this.companyId)
-            .subscribe(success  => {
-                this._toastService.pop(TOAST_TYPE.success, "Lock deleted successfully");
-                this.companyService.getLockofCompany(this.companyId)
-                    .subscribe(lockList  => {
-                        this.buildTableData(lockList);
-                        this.loadingService.triggerLoadingEvent(false);
-                        return;
-                    }, error =>  this.handleError(error));
-            }, error =>  this.handleError(error));
+        // console.log("this.companyId",this.companyId);
+        // this.loadingService.triggerLoadingEvent(true);
+        // this.companyService.removeLock(this.lockId, this.companyId)
+        //     .subscribe(success  => {
+        //         this._toastService.pop(TOAST_TYPE.success, "Lock deleted successfully");
+        //         this.companyService.getLockofCompany(this.companyId)
+        //             .subscribe(lockList  => {
+        //                 this.buildTableData(lockList);
+        //                 this.loadingService.triggerLoadingEvent(false);
+        //                 return;
+        //             }, error =>  this.handleError(error));
+        //     }, error =>  this.handleError(error));
     }
     ngOnDestroy(){
         this.confirmSubscription.unsubscribe();

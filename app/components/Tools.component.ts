@@ -55,6 +55,7 @@ export class ToolsComponent {
       this.modulesCount=badges.modulesCount;
       this.usersCount= badges.companyUsers;
       this.dimensionCount = badges.dimensions;
+      this.accountsCount = badges.accounts;
     }, error => this.handleError(error));
   }
 

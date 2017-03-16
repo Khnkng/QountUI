@@ -130,42 +130,38 @@
 					<div class="company-section-left">
 						<header class="form-section-header">Address</header>
 						<Address [code]="countryCode" #addressDir="address"></Address>
+						<header class="form-section-header">Contact</header>
+						<div class="row">
+							<div class="small-3 columns">
+								<label class="text-right">First Name</label>
+							</div>
+							<div class="small-6 columns">
+								<input type="text" formControlName="contact_first_name" placeholder="First Name">
+								<div class="error" [hidden]="companyForm.controls.contact_first_name.untouched || companyForm.controls.contact_first_name.valid"><small>Contact First Name is required.</small></div>
+							</div>
+
+						</div>
+						<div class="row">
+							<div class="small-3 columns">
+								<label class="text-right">Last Name</label>
+							</div>
+							<div class="small-6 columns">
+								<input type="text" formControlName="contact_last_name" placeholder="Last Name">
+								<div class="error" [hidden]="companyForm.controls.contact_last_name.untouched || companyForm.controls.contact_last_name.valid"><small>Contact Last Name is required.</small></div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="small-3 columns">
+								<label class="text-right">Date of Birth</label>
+							</div>
+							<div class="small-6 columns">
+								<input custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDOB($event)" type="text" formControlName="contact_date_of_birth" placeholder="Date">
+								<div class="error" [hidden]="companyForm.controls.contact_date_of_birth.untouched || companyForm.controls.contact_date_of_birth.valid"><small>Contact Date of Birth is required.</small></div>
+							</div>
+						</div>
 					</div>
 				  </div>
 				</div>
-
-
-
-				  <div class="small-12 medium-12 columns">
-					  <label><b>Contact</b>
-					  </label>
-					  <hr/>
-				  </div>
-
-				  <div class="small-12 medium-4 columns">
-					  <label>First Name
-						  <div>
-							  <input type="text" formControlName="contact_first_name" placeholder="First Name">
-							  <div class="error" [hidden]="companyForm.controls.contact_first_name.untouched || companyForm.controls.contact_first_name.valid"><small>Contact First Name is required.</small></div>
-						  </div>
-					  </label>
-				  </div>
-				  <div class="small-12 medium-4 columns">
-					  <label>Last Name
-						  <div>
-							  <input type="text" formControlName="contact_last_name" placeholder="Last Name">
-							  <div class="error" [hidden]="companyForm.controls.contact_last_name.untouched || companyForm.controls.contact_last_name.valid"><small>Contact Last Name is required.</small></div>
-						  </div>
-					  </label>
-				  </div>
-				  <div class="small-12 medium-4 columns">
-					  <label>Date of Birth
-						  <div>
-							  <input custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDOB($event)" type="text" formControlName="contact_date_of_birth" placeholder="Date Of Birth">
-						  </div>
-					  </label>
-				  </div>
-
 
 				  <div class="row">
 				<div class="small-12 medium-12 columns">

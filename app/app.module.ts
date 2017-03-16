@@ -74,6 +74,7 @@ import {EmployeesComponent} from "./components/Employees.component";
 import {EmployeesForm} from "./forms/Employees.form";
 import {PaymentsComponent} from "./components/payments.component";
 import {SearchComponent} from "./components/Search.component";
+import {SearchResultsComponent} from "./components/SearchResults.component";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -242,6 +243,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'searchResults',
+            component: SearchResultsComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'payments',
             component: PaymentsComponent,
             canActivate: [LoggedInActivator]
@@ -257,7 +263,8 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
-        ResetPasswordComponent,lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent, CategorizationComponent,PaymentsComponent, SearchComponent],
+        ResetPasswordComponent,lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,
+        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
