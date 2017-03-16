@@ -9,8 +9,10 @@
 </div>
 <div class="row" foundation>
   <div class="column large-12 medium-12 small-12 foo-container">
-    <div class="foo-toolbar">
-      <div class="cust-dropdown">
+    <div class="vendor-foo-toolbar">
+      <i class="ion-ios-email-outline" style="font-size: 3.3rem;margin-right: 8px;" (click)="inviteVendor()"></i>
+      <button class="button small" (click)="showCreateVendor()"><i class="icon ion-plus-round"></i>Vendor</button>
+      <!--<div class="cust-dropdown">
         <button class="button small add-bill-button dropbtn" type="button">Vendor <i class="icon ion-arrow-down-b" style="left:8px"></i></button>
         <div class="dropdown-content">
           <div>
@@ -18,9 +20,9 @@
             <div><a (click)="inviteVendor()">Invite Vendor</a></div>
           </div>
         </div>
-      </div>
+      </div>-->
     </div>
-    <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasVendorsList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    <foo-table #fooTableDir="fooTable" class="bills-footable" *ngIf="hasVendorsList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
   </div>
   <div class="qount-off-canvas-menu">
     <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
