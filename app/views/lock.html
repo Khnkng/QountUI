@@ -12,7 +12,6 @@
         </div>
         <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
-
     <div class="qount-off-canvas-menu">
         <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
             <section class="flyout-placeholder">
@@ -31,10 +30,10 @@
                                                 <header class="form-section-header">Lock Info</header>
                                                 <div class="row">
                                                     <div class="small-4 columns">
-                                                        <label class="text-right">Books Closed Date</label>
+                                                        <label class="text-right">Lock Date</label>
                                                     </div>
                                                     <div class="small-6 columns">
-                                                        <input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event,lockdate)" [format]="'MM/DD/YYYY'" [mindate]="lockdate"   type="text" formControlName="lock_date" placeholder="Lock Date*"/>
+                                                        <input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event,lockdate)" [format]="'MM/DD/YYYY'" [mindate]="lockdate"  type="text" formControlName="lock_date" placeholder="Lock Date*"/>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -48,9 +47,9 @@
 
                                                 <div class="row">
                                                     <div class="small-4 columns">
-                                                        <label class="text-right">Shared To</label>
+                                                        <label class="text-right">Share</label>
                                                     </div>
-                                                    <div class="small-6 columns">
+                                                    <div class="small-6 columns" style="margin-left: 2px;">
                                                         <input style="margin-left: 5px;" formControlName="shared_with" id="shared_with" [tagsList]="[]" class="bighalf-tags,input, empty" name="name" type="text" value="" size="30" custom-tags /><br />
                                                     </div>
                                                 </div>
