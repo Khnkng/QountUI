@@ -63,12 +63,20 @@ export class LogInComponent implements OnInit {
     this.loadingService.triggerLoadingEvent(false);
     if(status) {
       Session.create(obj.user, obj.token);
-      this.fetchCompanies(obj.user);
+      if(obj.user.default_company&&obj.user.default_company.roles&&!obj.user.default_company.roles.includes('Vendor')){
+        this.fetchCompanies(obj.user);
+      }else {
+        this.showLoginError()
+      }
     } else {
-      this.status = {};
-      this.status['error'] = true;
-      this.message = obj;
+      this.showLoginError(obj)
     }
+  }
+
+  showLoginError(obj?){
+    this.status = {};
+    this.status['error'] = true;
+    this.message = obj?obj:'Username or password incorrect';
   }
 
   handleError(error){
