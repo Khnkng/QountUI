@@ -3,7 +3,7 @@
  */
 
 import {Component, Output, EventEmitter, OnInit} from "@angular/core";
-import {Router} from "@angular/router";
+import {Router, NavigationEnd} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
@@ -63,16 +63,21 @@ export class SearchComponent implements  OnInit{
     }
 
     ngOnInit() {
+        let base = this;
+        this._router.events.filter(event => event instanceof NavigationEnd).subscribe(routeChange => {
+            base.source = [];
+        });
+
         jQuery(document).ready(function(){
             jQuery(document).foundation();
         });
     }
 
-
     isCompSelected(component){
         let url = window.location.href.toLowerCase();
-        if(url.indexOf(component.toLowerCase()) != -1){
-            this.source = [];
+        if(this.source.indexOf(component) != -1){
+            return 'selected-button';
+        } else if(url.indexOf(component.toLowerCase()) != -1){
             this.source.push(component);
             return 'selected-button';
         }
