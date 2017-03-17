@@ -34,9 +34,8 @@
           <!--here comes actual flyout code-->
           <div #createVendor id="createVendor" class="create-vendor">
             <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="vendorForm">
-
               <section class="form-section clearfix">
-                <div class="row">
+                <div [hidden]="!showFirstStep" class="row">
                   <div class="small-12 medium-12 columns">
                     <div class="form-section-left">
                       <header class="form-section-header">Basic Info</header>
@@ -168,7 +167,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="row">
+                <div [hidden]="!showSecondStep" class="row">
                   <div class="small-12 medium-12 columns">
                     <div class="form-section-left">
                       <header class="form-section-header">Bank Info</header>
@@ -224,16 +223,19 @@
                     </div>
                   </div>
                 </div>
-
-
-
-
-                <div class="row">
+                <div class="row" [hidden]="!showFirstStep">
+                  <div class="small-12 medium-12 columns">
+                    <button class="button create small float-right" [disabled]="!isValid(vendorForm) || !addressValid()" type="submit" (click)="nextStep($event)" data-close>Next</button>
+                  </div>
+                </div>
+                <div class="row" [hidden]="!showSecondStep">
                   <div class="small-12 medium-12 columns">
                     <button class="button create small float-right" [disabled]="!isValid(vendorForm) || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
+                    <button class="button create small float-right" style="margin-right: 10px;" [disabled]="!isValid(vendorForm) || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Skip && Update":"Skip && Add"}}</button>
                   </div>
                 </div>
               </section>
+
             </form>
           </div>
         </div>

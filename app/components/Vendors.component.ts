@@ -60,6 +60,8 @@ export class VendorComponent {
     individual: "Individual"
   };
   mailID:string;
+  showFirstStep:boolean = true;
+  showSecondStep:boolean = false;
 
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
               private _router: Router, private loadingService:LoadingService,
@@ -243,11 +245,9 @@ deleteVendor(toast){
     this.getVendorDetails(row.id);
   }
 
-  submit($event) {
-
+  nextStep($event) {
     $event && $event.preventDefault();
     let data = this._vendorForm.getData(this.vendorForm);
-    this.companyId = Session.getCurrentCompany();
     let addressData = this.addressDir.getData();
     addressData.country=data.country;
     data.addresses=[addressData];
@@ -259,6 +259,17 @@ deleteVendor(toast){
       this._toastService.pop(TOAST_TYPE.error, "Please select state");
       return;
     }
+    this.showFirstStep = false;
+    this.showSecondStep = true;
+  }
+
+  submit($event) {
+    $event && $event.preventDefault();
+    this.companyId = Session.getCurrentCompany();
+    let data = this._vendorForm.getData(this.vendorForm);
+    let addressData = this.addressDir.getData();
+    addressData.country=data.country;
+    data.addresses=[addressData];
     this.loadingService.triggerLoadingEvent(true);
     if(this.editMode) {
       data.id = this.row.id;
@@ -285,6 +296,8 @@ deleteVendor(toast){
   hideFlyout(){
     this.row = {};
     this.showFlyout = !this.showFlyout;
+    this.showFirstStep = true;
+    this.showSecondStep = false;
   }
 
   addressValid() {
@@ -427,5 +440,10 @@ deleteVendor(toast){
           this.loadingService.triggerLoadingEvent(false);
           this._toastService.pop(TOAST_TYPE.error, "failed to invite vendor.");
         });
+  }
+
+  gotoFirstStep(){
+    this.showFirstStep = true;
+    this.showSecondStep = false;
   }
 }
