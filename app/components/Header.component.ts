@@ -180,36 +180,9 @@ export class HeaderComponent implements  OnInit{
     this.redirect.emit(link);
   }
 
-  /* Search functionlity */
-  isCompSelected(component){
-    return this.selectedComponents.indexOf(component) != -1;
-  }
-
-  selectComponent(component){
-    if(this.selectedComponents.indexOf(component) == -1){
-      this.selectedComponents.push(component);
-    } else{
-      this.selectedComponents.splice(this.selectedComponents.indexOf(component), 1);
-    }
-  }
-
-  setBeginDate(data){
-
-  }
-
-  setEndDate(date){
-
-  }
-
-  closeSearchWidget(){
-    this.showSearch = !this.showSearch;
-    this.selectedComponents = [];
-    this.beginDate = '';
-    this.endDate = '';
-    this.amount = 0;
-    this.lowerLimit = 0;
-    this.upperLimit = 0;
-    this.title = '';
-    this.amountCondition = '';
+  showSearchPage(){
+    sessionStorage.removeItem('searchcriteria');
+    let link = ['search'];
+    this._router.navigate(link);
   }
 }
