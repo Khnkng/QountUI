@@ -449,7 +449,7 @@ export class BooksComponent{
             }
             row['actions'] = action;
             if(row['type'] == 'Original' && journalEntry['source'] === 'manual'){
-                row['reverse'] = "<a style='font-size:0.6rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action' data-action='reverse'>Reverse</a>";
+                row['reverse'] = "<a style='font-size:0.6rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action reverseButton' data-action='reverse'>Reverse</a>";
             }
             base.jeTableData.rows.push(row);
         });

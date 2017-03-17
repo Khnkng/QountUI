@@ -221,8 +221,8 @@
                 </div>
                 <div class="row" [hidden]="!showSecondStep">
                   <div class="small-12 medium-12 columns">
-                    <button class="button create small float-right" [disabled]="!isValid(vendorForm) || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
-                    <button class="button create small float-right" style="margin-right: 10px;" [disabled]="!isValid(vendorForm) || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Skip && Update":"Skip && Add"}}</button>
+                    <button class="button create small float-right" [disabled]="!isValid(vendorForm) || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Create"}}</button>
+                    <button class="button create small float-right" style="margin-right: 10px;" [disabled]="!isValid(vendorForm) || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Skip & Update":"Skip & Create"}}</button>
                   </div>
                 </div>
               </section>
