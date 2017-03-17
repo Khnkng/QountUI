@@ -3,7 +3,7 @@
  */
 
 import {Component, Output, EventEmitter, OnInit} from "@angular/core";
-import {Router} from "@angular/router";
+import {Router, NavigationEnd} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
@@ -19,16 +19,22 @@ declare var _:any;
 
 export class SearchComponent implements  OnInit{
     source:Array<string> = [];
-    amountCondition:string;
     companyCurrency:string;
+
+    amountCondition:string;
+    textCondition:string;
+    text:string;
+
+    dateCondition:string;
     amount:number = 0;
     lowerLimit:number = 0;
     upperLimit:number = 0;
-    text:string;
+
+    date:string;
     beginDate:string;
     endDate:string;
-    companyId:string;
 
+    companyId:string;
     chartOfAccount:string;
     vendor: string;
     customer: string;
@@ -63,16 +69,26 @@ export class SearchComponent implements  OnInit{
     }
 
     ngOnInit() {
+        let base = this;
+        this._router.events.filter(event => event instanceof NavigationEnd).subscribe(routeChange => {
+            base.source = [];
+        });
+
         jQuery(document).ready(function(){
             jQuery(document).foundation();
         });
     }
 
+    showPreviousPage(){
+        let link = [Session.getLastVisitedUrl()];
+        this._router.navigate(link);
+    }
 
     isCompSelected(component){
-        let url = window.location.href.toLowerCase();
-        if(url.indexOf(component.toLowerCase()) != -1){
-            this.source = [];
+        let url = Session.getLastVisitedUrl();
+        if(this.source.indexOf(component) != -1){
+            return 'selected-button';
+        } else if(url.indexOf(component.toLowerCase()) != -1){
             this.source.push(component);
             return 'selected-button';
         }
@@ -87,12 +103,8 @@ export class SearchComponent implements  OnInit{
         }
     }
 
-    setBeginDate(date){
-        this.beginDate = date;
-    }
-
-    setEndDate(date){
-        this.endDate = date;
+    setDate(date, key){
+        this[key] = date;
     }
 
     resetCriteria(){
@@ -119,7 +131,6 @@ export class SearchComponent implements  OnInit{
     }
 
     doSearch(){
-        this.resetCriteria();
         let data = {
             source: this.source,
             criteria: {
@@ -128,17 +139,20 @@ export class SearchComponent implements  OnInit{
                     "value": this.amountCondition == 'between'? [this.upperLimit, this.lowerLimit]: this.amount
                 },
                 date: {
-                    "condition": "between",
-                    "value": [this.beginDate, this.endDate]
+                    "condition": this.dateCondition,
+                    "value": this.dateCondition == 'between'? [this.beginDate, this.endDate]: this.date
                 },
-                text: this.text,
+                text: {
+                    "condition": this.textCondition,
+                    "value": this.text
+                },
                 chartOfAccount: this.chartOfAccount,
                 vendor: this.vendor,
                 customer: this.customer
             }
         };
         sessionStorage.setItem("searchcriteria", JSON.stringify(data));
-        let link = ['searchResults'];
-        this._router.navigate(link);
+        console.log("data: ", data);
+        //this.resetCriteria();
     }
 }

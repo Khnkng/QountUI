@@ -58,6 +58,7 @@ export class lockComponent {
     lockId:any;
     confirmSubscription:any;
     lockdate:any;
+    todaysDate:any;
 
 
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _lockform:LockForm,
@@ -77,9 +78,13 @@ export class lockComponent {
                         this.lockdate=lockList[i].active_lock_date;
                     }
                 };
-                console.log("this.dfdfdfdfd",this.lockdate);
                 this.showFlyout = false;
             }, error =>  this.handleError(error));
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        this.todaysDate= mm+"/"+dd+"/"+yyyy;
 
     }
 
@@ -94,6 +99,7 @@ export class lockComponent {
             {"name": "lock_date", "title": "Lock"},
             {"name": "created_at", "title": "Created Date"},
             {"name": "created_by", "title": "Created By"}
+            // {"name": "actions", "title": ""}
         ];
         let base = this;
         _.each(lockList, function(lockList) {
@@ -135,6 +141,7 @@ export class lockComponent {
     }
 
     deleteLock(toast){
+
         // console.log("this.companyId",this.companyId);
         // this.loadingService.triggerLoadingEvent(true);
         // this.companyService.removeLock(this.lockId, this.companyId)
@@ -180,7 +187,13 @@ export class lockComponent {
                 };
                 console.log("this.lockdate",this.lockdate);
             }, error =>  this.handleError(error));
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        this.todaysDate= mm+"/"+dd+"/"+yyyy;
         this.showFlyout = true;
+
     }
     hideFlyout(){
         this.row = {};
