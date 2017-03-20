@@ -433,7 +433,10 @@ export class BooksComponent{
                 }
                 row[key] = journalEntry[key];
             });
-            let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+            if(journalEntry['source'] === 'manual'){
+               action= action+"<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            }
             if(journalEntry['sourceID'] && journalEntry['source'] === 'accountsPayable'){
                 if(journalEntry['sourceType'] === 'payment'){
                     action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>P</span></a>"+action;
