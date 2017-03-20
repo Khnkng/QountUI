@@ -85,7 +85,7 @@
                                             <tr *ngIf="expenseForm.controls.expense_items.controls.length == 0">
                                                 <td colspan="5" class="text-center">No expense items found</td>
                                             </tr>
-                                            <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="!newExpense && itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
+                                            <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
                                                 <td *ngIf="!itemForm.editable">{{itemForm.controls.title.value}}</td>
                                                 <td *ngIf="itemForm.editable">
                                                     <input type="text" placeholder="Line Title" [formControl]="itemForm.controls.title"/>

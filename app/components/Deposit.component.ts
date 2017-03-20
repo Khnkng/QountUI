@@ -397,7 +397,11 @@ export class DepositComponent{
             if(itemData.invoice_id=='--None--'||itemData.invoice_id==''){
                 itemData.invoice_id=null;
             }
-            data.push(itemData);
+            if(!base.newDeposit){
+                data.push(itemData);
+            } else if(!itemData.destroy){
+                data.push(itemData);
+            }
         });
         return data;
     }
@@ -410,11 +414,13 @@ export class DepositComponent{
             return;
         }
         data.payments = this.getDepositItemData(this.depositForm.controls['payments']);
-        let itemTotal = _.sumBy(data.payments, 'amount');
-                if(itemTotal != data.amount){
-                        this.toastService.pop(TOAST_TYPE.error, "Deposit amount and Item total did not match.");
-                        return;
-                    }
+        let itemTotal = _.sumBy(data.payments, function(payment){
+            return payment.destroy? 0 : payment.amount;
+        });
+        if(itemTotal != data.amount){
+            this.toastService.pop(TOAST_TYPE.error, "Deposit amount and Item total did not match.");
+            return;
+        }
         this.loadingService.triggerLoadingEvent(true);
         if(this.newDeposit){
             this.depositService.addDeposit(data, this.currentCompanyId)
