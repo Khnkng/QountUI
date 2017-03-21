@@ -34,7 +34,6 @@ export class JournalEntryComponent{
     disableReversalDate:boolean = true;
     disableRecurring:boolean = true;
     disableReverseJournal: boolean = true;
-    journalLinesArray: FormArray = new FormArray([]);
     @ViewChild('editDimension') editDimension;
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     @ViewChild('newCoaComboBoxDir') newCoaComboBox: ComboBox;
@@ -207,7 +206,8 @@ export class JournalEntryComponent{
                 status: 'NEW'
             };
         } else{
-            let lineListItem = this.journalLinesArray.controls[index];
+            let itemsControl:any = this.jeForm.controls['journalLines'];
+            let lineListItem = itemsControl.controls[index];
             this.editingLine = {
                 status: 'UPDATE',
                 index: index
@@ -287,11 +287,12 @@ export class JournalEntryComponent{
     /*This will just add new line details in VIEW*/
     saveLineInView(line){
         let base = this;
+        let linesControl:any = this.jeForm.controls['journalLines'];
         let lineListForm = _.cloneDeep(this._fb.group(this._lineListForm.getForm(line)));
-        this.journalLinesArray.push(lineListForm);
+        linesControl.controls.push(lineListForm);
         let journalData = [];
-        _.each(this.journalLinesArray.controls, function(lineListForm){
-            journalData.push(base._lineListForm.getData(lineListForm));
+        _.each(linesControl.controls, function(lineForm){
+            journalData.push(base._lineListForm.getData(lineForm));
         });
         this.jeForm.controls['journalLines'].patchValue(journalData);
     }
@@ -417,14 +418,12 @@ export class JournalEntryComponent{
         let lineList:any = this.jeForm.controls['journalLines'];
         if(this.newJournalEntry){
             lineList.controls.splice(lineIndex, 1);
-            this.journalLinesArray.controls.splice(lineIndex, 1);
         } else{
             let lineId = lineList.controls[lineIndex].controls['id'].value;
             this.loadingService.triggerLoadingEvent(true);
             this.journalService.deleteJournalLine(this.currentCompany.id, this.journalEntry.id, lineId)
                 .subscribe(response => {
                     lineList.controls.splice(lineIndex, 1);
-                    this.journalLinesArray.controls.splice(lineIndex, 1);
                     this.stopLoaderAndShowMessage(false, "Deleted Journal Line successfully");
                 }, error =>{
                     this.stopLoaderAndShowMessage(true, "Failed to delete Journal Line");
@@ -477,6 +476,17 @@ export class JournalEntryComponent{
         });
     }
 
+    getJournalLineData(jeForm){
+        let base = this;
+        let data = [];
+        let linesControl = jeForm.controls['journalLines'];
+        _.each(linesControl.controls, function(jeLineControl){
+            let lineData = base._lineListForm.getData(jeLineControl);
+            data.push(lineData);
+        });
+        return data;
+    }
+
     submit($event){
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
@@ -484,6 +494,7 @@ export class JournalEntryComponent{
             this.toastService.pop(TOAST_TYPE.error, "Credit and debit totals doesn't match");
             return false;
         }
+        data.journalLines = this.getJournalLineData(this.jeForm);
         this.updateJournalLinesData(data);
         if(data.reversalDate){
             data.autoReverse = true;
@@ -592,10 +603,10 @@ export class JournalEntryComponent{
         }
         this.disableReversalDate = !Boolean(journalEntry.autoReverse);
         this.disableRecurring = !Boolean(journalEntry.recurring);
-        this.lines = this.journalEntry.journalLines;
-        this.journalEntry.journalLines.forEach(function(line, index){
+        let linesControl:any = this.jeForm.controls['journalLines'];
+        _.each(this.journalEntry.journalLines, function(line){
             let lineListForm = base._fb.group(base._lineListForm.getForm(line));
-            base.journalLinesArray.push(lineListForm);
+            linesControl.push(lineListForm);
         });
         this.stopLoaderAndShowMessage(false);
         this._jeForm.updateForm(this.jeForm, this.journalEntry);
@@ -631,7 +642,7 @@ export class JournalEntryComponent{
         let base = this;
         let companyId = Session.getCurrentCompany();
         let _form = this._jeForm.getForm();
-        _form['journalLines'] = this.journalLinesArray;
+        _form['journalLines'] = new FormArray([]); //this.journalLinesArray;
         this.jeForm = this._fb.group(_form);
 
         let _lineForm = this._lineListForm.getForm();

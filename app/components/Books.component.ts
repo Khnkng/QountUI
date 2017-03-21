@@ -122,7 +122,6 @@ export class BooksComponent{
     }
 
     getBookBadges(){
-        this.loadingService.triggerLoadingEvent(false);
         this.badgesService.getBooksBadgeCount(this.currentCompany.id).subscribe(badges => {
             let journalCount = badges.journals;
             let depositCount = badges.deposits;
@@ -164,10 +163,10 @@ export class BooksComponent{
             .subscribe(accounts => {
                 this.accounts = accounts.accounts;
                 this.expenseService.expenses(this.currentCompany.id)
-            .subscribe(expenses => {
-                this.loadingService.triggerLoadingEvent(false);
-                this.buildExpenseTableData(expenses.expenses);
-            }, error => this.handleError(error));
+                    .subscribe(expenses => {
+                        this.loadingService.triggerLoadingEvent(false);
+                        this.buildExpenseTableData(expenses.expenses);
+                    }, error => this.handleError(error));
             }, error=> {
 
             });
@@ -178,10 +177,10 @@ export class BooksComponent{
             .subscribe(accounts => {
                 this.accounts = accounts.accounts;
                 this.depositService.deposits(this.currentCompany.id)
-            .subscribe(deposits => {
-                this.loadingService.triggerLoadingEvent(false);
-                this.buildDepositTableData(deposits.deposits);
-            }, error => this.handleError(error));
+                    .subscribe(deposits => {
+                        this.loadingService.triggerLoadingEvent(false);
+                        this.buildDepositTableData(deposits.deposits);
+                    }, error => this.handleError(error));
             }, error=> {
 
             });
@@ -196,19 +195,15 @@ export class BooksComponent{
         });
         this.tabDisplay[tabNo] = {'display':'block'};
         this.tabBackground = this.bgColors[tabNo];
+        this.loadingService.triggerLoadingEvent(true);
         if(this.selectedTab == 0){
             this.isLoading = true;
-            this.loadingService.triggerLoadingEvent(true);
             this.fetchDeposits();
-
         } else if(this.selectedTab == 1){
             this.isLoading = true;
-            this.loadingService.triggerLoadingEvent(true);
             this.fetchExpenses();
-
         } else if(this.selectedTab == 2){
             this.isLoading = true;
-            this.loadingService.triggerLoadingEvent(true);
             this.fetchJournalEntries();
         }
     }
