@@ -130,36 +130,21 @@ export class lockComponent {
             this.companyService.lock(this.companyId,$event.id).subscribe(tax => {
                 this.row = tax;
                this.locksrow=tax.shared_with;
-                this.showEditLock($event);
+                this.haslockdate=true;
+                this.hasnolockdate=false;
+                this.showEditLock(this.row);
             }, error => this.handleError(error));
         } else if(action == 'delete'){
             this.removeLock($event);
         }
     }
-    showEditLock(row:any) {
+    showEditLock(row) {
         this.haslockdate=true;
         this.hasnolockdate=false;
         this.showFlyout = true;
         this.editMode = true;
         this.LockForm = this._fb.group(this._lockform.getLock());
-        this.companyService.getLockofCompany(this.companyId)
-            .subscribe(lockList  => {
-                this.loadingService.triggerLoadingEvent(false);
-                this.lockList=lockList;
-                for(var i=0;i<lockList.length;i++)
-                {
-                    if(lockList[i].active_lock_date){
-                        this.lockdate=lockList[i].active_lock_date;
-                    }
-                };
-                console.log("this.lockdate",this.lockdate);
-            }, error =>  this.handleError(error));
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        this.todaysDate= mm+"/"+dd+"/"+yyyy;
-        this.getLockDetails(row.id);
+        this.getLockDetails(row);
     }
     removeLock(row:any){
         let vendor:VendorModel = row;
@@ -185,23 +170,20 @@ export class lockComponent {
     ngOnDestroy(){
         this.confirmSubscription.unsubscribe();
     }
-    getLockDetails(vendorID){
+    getLockDetails(row){
         let base=this;
-        this.companyService.lock(this.companyId,vendorID).subscribe(tax => {
-            this.row = tax;
-           this.lockdate=tax.lock_date;
+           this.lockdate=row.lock_date;
             let lock_created_at:any=this.LockForm.controls['lock_date'];
-            lock_created_at.patchValue(tax.lock_date);
+            lock_created_at.patchValue(row.lock_date);
             let key:any=this.LockForm.controls['key'];
-            key.patchValue(tax.key);
+            key.patchValue(row.key);
            // this.locksrow=tax.shared_with;
-            this._lockform.updateForm(this.LockForm, tax);
-
-        }, error => this.handleError(error));
+            this._lockform.updateForm(this.LockForm, row);
     }
     showCreateLock(){
 
         let self = this;
+        this.locksrow=[];
         this.haslockdate=false;
         this.hasnolockdate=true;
         this.editMode = false;

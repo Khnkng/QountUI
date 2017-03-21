@@ -110,6 +110,7 @@ export class ChartOfAccountsComponent{
     let categoryType = $event.target.value;
     this.displaySubtypes = this.allSubTypes[categoryType];
     this.description = "";
+    this.coaForm.controls['subType'].patchValue('');
     this.setParents(categoryType);
   }
 
