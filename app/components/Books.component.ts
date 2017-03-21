@@ -434,7 +434,7 @@ export class BooksComponent{
                 row[key] = journalEntry[key];
             });
             let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
-            if(journalEntry['source'] === 'manual'){
+            if(journalEntry['source'] === 'Manual'){
                action= action+"<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             }
             if(journalEntry['sourceID'] && journalEntry['source'] === 'accountsPayable'){
@@ -451,8 +451,8 @@ export class BooksComponent{
                 action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>C</span></a>"+action;
             }
             row['actions'] = action;
-            if(row['type'] == 'Original' && journalEntry['source'] === 'manual'){
-                row['reverse'] = "<a style='font-size:0.6rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action reverseButton' data-action='reverse'>Reverse</a>";
+            if(row['type'] == 'Original' && journalEntry['source'] === 'Manual' && !base.isAlreadyReversed(journalEntry['id'])){
+                row['reverse'] = "<a style='font-size:0.1rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action reverseButton' data-action='reverse'>Reverse</a>";
             }
             base.jeTableData.rows.push(row);
         });
@@ -463,6 +463,14 @@ export class BooksComponent{
         setTimeout(function(){
            base.hasJournalEntries = true;
         });
+    }
+
+    isAlreadyReversed(journalId){
+        let jeIndex = _.findIndex(this.jeTableData.rows, {'reversedFrom': journalId});
+        if(jeIndex != -1){
+            return true;
+        }
+        return false;
     }
 
     handleExpenseAction($event){

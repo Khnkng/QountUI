@@ -110,6 +110,7 @@ export class ChartOfAccountsComponent{
     let categoryType = $event.target.value;
     this.displaySubtypes = this.allSubTypes[categoryType];
     this.description = "";
+    this.coaForm.controls['subType'].patchValue('');
     this.setParents(categoryType);
   }
 
@@ -320,7 +321,7 @@ export class ChartOfAccountsComponent{
           row[key] = coa[key];
           if(coa['parentID']){
             row[key] = {options:{
-                classes: "coa-child",
+                classes: "coa-child-"+coa.level,
                 sortValue: base.getName(coa['parentID'])
               }, value: coa[key]}
           } else{
@@ -329,7 +330,7 @@ export class ChartOfAccountsComponent{
         } else if(key == 'number'){
           if(coa['parentID']){
             row[key] = {options:{
-                classes: "coa-child",
+                classes: "coa-child-"+coa.level,
                 sortValue: base.getNumber(coa['parentID'])
               }, value: coa[key]
             }
@@ -358,6 +359,30 @@ export class ChartOfAccountsComponent{
     return coa.name;
   }
 
+  getChildren(coaList, parentID){
+    let data = [];
+    _.each(coaList, function(child){
+      if(child.parentID == parentID){
+        data.push(child);
+      }
+    });
+    return data;
+  }
+
+  addChildren(coaList, coa){
+    let base = this;
+    let children = this.getChildren(coaList, coa.id);
+    if(children.length == 0 && coa.subAccount){
+      return;
+    } else{
+      _.each(children, function(child){
+        child.level = coa.level+1;
+        base.chartOfAccounts.push(child);
+        base.addChildren(coaList, child);
+      });
+    }
+  }
+
   sortChartOfAccounts(coaList){
     let base = this;
     this.chartOfAccounts = [];
@@ -368,12 +393,9 @@ export class ChartOfAccountsComponent{
       return !coa.parentID || coa.subAccount == false;
     });
     _.each(parents, function(parent){
+      parent.level = 0;
       base.chartOfAccounts.push(parent);
-      _.each(coaList, function(child){
-        if(child.parentID == parent.id){
-          base.chartOfAccounts.push(child);
-        }
-      });
+      base.addChildren(coaList, parent);
     });
   }
 }
