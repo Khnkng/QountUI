@@ -157,7 +157,7 @@
                                                     <label class="text-right">Starting Balance</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" formControlName="starting_balance" placeholder="Starting Balance"/>
+                                                    <input type="text" formControlName="starting_balance" placeholder="Starting Balance" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
                                                     <div class="error" [hidden]="accountForm.controls.starting_balance.untouched || accountForm.controls.starting_balance.valid">Starting Balance is required.</div>
                                                 </div>
                                             </div>

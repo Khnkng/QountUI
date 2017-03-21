@@ -30,11 +30,22 @@
                                                         <option value="inventoryBalance">Inventory Balance</option>
                                                         <option value="credit">Credit</option>
                                                         <option value="bill">Bill</option>
+                                                        <option value="billPayment">Payment</option>
+                                                        <option value="deposit">Deposit</option>
+                                                        <option value="expense">Expense</option>
+                                                    </select>
+                                                    <select formControlName="category" placeholder="Category" *ngIf="isSystemCreatedJE" disabled>
+                                                        <option value="depreciation">Depreciation, Tax Adj, Other</option>
+                                                        <option value="payroll">Payroll</option>
+                                                        <option value="apBalance">AP balance</option>
+                                                        <option value="arBalance">AR balance</option>
+                                                        <option value="inventoryBalance">Inventory Balance</option>
+                                                        <option value="credit">Credit</option>
+                                                        <option value="bill">Bill</option>
                                                         <option value="billPayment">Bill Payment</option>
                                                         <option value="deposit">Deposit</option>
                                                         <option value="expense">Expense</option>
                                                     </select>
-                                                    <input type="text" formControlName="category" readonly *ngIf="isSystemCreatedJE">
                                                     <div class="error" [hidden]="jeForm.controls.category.untouched || jeForm.controls.category.valid"><small>Please select category.</small></div>
                                                 </label>
                                             </div>
