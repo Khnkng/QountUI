@@ -10,7 +10,7 @@
 <div class="row" foundation>
   <div class="column large-12 medium-12 small-12 foo-container">
     <div class="vendor-foo-toolbar">
-      <i class="ion-email" style="font-size: 3.3rem;margin-right: 8px;" (click)="inviteVendor()"></i>
+      <i class="ion-email" style="font-size: 2.7rem;margin-right: 4px;color: #B9B9B9;" (click)="inviteVendor()"></i>
       <button class="button small" (click)="showCreateVendor()"><i class="icon ion-plus-round"></i>Vendor</button>
     </div>
     <foo-table #fooTableDir="fooTable" class="bills-footable" *ngIf="hasVendorsList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
