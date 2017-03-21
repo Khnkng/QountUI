@@ -55,6 +55,7 @@ export class VendorComponent {
   countryCode:string;
   showAddress:boolean;
   showFlyout:boolean = false;
+  showMailFlyout:boolean = false;
   vendorTypes:any = {
     company : "Business",
     individual: "Individual"
@@ -300,6 +301,10 @@ deleteVendor(toast){
     this.showSecondStep = false;
   }
 
+  hideMailFlyout(){
+    this.showMailFlyout = !this.showMailFlyout;
+  }
+
   addressValid() {
     if(this.addressDir) {
       return this.addressDir.isValid();
@@ -411,7 +416,9 @@ deleteVendor(toast){
   }
 
   inviteVendor(){
-    jQuery('#invite-vendor').foundation('open');
+    this.showMailFlyout = true;
+    this.mailID = '';
+    //jQuery('#invite-vendor').foundation('open');
   }
 
   closeVendor(){
@@ -436,9 +443,11 @@ deleteVendor(toast){
           this.loadingService.triggerLoadingEvent(false);
           this._toastService.pop(TOAST_TYPE.success, "vendor invited successfully.");
           this.mailID=null;
+          this.showMailFlyout = false;
         }, error =>  {
           this.loadingService.triggerLoadingEvent(false);
           this._toastService.pop(TOAST_TYPE.error, "failed to invite vendor.");
+          this.showMailFlyout = false;
         });
   }
 

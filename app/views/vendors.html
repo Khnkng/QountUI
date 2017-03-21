@@ -237,8 +237,40 @@
         </button>
       </section>
     </div>
+    <div class="flyout expanded" [ngClass]="{'expanded':showMailFlyout}">
+      <section class="flyout-placeholder">
+        <header class="flyout-header">
+            <h6>Email</h6>
+        </header>
+        <div class="flyout-body flyout-shadow-effect">
+          <!--here comes actual flyout code-->
+          <section class="form-section clearfix">
+            <div class="form-selection-left" style="width:50%">
+              <div class="row">
+              <div class="small-4 columns">
+                <label class="float-right">Email</label>
+              </div>
+              <div class="small-6 columns">
+                <input type="text" [(ngModel)]="mailID">
+              </div>
+            </div>
+            </div>
+            <div class="row">
+              <div class="small-12 medium-12 columns">
+            <button class="button small float-right" [disabled]="!checkValidation()" (click)="saveInvitedVendor()" data-close>Submit</button>
+              </div>
+          </div>
+          </section>
+        </div>
+        <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideMailFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+        </button>
+      </section>
+    </div>
   </div>
-  <div class="reveal tiny bill-modal-container" id="invite-vendor" data-reveal foundation  data-close-on-click="false">
+  <!--<div class="reveal tiny bill-modal-container" id="invite-vendor" data-reveal foundation  data-close-on-click="false">
     <div class="row" style="margin-top: 15px;">
       <div class="small-2 columns">
         <label class="middle">email</label>
@@ -251,6 +283,6 @@
       <button class="button small" [disabled]="!checkValidation()" (click)="saveInvitedVendor()" data-close>Confirm</button>
       <button class="button small" (click)="closeVendor()">Cancel</button>
     </div>
-  </div>
+  </div>-->
 
 </div>
