@@ -173,8 +173,8 @@
                                                 <td>
                                                     <i class="icon ion-checkmark-circled" (click)="updateLine(lineListItem, index)" *ngIf="lineListItem.editable"></i>
                                                     <i class="icon ion-close" *ngIf="lineListItem.editable" (click)="toggleLineEdit(lineListItem)"></i>
-                                                    <i class="icon ion-edit" *ngIf="!lineListItem.editable" (click)="showFlyout('UPDATE', index)"></i>
-                                                    <i class="icon ion-ios-trash-outline" *ngIf="!lineListItem.editable&&!isSystemCreatedJE" (click)="deleteLine(index)"></i>
+                                                    <i class="icon ion-edit" *ngIf="!lineListItem.editable && !isSystemCreatedJE" (click)="showFlyout('UPDATE', index)"></i>
+                                                    <i class="icon ion-ios-trash-outline" *ngIf="!lineListItem.editable && !isSystemCreatedJE" (click)="deleteLine(index)"></i>
                                                 </td>
                                             </tr>
                                         </tbody>
