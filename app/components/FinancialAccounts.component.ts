@@ -40,11 +40,13 @@ export class FinancialAccountsComponent{
   /*banks:Array<any> = [];*/
   showFlyout:boolean = false;
   chartOfAccounts:Array<any>=[];
+  companyCurrency:string='USD';
 
   constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private financialAccountsService: FinancialAccountsService, private toastService: ToastService){
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
+    this.companyCurrency=Session.getCurrentCompanyCurrency();
     if(this.currentCompany){
       this.loadingService.triggerLoadingEvent(true);
       this.coaService.chartOfAccounts(this.currentCompany)

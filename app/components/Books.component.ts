@@ -64,6 +64,7 @@ export class BooksComponent{
     confirmSubscription: any;
     DepositToDelete:any;
     journalToDelete:any;
+    categoryData:any = {'depreciation':'Depreciation, Tax Adj, Other','payroll':'Payroll','apBalance':'AP balance','arBalance':'AR balance','inventoryBalance':'Inventory Balance','credit':'Credit','bill':'Bill','billPayment':'Payment','deposit':'Deposit','expense':'Expense'};
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
                 private toastService: ToastService,private switchBoard:SwitchBoard, private loadingService:LoadingService, private companiesService: CompaniesService,
                 private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService,
@@ -408,7 +409,8 @@ export class BooksComponent{
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
             {"name": "date", "title": "Date"},
-            {"name": "type", "title": "Journal Type"},
+            {"name": "type", "title": "Journal Type","visible":false},
+            {"name": "categoryValue", "title": "Category"},
             {"name": "sourceValue", "title": "Source"},
             {"name": "source", "title": "Source", 'visible': false},
             {"name": "desc", "title": "Description","visible": false},
@@ -431,7 +433,13 @@ export class BooksComponent{
                 if(key == 'source'){
                     row['sourceValue']=base.getSourceName(journalEntry[key]);
                 }
+
+                if(key == 'category'){
+                    row['categoryValue'] = base.categoryData[journalEntry[key]];
+                }
                 row[key] = journalEntry[key];
+
+
             });
             let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             if(journalEntry['source'] === 'Manual'){
