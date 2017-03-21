@@ -59,12 +59,14 @@ export class lockComponent {
     confirmSubscription:any;
     lockdate:any;
     todaysDate:any;
-
-
+    tagListValue:any;
+    locksrow:any;
+    lockslist:any;
+    haslockdate:boolean=false;
+    hasnolockdate:boolean=true;
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _lockform:LockForm,
                 private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
                 private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
-        console.log("dhfgadwf");
         this.LockForm = this._fb.group(_lockform.getLock());
         this.companyId = Session.getCurrentCompany();this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteLock(toast));
         this.companyService.getLockofCompany(this.companyId)
@@ -98,8 +100,8 @@ export class lockComponent {
             {"name":"id","title":"id","visible": false},
             {"name": "lock_date", "title": "Lock"},
             {"name": "created_at", "title": "Created Date"},
-            {"name": "created_by", "title": "Created By"}
-            // {"name": "actions", "title": ""}
+            {"name": "created_by", "title": "Created By"},
+            {"name": "actions", "title": ""}
         ];
         let base = this;
         _.each(lockList, function(lockList) {
@@ -109,7 +111,9 @@ export class lockComponent {
                 row['lock_date'] = lockList.lock_date;
                 row['created_at'] = lockList.created_at;
                 row['created_by'] = lockList.created_by;
-                row['actions'] = "<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+                if(lockList.active_lock_date==lockList.lock_date) {
+                    row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+                }
                 base.tableData.rows.push(row);
             }
         });
@@ -123,15 +127,38 @@ export class lockComponent {
         delete $event.action;
         delete $event.actions;
         if(action == 'edit') {
-            this.showEditLock($event);
+            this.companyService.lock(this.companyId,$event.id).subscribe(tax => {
+                this.row = tax;
+               this.locksrow=tax.shared_with;
+                this.showEditLock($event);
+            }, error => this.handleError(error));
         } else if(action == 'delete'){
             this.removeLock($event);
         }
     }
     showEditLock(row:any) {
+        this.haslockdate=true;
+        this.hasnolockdate=false;
         this.showFlyout = true;
         this.editMode = true;
         this.LockForm = this._fb.group(this._lockform.getLock());
+        this.companyService.getLockofCompany(this.companyId)
+            .subscribe(lockList  => {
+                this.loadingService.triggerLoadingEvent(false);
+                this.lockList=lockList;
+                for(var i=0;i<lockList.length;i++)
+                {
+                    if(lockList[i].active_lock_date){
+                        this.lockdate=lockList[i].active_lock_date;
+                    }
+                };
+                console.log("this.lockdate",this.lockdate);
+            }, error =>  this.handleError(error));
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+        this.todaysDate= mm+"/"+dd+"/"+yyyy;
         this.getLockDetails(row.id);
     }
     removeLock(row:any){
@@ -162,17 +189,21 @@ export class lockComponent {
         let base=this;
         this.companyService.lock(this.companyId,vendorID).subscribe(tax => {
             this.row = tax;
-           this.lockdate=tax.lock_created_at;
-            let lock_created_at:any=this.LockForm.controls['lock_created_at'];
-            lock_created_at.patchValue(tax.lock_created_at);
-            this.lockdate=tax.lock_created_at;
+           this.lockdate=tax.lock_date;
+            let lock_created_at:any=this.LockForm.controls['lock_date'];
+            lock_created_at.patchValue(tax.lock_date);
+            let key:any=this.LockForm.controls['key'];
+            key.patchValue(tax.key);
+           // this.locksrow=tax.shared_with;
             this._lockform.updateForm(this.LockForm, tax);
 
         }, error => this.handleError(error));
-        this.lockdate="";
     }
     showCreateLock(){
+
         let self = this;
+        this.haslockdate=false;
+        this.hasnolockdate=true;
         this.editMode = false;
         this.LockForm.reset();
         this.companyService.getLockofCompany(this.companyId)
@@ -185,7 +216,6 @@ export class lockComponent {
                         this.lockdate=lockList[i].active_lock_date;
                     }
                 };
-                console.log("this.lockdate",this.lockdate);
             }, error =>  this.handleError(error));
         var today = new Date();
         var dd = today.getDate();
@@ -211,6 +241,8 @@ export class lockComponent {
         $event && $event.preventDefault();
         let data = this._lockform.getData(this.LockForm);
         this.companyId = Session.getCurrentCompany();
+        var Emailaddress=jQuery('#shared_with').tagit("assignedTags");
+        data.shared_with=Emailaddress;
         this.loadingService.triggerLoadingEvent(true);
         if(this.editMode){
             data.id = this.row.id;
@@ -263,6 +295,12 @@ export class lockComponent {
             if(this.editMode) {
                 this.companyService.getLockofCompany(this.companyId)
                     .subscribe(lockList  => {
+                        for(var i=0;i<lockList.length;i++)
+                        {
+                            if(lockList[i].active_lock_date){
+                                this.lockdate=lockList[i].active_lock_date;
+                            }
+                        };
                         this.buildTableData(lockList);
                         this.loadingService.triggerLoadingEvent(false);
                         this.lockList=lockList;

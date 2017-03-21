@@ -3014,8 +3014,26 @@ tbody{
 
 /* Indentation for child chart of account */
 .footable{
-  td.coa-child{
+  td.coa-child-1{
+    padding-left: 15px !important;
+  }
+  td.coa-child-2{
     padding-left: 20px !important;
+  }
+  td.coa-child-3{
+    padding-left: 30px !important;
+  }
+  td.coa-child-4{
+    padding-left: 40px !important;
+  }
+  td.coa-child-5{
+    padding-left: 50px !important;
+  }
+  td.coa-child-6{
+    padding-left: 60px !important;
+  }
+  td.coa-child-7{
+    padding-left: 70px !important;
   }
 }
 

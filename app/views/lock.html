@@ -33,7 +33,8 @@
                                                         <label class="text-right">Lock Date</label>
                                                     </div>
                                                     <div class="small-6 columns">
-                                                        <input style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event,lockdate)" [format]="'MM/DD/YYYY'" [mindate]="lockdate" [maxdate]="todaysDate"  type="text" formControlName="lock_date" placeholder="Lock Date*"/>
+                                                        <input *ngIf="haslockdate" style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event,lockdate)" [format]="'MM/DD/YYYY'" [mindate]="lockdate" [maxdate]="todaysDate"  type="text" formControlName="lock_date" placeholder="Lock Date*" disabled/>
+                                                        <input *ngIf="hasnolockdate" style="margin-left: 5px;"  custom-datepicker (valueChanged)="setDate($event,lockdate)" [format]="'MM/DD/YYYY'" [mindate]="lockdate" [maxdate]="todaysDate"  type="text" formControlName="lock_date" placeholder="Lock Date*"/>
                                                     </div>
                                                 </div>
 
@@ -51,7 +52,7 @@
                                                         <label class="text-right">Share</label>
                                                     </div>
                                                     <div class="small-6 columns" style="margin-left: 2px;">
-                                                        <input style="margin-left: 5px;" formControlName="shared_with" id="shared_with" [tagsList]="[]" class="bighalf-tags,input, empty" name="name" type="text" value="" size="30" custom-tags /><br />
+                                                        <input style="margin-left: 5px;" formControlName="shared_with" id="shared_with" [tagsList]="locksrow" class="bighalf-tags,input, empty" name="name" type="text" value="" size="30" custom-tags /><br />
                                                     </div>
                                                 </div>
                                             </div>

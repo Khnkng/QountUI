@@ -68,7 +68,7 @@
                                             <tr *ngIf="depositForm.controls.payments.controls.length == 0 && !addNewItemFlag">
                                                 <td colspan="7" class="text-center">No Deposits items found</td>
                                             </tr>
-                                            <tr *ngFor="let itemForm of depositForm.controls.payments.controls;let index=index;" [hidden]="!newDeposit && itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
+                                            <tr *ngFor="let itemForm of depositForm.controls.payments.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
                                                 <td *ngIf="!itemForm.editable">{{itemForm.controls.title.value}}</td>
                                                 <td *ngIf="itemForm.editable">
                                                     <input type="text" placeholder="Title" [formControl]="itemForm.controls.title"/>
