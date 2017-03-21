@@ -237,7 +237,7 @@ export class JournalEntryComponent{
         let base = this;
         this._lineListForm.updateForm(this.lineForm, lineData);
         this.filteredChartOfAccounts = _.filter(this.chartOfAccounts, {'category': lineData.type});
-        let coa = _.find(this.filteredChartOfAccounts, {'id': lineData.coa});
+        let coa = _.find(this.chartOfAccounts, {'id': lineData.coa});
         this.selectedDimensions = lineData.dimensions;
         this.newLineForm();
         setTimeout(function(){
