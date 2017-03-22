@@ -222,7 +222,7 @@
                                     </table>
                                     <div class="row" *ngIf="!newJournalEntry&&!isSystemCreatedJE">
                                         <div class="columns">
-                                            <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)"><i class="icon ion-edit"></i>Journal</button>
+                                            <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)"><i class="icon ion-edit"></i>Update</button>
                                         </div>
                                     </div>
                                     <div class="row" *ngIf="isSystemCreatedJE">
@@ -342,7 +342,7 @@
                 </div>
                 <div class="row">
                     <div class="small-12 medium-12 columns">
-                        <input *ngIf="!isSystemCreatedJE" type="button" class="button small float-right" value="Save" (click)="saveLine()"/>
+                        <input *ngIf="!isSystemCreatedJE" type="button" class="button small float-right" value="Update" (click)="saveLine()"/>
                         <span *ngIf="isSystemCreatedJE" class="label float-right vew-only">View Only</span>
                     </div>
                 </div>

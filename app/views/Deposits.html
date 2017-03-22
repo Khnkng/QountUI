@@ -136,7 +136,7 @@
                         </div>
                         <div class="row">
                             <div class="small-12 medium-12 columns">
-                                <button class="button create small float-right" [disabled]="!depositForm.valid" type="submit" (click)="submit($event)" data-close>{{newDeposit?"Create":"Edit"}}</button>
+                                <button class="button create small float-right" [disabled]="!depositForm.valid" type="submit" (click)="submit($event)" data-close>{{newDeposit?"Create":"Update"}}</button>
                             </div>
                         </div>
                     </section>
@@ -244,7 +244,7 @@
                 </div>
                 <div class="row">
                     <div class="small-12 medium-12 columns">
-                        <input type="button" class="button small float-right" value="Save" (click)="saveItem()"/>
+                        <input type="button" class="button small float-right" value="Update" (click)="saveItem()"/>
                     </div>
                 </div>
             </div>
