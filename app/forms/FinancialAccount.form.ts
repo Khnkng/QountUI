@@ -17,17 +17,16 @@ export class FinancialAccountForm extends abstractForm{
       "name": ['', Validators.required],
       "starting_balance": ['', Validators.required],
       "starting_balance_date": ['', Validators.required],
-      "bank_id": [''],
       "user_name": [''],
       "id": [''],
       "password": [''],
+      "account_holder_type":['company',Validators.required],
       "type":['', Validators.required],
       "importType":['MANUAL'],
       "chart_of_account_id": [''],
       "account_number":[''],
       "routing_number":[''],
-      "signatory":[''],
-      "is_payment_accout_type":[false],
+      "name_on_account":[''],
       "transit_chart_of_account_id":['']
     }
   }

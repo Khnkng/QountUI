@@ -19,6 +19,8 @@ import {CompanyModel} from "../models/Company.model";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {Address} from "qCommon/app/directives/address.directive";
+import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
+import {UsersModel} from "../models/Users.model";
 
 declare var jQuery:any;
 declare var _:any;
@@ -53,14 +55,19 @@ export class VendorComponent {
   countryCode:string;
   showAddress:boolean;
   showFlyout:boolean = false;
+  showMailFlyout:boolean = false;
   vendorTypes:any = {
     company : "Business",
     individual: "Individual"
   };
+  mailID:string;
+  showFirstStep:boolean = true;
+  showSecondStep:boolean = false;
 
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
               private _router: Router, private loadingService:LoadingService,
-              private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
+              private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService,
+              private usersService: CompanyUsers) {
     this.vendorForm = this._fb.group(_vendorForm.getForm());
     this.companyId = Session.getCurrentCompany(); ;
     this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteVendor(toast));
@@ -86,6 +93,7 @@ export class VendorComponent {
   ngOnDestroy(){
     this.confirmSubscription.unsubscribe();
     jQuery('.ui-autocomplete').remove();
+    jQuery('#invite-vendor').remove();
   }
   getCompanyName(companyId){
     let company = _.find(this.companies, {id: companyId});
@@ -121,6 +129,13 @@ export class VendorComponent {
       {"name": "accountNumbers", "title": "Reference Numbers","visible": false},
       {"name": "routingNumber", "title": "RoutingNumber","visible": false},
       {"name": "coa", "title": "COA","visible": false},
+      {"name": "name_on_bank_account", "title": "name on bank account","visible": false},
+      {"name": "bank_account_type", "title": "bank account type","visible": false},
+      {"name": "bank_account_holder_type", "title": "accountholder type","visible": false},
+      {"name": "bank_account_number", "title": "bank account number","visible": false},
+      {"name": "bank_account_routing_number", "title": "account routing number","visible": false},
+      {"name": "contact_first_name", "title": "First Name","visible": false},
+      {"name": "contact_last_name", "title": "Last Name","visible": false},
       {"name": "creditCardNumber", "title": "Credit Card Number","visible": false},
       {"name": "actions", "title": "", "type": "html", "filterable": false}
     ];
@@ -231,11 +246,9 @@ deleteVendor(toast){
     this.getVendorDetails(row.id);
   }
 
-  submit($event) {
-
+  nextStep($event) {
     $event && $event.preventDefault();
     let data = this._vendorForm.getData(this.vendorForm);
-    this.companyId = Session.getCurrentCompany();
     let addressData = this.addressDir.getData();
     addressData.country=data.country;
     data.addresses=[addressData];
@@ -247,6 +260,17 @@ deleteVendor(toast){
       this._toastService.pop(TOAST_TYPE.error, "Please select state");
       return;
     }
+    this.showFirstStep = false;
+    this.showSecondStep = true;
+  }
+
+  submit($event) {
+    $event && $event.preventDefault();
+    this.companyId = Session.getCurrentCompany();
+    let data = this._vendorForm.getData(this.vendorForm);
+    let addressData = this.addressDir.getData();
+    addressData.country=data.country;
+    data.addresses=[addressData];
     this.loadingService.triggerLoadingEvent(true);
     if(this.editMode) {
       data.id = this.row.id;
@@ -273,6 +297,12 @@ deleteVendor(toast){
   hideFlyout(){
     this.row = {};
     this.showFlyout = !this.showFlyout;
+    this.showFirstStep = true;
+    this.showSecondStep = false;
+  }
+
+  hideMailFlyout(){
+    this.showMailFlyout = !this.showMailFlyout;
   }
 
   addressValid() {
@@ -383,5 +413,46 @@ deleteVendor(toast){
       accountNumbersControl.patchValue(vendor.accountNumbers);
       this._vendorForm.updateForm(this.vendorForm, vendor);
     }, error => this.handleError(error));
+  }
+
+  inviteVendor(){
+    this.showMailFlyout = true;
+    this.mailID = '';
+    //jQuery('#invite-vendor').foundation('open');
+  }
+
+  closeVendor(){
+    jQuery('#invite-vendor').foundation('close');
+  }
+
+  checkValidation(){
+    if(this.mailID)
+        return true;
+    return false;
+  }
+
+  saveInvitedVendor(){
+    this.loadingService.triggerLoadingEvent(true);
+    let userObj={
+      id:this.mailID,
+      roleID:'Vendor',
+      email:this.mailID
+    };
+    this.usersService.addUser(<UsersModel>userObj, this.companyId)
+        .subscribe(success  => {
+          this.loadingService.triggerLoadingEvent(false);
+          this._toastService.pop(TOAST_TYPE.success, "vendor invited successfully.");
+          this.mailID=null;
+          this.showMailFlyout = false;
+        }, error =>  {
+          this.loadingService.triggerLoadingEvent(false);
+          this._toastService.pop(TOAST_TYPE.error, "failed to invite vendor.");
+          this.showMailFlyout = false;
+        });
+  }
+
+  gotoFirstStep(){
+    this.showFirstStep = true;
+    this.showSecondStep = false;
   }
 }

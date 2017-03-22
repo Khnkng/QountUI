@@ -25,7 +25,8 @@ import {CommonModule, APP_BASE_HREF} from "@angular/common";
 import {SignUpService} from "./services/SignUp.service";
 import {LoginForm} from "./forms/Login.form";
 import {SignUpForm} from "./forms/SignUp.form";
-import {TaxesForm} from "./forms/Taxes.form"
+import {TaxesForm} from "./forms/Taxes.form";
+import {LockForm} from "./forms/lock.form"
 import {ForgotPassword} from "./forms/ForgotPassword.form";
 import {VendorComponent} from "./components/Vendors.component";
 import {UserProfileComponent} from "qCommon/app/components/UserProfile.component";
@@ -62,6 +63,7 @@ import {ChangePasswordComponent} from "./components/changePassword.component";
 import {TermsAndConditionsComponent} from "./components/TermsAndConditions.component";
 import {ResetPasswordComponent} from "./components/resetpassword.component";
 import {RulesComponent} from "./components/Rules.component";
+import {lockComponent} from "./components/lock.component";
 import {RuleForm, RuleActionForm} from "./forms/Rule.form";
 import {ExpenseComponent} from "./components/Expense.component";
 import {ExpenseForm, ExpenseItemForm} from "./forms/Expenses.form";
@@ -73,6 +75,8 @@ import {EmployeesForm} from "./forms/Employees.form";
 import {PaymentsComponent} from "./components/payments.component";
 import {YodleeService} from "./services/Yodlee.service";
 import {YodleeTokenComponent} from "./components/YodleeToken.component";
+import {SearchComponent} from "./components/Search.component";
+import {SearchResultsComponent} from "./components/SearchResults.component";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -211,6 +215,10 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: RulesComponent,
             canActivate: [LoggedInActivator]
         },{
+            path: 'lock',
+            component: lockComponent,
+            canActivate: [LoggedInActivator]
+        },{
             path: 'activate',
             component: ChangePasswordComponent,
             canActivate: [LoggedInActivator]
@@ -240,7 +248,17 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'search',
+            component: SearchComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'payments',
+            component: PaymentsComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'payments/:paymentID',
             component: PaymentsComponent,
             canActivate: [LoggedInActivator]
         },
@@ -255,10 +273,13 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
         TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm,
-        FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService],
+        FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,
+        ResetPasswordComponent,lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,
+        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
 
 }
+
 

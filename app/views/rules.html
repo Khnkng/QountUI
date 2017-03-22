@@ -4,7 +4,6 @@
         <h5>Rules</h5>
     </div>
     <div class="columns small-6 small-offset-6 right">
-
     </div>
 </div>
 <div class="row chart-of-accounts" foundation>
@@ -30,7 +29,6 @@
                                     <header class="form-section-header">Rule</header>
                                     <div class="row">
                                         <div class="small-12 medium-12 columns rule-row">
-
                                             <table id="ruletable" style="width:40%;border-color:white;border:0px;border-color:white;margin-top: 10px;">
                                                 <tbody style="border-color: white">
                                                 <tr style="border:0px;border-color:white;">
@@ -40,7 +38,7 @@
                                                 </tr>
                                                 <tr style="border:0px;border-color:white;">
                                                     <td><label>Rule Name</label></td>
-                                                    <td><input style="margin-left: 5px;" type="text" formControlName="ruleName" placeholder="Rule Name*"/></td>
+                                                    <td><input style="margin-left: 5px;width:205%;" type="text" formControlName="ruleName" placeholder="Rule Name*"/></td>
                                                 </tr>
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label >Source</label></td>
@@ -65,7 +63,7 @@
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Title</label></td>
                                                     <td>
-                                                    <select style="height: 2.4375rem;width: 100%" class="condition" formControlName="comparisionType">
+                                                    <select style="height: 2.4375rem;width: 95%" class="condition" formControlName="comparisionType" (change)="showTitle($event)">
                                                         <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                     </select>
                                                     </td>
@@ -73,12 +71,10 @@
                                                     <input type="text" class="condition-value" formControlName="comparisionValue" placeholder="Title*" />
                                                     </td>
                                                 </tr>
-
-
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Notes</label></td>
                                                     <td>
-                                                        <select style="height: 2.4375rem;width: 100%" class="condition" formControlName="notesType">
+                                                        <select style="height: 2.4375rem;width: 95%" class="condition" formControlName="notesType" (change)="showNotes($event)">
                                                             <option *ngFor="let comparisiontype of conparisionArray;" value="{{comparisiontype}}" >{{comparisiontype}}</option>
                                                         </select>
                                                     </td>
@@ -86,15 +82,19 @@
                                                         <input type="text" class="condition-value" formControlName="notesValue" placeholder="Notes*" />
                                                     </td>
                                                 </tr>
-
-
                                                 <tr style="border:0px;border-color:white">
                                                     <td><label>Amount</label></td>
-                                                    <td><select style="height: 2.4375rem;width: 100%" class="condition" formControlName="comparisionType1">
-                                                        <option *ngFor="let comparisiontypeAmount of conparisionAmountArray;" value="{{comparisiontypeAmount}}" >{{comparisiontypeAmount}}</option>
+                                                    <td><select style="height: 2.4375rem;width: 95%" class="condition" formControlName="comparisionType1" (change)="showAmount($event)">
+                                                        <option *ngFor="let comparisiontypeAmount of conparisionAmountArray;" value="{{comparisiontypeAmount}}">{{comparisiontypeAmount}}</option>
                                                     </select></td>
                                                     <td><input  type="text" formControlName="comparisionValue1" placeholder="Amount*" class="condition-value"/>
                                                     </td>
+                                                    </tr>
+                                                <tr *ngIf="hasAmount" style="border:0px;border-color:white">
+                                                    <td><label></label></td>
+                                                    <td id="amount"><input style="margin-left: 5px;" type="text" formControlName="comparisionValue2" placeholder="Amount2*" class="condition-value"/>
+                                                     </td>
+
                                                 </tr>
                                                 <tr style="border:0px;border-color:white;">
                                                     <td>

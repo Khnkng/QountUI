@@ -41,6 +41,7 @@ export class RulesComponent {
     vendors:any;
     AttributeList:any;
     hasRuleList:boolean = false;
+    hasAmount:boolean=false;
     actions: FormArray = new FormArray([]);
     depositlist:Array<any> = [];
     expenxeArray:Array<any>=[];
@@ -75,8 +76,8 @@ export class RulesComponent {
         private dimensionService: DimensionService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
         this.companyId = Session.getCurrentCompany();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.RuleDelete(toast));
-        this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO'];
-        this.conparisionAmountArray=['EQUALS_TO','LESS_THAN','GREATER_THAN','GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
+        this.conparisionArray=['--None--','BEGINS_WITH','CONTAINS','EQUALS_TO'];
+        this.conparisionAmountArray=['--None--','EQUALS_TO','LESS_THAN','BETWEEN','GREATER_THAN','GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
         this.vendorsArray=['EQUALS_TO'];
         this.customersArray=['EQUALS_TO'];
         var today = new Date();
@@ -159,10 +160,10 @@ export class RulesComponent {
     selectChange(){
         let attributeRate:any = this.ruleForm.controls['attributeName'];
         if(attributeRate.value=='Title' ||attributeRate.value=='Notes' ){
-            this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO'];
+            this.conparisionArray=['--None--','BEGINS_WITH','CONTAINS','EQUALS_TO'];
         }
         else{
-            this.conparisionArray=['BEGINS_WITH','CONTAINS','EQUALS_TO','GREATER_THAN_OR_EQUALS_TO','LESS_THAN','GREATER_THAN','LESS_THAN_OR_EQUALS_TO'];
+            this.conparisionArray=['--None--','BEGINS_WITH','CONTAINS','EQUALS_TO','GREATER_THAN_OR_EQUALS_TO','LESS_THAN','GREATER_THAN','LESS_THAN_OR_EQUALS_TO'];
         }
     }
     RuleDelete(toast){
@@ -239,8 +240,9 @@ export class RulesComponent {
     }
     hideFlyout(){
         this.isDimensionSelected(null);
+        this.hasAmount=false;
         this.selectedDimensions=[];
-        this.selectDimension=('','');
+        // this.selectDimension=('','');
         this.dimensionFlyoutCSS = "collapsed";
         this.row = {};
         this.selectedDimensions=[];
@@ -252,6 +254,53 @@ export class RulesComponent {
         let tempLineForm = this._fb.group(this._actionForm.getForm());
         let actionsControl:any = this.ruleForm.controls['actions'];
         actionsControl.push(tempLineForm);
+    }
+    showAmount(amount:any){
+        let data= this._ruleForm.getData(this.ruleForm);
+        if(data.comparisionType1=='BETWEEN'){
+            this.hasAmount=true;
+        }
+
+        else{
+            this.hasAmount=false;
+        }
+        if(data.comparisionType1=='--None--'){
+            data.comparisionType1="";
+            let comparisionValue1:any = this.ruleForm.controls['comparisionValue1'];
+            comparisionValue1.patchValue("");
+        }
+        else{
+            data.comparisionValue1=data.comparisionValue1;
+            let comparisionValue1:any = this.ruleForm.controls['comparisionValue1'];
+            comparisionValue1.patchValue(data.comparisionValue1);
+        }
+    }
+    showTitle(amount:any){
+        let data= this._ruleForm.getData(this.ruleForm);
+        if(data.comparisionType=='--None--'){
+            data.comparisionValue="";
+            let comparisionValue:any = this.ruleForm.controls['comparisionValue'];
+            comparisionValue.patchValue("");
+        }
+        else{
+            data.comparisionValue=data.comparisionValue;
+            let comparisionValue:any = this.ruleForm.controls['comparisionValue'];
+            comparisionValue.patchValue(data.comparisionValue);
+        }
+
+    }
+    showNotes(amount:any){
+        let data= this._ruleForm.getData(this.ruleForm);
+        if(data.notesType=='--None--'){
+            data.notesType="";
+            let notesValue:any = this.ruleForm.controls['notesValue'];
+            notesValue.patchValue("");
+        }
+        else{
+            data.notesValue=data.notesValue;
+            let notesValue:any = this.ruleForm.controls['notesValue'];
+            notesValue.patchValue(data.notesValue);
+        }
     }
     showCOA(coa:any) {
         let data= this._ruleForm.getData(this.ruleForm);
@@ -401,7 +450,6 @@ export class RulesComponent {
         let base=this;
         this.ruleservice.rule(this.companyId,RuleID).subscribe(rule => {
             this.row = rule;
-            console.log("rule",rule);
             this.selectedDimensions=rule.actions;
             let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
             selectedCOAControl.patchValue(rule.sourceType);
@@ -480,6 +528,14 @@ export class RulesComponent {
 
                     let comparisionValue1: any = this.ruleForm.controls['comparisionValue1'];
                     comparisionValue1.patchValue(rule.conditions[i].comparisionValue);
+                    if(rule.conditions[i].comparisionValue2) {
+                        this.hasAmount=true;
+                        let comparisionValue2: any = this.ruleForm.controls['comparisionValue2'];
+                        comparisionValue2.patchValue(rule.conditions[i].comparisionValue2);
+                    }
+                    else{
+                        this.hasAmount=false;
+                    }
                 }
                 else if(rule.conditions[i].attributeName=='Source'){
                     let source = _.find(base.banks, function(_bank) {
@@ -534,7 +590,33 @@ console.log("end");
         return false;
     }
 
+cleanData(data){
+    delete data.attributeName;
+    delete data.comparisionType;
+    delete data.comparisionValue;
+    delete data.logicalOperator;
+    delete data.attributeName1;
+    delete data.comparisionType1;
+    delete data.vendorValue;
+    delete data.customerValue;
+    delete data.comparisionValue1;
+    delete data.comparisionValue2;
+    delete data.source;
+    delete data.vendorValue;
+    delete data.vendorType;
+    delete data.customerValue;
+    delete data.customerType;
+    delete data.comparisionType;
+    delete data.comparisionValue;
+    delete data.logicalOperator;
+    delete data.notesValue;
+    delete data.notesType;
+    delete data.attributeName1;
+    delete data.comparisionValue2;
+    delete data.attributeName;
+    return data;
 
+}
     submit($event, dateFlag){
         $event && $event.preventDefault();
         let data = this._ruleForm.getData(this.ruleForm);
@@ -546,19 +628,6 @@ console.log("end");
         }
 
         if(this.editMode){
-            if(data.attributeName|| data.comparisionType || data.comparisionValue || data.logicalOperator || data.attributeName1 || data.comparisionType1 || data.comparisionValue1
-            || data.vendorValue || data.customerValue ||  data.source){
-                delete data.attributeName;
-                delete data.comparisionType;
-                delete data.comparisionValue;
-                delete data.logicalOperator;
-                delete data.attributeName1;
-                delete data.comparisionType1;
-                delete data.vendorValue;
-                delete data.customerValue;
-                delete data.comparisionValue1;
-                delete data.source;
-            }
             data.conditions=[];
             var condition1={};
             var condition2={};
@@ -588,9 +657,12 @@ console.log("end");
             selectedAmountControl1.patchValue(selectedAmountControl1.value);
             let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
             selectedValueControl1.patchValue(selectedValueControl1.value);
+            let comparisionValue2:any = this.ruleForm.controls['comparisionValue2'];
+            comparisionValue2.patchValue(comparisionValue2.value);
             condition2['attributeName']="Amount";
             condition2['comparisionType']=selectedAmountControl1.value;
             condition2['comparisionValue']=selectedValueControl1.value;
+            condition2['comparisionValue2']=comparisionValue2.value;
             var conditionrow2=data.conditions.push(condition2);
 
             let vendorType:any = this.ruleForm.controls['vendorType'];
@@ -625,6 +697,8 @@ console.log("end");
             condition6['comparisionValue']=notesValue.value;
             var conditionrow6=data.conditions.push(condition6);
             data.id = this.row.id;
+            console.log("data",data);
+            this.cleanData(data);
             this.ruleservice.updateRule(data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);
@@ -676,11 +750,13 @@ console.log("end");
             selectedAmountControl1.patchValue(selectedAmountControl1.value);
             let selectedValueControl1:any = this.ruleForm.controls['comparisionValue1'];
             selectedValueControl1.patchValue(selectedValueControl1.value);
+            let comparisionValue2:any = this.ruleForm.controls['comparisionValue2'];
+            comparisionValue2.patchValue(comparisionValue2.value);
             condition2['attributeName']="Amount";
             condition2['comparisionType']=selectedAmountControl1.value;
             condition2['comparisionValue']=selectedValueControl1.value;
+            condition2['comparisionValue2']=comparisionValue2.value;
             var conditionrow2=data.conditions.push(condition2);
-
             let vendorType:any = this.ruleForm.controls['vendorType'];
             vendorType.patchValue(vendorType.value);
             let vendor:any = this.ruleForm.controls['vendorValue'];
@@ -712,7 +788,7 @@ console.log("end");
             condition6['comparisionType']=notesType.value;
             condition6['comparisionValue']=notesValue.value;
             var conditionrow6=data.conditions.push(condition6);
-
+            this.cleanData(data);
             this.ruleservice.addRule(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
                     this.loadingService.triggerLoadingEvent(false);

@@ -68,7 +68,7 @@
                                             <tr *ngIf="depositForm.controls.payments.controls.length == 0 && !addNewItemFlag">
                                                 <td colspan="7" class="text-center">No Deposits items found</td>
                                             </tr>
-                                            <tr *ngFor="let itemForm of depositForm.controls.payments.controls;let index=index;" [hidden]="!newDeposit && itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
+                                            <tr *ngFor="let itemForm of depositForm.controls.payments.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
                                                 <td *ngIf="!itemForm.editable">{{itemForm.controls.title.value}}</td>
                                                 <td *ngIf="itemForm.editable">
                                                     <input type="text" placeholder="Title" [formControl]="itemForm.controls.title"/>
@@ -136,7 +136,7 @@
                         </div>
                         <div class="row">
                             <div class="small-12 medium-12 columns">
-                                <button class="button create small float-right" [disabled]="!depositForm.valid" type="submit" (click)="submit($event)" data-close>{{newDeposit?"Add":"Update"}}</button>
+                                <button class="button create small float-right" [disabled]="!depositForm.valid" type="submit" (click)="submit($event)" data-close>{{newDeposit?"Create":"Update"}}</button>
                             </div>
                         </div>
                     </section>
@@ -244,7 +244,7 @@
                 </div>
                 <div class="row">
                     <div class="small-12 medium-12 columns">
-                        <input type="button" class="button small float-right" value="Save" (click)="saveItem()"/>
+                        <input type="button" class="button small float-right" value="Update" (click)="saveItem()"/>
                     </div>
                 </div>
             </div>

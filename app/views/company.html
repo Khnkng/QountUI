@@ -6,29 +6,31 @@
   <div class="reports tabs-content" data-tabs-content="report-tabs">
 	<div class="reports tabs-panel is-active" id="companyInfo">
 
-	  <section class="company-details add-company">
-		  <h6>
-			   Update Company
-		  </h6>
-		  <div class="flyout-body flyout-shadow-effect">
-			<div class="row">
-		  		<div class="small-12 medium-11 columns">
-					<form class="company-form" *ngIf="active" (ngSubmit)="companySubmit($event)" [formGroup]="companyForm">
+		<div class="qount-off-canvas-menu">
+			<div class="flyout expanded">
 
-			  <div class="row collapsed company-button-header">
+			<section class="flyout-placeholder company-details add-company">
+				<header class="flyout-header">
+					<h6>Update Company</h6>
+				</header>
+		  <div class="flyout-body flyout-shadow-effect customers-flyout">
+					<form  *ngIf="active" (ngSubmit)="companySubmit($event)" [formGroup]="companyForm">
+
+			  <!--<div class="row collapsed company-button-header">
 				<div class="columns small-6 small-offset-6 right">
 				  <button type="submit" class="button create small float-right" [disabled]="!companyForm.valid || !addressValid()" (click)="companySubmit($event)">Save Company</button>
 				</div>
-			  </div>
+			  </div>-->
 
-			  <section class="form-section clearfix">
+			  <section class="form-section clearfix flyout-body flyout-shadow-effect customers-flyout">
 
 				<div class="row">
 				  <div class="small-12 medium-12 columns">
 					<div class="company-section-left">
+						<header class="form-section-header">Basic Info</header>
 						<div class="row">
 							<div class="small-4 columns">
-								<label>Country</label>
+								<label class="text-right">Country</label>
 							</div>
 							<div class="small-6 columns company-country-input">
 								<select combo-box #countryComboBoxDir="comboBox" title="" data-placeholder="Enter Country" formControlName="country"
@@ -40,7 +42,7 @@
 						</div>
 					  <div class="row">
 						  <div class="small-4 columns">
-							  <label>Name</label>
+							  <label class="text-right">Name</label>
 						  </div>
 						   <div class="small-6 columns">
 							<input type="text" formControlName="name" placeholder="Legal Company Name*">
@@ -50,7 +52,7 @@
 
 					  <div class="row">
 						  <div class="small-4 columns">
-							  <label>EIN</label>
+							  <label class="text-right">EIN</label>
 						  </div>
 						  <div class="small-6 columns">
 							<input class="" type="text" formControlName="einNumber" placeholder="EIN*" pattern="[0-9]{9}$">
@@ -61,7 +63,7 @@
 
 					  <div class="row" [hidden]="countryCode != 'US'">
 						<div class="small-4 columns">
- 						 <label>Tax Type</label>
+ 						 <label class="text-right">Tax Type</label>
 						</div>
 						  <div class="small-6 columns">
 							<select formControlName="companyType" placeholder="Company type">
@@ -82,7 +84,7 @@
 
 						<div class="row" *ngIf="havingCompanyMail">
 							<div class="small-4 columns">
-								<label>Bills email</label>
+								<label class="text-right">Bills email</label>
 							</div>
 							<div class="small-6 columns">
 								<input class="" name="companyEmail" formControlName="companyEmail" type="text" readonly>
@@ -91,7 +93,7 @@
 						</div>
 						<div class="row" *ngIf="!havingCompanyMail">
 							<div class="small-6 columns">
-								<label>Bills email</label>
+								<label class="text-right">Bills email</label>
 							</div>
 							<div class="small-6 columns">
 								<div class="input-group">
@@ -104,7 +106,7 @@
 						</div>
 						<div class="row">
 							<div class="small-4 columns">
-								<label>Email</label>
+								<label class="text-right">Email</label>
 							</div>
 							<div class="small-6 columns">
 								<input class="" name="email_id" formControlName="email_id" type="text" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
@@ -113,7 +115,7 @@
 						</div>
 						<div class="row">
 							<div class="small-4 columns">
-							<label>Currency</label>
+							<label class="text-right">Currency</label>
 							</div>
 							<div class="small-6 columns">
 									<select combo-box #currencyComboBoxDir="comboBox" title="" data-placeholder="Enter Currency" formControlName="defaultCurrency"
@@ -126,11 +128,47 @@
 
 					</div>
 					<div class="company-section-left">
-					    <Address [code]="countryCode" #addressDir="address"></Address>
+						<header class="form-section-header">Address</header>
+						<Address [code]="countryCode" #addressDir="address"></Address>
+						<header class="form-section-header">Contact</header>
+						<div class="row">
+							<div class="small-3 columns">
+								<label class="text-right">First Name</label>
+							</div>
+							<div class="small-6 columns">
+								<input type="text" formControlName="contact_first_name" placeholder="First Name">
+								<div class="error" [hidden]="companyForm.controls.contact_first_name.untouched || companyForm.controls.contact_first_name.valid"><small>Contact First Name is required.</small></div>
+							</div>
 
+						</div>
+						<div class="row">
+							<div class="small-3 columns">
+								<label class="text-right">Last Name</label>
+							</div>
+							<div class="small-6 columns">
+								<input type="text" formControlName="contact_last_name" placeholder="Last Name">
+								<div class="error" [hidden]="companyForm.controls.contact_last_name.untouched || companyForm.controls.contact_last_name.valid"><small>Contact Last Name is required.</small></div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="small-3 columns">
+								<label class="text-right">Date of Birth</label>
+							</div>
+							<div class="small-6 columns">
+								<input custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDOB($event)" type="text" formControlName="contact_date_of_birth" placeholder="Date">
+								<div class="error" [hidden]="companyForm.controls.contact_date_of_birth.untouched || companyForm.controls.contact_date_of_birth.valid"><small>Contact Date of Birth is required.</small></div>
+							</div>
+						</div>
 					</div>
 				  </div>
 				</div>
+
+				  <div class="row">
+				<div class="small-12 medium-12 columns">
+				  <button type="submit" class="button create small float-right" [disabled]="!companyForm.valid || !addressValid()" (click)="companySubmit($event)">Save Company</button>
+				</div>
+			  </div>
+
 				  <!--<div class="small-12 medium-4 columns">
 					<div class="row">
 					  <div class="small-12 medium-12 columns">
@@ -143,6 +181,11 @@
 				  </div>-->
 			  </section>
 
+						<button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+						</button>
 			  <!--<section class="item-expense-info">-->
 				<!--<header>Items and Account codes</header>-->
 				<!--<hr/>-->
@@ -280,10 +323,11 @@
 				<!--</div>-->
 			  <!--</section>-->
 			</form>
-		  		</div>
-			</div>
+
 		  </div>
 	  </section>
+			</div>
+		</div>
 	</div>
 	<!--<div class="reports tabs-panel" id="vendorsInfo">
 	  <div class="row collapsed company-button-header">

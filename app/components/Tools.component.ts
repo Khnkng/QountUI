@@ -55,6 +55,7 @@ export class ToolsComponent {
       this.modulesCount=badges.modulesCount;
       this.usersCount= badges.companyUsers;
       this.dimensionCount = badges.dimensions;
+      this.accountsCount = badges.accounts;
     }, error => this.handleError(error));
   }
 
@@ -142,6 +143,10 @@ export class ToolsComponent {
       break;
       case 'employees': {
         let link = ['employees'];
+        this._router.navigate(link);
+      }
+      case 'lock': {
+        let link = ['lock'];
         this._router.navigate(link);
       }
     }

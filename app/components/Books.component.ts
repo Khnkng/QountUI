@@ -64,6 +64,7 @@ export class BooksComponent{
     confirmSubscription: any;
     DepositToDelete:any;
     journalToDelete:any;
+    categoryData:any = {'depreciation':'Depreciation, Tax Adj, Other','payroll':'Payroll','apBalance':'AP balance','arBalance':'AR balance','inventoryBalance':'Inventory Balance','credit':'Credit','bill':'Bill','billPayment':'Payment','deposit':'Deposit','expense':'Expense'};
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
                 private toastService: ToastService,private switchBoard:SwitchBoard, private loadingService:LoadingService, private companiesService: CompaniesService,
                 private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService,
@@ -122,7 +123,6 @@ export class BooksComponent{
     }
 
     getBookBadges(){
-        this.loadingService.triggerLoadingEvent(false);
         this.badgesService.getBooksBadgeCount(this.currentCompany.id).subscribe(badges => {
             let journalCount = badges.journals;
             let depositCount = badges.deposits;
@@ -164,10 +164,10 @@ export class BooksComponent{
             .subscribe(accounts => {
                 this.accounts = accounts.accounts;
                 this.expenseService.expenses(this.currentCompany.id)
-            .subscribe(expenses => {
-                this.loadingService.triggerLoadingEvent(false);
-                this.buildExpenseTableData(expenses.expenses);
-            }, error => this.handleError(error));
+                    .subscribe(expenses => {
+                        this.loadingService.triggerLoadingEvent(false);
+                        this.buildExpenseTableData(expenses.expenses);
+                    }, error => this.handleError(error));
             }, error=> {
 
             });
@@ -178,10 +178,10 @@ export class BooksComponent{
             .subscribe(accounts => {
                 this.accounts = accounts.accounts;
                 this.depositService.deposits(this.currentCompany.id)
-            .subscribe(deposits => {
-                this.loadingService.triggerLoadingEvent(false);
-                this.buildDepositTableData(deposits.deposits);
-            }, error => this.handleError(error));
+                    .subscribe(deposits => {
+                        this.loadingService.triggerLoadingEvent(false);
+                        this.buildDepositTableData(deposits.deposits);
+                    }, error => this.handleError(error));
             }, error=> {
 
             });
@@ -196,19 +196,15 @@ export class BooksComponent{
         });
         this.tabDisplay[tabNo] = {'display':'block'};
         this.tabBackground = this.bgColors[tabNo];
+        this.loadingService.triggerLoadingEvent(true);
         if(this.selectedTab == 0){
             this.isLoading = true;
-            this.loadingService.triggerLoadingEvent(true);
             this.fetchDeposits();
-
         } else if(this.selectedTab == 1){
             this.isLoading = true;
-            this.loadingService.triggerLoadingEvent(true);
             this.fetchExpenses();
-
         } else if(this.selectedTab == 2){
             this.isLoading = true;
-            this.loadingService.triggerLoadingEvent(true);
             this.fetchJournalEntries();
         }
     }
@@ -244,6 +240,10 @@ export class BooksComponent{
             }else if($event.sourceID&&$event.sourceType=='expense'&&$event.source=='outflow'){
                 let link = ['/expense',$event.sourceID];
                 this._router.navigate(link);
+            }else if($event.sourceID&&$event.sourceType=='payment'&&$event.source=='accountsPayable'){
+                let link = ['/payments', $event.sourceID];
+                this._router.navigate(link);
+
             }
         }
     }
@@ -404,7 +404,8 @@ export class BooksComponent{
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
             {"name": "date", "title": "Date"},
-            {"name": "type", "title": "Journal Type"},
+            {"name": "type", "title": "Journal Type","visible":false},
+            {"name": "categoryValue", "title": "Category"},
             {"name": "sourceValue", "title": "Source"},
             {"name": "source", "title": "Source", 'visible': false},
             {"name": "desc", "title": "Description","visible": false},
@@ -427,19 +428,34 @@ export class BooksComponent{
                 if(key == 'source'){
                     row['sourceValue']=base.getSourceName(journalEntry[key]);
                 }
+
+                if(key == 'category'){
+                    row['categoryValue'] = base.categoryData[journalEntry[key]];
+                }
                 row[key] = journalEntry[key];
+
+
             });
-            let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+            if(journalEntry['source'] === 'Manual'){
+               action= action+"<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            }
             if(journalEntry['sourceID'] && journalEntry['source'] === 'accountsPayable'){
-                action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>B</span></a>"+action;
+                if(journalEntry['sourceType'] === 'payment'){
+                    action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>P</span></a>"+action;
+                }else{
+                    action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>B</span></a>"+action;
+                }
             }else if(journalEntry['sourceID'] && journalEntry['source'] === 'outflow'){
                 action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>E</span></a>"+action;
             }else if(journalEntry['sourceID'] && journalEntry['source'] === 'inflow'){
                 action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>D</span></a>"+action;
+            }else if(journalEntry['sourceID'] && journalEntry['sourceType'] === 'credit'){
+                action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>C</span></a>"+action;
             }
             row['actions'] = action;
-            if(row['type'] == 'Original'){
-                row['reverse'] = "<a style='font-size:0.6rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action' data-action='reverse'>Reverse</a>";
+            if(row['type'] == 'Original' && journalEntry['source'] === 'Manual' && !base.isAlreadyReversed(journalEntry['id'])){
+                row['reverse'] = "<a style='font-size:0.1rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action reverseButton' data-action='reverse'>Reverse</a>";
             }
             base.jeTableData.rows.push(row);
         });
@@ -450,6 +466,14 @@ export class BooksComponent{
         setTimeout(function(){
            base.hasJournalEntries = true;
         });
+    }
+
+    isAlreadyReversed(journalId){
+        let jeIndex = _.findIndex(this.jeTableData.rows, {'reversedFrom': journalId});
+        if(jeIndex != -1){
+            return true;
+        }
+        return false;
     }
 
     handleExpenseAction($event){

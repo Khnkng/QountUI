@@ -358,7 +358,11 @@ export class ExpenseComponent{
             if(itemData.vendor_id=='--None--'||itemData.vendor_id==''){
                 itemData.vendor_id=null;
             }
-            data.push(itemData);
+            if(!base.newExpense){
+                data.push(itemData);
+            } else if(!itemData.destroy){
+                data.push(itemData);
+            }
         });
         return data;
     }
@@ -371,7 +375,9 @@ export class ExpenseComponent{
             return;
         }
         data.expense_items = this.getExpenseItemData(this.expenseForm.controls['expense_items']);
-        let itemTotal = _.sumBy(data.expense_items, 'amount');
+        let itemTotal = _.sumBy(data.expense_items, function(expense){
+            return expense.destroy? 0 : expense.amount;
+        });
         if(itemTotal != data.amount){
             this.toastService.pop(TOAST_TYPE.error, "Expense amount and Item total did not match.");
             return;

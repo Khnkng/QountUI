@@ -5,8 +5,8 @@ import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {LoadingService} from "qCommon/app/services/LoadingService";
-import {PaymentsService} from "qCommon/app/services/Payments.service"
-import {Router} from "@angular/router";
+import {PaymentsService} from "qCommon/app/services/Payments.service";
+import {Router,ActivatedRoute} from "@angular/router";
 
 declare let jQuery:any;
 declare let _:any;
@@ -23,24 +23,32 @@ export class PaymentsComponent{
     tableOptions:any = {};
     currentCompany:any;
     row:any;
-    tableColumns:Array<string> = [ 'groupID', 'amount', 'date', 'vendorName'];
+    tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName'];
     confirmSubscription:any;
     companyCurrency:string;
     dimensionFlyoutCSS:any;
     bills:Array<any>=[];
+    routeSub:any;
 
     constructor(private switchBoard: SwitchBoard, private toastService: ToastService, private loadingService:LoadingService
-                ,private paymentsService:PaymentsService,private _router:Router){
+                ,private paymentsService:PaymentsService,private _router:Router, private _route: ActivatedRoute,){
         let companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.loadingService.triggerLoadingEvent(true);
-        this.paymentsService.payments(companyId)
-            .subscribe(payments => {
-                let payments=payments?payments:[]
-                this.buildTableData(payments);
-                this.loadingService.triggerLoadingEvent(false);
-            }, error => this.handleError(error));
+        this.routeSub = this._route.params.subscribe(params => {
+            if(params['paymentID']){
+                this.getPaymentDetails(params['paymentID'])
+            }else {
+                this.paymentsService.payments(companyId)
+                    .subscribe(payments => {
+                        let payments=payments?payments:[];
+                        this.buildTableData(payments);
+                        this.loadingService.triggerLoadingEvent(false);
+                    }, error => this.handleError(error));
+            }
+        });
     }
+
     ngOnDestroy(){
     }
 
@@ -62,9 +70,15 @@ export class PaymentsComponent{
         delete $event.actions;
         if(action == 'edit') {
             this.getPaymentDetails($event.groupID)
+        }else {
+            this.navigateToJE($event.journalID);
         }
     }
 
+    navigateToJE(jeID){
+        let link = ['journalEntry',jeID];
+        this._router.navigate(link);
+    }
     getPaymentDetails(id){
         //this.loadingService.triggerLoadingEvent(true);
         this.paymentsService.paymentDetails(id,Session.getCurrentCompany())
@@ -82,9 +96,11 @@ export class PaymentsComponent{
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
-            {"name": "groupID", "title": "Id"},
+            {"name": "groupID", "title": "Id","visible":false,"filterable": false},
+            {"name": "title", "title": "Payment Title"},
             {"name": "amount", "title": "Amount"},
             {"name": "date", "title": "Date"},
+            {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
             {"name": "vendorName", "title": "Vendor"},
             {"name": "actions", "title": ""}
         ];
@@ -97,7 +113,11 @@ export class PaymentsComponent{
                     let amount = parseFloat(pyment[key]);
                     row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 }
-                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+                let action ="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+                if(pyment.journalID){
+                    action = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>JE</span></a>"+ action;
+                }
+                row["actions"] = action;
             });
             base.tableData.rows.push(row);
         });
@@ -120,4 +140,8 @@ export class PaymentsComponent{
         }
     }
 
+    goToPreviousPage(){
+        let link = [Session.getLastVisitedUrl()];
+        this._router.navigate(link);
+    }
 }

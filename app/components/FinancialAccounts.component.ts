@@ -39,9 +39,10 @@ export class FinancialAccountsComponent{
   tempValues:Array<string> = [];
   tableColumns:Array<string> = ['name', 'id', 'starting_balance', 'current_balance', 'no_effect_on_pl', 'is_credit_account', 'starting_balance_date', 'chart_of_account_id','transit_chart_of_account_id'];
   importType:string = 'MANUAL';
-  banks:Array<any> = [];
+  /*banks:Array<any> = [];*/
   showFlyout:boolean = false;
   chartOfAccounts:Array<any>=[];
+
   showYodleeWidget:boolean = false;
   rsession:string = "";
   token:string = "";
@@ -49,10 +50,14 @@ export class FinancialAccountsComponent{
   currentAccountId:string;
   accountSubmitted:boolean;
 
+  companyCurrency:string='USD';
+
+
   constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard){
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
+    this.companyCurrency=Session.getCurrentCompanyCurrency();
     if(this.currentCompany){
       this.loadingService.triggerLoadingEvent(true);
       this.coaService.chartOfAccounts(this.currentCompany)
@@ -62,10 +67,10 @@ export class FinancialAccountsComponent{
           }, error =>{
             this.toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
           });
-      this.financialAccountsService.financialInstitutions()
+      /*this.financialAccountsService.financialInstitutions()
           .subscribe(banks => {
             this.banks = banks;
-          }, error => this.handleError(error));
+          }, error => this.handleError(error));*/
     } else{
       this.toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
     }
@@ -119,7 +124,7 @@ export class FinancialAccountsComponent{
     this.loadingService.triggerLoadingEvent(true);
     this.financialAccountsService.removeAccount(accountId, this.currentCompany)
         .subscribe(response => {
-          console.log(response);
+          this.getFinancialAccounts(this.currentCompany);
           this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.success, "Deleted Account successfully");
         }, error =>{
@@ -172,22 +177,27 @@ export class FinancialAccountsComponent{
     let base = this;
     $event && $event.preventDefault();
     let data = this._financialAccountForm.getData(this.accountForm);
+    this.loadingService.triggerLoadingEvent(true);
     if(data.chart_of_account_id=='--None--'||data.chart_of_account_id==''){
-      this.toastService.pop(TOAST_TYPE.error, "Please select Chart of Account");
+      this.toastService.pop(TOAST_TYPE.warning, "Please select Chart of Account");
+      this.loadingService.triggerLoadingEvent(false);
       return;
     }if(data.transit_chart_of_account_id=='--None--'||data.transit_chart_of_account_id==''){
-      this.toastService.pop(TOAST_TYPE.error, "Please select Transit COA");
+      this.toastService.pop(TOAST_TYPE.warning, "Please select Transit COA");
+      this.loadingService.triggerLoadingEvent(false);
       return;
     }
     delete data.importType;
     if(this.editMode){
       this.financialAccountsService.updateAccount(data, this.currentCompany)
           .subscribe(response => {
+
             this.currentAccountId = response.id;
             this.toastService.pop(TOAST_TYPE.success, "Updated Financial account successfully");
             this.getFinancialAccounts(this.currentCompany);
             this.accountSubmitted = true;
           }, error =>{
+            this.loadingService.triggerLoadingEvent(true);
             this.toastService.pop(TOAST_TYPE.error, "Failed to update financial account");
             this.showFlyout = false;
           });
@@ -199,6 +209,7 @@ export class FinancialAccountsComponent{
             this.getFinancialAccounts(this.currentCompany);
             this.accountSubmitted = true;
           }, error => {
+            this.loadingService.triggerLoadingEvent(true);
             this.toastService.pop(TOAST_TYPE.error, "Failed to create Account");
             this.showFlyout = false;
           });
@@ -252,6 +263,16 @@ export class FinancialAccountsComponent{
         }if(key=='transit_chart_of_account_id'){
           row['transit_chart_of_account_id'] = base.getCOAName(account[key]);
         }
+        if(key=='starting_balance'){
+          let starting_balance=account['starting_balance']?Number(account['starting_balance']):0;
+          row['starting_balance'] =starting_balance.toLocaleString(Session.getCurrentCompanyCurrency(), { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        if(key=='current_balance'){
+          let current_balance=account['current_balance']?Number(account['current_balance']):0;
+          row['current_balance'] =current_balance.toLocaleString(Session.getCurrentCompanyCurrency(), { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       });
       base.tableData.rows.push(row);

@@ -8,6 +8,7 @@ import {NotificationModel} from "qCommon/app//models/Notification.model";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {FullScreenService} from "qCommon/app/services/fullscreen.service";
 import {NotificationService} from "qCommon/app/services/Notification.service";
+import {Session} from "qCommon/app/services/Session";
 
 
 declare var jQuery:any;
@@ -44,6 +45,17 @@ export class HeaderComponent implements  OnInit{
     'shrink' : true
   }
 
+  /*Search fields*/
+  selectedComponents:Array<string> = [];
+  amountCondition:string;
+  companyCurrency:string;
+  amount:number = 0;
+  lowerLimit:number = 0;
+  upperLimit:number = 0;
+  title:string;
+  beginDate:string;
+  endDate:string;
+
   @Output() togglemenu = new EventEmitter<boolean>();
   @Output() redirect = new EventEmitter<any>();
 
@@ -62,6 +74,7 @@ export class HeaderComponent implements  OnInit{
     this.fullScreenIcon = "ion-arrow-expand";
     this.searchText = "";
     this.switchBoard.onNotificationMarkRead.subscribe(status => this.getNotifications());
+    this.companyCurrency=Session.getCurrentCompanyCurrency();
   }
 
   getNotifications() {
@@ -160,13 +173,16 @@ export class HeaderComponent implements  OnInit{
 
   toggleSearch(){
     this.showSearch = !this.showSearch;
-    if(this.showSearch){
-      this.searchText=""
-    }
   }
 
   viewUserProfilePage($event){
     let link = ["/user-profile"];
     this.redirect.emit(link);
+  }
+
+  showSearchPage(){
+    sessionStorage.removeItem('searchcriteria');
+    let link = ['search'];
+    this._router.navigate(link);
   }
 }

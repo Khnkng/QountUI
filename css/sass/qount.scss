@@ -302,6 +302,69 @@ a:hover, a:focus .je-badge{
   color: #36404a;
 }
 
+.search-reveal{
+  right: 8rem !important;
+  padding: 10px;
+  left: 550px !important;
+  top: 50px !important;
+
+  input{
+    max-width: none;
+  }
+
+  .date-field{
+    width: 42%;
+    margin: 3px 3px;
+  }
+
+  div.text{
+    margin-top: 6px;
+  }
+
+  button.close-flyout{
+    margin-right: 10px;
+    font-size: 1.5rem;
+    outline: none !important;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    .ion-ios-close-empty{
+
+    }
+  }
+
+  .button-group{
+    margin-top: 5px;
+
+    .button{
+      margin-left: 5px;
+      font-size: 9px !important;
+      /*width: calc(14% - 1px) !important;*/
+    }
+  }
+
+  .selected-button{
+    color: #fff;
+  }
+
+  .amount{
+    .columns{
+      padding: 3px;
+    }
+
+    .between{
+      input{
+        margin-top: -3px;
+      }
+    }
+  }
+
+  .combo-box-row{
+    margin-top: 10px;
+  }
+}
+
 .main-canvas {
   -webkit-transition : all 0.5s;
   -moz-transition : all 0.5s;
@@ -1759,6 +1822,10 @@ table.footable-editing-right tr.footable-editing td {
     &.secondary{
       background-color: $qount-form-border-hover;
     }
+    &.vewOnly{
+      background-color: $qount-btn-primary;
+      color: white !important;
+    }
 
   }
 
@@ -2154,7 +2221,7 @@ table.footable-editing-right tr.footable-editing td {
   form.company-form {
     padding: 50px 0 50px 0;
     @media #{$medium-up} {
-      padding: 0 0 50px 0;
+      padding: 0 0 10px 0;
     }
     section {
       &.item-expense-info {
@@ -2947,8 +3014,26 @@ tbody{
 
 /* Indentation for child chart of account */
 .footable{
-  td.coa-child{
+  td.coa-child-1{
+    padding-left: 15px !important;
+  }
+  td.coa-child-2{
     padding-left: 20px !important;
+  }
+  td.coa-child-3{
+    padding-left: 30px !important;
+  }
+  td.coa-child-4{
+    padding-left: 40px !important;
+  }
+  td.coa-child-5{
+    padding-left: 50px !important;
+  }
+  td.coa-child-6{
+    padding-left: 60px !important;
+  }
+  td.coa-child-7{
+    padding-left: 70px !important;
   }
 }
 
@@ -3141,10 +3226,6 @@ form select.ng-dirty.ng-valid {
   }
 }
 
-.je-footable .footable tbody tr td{
-  padding: 4px 8px!important;
-}
-
 .line-table{
   select, input{
     margin: 0;
@@ -3158,4 +3239,146 @@ form select.ng-dirty.ng-valid {
 .company-section-left {
   width:50%;
   float:left;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .customers-flyout {
+  min-height: calc(100vh - 300px);
+}
+
+input:disabled, textarea:disabled {
+  background-color: #eee;
+}
+
+input[readonly], textarea[readonly]{
+  background-color: #ffffff;
+  cursor: not-allowed;
+}
+
+.payments-table {
+  thead{
+    background: $qount-brand-grey-light !important;
+  }
+  margin-bottom: 10px;
+  .report-cell-value{
+    color: $qount-text;
+    &:hover{
+      //text-decoration: underline;
+      color: $qount-brand-primary-medium;
+      cursor:pointer;
+    }
+  }
+}
+
+.foo-container .bills-footable .footable-filtering .footable-filtering {
+  right: 170px !important;
+}
+
+.bills-main-div {
+  margin-top: 50px;
+}
+
+
+.vew-only{
+  padding: 0.5rem 1rem;
+  background: #4B96FA;
+  color: white;
+}
+
+.dropbtn {
+  border: none;
+  cursor: pointer;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.cust-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  margin-top: -10px;
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 125px;
+  right: 0;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: #000;
+  padding: 3px 5px;
+  text-decoration: none;
+  display: block;
+  font-size:0.875rem;
+  font-weight: 400;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #f1f1f1
+}
+
+/* Show the dropdown menu on hover */
+.cust-dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-button-style{
+  padding: 3px 5px
+}
+.report-list-item a:hover{
+  color: #4B96FA;
+}
+
+.sortingHeaders span:hover{
+  cursor: hand;
+}
+/*
+dropdown-content.dropdown-content:before {
+  position: absolute;
+  top: -7px;
+  left: 154px;
+  display: inline-block;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-bottom:6px solid #CCCCCC;
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+}*/
+.dropdown-content:after {
+  position: absolute;
+  top:-6px;
+  left:95px;
+  display: inline-block;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-bottom:6px solid #FFFFFF;
+  content: '';
+}
+
+.dropdown-content:before{
+  position: absolute;
+  top: -7px;
+  left: 95px;
+  display: inline-block;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-bottom:6px solid #CCCCCC;
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  content: '';
+}
+
+.dropdown-content {
+  border: 1px solid #CCCCCC;
+}
+
+.reverseButton{
+  display: initial;
+}
+
+.footable-last-visible>input[type="checkbox"] {
+  margin:0 !important;
 }

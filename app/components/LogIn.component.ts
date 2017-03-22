@@ -63,12 +63,20 @@ export class LogInComponent implements OnInit {
     this.loadingService.triggerLoadingEvent(false);
     if(status) {
       Session.create(obj.user, obj.token);
-      this.fetchCompanies(obj.user);
+      if(obj.user.default_company&&obj.user.default_company.roles&&!obj.user.default_company.roles.includes('Vendor')){
+        this.fetchCompanies(obj.user);
+      }else {
+        this.showLoginError()
+      }
     } else {
-      this.status = {};
-      this.status['error'] = true;
-      this.message = obj;
+      this.showLoginError(obj)
     }
+  }
+
+  showLoginError(obj?){
+    this.status = {};
+    this.status['error'] = true;
+    this.message = obj?obj:'Username or password incorrect';
   }
 
   handleError(error){
@@ -76,15 +84,16 @@ export class LogInComponent implements OnInit {
   }
 
   setComapnies(companies){
+    let user:any = Session.getUser();
     if(companies.length > 0){
-      let defaultCompany:any = Session.getUser().default_company;
+      let defaultCompany:any = user.default_company;
       if(!_.isEmpty(defaultCompany)){
         Session.setCurrentCompany(defaultCompany.id);
         Session.setCurrentCompanyName(defaultCompany.name);
         Session.setCurrentCompanyCurrency(defaultCompany.defaultCurrency);
       }
     } else{
-      if(Session.getUser().isAdmin){
+      if(user.isAdmin){
         this._toastService.pop(TOAST_TYPE.warning, "No companies added yet. Please add a company to start.");
         this._router.navigate(['addCompany']);
       } else{
