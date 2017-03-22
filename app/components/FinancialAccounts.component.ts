@@ -12,6 +12,8 @@ import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.s
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {FinancialAccountForm} from "../forms/FinancialAccount.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {YodleeService} from "../services/Yodlee.service";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 
 declare var jQuery:any;
 declare var _:any;
@@ -40,9 +42,15 @@ export class FinancialAccountsComponent{
   banks:Array<any> = [];
   showFlyout:boolean = false;
   chartOfAccounts:Array<any>=[];
+  showYodleeWidget:boolean = false;
+  rsession:string = "";
+  token:string = "";
+  callBackUrl = "";
+  currentAccountId:string;
+  accountSubmitted:boolean;
 
   constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
-              private financialAccountsService: FinancialAccountsService, private toastService: ToastService){
+              private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard){
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
     if(this.currentCompany){
@@ -175,23 +183,29 @@ export class FinancialAccountsComponent{
     if(this.editMode){
       this.financialAccountsService.updateAccount(data, this.currentCompany)
           .subscribe(response => {
-            console.log(response);
+            this.currentAccountId = response.id;
             this.toastService.pop(TOAST_TYPE.success, "Updated Financial account successfully");
             this.getFinancialAccounts(this.currentCompany);
+            this.accountSubmitted = true;
           }, error =>{
             this.toastService.pop(TOAST_TYPE.error, "Failed to update financial account");
+            this.showFlyout = false;
           });
     } else{
       this.financialAccountsService.addAccount(data, this.currentCompany)
           .subscribe(response => {
+            this.currentAccountId = response.id;
             this.toastService.pop(TOAST_TYPE.success, "Financial account created successfully");
             this.getFinancialAccounts(this.currentCompany);
+            this.accountSubmitted = true;
           }, error => {
             this.toastService.pop(TOAST_TYPE.error, "Failed to create Account");
+            this.showFlyout = false;
           });
     }
+
     this.buildTableData(this.accounts);
-    this.showFlyout = false;
+    //this.showFlyout = false;
   }
 
   handleAccount(newAccount){
@@ -264,5 +278,38 @@ export class FinancialAccountsComponent{
   hideFlyout(){
     this.row = {};
     this.showFlyout = !this.showFlyout;
+  }
+
+  launchYodleeWidget() {
+    this.showYodleeWidget = true;
+    jQuery('#yodleewgt').foundation('open');
+
+
+
+
+    this.yodleeService.getAccessToken(Session.getCurrentCompany()).subscribe(resp=> {
+      console.log("resp",resp);
+      this.rsession = resp.userSessionToken;
+      this.token = resp.userAccessToken;
+      this.callBackUrl = "http://localHost:8000/yodleeToken";
+      setTimeout(function(){
+        jQuery("#yodleeForm").submit();
+      },100);
+    }, error=>{});
+    /*let model = {
+
+    };
+    this.financialAccountsService.getFastLink(model).subscribe(linkDetails => {
+      console.log("linkDetails", linkDetails);
+    });*/
+
+    this.switchBoard.onYodleeTokenRecived.subscribe(recived => {
+      var status = Session.get("yodleeStatus");
+      this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
+
+        jQuery('#yodleewgt').foundation('close');
+      });
+
+    });
   }
 }
