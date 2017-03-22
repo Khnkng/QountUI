@@ -268,14 +268,13 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
-        ResetPasswordComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent, CategorizationComponent,PaymentsComponent, YodleeTokenComponent],
+        ResetPasswordComponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,
+        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
         TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm,
-        FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,
-        ResetPasswordComponent,lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,
-        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent],
+        FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
