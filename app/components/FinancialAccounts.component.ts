@@ -9,7 +9,7 @@ import {Session} from "qCommon/app/services/Session";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
-import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {TOAST_TYPE, PATH} from "qCommon/app/constants/Qount.constants";
 import {FinancialAccountForm} from "../forms/FinancialAccount.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {YodleeService} from "../services/Yodlee.service";
@@ -312,7 +312,7 @@ export class FinancialAccountsComponent{
       console.log("resp",resp);
       this.rsession = resp.userSessionToken;
       this.token = resp.userAccessToken;
-      this.callBackUrl = "http://localHost:8000/yodleeToken";
+      this.callBackUrl = PATH.JAVA_SERVICE_URL+"/yodleeToken";
       setTimeout(function(){
         jQuery("#yodleeForm").submit();
       },100);
