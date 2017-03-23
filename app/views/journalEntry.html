@@ -12,12 +12,19 @@
                                 <div class="form-section-left expense-row">
                                     <header class="form-section-header">Journal Details</header>
                                     <div class="row">
-                                        <div class="small-12 medium-8 columns">
+                                        <div class="small-12 medium-12 columns" [hidden]="showAdvance">
                                             <div class="small-12 medium-3 columns">
                                                 <label>Number
                                                     <input type="text" formControlName="number" placeholder="Journal Number*" *ngIf="!isSystemCreatedJE">
                                                     <input type="text" formControlName="number" placeholder="Journal Number*" readonly *ngIf="isSystemCreatedJE">
                                                     <div class="error" [hidden]="jeForm.controls.number.untouched || jeForm.controls.number.valid"><small>Journal Number is required.</small></div>
+                                                </label>
+                                            </div>
+                                            <div class="small-12 medium-3 columns">
+                                                <label>Date
+                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*" *ngIf="!isSystemCreatedJE">
+                                                    <input type="text" formControlName="date"  *ngIf="isSystemCreatedJE" readonly>
+                                                    <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
                                                 </label>
                                             </div>
                                             <div class="small-12 medium-3 columns">
@@ -49,13 +56,25 @@
                                                     <div class="error" [hidden]="jeForm.controls.category.untouched || jeForm.controls.category.valid"><small>Please select category.</small></div>
                                                 </label>
                                             </div>
+
                                             <div class="small-12 medium-3 columns">
-                                                <label>Date
-                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*" *ngIf="!isSystemCreatedJE">
-                                                    <input type="text" formControlName="date"  *ngIf="isSystemCreatedJE" readonly>
-                                                    <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
+                                                <label>Basis
+                                                    <select formControlName="basis">
+                                                        <option value="Cash">Cash</option>
+                                                        <option value="Accrual">Accrual</option>
+                                                    </select>
                                                 </label>
                                             </div>
+                                            <div class="small-12 medium-12 columns" [hidden]="showAdvance">
+                                                <label>Description
+                                                    <textarea formControlName="desc" style="height: 50px;" *ngIf="!isSystemCreatedJE"></textarea>
+                                                    <textarea formControlName="desc" style="height: 50px;" *ngIf="isSystemCreatedJE" readonly></textarea>
+                                                    <div class="error" [hidden]="jeForm.controls.desc.untouched || jeForm.controls.desc.valid"><small>Please enter Description.</small></div>
+                                                </label>
+                                            </div>
+                                            <div class="small-12 medium-3 columns float-left advanceLink" (click)="showRecurringOpts()"><a href="javascript:void(0)"><U>More</U></a></div>
+                                        </div>
+                                        <div class="small-12 medium-12 columns" [hidden]="!showAdvance">
                                             <div class="small-12 medium-3 columns">
                                                 <!--<div class="small-4 medium-3 columns">
                                                     <label>Auto Reverse
@@ -76,7 +95,7 @@
                                                     <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select Reversal Date.</small></div>
                                                 </label>
                                             </div>
-                                            <div class="small-12 medium-3 columns">
+                                            <div class="small-12 medium-1 columns">
                                                 <label>Recurring
                                                     <div class="switch tiny">
                                                         <input class="switch-input" id="recurring" type="checkbox" formControlName="recurring" (change)="toggleRecurring($event)" *ngIf="!isSystemCreatedJE"/>
@@ -97,7 +116,16 @@
                                                     <input type="text" disabled placeholder="Next JE Date*"/>
                                                 </label>
                                             </div>
-                                            <div class="small-12 medium-3 columns">
+                                            <div class="small-12 medium-3 columns ">
+                                                <label [hidden]="disableRecurring">End Date
+                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setEndDate($event)" formControlName="endDate" placeholder="End Date*">
+                                                    <div class="error" [hidden]="jeForm.controls.endDate.untouched || jeForm.controls.endDate.valid"><small>End Date is required.</small></div>
+                                                </label>
+                                                <label [hidden]="!disableRecurring">End Date
+                                                    <input type="text" disabled placeholder="End Date*"/>
+                                                </label>
+                                            </div>
+                                            <div class="small-12 medium-2 columns float-left">
                                                 <label [hidden]="disableRecurring">Frequency
                                                     <select formControlName="recurringFrequency">
                                                         <option value="daily">Daily</option>
@@ -114,32 +142,18 @@
                                                     </select>
                                                 </label>
                                             </div>
-                                            <div class="small-12 medium-3 columns">
-                                                <label [hidden]="disableRecurring">End Date
-                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setEndDate($event)" formControlName="endDate" placeholder="End Date*">
-                                                    <div class="error" [hidden]="jeForm.controls.endDate.untouched || jeForm.controls.endDate.valid"><small>End Date is required.</small></div>
-                                                </label>
-                                                <label [hidden]="!disableRecurring">End Date
-                                                    <input type="text" disabled placeholder="End Date*"/>
-                                                </label>
-                                            </div>
+
                                         </div>
-                                        <div class="small-12 medium-4 columns">
-                                            <label>Description
-                                                <textarea formControlName="desc" style="height: 130px;" *ngIf="!isSystemCreatedJE"></textarea>
-                                                <textarea formControlName="desc" style="height: 130px;" *ngIf="isSystemCreatedJE" readonly></textarea>
-                                                <div class="error" [hidden]="jeForm.controls.desc.untouched || jeForm.controls.desc.valid"><small>Please enter Description.</small></div>
-                                            </label>
-                                        </div>
+
                                     </div>
-                                    <div class="row">
+                                    <div class="row" [hidden]="showAdvance" [ngClass]="{'applyMargin': isSystemCreatedJE}">
                                         <div class="columns" *ngIf="!isSystemCreatedJE">
                                             <label class="float-right">
                                                 <i class="icon ion-ios-plus-outline" (click)="showNewLine()"></i> Line
                                             </label>
                                         </div>
                                     </div>
-                                    <table class="stack line-table">
+                                    <table class="stack line-table" [hidden]="showAdvance">
                                         <thead>
                                             <tr>
                                                 <th width="15%">Title</th>
@@ -220,19 +234,24 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <div class="row" *ngIf="!newJournalEntry&&!isSystemCreatedJE">
+                                    <div class="row" *ngIf="!newJournalEntry&&!isSystemCreatedJE&& !showAdvance">
                                         <div class="columns">
                                             <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)"><i class="icon ion-edit"></i>Update</button>
                                         </div>
                                     </div>
-                                    <div class="row" *ngIf="isSystemCreatedJE">
+                                    <div class="row" *ngIf="isSystemCreatedJE && !showAdvance">
                                         <div class="columns">
                                             <span class="label float-right vew-only"  ><i class="icon ion-edit"></i>View Only</span>
                                         </div>
                                     </div>
-                                    <div class="row" *ngIf="newJournalEntry">
+                                    <div class="row" *ngIf="newJournalEntry && !showAdvance">
                                         <div class="columns">
                                             <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)">Create</button>
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngIf="showAdvance&&!isSystemCreatedJE">
+                                        <div class="columns">
+                                            <button type="submit" class="button small float-right" (click)="showRecurringOpts()">Save</button>
                                         </div>
                                     </div>
                                 </div>
@@ -240,7 +259,12 @@
                         </div>
                     </section>
                 </form>
-                <button class="close-flyout" aria-label="Close modal" type="button" (click)="goToPreviousPage()">
+                <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="!showAdvance" (click)="goToPreviousPage()">
+                    <span aria-hidden="true">
+                      <i class="ion-ios-close-empty"></i>
+                    </span>
+                </button>
+                <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="showAdvance" (click)="showRecurringOpts()">
                     <span aria-hidden="true">
                       <i class="ion-ios-close-empty"></i>
                     </span>

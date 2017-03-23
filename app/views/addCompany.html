@@ -117,10 +117,20 @@
                         <option *ngFor="let currency of currencies" [value]="currency.code">{{currency.code}}</option>
                       </select>-->
                       <select combo-box #currencyComboBoxDir="comboBox" title="" data-placeholder="Enter Currency" formControlName="defaultCurrency"
-                              [listObject]="currencies" (valueChanged)="selectCurrency($event)">
+                              [listObject]="currencies" (valueChanged)="selectedededCurrency($event)">
                         <option *ngFor="let currency of currencies" [value]="currency.code">{{currency.code}}</option>
                       </select>
                       <div class="error" [hidden]="companyForm.controls.defaultCurrency.untouched || companyForm.controls.defaultCurrency.valid"><small>Select Currency</small></div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="small-12 medium-4 columns">
+                  <label>Fiscal Start Date
+                    <div>
+                      <input  custom-datepicker (valueChanged)="setDate($event,lockdate)" [mindate]="'past'" [maxdate]="todaysDate" [format]="'MM/DD/YYYY'"  type="text" name="fiscalStartDate" formControlName="fiscalStartDate" placeholder="Fiscal Start Date*"/>
+                      <div class="error" [hidden]="companyForm.controls.fiscalStartDate.untouched || companyForm.controls.fiscalStartDate.valid"><small>Company Fiscal Start Date is required.</small></div>
                     </div>
                   </label>
                 </div>

@@ -58,6 +58,7 @@ export class JournalEntryComponent{
     companyCurrency:string;
     addNewLineFlag:boolean = false;
     isSystemCreatedJE:boolean=false;
+    showAdvance:boolean=false;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -317,14 +318,12 @@ export class JournalEntryComponent{
         if(currentLineControl.editable){
             currentLineControl.editable = !currentLineControl.editable;
         }
-        let journalLines:any = this.jeForm.controls['journalLines'];
-        let lineControl:any = journalLines.controls[this.editingLine.index];
-        lineControl.controls['notes'].patchValue(line.notes);
-        lineControl.controls['type'].patchValue(line.type);
-        lineControl.controls['coa'].patchValue(line.coa);
-        lineControl.controls['entryType'].patchValue(line.entryType);
-        lineControl.controls['amount'].patchValue(line.amount);
-        lineControl.controls['dimensions'].patchValue(line.dimensions);
+        currentLineControl.controls['notes'].patchValue(line.notes);
+        currentLineControl.controls['type'].patchValue(line.type);
+        currentLineControl.controls['coa'].patchValue(line.coa);
+        currentLineControl.controls['entryType'].patchValue(line.entryType);
+        currentLineControl.controls['amount'].patchValue(line.amount);
+        currentLineControl.controls['dimensions'].patchValue(line.dimensions);
     }
 
     //When user double clicks on the line, it toggles and show the fields
@@ -490,12 +489,12 @@ export class JournalEntryComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
+        data.journalLines = this.getJournalLineData(this.jeForm);
+        this.updateJournalLinesData(data);
         if(!this.validateLineAmount(data.journalLines)){
             this.toastService.pop(TOAST_TYPE.error, "Credit and debit totals doesn't match");
             return false;
         }
-        data.journalLines = this.getJournalLineData(this.jeForm);
-        this.updateJournalLinesData(data);
         if(data.reversalDate){
             data.autoReverse = true;
         } else{
@@ -686,5 +685,9 @@ export class JournalEntryComponent{
     goToPreviousPage(){
         let link = [Session.getLastVisitedUrl()];
         this._router.navigate(link);
+    }
+
+    showRecurringOpts(){
+        this.showAdvance = !this.showAdvance;
     }
 }
