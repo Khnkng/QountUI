@@ -312,7 +312,7 @@ export class FinancialAccountsComponent{
       console.log("resp",resp);
       this.rsession = resp.userSessionToken;
       this.token = resp.userAccessToken;
-      this.callBackUrl = PATH.JAVA_SERVICE_URL+"/yodleeToken";
+      this.callBackUrl = "http://dev-oneapp.qount.io"+"/yodleeToken";
       setTimeout(function(){
         jQuery("#yodleeForm").submit();
       },100);
