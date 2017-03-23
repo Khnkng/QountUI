@@ -325,7 +325,8 @@ export class FinancialAccountsComponent{
     });*/
 
     this.switchBoard.onYodleeTokenRecived.subscribe(recived => {
-      var status = Session.get("yodleeStatus");
+      var status = JSON.parse(Session.get("yodleeStatus"));
+      console.log("status", status);
       this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
 
         jQuery('#yodleewgt').foundation('close');
