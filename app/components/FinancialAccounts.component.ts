@@ -330,6 +330,7 @@ export class FinancialAccountsComponent{
       this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
 
         jQuery('#yodleewgt').foundation('close');
+        this.hideFlyout();
       });
 
     });
