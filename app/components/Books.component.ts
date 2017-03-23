@@ -64,7 +64,7 @@ export class BooksComponent{
     confirmSubscription: any;
     DepositToDelete:any;
     journalToDelete:any;
-    categoryData:any = {'depreciation':'Depreciation, Tax Adj, Other','payroll':'Payroll','apBalance':'AP balance','arBalance':'AR balance','inventoryBalance':'Inventory Balance','credit':'Credit','bill':'Bill','billPayment':'Payment','deposit':'Deposit','expense':'Expense'};
+    categoryData:any = {'depreciation':'Depreciation','payroll':'Payroll','apBalance':'AP balance','arBalance':'AR balance','inventory':'Inventory','credit':'Credit','bill':'Bill','billPayment':'Payment','deposit':'Deposit','expense':'Expense','amortization':'Amortization','openingEntry':'Opening Entry','creditMemo':'Credit Memo','cashApplication':'Cash Application','other':'Other'};
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
                 private toastService: ToastService,private switchBoard:SwitchBoard, private loadingService:LoadingService, private companiesService: CompaniesService,
                 private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService,
@@ -431,6 +431,7 @@ export class BooksComponent{
 
                 if(key == 'category'){
                     row['categoryValue'] = base.categoryData[journalEntry[key]];
+
                 }
                 row[key] = journalEntry[key];
 
