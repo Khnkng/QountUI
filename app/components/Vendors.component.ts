@@ -345,6 +345,7 @@ deleteVendor(toast){
   }
 
   handleError(error) {
+    this.loadingService.triggerLoadingEvent(false);
     this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
   }
 
@@ -388,6 +389,7 @@ deleteVendor(toast){
 
   getVendorDetails(vendorID){
     let base=this;
+    this.loadingService.triggerLoadingEvent(true);
     this.companyService.vendor(this.companyId,vendorID).subscribe(vendor => {
       if(vendor.addresses[0]){
         this.row = vendor;
@@ -413,6 +415,9 @@ deleteVendor(toast){
       let accountNumbersControl:any = this.vendorForm.controls['accountNumbers'];
       accountNumbersControl.patchValue(vendor.accountNumbers);
       this._vendorForm.updateForm(this.vendorForm, vendor);
+      setTimeout(function(){
+        base.loadingService.triggerLoadingEvent(false);
+      },2000);
     }, error => this.handleError(error));
   }
 
