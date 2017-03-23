@@ -73,6 +73,8 @@ import {DepositsLineForm} from "./forms/Deposits.form";
 import {EmployeesComponent} from "./components/Employees.component";
 import {EmployeesForm} from "./forms/Employees.form";
 import {PaymentsComponent} from "./components/payments.component";
+import {YodleeService} from "./services/Yodlee.service";
+import {YodleeTokenComponent} from "./components/YodleeToken.component";
 import {SearchComponent} from "./components/Search.component";
 import {SearchResultsComponent} from "./components/SearchResults.component";
 
@@ -98,6 +100,9 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             path: 'resetpassword/:token',
             component: ResetPasswordComponent,
             canActivate: [LoggedInActivator]
+        },{
+            path: 'yodleeToken',
+            component: YodleeTokenComponent
         },
         {
             path: 'signUp',
@@ -263,13 +268,13 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         VendorComponent,TaxesComponent, ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
-        ResetPasswordComponent,lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,
-        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent],
+        ResetPasswordComponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,
+        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
-        TaxesForm,LockForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm,
-        FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm],
+        TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm,
+        FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

@@ -4,7 +4,7 @@
 
 
 import {Component, OnInit} from "@angular/core";
-import {Router, NavigationEnd} from "@angular/router";
+import {Router, NavigationEnd, ActivatedRoute} from "@angular/router";
 import {UserModel} from "qCommon/app/models/User.model";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {ToastService} from "qCommon/app/services/Toast.service";
@@ -16,6 +16,7 @@ import {SocketService} from "qCommon/app/services/Socket.service";
 
 declare var jQuery:any;
 declare var _:any;
+declare var window:any;
 
 @Component({
     selector: 'qount-app',
@@ -45,8 +46,14 @@ export class AppComponent  implements OnInit{
         'sidebar' : true,
         'shrink' : true
     };
+    sub:any;
+    queryParams:any;
 
-    constructor(_switchBoard:SwitchBoard, private _router:Router, private toastService: ToastService, private socketService: SocketService) {
+    constructor(_switchBoard:SwitchBoard, private _router:Router, private route: ActivatedRoute, private toastService: ToastService, private socketService: SocketService) {
+        let self = this;
+        window.recivedYodleeToken = function(){
+            self.switchBoard.onYodleeTokenRecived.next({});
+        };
         if(Session.hasSession()) {
             this.hasLoggedIn = true;
         }
@@ -60,6 +67,13 @@ export class AppComponent  implements OnInit{
             this.isSideMenuExpanded = flag;
             this.togglemenu(flag)
         });
+
+        this.sub = this.route
+            .queryParams
+            .subscribe(params => {
+                this.queryParams = params;
+
+            });
     }
 
     addToast(toast){
@@ -123,7 +137,16 @@ export class AppComponent  implements OnInit{
         Session.setLastVisitedUrl(this.currentPath);
         this.isLoginPath = routeChange.url == 'login';
         this.currentPath = routeChange.url;
-        console.log("currentpath", this.currentPath);
+
+
+
+
+        if(this.currentPath.startsWith("/yodleeToken")) {
+            var status = this.queryParams['JSONcallBackStatus'];
+            Session.put("yodleeStatus", status);
+            window.parent.recivedYodleeToken();
+        }
+
     }
 
     ngOnInit() {
@@ -175,6 +198,10 @@ export class AppComponent  implements OnInit{
         this.isOffCanvasMenuExpanded = !this.isOffCanvasMenuExpanded;
         this.isSideMenuExpanded = this.isOffCanvasMenuExpanded;
         this.switchBoard.onOffCanvasMenuExpand.next(this.isOffCanvasMenuExpanded);
+    }
+
+    ngOnDestroy() {
+        this.sub.unsubscribe();
     }
 
 }

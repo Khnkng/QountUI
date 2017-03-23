@@ -91,6 +91,18 @@
 								<div class="error" [hidden]="companyForm.controls.companyEmail.untouched || companyForm.controls.companyEmail.valid"><small>companyMail is required.</small></div>
 							</div>
 						</div>
+
+						<div class="row" *ngIf="havingCompanyMail">
+							<div class="small-4 columns">
+								<label class="text-right">Fiscal Start Date</label>
+							</div>
+							<div class="small-6 columns">
+								<input  custom-datepicker (valueChanged)="setDate($event,lockdate)" [mindate]="'past'" [maxdate]="todaysDate" [format]="'MM/DD/YYYY'"  type="text" formControlName="fiscalStartDate" name="fiscalStartDate" placeholder="Fiscal Start Date*"/>
+								<div class="error" [hidden]="companyForm.controls.fiscalStartDate.untouched || companyForm.controls.fiscalStartDate.valid"><small>Select Fiscal Start Date</small></div>
+							</div>
+						</div>
+
+
 						<div class="row" *ngIf="!havingCompanyMail">
 							<div class="small-6 columns">
 								<label class="text-right">Bills email</label>
@@ -104,6 +116,7 @@
 								<div class="error" *ngIf="!emailValidation"><small>Email ID Does Not Exist</small></div>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="small-4 columns">
 								<label class="text-right">Email</label>
@@ -125,6 +138,7 @@
 									<div class="error" [hidden]="companyForm.controls.defaultCurrency.untouched || companyForm.controls.defaultCurrency.valid"><small>Select Currency</small></div>
 								</div>
 						</div>
+
 
 					</div>
 					<div class="company-section-left">
