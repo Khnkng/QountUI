@@ -117,7 +117,7 @@
                         <option *ngFor="let currency of currencies" [value]="currency.code">{{currency.code}}</option>
                       </select>-->
                       <select combo-box #currencyComboBoxDir="comboBox" title="" data-placeholder="Enter Currency" formControlName="defaultCurrency"
-                              [listObject]="currencies" (valueChanged)="selectCurrency($event)">
+                              [listObject]="currencies" (valueChanged)="selectedededCurrency($event)">
                         <option *ngFor="let currency of currencies" [value]="currency.code">{{currency.code}}</option>
                       </select>
                       <div class="error" [hidden]="companyForm.controls.defaultCurrency.untouched || companyForm.controls.defaultCurrency.valid"><small>Select Currency</small></div>

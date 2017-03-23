@@ -353,6 +353,7 @@ deleteVendor(toast){
     let tempForm = _.cloneDeep(this._vendorForm.getForm());
     let ein = this.row? this.row.ein : '';
     let ssn = this.row? this.row.ssn : '';
+    vendorType=vendorType?vendorType:'Business';
     if(vendorType == this.vendorTypes.company){
       tempForm.ein = [ein || '', validator];
       tempForm.ssn = [ssn || ''];

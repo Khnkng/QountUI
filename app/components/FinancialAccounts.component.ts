@@ -312,7 +312,7 @@ export class FinancialAccountsComponent{
       console.log("resp",resp);
       this.rsession = resp.userSessionToken;
       this.token = resp.userAccessToken;
-      this.callBackUrl = PATH.JAVA_SERVICE_URL+"/yodleeToken";
+      this.callBackUrl = "http://dev-oneapp.qount.io"+"/yodleeToken";
       setTimeout(function(){
         jQuery("#yodleeForm").submit();
       },100);
@@ -325,10 +325,12 @@ export class FinancialAccountsComponent{
     });*/
 
     this.switchBoard.onYodleeTokenRecived.subscribe(recived => {
-      var status = Session.get("yodleeStatus");
+      var status = JSON.parse(Session.get("yodleeStatus"));
+      console.log("status", status);
       this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
 
         jQuery('#yodleewgt').foundation('close');
+        this.hideFlyout();
       });
 
     });
