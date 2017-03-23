@@ -58,6 +58,7 @@ export class JournalEntryComponent{
     companyCurrency:string;
     addNewLineFlag:boolean = false;
     isSystemCreatedJE:boolean=false;
+    showAdvance:boolean=false;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -686,5 +687,9 @@ export class JournalEntryComponent{
     goToPreviousPage(){
         let link = [Session.getLastVisitedUrl()];
         this._router.navigate(link);
+    }
+
+    showRecurringOpts(){
+        this.showAdvance = !this.showAdvance;
     }
 }

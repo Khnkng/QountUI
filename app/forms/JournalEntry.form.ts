@@ -34,7 +34,8 @@ export class JournalEntryForm extends abstractForm{
       "newDimensions": [],
       "newEntryType": [],
       "newAmount": [],
-      "newMemo": []
+      "newMemo": [],
+      "basis":['Accrual']
     }
   }
 }
