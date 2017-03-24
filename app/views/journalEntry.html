@@ -249,12 +249,12 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <div class="row" *ngIf="!newJournalEntry&&!isSystemCreatedJE&& !showAdvance">
+                                    <div class="row" *ngIf="!newJournalEntry&&!isSystemCreatedJE&& !showAdvance&&!reversed&&!haveSourceId">
                                         <div class="columns">
                                             <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)"><i class="icon ion-edit"></i>Update</button>
                                         </div>
                                     </div>
-                                    <div class="row" *ngIf="isSystemCreatedJE && !showAdvance">
+                                    <div class="row" *ngIf="isSystemCreatedJE && !showAdvance|| (!isSystemCreatedJE&&reversed && !showAdvance)|| (!isSystemCreatedJE&&haveSourceId&& !showAdvance)">
                                         <div class="columns">
                                             <span class="label float-right vew-only"  ><i class="icon ion-edit"></i>View Only</span>
                                         </div>
