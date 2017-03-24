@@ -22,7 +22,7 @@
                 </header>
                 <div class="flyout-body flyout-shadow-effect">
                     <!--here comes actual flyout code-->
-                    <div *ngIf="!accountSubmitted" id="addAccount" #addAccount class="create-vendor">
+                    <div id="addAccount" #addAccount class="create-vendor">
                         <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="accountForm">
 
                             <section class="form-section clearfix">
@@ -204,20 +204,11 @@
                                 </div>
                             </section>
                         </form>
-                    </div>
-                    <div *ngIf="accountSubmitted">
-
-                        <h6>
-                            Link with Yodlee
-                        </h6>
-
-                        <div style="text-align:center;">
-                            <button class="button small" (click)="launchYodleeWidget()" data-open="yodleewgt">Auto Import</button>
-                            &nbsp;
-                            <button class="button small" (click)="showFlyout = false;accountSubmitted = false;">Skip>></button>
+                        <div style="position: relative;top:-75px;margin-left: 30px;width:150px;">
+                            <label style="display: inline;margin-right: 10px;">Auto Import</label><input type="checkbox" [(ngModel)]="showYodleeWidget"/>
                         </div>
-
                     </div>
+
                 </div>
                 <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
                 <span aria-hidden="true">
