@@ -15,21 +15,21 @@
                                         <div class="small-12 medium-12 columns" [hidden]="showAdvance">
                                             <div class="small-12 medium-3 columns">
                                                 <label>Number
-                                                    <input type="text" formControlName="number" placeholder="Journal Number*" *ngIf="!isSystemCreatedJE">
-                                                    <input type="text" formControlName="number" placeholder="Journal Number*" readonly *ngIf="isSystemCreatedJE">
+                                                    <input type="text" formControlName="number" placeholder="Journal Number*" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                                                    <input type="text" formControlName="number" placeholder="Journal Number*" readonly *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)">
                                                     <div class="error" [hidden]="jeForm.controls.number.untouched || jeForm.controls.number.valid"><small>Journal Number is required.</small></div>
                                                 </label>
                                             </div>
                                             <div class="small-12 medium-3 columns">
                                                 <label>Date
-                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*" *ngIf="!isSystemCreatedJE">
-                                                    <input type="text" formControlName="date"  *ngIf="isSystemCreatedJE" readonly>
+                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                                                    <input type="text" formControlName="date"  *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly>
                                                     <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
                                                 </label>
                                             </div>
                                             <div class="small-12 medium-3 columns">
                                                 <label>Category
-                                                    <select formControlName="category" placeholder="Category" *ngIf="!isSystemCreatedJE">
+                                                    <select formControlName="category" placeholder="Category" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
                                                         <option value="depreciation">Depreciation</option>
                                                         <option value="payroll">Payroll</option>
                                                         <option value="apBalance">AP balance</option>
@@ -46,7 +46,7 @@
                                                         <option value="cashApplication">Cash Application</option>
                                                         <option value="other">Other</option>
                                                     </select>
-                                                    <select formControlName="category" placeholder="Category" *ngIf="isSystemCreatedJE" disabled>
+                                                    <select formControlName="category" placeholder="Category" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
                                                         <option value="depreciation">Depreciation</option>
                                                         <option value="payroll">Payroll</option>
                                                         <option value="apBalance">AP balance</option>
@@ -70,7 +70,11 @@
 
                                             <div class="small-12 medium-3 columns">
                                                 <label>Basis
-                                                    <select formControlName="basis">
+                                                    <select formControlName="basis" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                                                        <option value="Cash">Cash</option>
+                                                        <option value="Accrual">Accrual</option>
+                                                    </select>
+                                                    <select formControlName="basis" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
                                                         <option value="Cash">Cash</option>
                                                         <option value="Accrual">Accrual</option>
                                                     </select>
@@ -78,8 +82,8 @@
                                             </div>
                                             <div class="small-12 medium-12 columns" [hidden]="showAdvance">
                                                 <label>Description
-                                                    <textarea formControlName="desc" style="height: 50px;" *ngIf="!isSystemCreatedJE"></textarea>
-                                                    <textarea formControlName="desc" style="height: 50px;" *ngIf="isSystemCreatedJE" readonly></textarea>
+                                                    <textarea formControlName="desc" style="height: 50px;" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId"></textarea>
+                                                    <textarea formControlName="desc" style="height: 50px;" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly></textarea>
                                                     <div class="error" [hidden]="jeForm.controls.desc.untouched || jeForm.controls.desc.valid"><small>Please enter Description.</small></div>
                                                 </label>
                                             </div>
@@ -101,16 +105,16 @@
                                                 <div class="small-8 medium-9 columns">
                                                 </div>-->
                                                 <label>Reversal Date
-                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setReversalDate($event)" formControlName="reversalDate" placeholder="Reversal Date*" *ngIf="!isSystemCreatedJE"/>
-                                                    <input type="text" formControlName="reversalDate" *ngIf="isSystemCreatedJE" readonly>
+                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setReversalDate($event)" formControlName="reversalDate" placeholder="Reversal Date*" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId"/>
+                                                    <input type="text" formControlName="reversalDate" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly>
                                                     <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select Reversal Date.</small></div>
                                                 </label>
                                             </div>
                                             <div class="small-12 medium-1 columns">
                                                 <label>Recurring
                                                     <div class="switch tiny">
-                                                        <input class="switch-input" id="recurring" type="checkbox" formControlName="recurring" (change)="toggleRecurring($event)" *ngIf="!isSystemCreatedJE"/>
-                                                        <input class="switch-input" type="checkbox" formControlName="recurring"  *ngIf="isSystemCreatedJE" readonly/>
+                                                        <input class="switch-input" id="recurring" type="checkbox" formControlName="recurring" (change)="toggleRecurring($event)" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId"/>
+                                                        <input class="switch-input" type="checkbox" formControlName="recurring"  *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled/>
                                                         <label class="switch-paddle" for="recurring">
                                                             <span class="show-for-sr">Recurring switch</span>
                                                         </label>
@@ -158,7 +162,7 @@
 
                                     </div>
                                     <div class="row" [hidden]="showAdvance" [ngClass]="{'applyMargin': isSystemCreatedJE}">
-                                        <div class="columns" *ngIf="!isSystemCreatedJE">
+                                        <div class="columns" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
                                             <label class="float-right">
                                                 <i class="icon ion-ios-plus-outline" (click)="showNewLine()"></i> Line
                                             </label>
@@ -305,17 +309,17 @@
                         <div class="row">
                             <div class="small-12 medium-6 column">
                                 <label>Title
-                                    <input type="text" formControlName="title" placeholder="Title" readonly *ngIf="isSystemCreatedJE"/>
-                                    <input type="text" formControlName="title" placeholder="Title" *ngIf="!isSystemCreatedJE"/>
+                                    <input type="text" formControlName="title" placeholder="Title" readonly *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)"/>
+                                    <input type="text" formControlName="title" placeholder="Title" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId"/>
                                 </label>
                             </div>
                             <div class="small-12 medium-6 column">
-                                <label [hidden]="isSystemCreatedJE">Chart of Account
+                                <label *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">Chart of Account
                                     <select combo-box #newCoaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts"  formControlName="coa" (valueChanged)="updateChartOfAccount($event)">
                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                     </select>
                                 </label>
-                                <label *ngIf="isSystemCreatedJE">Chart of Account
+                                <label *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)">Chart of Account
                                     <input type="text" placeholder="Chart of account" readonly value="{{getCOAName(lineForm.controls.coa.value)}}"/>
                                 </label>
                             </div>
@@ -323,11 +327,11 @@
                         <div class="row">
                             <div class="small-12 medium-6 column">
                                 <label>Entry Type
-                                    <select formControlName="entryType" disabled *ngIf="isSystemCreatedJE">
+                                    <select formControlName="entryType" disabled *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)">
                                         <option value="Credit">Credit</option>
                                         <option value="Debit">Debit</option>
                                     </select>
-                                    <select formControlName="entryType" *ngIf="!isSystemCreatedJE">
+                                    <select formControlName="entryType" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
                                         <option value="Credit">Credit</option>
                                         <option value="Debit">Debit</option>
                                     </select>
@@ -335,16 +339,16 @@
                             </div>
                             <div class="small-12 medium-6 column">
                                 <label>Amount
-                                    <input type="text" placeholder="Amount" *ngIf="!isSystemCreatedJE" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
-                                    <input type="text" placeholder="Amount" *ngIf="isSystemCreatedJE" readonly formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                    <input type="text" placeholder="Amount" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                    <input type="text" placeholder="Amount" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
                                 </label>
                             </div>
                         </div>
                         <div class="row">
                             <div class="small-12 medium-12 column">
                                 <label>Notes
-                                    <textarea formControlName="notes" *ngIf="isSystemCreatedJE" readonly></textarea>
-                                    <textarea formControlName="notes" *ngIf="!isSystemCreatedJE"></textarea>
+                                    <textarea formControlName="notes" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly></textarea>
+                                    <textarea formControlName="notes" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId"></textarea>
                                 </label>
                             </div>
                         </div>
@@ -377,8 +381,8 @@
                 </div>
                 <div class="row">
                     <div class="small-12 medium-12 columns">
-                        <input *ngIf="!isSystemCreatedJE" type="button" class="button small float-right" value="Update" (click)="saveLine()"/>
-                        <span *ngIf="isSystemCreatedJE" class="label float-right vew-only">View Only</span>
+                        <input *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId" type="button" class="button small float-right" value="Update" (click)="saveLine()"/>
+                        <span *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" class="label float-right vew-only">View Only</span>
                     </div>
                 </div>
             </div>

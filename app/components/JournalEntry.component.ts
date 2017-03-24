@@ -612,7 +612,7 @@ export class JournalEntryComponent{
         this.stopLoaderAndShowMessage(false);
         this._jeForm.updateForm(this.jeForm, this.journalEntry);
         this.reversed = journalEntry.reversed;
-        if(journalEntry.sourceID){
+        if(journalEntry.reversedFrom){
             this.haveSourceId = true;
         }else{
             this.haveSourceId = false;
