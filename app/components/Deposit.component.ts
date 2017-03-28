@@ -71,7 +71,10 @@ export class DepositComponent{
 
     showDepositsPage(){
         if(this.stayFlyout){
-            location.reload();
+            this.ngOnInit();
+            this.stayFlyout = false;
+            this.dimensionFlyoutCSS = "";
+            //location.reload();
         }else {
             let link = [Session.getLastVisitedUrl()];
             this._router.navigate(link);
@@ -504,9 +507,5 @@ export class DepositComponent{
         }
     }
 
-    createDeposit(){
-        let link = ['deposit'];
-        this._router.navigate(link);
-    }
 
 }
