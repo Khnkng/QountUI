@@ -61,6 +61,8 @@ export class JournalEntryComponent{
     showAdvance:boolean=false;
     reversed:boolean = false;
     haveSourceId:boolean = false;
+    stayFlyout:boolean = false;
+
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -509,16 +511,14 @@ export class JournalEntryComponent{
             this.journalService.addJournalEntry(this.cleanData(data), this.currentCompany.id)
                 .subscribe(journalEntry => {
                     this.stopLoaderAndShowMessage(false, "Journal Entry created successfully");
-                    let link = ['books', 'journalEntries'];
-                    this._router.navigate(link);
+                    this.showDashboard();
                 }, error=> this.handleError(error));
         } else{
             data.id = this.journalEntry.id;
             this.journalService.updateJournalEntry(this.cleanData(data), this.currentCompany.id)
                 .subscribe(journalEntry => {
                     this.stopLoaderAndShowMessage(false, "Journal Entry updated successfully");
-                    let link = ['books', 'journalEntries'];
-                    this._router.navigate(link);
+                    this.showDashboard();
                 }, error=> this.handleError(error));
         }
     }
@@ -688,8 +688,15 @@ export class JournalEntryComponent{
     }
 
     showDashboard(){
-        let link = ['books', 'journalEntries'];
-        this._router.navigate(link);
+        if(this.stayFlyout){
+            this.ngOnInit();
+            this.stayFlyout = false;
+            this.dimensionFlyoutCSS = "";
+            //location.reload();
+        }else {
+            let link = ['books', 'journalEntries'];
+            this._router.navigate(link);
+        }
     }
 
     goToPreviousPage(){
