@@ -64,6 +64,7 @@ export class DepositComponent{
                 this.newDeposit = true;
             }
         });
+        this.ngOnInit();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
