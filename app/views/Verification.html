@@ -1,0 +1,66 @@
+<div>
+    <header>
+        <div class="header">
+            <div class="row">
+                <div class="small-6"><h5>Lock</h5></div>
+            </div>
+        </div>
+    </header>
+    <div class="column large-12 medium-12 small-12 foo-container">
+
+    </div>
+    <div class="qount-off-canvas-menu">
+        <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+            <section class="flyout-placeholder">
+                <header class="flyout-header">
+                    <h6>Create Lock</h6>
+                </header>
+                <div class="flyout-body flyout-shadow-effect">
+                    <!--here comes actual flyout code-->
+                    <div #createtaxes id="createtaxes" class="create-vendor">
+                        <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="VerifyForm">
+
+                            <section class="form-section clearfix">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <div class="form-section-left">
+                                            <header class="form-section-header">Verify Account</header>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Amount1</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input style="margin-left: 5px;" formControlName="Amount1"   type="text"  placeholder="Amount1*"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Amount2</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input style="margin-left: 5px;" formControlName="Amount2"  type="text"  placeholder="Amount2*"/>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <button class="button create small float-right" [disabled]="isValid(VerifyForm)"  type="submit" (click)="submit($event)" data-close>ADD</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+                </div>
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+                </button>
+            </section>
+        </div>
+    </div>
+</div>

@@ -258,6 +258,7 @@
                                     <div class="row" *ngIf="newJournalEntry && !showAdvance">
                                         <div class="columns">
                                             <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)">Create</button>
+                                            <button type="submit" class="button small float-right" style="margin-right:10px;" [disabled]="!jeForm.valid" (click)="submit($event);stayFlyout = true">Create & New</button>
                                         </div>
                                     </div>
                                     <div class="row" *ngIf="showAdvance&&!isSystemCreatedJE">
