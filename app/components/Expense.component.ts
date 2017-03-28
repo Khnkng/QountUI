@@ -44,6 +44,7 @@ export class ExpenseComponent{
     editItemIndex:number;
     companyCurrency:string;
     defaultDate:string;
+    stayFlyout:boolean = false;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
@@ -66,8 +67,15 @@ export class ExpenseComponent{
     }
 
     showExpensesPage(){
-        let link = [Session.getLastVisitedUrl()];
-        this._router.navigate(link);
+        if(this.stayFlyout){
+            this.ngOnInit();
+            this.stayFlyout = false;
+            this.dimensionFlyoutCSS = "";
+            //location.reload();
+        }else {
+            let link = [Session.getLastVisitedUrl()];
+            this._router.navigate(link);
+        }
     }
 
     showFlyout(index) {
