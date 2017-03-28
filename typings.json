@@ -7,7 +7,7 @@
     "node": "registry:dt/node#4.0.0+20160509154515"
   },
   "dependencies":{
-    "lodash": "github:DefinitelyTyped/DefinitelyTyped/lodash/index.d.ts"
+    "lodash": "https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/lodash/index.d.ts"
   }
 }
 

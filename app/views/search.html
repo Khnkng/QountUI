@@ -5,7 +5,17 @@
                 <h6>Search</h6>
             </header>
             <div class="flyout-body flyout-shadow-effect">
-                <section class="form-section clearfix search-reveal">
+                <section class="form-section clearfix search-reveal" *ngIf="!showSearchCriteria">
+                    <div class="row">
+                        <div class="small-12 medium-12 columns">
+                            <div class="form-section-left expense-row">
+                                <header class="form-section-header float-left">Search Criteria</header>
+                                <button class="float-right button small" (click)="showSearchCriteria = !showSearchCriteria">Expand</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="form-section clearfix search-reveal" *ngIf="showSearchCriteria">
                     <div class="row">
                         <div class="small-12 medium-12 columns">
                             <div class="form-section-left expense-row">
@@ -13,11 +23,11 @@
                                     <div class="small-12 medium-4 columns">
                                         <label>Search in
                                             <div class="stacked-for-small small button-group">
-                                                <a class="button" [ngClass]="isCompSelected('Bill')" (click)="selectComponent('Bill')">Bill</a>
-                                                <a class="button" [ngClass]="isCompSelected('Expense')" (click)="selectComponent('Expense')">Expense</a>
-                                                <a class="button" [ngClass]="isCompSelected('Deposit')" (click)="selectComponent('Deposit')">Deposit</a>
-                                                <a class="button" [ngClass]="isCompSelected('Journal')" (click)="selectComponent('Journal')">Journal</a>
-                                                <a class="button" [ngClass]="isCompSelected('Payment')" (click)="selectComponent('Payment')">Payments</a>
+                                                <a class="button" [ngClass]="isCompSelected('bill')" (click)="selectComponent('bill')">Bill</a>
+                                                <a class="button" [ngClass]="isCompSelected('expense')" (click)="selectComponent('expense')">Expense</a>
+                                                <a class="button" [ngClass]="isCompSelected('deposit')" (click)="selectComponent('deposit')">Deposit</a>
+                                                <a class="button" [ngClass]="isCompSelected('journal')" (click)="selectComponent('journal')">Journal</a>
+                                                <a class="button" [ngClass]="isCompSelected('payment')" (click)="selectComponent('payment')">Payments</a>
                                             </div>
                                         </label>
                                     </div>
@@ -123,7 +133,20 @@
                                     </div>
                                 </div>
                                 <div class="columns small-12 right">
-                                    <button class="button small float-right" data-close (click)="doSearch()">Search</button>
+                                    <button class="button small float-right" style="margin-left: 10px;" (click)="showSearchCriteria = !showSearchCriteria">Hide Criteria</button>
+                                    <button class="button small float-right" (click)="doSearch()">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section class="form-section clearfix search-reveal" *ngIf="hasSearchResults">
+                    <div class="row">
+                        <div class="small-12 medium-12 columns">
+                            <div class="form-section-left expense-row">
+                                <header class="form-section-header">Search Results</header>
+                                <div class="column large-12 medium-12 small-12 foo-container">
+                                    <foo-table #fooTableDir="fooTable" [ngClass]='{"search-right": true}' class="bighalf-footable" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
                                 </div>
                             </div>
                         </div>
