@@ -6,6 +6,7 @@ import {Component,ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {Session} from "qCommon/app/services/Session";
+import {Router, ActivatedRoute} from "@angular/router";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
@@ -53,7 +54,7 @@ export class FinancialAccountsComponent{
   companyCurrency:string='USD';
 
 
-  constructor(private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
+  constructor(private _router:Router,private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard){
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
@@ -163,6 +164,7 @@ export class FinancialAccountsComponent{
   }
 
   handleAction($event){
+    console.log("$event",$event);
     let action = $event.action;
     delete $event.action;
     delete $event.actions;
@@ -170,6 +172,10 @@ export class FinancialAccountsComponent{
       this.showEditAccount($event);
     } else if(action == 'delete'){
       this.removeAccount($event);
+    }
+    else if(action == 'Navigation'){
+      let link = ['Verification', $event.id];
+      this._router.navigate(link);
     }
   }
 
@@ -280,8 +286,14 @@ export class FinancialAccountsComponent{
           row['current_balance'] =current_balance.toLocaleString(Session.getCurrentCompanyCurrency(), { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
+if(account.is_credit_account==false) {
+  let rrrrr = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>V</span></a>"
+  row['actions'] = rrrrr + "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+}
+else{
+  row['actions'] =  "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+}
 
-        row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       });
       base.tableData.rows.push(row);
     });
