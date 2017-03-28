@@ -18,24 +18,16 @@
                                                 <div class="error" [hidden]="expenseForm.controls.title.untouched || expenseForm.controls.title.valid">Expense Title is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-2 columns">
+                                        <div class="small-12 medium-3 columns">
                                             <label>Date
                                                 <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="due_date" placeholder="Date*">
                                                 <div class="error" [hidden]="expenseForm.controls.due_date.untouched || expenseForm.controls.due_date.valid">Date is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-2 columns">
+                                        <div class="small-12 medium-3 columns">
                                             <label>Amount
                                                 <input type="text" formControlName="amount" placeholder="Amount*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
                                                 <div class="error" [hidden]="expenseForm.controls.amount.untouched || expenseForm.controls.amount.valid">Amount is required</div>
-                                            </label>
-                                        </div>
-                                        <div class="small-12 medium-3 columns">
-                                            <label>Bank Account
-                                                <select combo-box #accountComboBoxDir="comboBox" data-placeholder="Select Account" [listObject]="accounts" formControlName="bank_account_id" (valueChanged)="setBankAccount($event)">
-                                                    <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
-                                                </select>
-                                                <div class="error" [hidden]="expenseForm.controls.bank_account_id.untouched || expenseForm.controls.bank_account_id.valid">Please select bank account</div>
                                             </label>
                                         </div>
                                         <div class="small-12 medium-2 columns">
@@ -66,6 +58,14 @@
                                     </div>
                                     <div class="row">
                                         <div class="small-12 medium-3 columns">
+                                            <label>Bank Account
+                                                <select combo-box #accountComboBoxDir="comboBox" data-placeholder="Select Account" [listObject]="accounts" formControlName="bank_account_id" (valueChanged)="setBankAccount($event)">
+                                                    <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
+                                                </select>
+                                                <div class="error" [hidden]="expenseForm.controls.bank_account_id.untouched || expenseForm.controls.bank_account_id.valid">Please select bank account</div>
+                                            </label>
+                                        </div>
+                                        <div class="small-12 medium-3 columns">
                                             <label>Type
                                                 <select formControlName="type" placeholder="Type">
                                                     <option [value]="'ACH'">ACH</option>
@@ -75,7 +75,7 @@
                                                 <div class="error" [hidden]="expenseForm.controls.type.untouched || expenseForm.controls.type.valid">Expense Type is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-2 columns">
+                                        <div class="small-12 medium-3 columns">
                                             <label>Reference Number
                                                 <input type="text" formControlName="reference_number" placeholder="Reference number" maxlength="30"/>
                                                 <div class="error" [hidden]="expenseForm.controls.reference_number.untouched || expenseForm.controls.reference_number.valid">Reference number is required</div>
