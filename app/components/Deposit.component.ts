@@ -44,6 +44,7 @@ export class DepositComponent{
     selectedDimensions:Array<any> = [];
     editItemIndex:number;
     companyCurrency: string;
+    stayFlyout:boolean = false;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
@@ -68,8 +69,12 @@ export class DepositComponent{
     }
 
     showDepositsPage(){
-        let link = [Session.getLastVisitedUrl()];
-        this._router.navigate(link);
+        if(this.stayFlyout){
+            location.reload();
+        }else {
+            let link = [Session.getLastVisitedUrl()];
+            this._router.navigate(link);
+        }
     }
 
     showFlyout(index) {
@@ -497,4 +502,10 @@ export class DepositComponent{
             this.loadingService.triggerLoadingEvent(false);
         }
     }
+
+    createDeposit(){
+        let link = ['deposit'];
+        this._router.navigate(link);
+    }
+
 }
