@@ -16,6 +16,7 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants"
 
 declare let jQuery:any;
 declare let _:any;
+declare var moment:any;
 
 @Component({
     selector: 'expense',
@@ -42,6 +43,7 @@ export class ExpenseComponent{
     selectedDimensions:Array<any> = [];
     editItemIndex:number;
     companyCurrency:string;
+    defaultDate:string;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
@@ -57,6 +59,7 @@ export class ExpenseComponent{
             this.expenseID=params['expenseID'];
             if(!this.expenseID){
                 this.newExpense = true;
+                this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
             }
         });
         this.companyCurrency = Session.getCurrentCompanyCurrency();
@@ -448,6 +451,7 @@ export class ExpenseComponent{
                     this.toastService.pop(TOAST_TYPE.error, "Failed to load expense details");
                 })
         } else{
+            this.setDueDate(this.defaultDate);
             this.loadingService.triggerLoadingEvent(false);
         }
     }

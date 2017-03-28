@@ -18,6 +18,7 @@ import {InvoicesService} from "invoicesUI/app/services/Invoices.service";
 
 declare let jQuery:any;
 declare let _:any;
+declare var moment:any;
 
 @Component({
     selector: 'deposit',
@@ -44,6 +45,7 @@ export class DepositComponent{
     selectedDimensions:Array<any> = [];
     editItemIndex:number;
     companyCurrency: string;
+    defaultDate:string;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
@@ -62,6 +64,7 @@ export class DepositComponent{
             this.depositID=params['depositID'];
             if(!this.depositID){
                 this.newDeposit = true;
+                this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
             }
         });
         this.ngOnInit();
@@ -495,6 +498,7 @@ export class DepositComponent{
                     this.toastService.pop(TOAST_TYPE.error, "Failed to load deposit details");
                 })
         } else{
+            this.setDueDate(this.defaultDate);
             this.loadingService.triggerLoadingEvent(false);
         }
     }

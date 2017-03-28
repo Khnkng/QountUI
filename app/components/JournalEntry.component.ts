@@ -61,11 +61,13 @@ export class JournalEntryComponent{
     showAdvance:boolean=false;
     reversed:boolean = false;
     haveSourceId:boolean = false;
+    defaultDate:string;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
             private companiesService: CompaniesService, private dimensionService: DimensionService, private loadingService: LoadingService) {
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+        this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
         this.routeSub = this._route.params.subscribe(params => {
             this.journalID=params['journalID'];
             let tempReverse=params['reverse'];
@@ -681,6 +683,7 @@ export class JournalEntryComponent{
                         this.journalService.journalEntry(this.journalID, this.currentCompany.id)
                             .subscribe(journalEntry => this.processJournalEntry(journalEntry), error => this.handleError(error));
                     } else{
+                        this.setJournalDate(this.defaultDate);
                         this.stopLoaderAndShowMessage(false);
                     }
                 }, error=> this.handleError(error));
