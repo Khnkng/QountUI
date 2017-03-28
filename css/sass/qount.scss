@@ -3389,3 +3389,7 @@ dropdown-content.dropdown-content:before {
 .applyMargin {
   margin-top:10px;
 }
+
+.jeSelect:disabled {
+  background-color: inherit;
+}
