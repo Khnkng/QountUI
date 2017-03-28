@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
-                                        <button class="button create small float-right"  type="submit" (click)="submit($event)" data-close>ADD</button>
+                                        <button class="button create small float-right" [disabled]="isValid(VerifyForm)"  type="submit" (click)="submit($event)" data-close>ADD</button>
                                     </div>
                                 </div>
                             </section>

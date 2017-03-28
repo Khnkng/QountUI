@@ -20,6 +20,7 @@ import {CompanyModel} from "../models/Company.model";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {Address} from "qCommon/app/directives/address.directive";
+import {Router,ActivatedRoute} from "@angular/router";
 
 declare var jQuery:any;
 declare var _:any;
@@ -53,12 +54,17 @@ export class VerificationComponent {
     showFlyout: boolean = true;
     taxId: any;
     confirmSubscription: any;
-
-    constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _VerifyForm: VerifyForm,
+    routeSub:any;
+currentverificationId:any;
+    companyId:any;
+    constructor(private _fb: FormBuilder,private _route: ActivatedRoute, private companyService: CompaniesService, private _VerifyForm: VerifyForm,
                 private _router: Router, private loadingService: LoadingService, private vendorService: CompaniesService,
                 private _toastService: ToastService, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService) {
+         this.companyId = Session.getCurrentCompany();
+        this.routeSub = this._route.params.subscribe(params => {
+             this.currentverificationId = params['VerificationID'];
+        });
         this.VerifyForm = this._fb.group(_VerifyForm.getVerified());
-        console.log("nazia");
     }
 
     hideFlyout() {
@@ -66,11 +72,34 @@ export class VerificationComponent {
         this._router.navigate(link);
         this.showFlyout = !this.showFlyout;
     }
-
     submit($event) {
         let base = this;
         $event && $event.preventDefault();
         let data = this._VerifyForm.getData(this.VerifyForm);
-        console.log("data", data);
+        this.companyService.updateAccount(data, this.companyId,this.currentverificationId)
+            .subscribe(success  => {
+                this.loadingService.triggerLoadingEvent(false);
+                this.showMessage(true, success);
+                this.showFlyout = false;
+            }, error => this.handleError(error));
+
+    }
+    handleError(error) {
+        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+    }
+    isValid(VerifyForm){
+        if((VerifyForm.value.Amount1) && (VerifyForm.value.Amount2)){
+            return false;
+        }
+        return true;
+    }
+    showMessage(status, obj) {
+        if(status) {
+            this.status = {};
+            this.status['success'] = true;
+                this._toastService.pop(TOAST_TYPE.success, "Verification created successfully.");
+
+
+        }
     }
 }
