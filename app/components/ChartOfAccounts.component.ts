@@ -181,6 +181,20 @@ export class ChartOfAccountsComponent{
       }
     }
   }
+
+  hasRelation(coa){
+    let hasParentOrChild = false;
+    if(coa.parentID != "" && coa.subAccount){
+      hasParentOrChild = true; //Child of another COA
+    } else{
+      let children = _.filter(this.chartOfAccounts, {'parentID': coa.id});
+      if(children.length > 0){
+        hasParentOrChild = true;
+      }
+    }
+    return hasParentOrChild;
+  }
+
   deleteCOA(toast){
     this.loadingService.triggerLoadingEvent(true);
     this.coaService.removeCOA(this.coaId, this.currentCompany.id)
@@ -340,7 +354,10 @@ export class ChartOfAccountsComponent{
         } else{
           row[key] = coa[key];
         }
-        row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+        if(!base.hasRelation(coa)){
+          row['actions'] += "<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        }
       });
       base.tableData.rows.push(row);
     });
