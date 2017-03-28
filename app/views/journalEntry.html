@@ -29,38 +29,34 @@
                                             </div>
                                             <div class="small-12 medium-3 columns">
                                                 <label>Category
-                                                    <select formControlName="category" placeholder="Category" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
-                                                        <option value="depreciation">Depreciation</option>
-                                                        <option value="payroll">Payroll</option>
-                                                        <option value="apBalance">AP balance</option>
-                                                        <option value="arBalance">AR balance</option>
-                                                        <option value="inventory">Inventory</option>
+                                                    <select class="jeSelect" formControlName="category" placeholder="Category" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
                                                         <option value="amortization">Amortization</option>
-                                                        <option value="credit">Credit</option>
-                                                        <option value="bill">Bill</option>
-                                                        <option value="billPayment">Payment</option>
-                                                        <option value="deposit">Deposit</option>
-                                                        <option value="expense">Expense</option>
-                                                        <option value="openingEntry">Opening Entry</option>
-                                                        <option value="creditMemo">Credit Memo</option>
-                                                        <option value="cashApplication">Cash Application</option>
-                                                        <option value="other">Other</option>
-                                                    </select>
-                                                    <select formControlName="category" placeholder="Category" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
-                                                        <option value="depreciation">Depreciation</option>
-                                                        <option value="payroll">Payroll</option>
-                                                        <option value="apBalance">AP balance</option>
-                                                        <option value="arBalance">AR balance</option>
-                                                        <option value="inventory">Inventory</option>
-                                                        <option value="amortization">Amortization</option>
-                                                        <option value="credit">Credit</option>
                                                         <option value="bill">Bill</option>
                                                         <option value="billPayment">Bill Payment</option>
-                                                        <option value="deposit">Deposit</option>
-                                                        <option value="expense">Expense</option>
-                                                        <option value="openingEntry">Opening Entry</option>
-                                                        <option value="creditMemo">Credit Memo</option>
                                                         <option value="cashApplication">Cash Application</option>
+                                                        <option value="credit">Credit</option>
+                                                        <option value="creditMemo">Credit Memo</option>
+                                                        <option value="deposit">Deposit</option>
+                                                        <option value="depreciation">Depreciation</option>
+                                                        <option value="expense">Expense</option>
+                                                        <option value="inventory">Inventory</option>
+                                                        <option value="openingEntry">Opening Entry</option>
+                                                        <option value="payroll">Payroll</option>
+                                                        <option value="other">Other</option>
+                                                    </select>
+                                                    <select class="jeSelect" formControlName="category" placeholder="Category" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
+                                                        <option value="amortization">Amortization</option>
+                                                        <option value="bill">Bill</option>
+                                                        <option value="billPayment">Bill Payment</option>
+                                                        <option value="cashApplication">Cash Application</option>
+                                                        <option value="credit">Credit</option>
+                                                        <option value="creditMemo">Credit Memo</option>
+                                                        <option value="deposit">Deposit</option>
+                                                        <option value="depreciation">Depreciation</option>
+                                                        <option value="expense">Expense</option>
+                                                        <option value="inventory">Inventory</option>
+                                                        <option value="openingEntry">Opening Entry</option>
+                                                        <option value="payroll">Payroll</option>
                                                         <option value="other">Other</option>
 
                                                     </select>
@@ -70,11 +66,11 @@
 
                                             <div class="small-12 medium-3 columns">
                                                 <label>Basis
-                                                    <select formControlName="basis" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                                                    <select class="jeSelect" formControlName="basis" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
                                                         <option value="Cash">Cash</option>
                                                         <option value="Accrual">Accrual</option>
                                                     </select>
-                                                    <select formControlName="basis" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
+                                                    <select class="jeSelect" formControlName="basis" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
                                                         <option value="Cash">Cash</option>
                                                         <option value="Accrual">Accrual</option>
                                                     </select>
@@ -142,7 +138,7 @@
                                             </div>
                                             <div class="small-12 medium-2 columns float-left">
                                                 <label [hidden]="disableRecurring">Frequency
-                                                    <select formControlName="recurringFrequency">
+                                                    <select class="jeSelect" formControlName="recurringFrequency">
                                                         <option value="daily">Daily</option>
                                                         <option value="weekly">Weekly</option>
                                                         <option value="monthly">Monthly</option>
