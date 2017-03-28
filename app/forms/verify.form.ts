@@ -13,8 +13,8 @@ export class VerifyForm extends abstractForm{
         numberValidator.push(Validators.required);
 
         return {
-            "Amount1": [''],
-            "Amount2":['']
+            "amount1": [''],
+            "amount2":['']
         }
     }
 }

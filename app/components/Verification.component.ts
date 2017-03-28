@@ -76,6 +76,8 @@ currentverificationId:any;
         let base = this;
         $event && $event.preventDefault();
         let data = this._VerifyForm.getData(this.VerifyForm);
+        data.amount1=Number(data.amount1);
+        data.amount2=Number(data.amount2);
         this.companyService.updateAccount(data, this.companyId,this.currentverificationId)
             .subscribe(success  => {
                 this.loadingService.triggerLoadingEvent(false);
@@ -88,7 +90,7 @@ currentverificationId:any;
         this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }
     isValid(VerifyForm){
-        if((VerifyForm.value.Amount1) && (VerifyForm.value.Amount2)){
+        if((VerifyForm.value.amount1) && (VerifyForm.value.amount2)){
             return false;
         }
         return true;
