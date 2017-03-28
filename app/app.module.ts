@@ -45,8 +45,6 @@ import {InvoicesModule} from "invoicesUI/app/invoices.module";
 import {RulesService} from "qCommon/app/services/Rules.service";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 import {CategorizationComponent} from "./components/Categorization.component";
-import {ReconcileComponent} from "./components/Reconsile.component";
-import {ReconcileForm} from "./forms/Reconsile.form";
 import {CustomersComponent} from "./components/Customers.component";
 import {CustomersForm} from "./forms/Customers.form";
 import {DimensionsComponent} from "./components/Dimensions.component";
@@ -79,7 +77,6 @@ import {YodleeService} from "./services/Yodlee.service";
 import {YodleeTokenComponent} from "./components/YodleeToken.component";
 import {SearchComponent} from "./components/Search.component";
 import {SearchResultsComponent} from "./components/SearchResults.component";
-import {ReconcileService} from "./services/Reconsile.service";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -265,11 +262,6 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: PaymentsComponent,
             canActivate: [LoggedInActivator]
         },
-        {
-            path: 'reconcilation',
-            component: ReconcileComponent,
-            canActivate: [LoggedInActivator]
-        },
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
@@ -277,12 +269,12 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
         ResetPasswordComponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,
-        CategorizationComponent,ReconcileComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent],
+        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
         TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm,
-        FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService],
+        FinancialAccountForm, LoadingService, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
