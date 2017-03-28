@@ -100,7 +100,8 @@ currentverificationId:any;
             this.status = {};
             this.status['success'] = true;
                 this._toastService.pop(TOAST_TYPE.success, "Verification created successfully.");
-
+            let link = ['financialAccounts'];
+            this._router.navigate(link);
 
         }
     }
