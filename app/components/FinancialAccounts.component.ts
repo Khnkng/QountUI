@@ -196,6 +196,10 @@ export class FinancialAccountsComponent{
             this.toastService.pop(TOAST_TYPE.success, "Updated Financial account successfully");
             this.getFinancialAccounts(this.currentCompany);
             this.accountSubmitted = true;
+            this.showFlyout = false;
+            if(this.showYodleeWidget) {
+              this.launchYodleeWidget();
+            }
           }, error =>{
             this.loadingService.triggerLoadingEvent(true);
             this.toastService.pop(TOAST_TYPE.error, "Failed to update financial account");
@@ -208,6 +212,10 @@ export class FinancialAccountsComponent{
             this.toastService.pop(TOAST_TYPE.success, "Financial account created successfully");
             this.getFinancialAccounts(this.currentCompany);
             this.accountSubmitted = true;
+            this.showFlyout = false;
+            if(this.showYodleeWidget) {
+              this.launchYodleeWidget();
+            }
           }, error => {
             this.loadingService.triggerLoadingEvent(true);
             this.toastService.pop(TOAST_TYPE.error, "Failed to create Account");
@@ -302,14 +310,9 @@ export class FinancialAccountsComponent{
   }
 
   launchYodleeWidget() {
-    this.showYodleeWidget = true;
     jQuery('#yodleewgt').foundation('open');
 
-
-
-
     this.yodleeService.getAccessToken(Session.getCurrentCompany()).subscribe(resp=> {
-      console.log("resp",resp);
       this.rsession = resp.userSessionToken;
       this.token = resp.userAccessToken;
       this.callBackUrl = "http://dev-oneapp.qount.io"+"/yodleeToken";
@@ -317,20 +320,12 @@ export class FinancialAccountsComponent{
         jQuery("#yodleeForm").submit();
       },100);
     }, error=>{});
-    /*let model = {
 
-    };
-    this.financialAccountsService.getFastLink(model).subscribe(linkDetails => {
-      console.log("linkDetails", linkDetails);
-    });*/
 
     this.switchBoard.onYodleeTokenRecived.subscribe(recived => {
       var status = JSON.parse(Session.get("yodleeStatus"));
-      console.log("status", status);
       this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
-
         jQuery('#yodleewgt').foundation('close');
-        this.hideFlyout();
       });
 
     });
