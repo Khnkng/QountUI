@@ -68,7 +68,6 @@ export class DepositComponent{
                 this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
             }
         });
-        this.ngOnInit();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 

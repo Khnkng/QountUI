@@ -314,9 +314,9 @@ export class BooksComponent{
             //{"name": "paid_date", "title": "Paid Date"},
             {"name": "due_date", "title": "Expense Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
-            {"name": "id", "title": "id", 'visible': false},
-            {"name": "journal_id", "title": "Journal ID", 'visible': false},
-            {"name": "actions", "title": "", "type": "html", "sortable": false}];
+            {"name": "id", "title": "id", 'visible': false, 'filterable': false},
+            {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}];
         this.expensesTableData.rows = [];
         data.forEach(function(expense){
             let row:any = {};
@@ -365,9 +365,9 @@ export class BooksComponent{
             {"name": "amount", "title": "Amount"},
             {"name": "date", "title": "Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
-            {"name": "id", "title": "id", 'visible': false},
-            {"name": "journal_id", "title": "Journal ID", 'visible': false},
-            {"name": "actions", "title": "", "type": "html", "sortable": false}];
+            {"name": "id", "title": "id", 'visible': false, 'filterable': false},
+            {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false, 'filterable': false}];
         this.depositsTableData.rows = [];
         data.forEach(function(expense){
             let row:any = {};
@@ -404,23 +404,23 @@ export class BooksComponent{
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
             {"name": "date", "title": "Date"},
-            {"name": "type", "title": "Journal Type","visible":false},
+            {"name": "type", "title": "Journal Type","visible":false, 'filterable': false},
             {"name": "categoryValue", "title": "Category"},
             {"name": "sourceValue", "title": "Source"},
-            {"name": "source", "title": "Source", 'visible': false},
-            {"name": "desc", "title": "Description","visible": false},
-            {"name": "category", "title": "Category","visible": false},
-            {"name": "autoReverse", "title": "Auto Reverse","visible": false},
-            {"name": "reversalDate", "title": "Reversal Date","visible": false},
-            {"name": "recurring", "title": "Recurring","visible": false},
-            {"name": "nextJEDate", "title": "Next JE Date","visible": false},
-            {"name": "sourceID", "title": "Bill ID","visible": false},
-            {"name": "sourceType", "title": "Type","visible": false},
-            {"name": "source", "title": "source","visible": false},
-            {"name": "id", "title": "Jounral ID","visible": false},
-            {"name": "recurringFrequency", "title": "Recurring Frequency","visible": false},
-            {"name": "reverse", "title": "", "type": "html"},
-            {"name": "actions", "title": "", "type": "html"}];
+            {"name": "source", "title": "Source", 'visible': false, 'filterable': false},
+            {"name": "desc", "title": "Description","visible": false, 'filterable': false},
+            {"name": "category", "title": "Category","visible": false, 'filterable': false},
+            {"name": "autoReverse", "title": "Auto Reverse","visible": false, 'filterable': false},
+            {"name": "reversalDate", "title": "Reversal Date","visible": false, 'filterable': false},
+            {"name": "recurring", "title": "Recurring","visible": false, 'filterable': false},
+            {"name": "nextJEDate", "title": "Next JE Date","visible": false, 'filterable': false},
+            {"name": "sourceID", "title": "Bill ID","visible": false, 'filterable': false},
+            {"name": "sourceType", "title": "Type","visible": false, 'filterable': false},
+            {"name": "source", "title": "source","visible": false, 'filterable': false},
+            {"name": "id", "title": "Jounral ID","visible": false, 'filterable': false},
+            {"name": "recurringFrequency", "title": "Recurring Frequency","visible": false, 'filterable': false},
+            {"name": "reverse", "title": "", "type": "html", 'filterable': false},
+            {"name": "actions", "title": "", "type": "html", 'filterable': false}];
         this.jeTableData.rows = [];
         data.forEach(function(journalEntry) {
             let row: any = {};
