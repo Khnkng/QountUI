@@ -63,26 +63,6 @@ export class ReconcileComponent{
             });
     }
 
-   /* fetchUncategorizedEntries(){
-        let base = this;
-        this.expenseService.uncategorizedEntries(this.companyId)
-            .subscribe(entries =>{
-                this.loadingService.triggerLoadingEvent(false);
-                _.each(entries.Deposits, function(entry){
-                    entry.type='Deposit';
-                    base.entries.push(entry);
-                });
-                _.each(entries.Expenses, function(entry){
-                    entry.type='Expense';
-                    base.entries.push(entry);
-                });
-                this.buildTableData();
-            }, error =>{
-
-            });
-    }*/
-
-
     showPreviousPage(){
         let link = ['books', 'deposits'];
         this._router.navigate(link);
@@ -143,19 +123,10 @@ export class ReconcileComponent{
                 base.inflow = base.inflow+parseFloat(_.find(base.reconcileDataCopy, {id: row.id}).amount);
             }else{
                 expenses.push(_.find(base.reconcileDataCopy, {id: row.id}));
-                base.outflow = base.outflow+_.find(base.reconcileDataCopy, {id: row.id}).amount;
+                base.outflow = base.outflow+parseFloat(_.find(base.reconcileDataCopy, {id: row.id}).amount);
             }
-            /*if(row.type === 'deposit'){
-               deposits.push(row);
-               console.log(base.inflow,row.amount);
-               base.inflow = base.inflow+row.amount;
-           }else{
-               expenses.push(row);
-               base.outflow = base.outflow+row.amount;
-           }*/
         });
         this.calculateEndingBalance();
-
     }
 
 
@@ -215,7 +186,6 @@ export class ReconcileComponent{
                     row[key] = entry[key];
                 }
             });
-            console.log(row);
             base.tableData.rows.push(row);
         });
         if(this.tableData.rows.length > 0){
@@ -246,7 +216,6 @@ export class ReconcileComponent{
         }else{
             this.toastService.pop(TOAST_TYPE.success,"No Records Selected");
         }
-
     }
 
     showReconcileForm(){
