@@ -13,7 +13,7 @@
         <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
             <section class="flyout-placeholder">
                 <header class="flyout-header">
-                    <h6>Create Lock</h6>
+                    <h6>Verify Account</h6>
                 </header>
                 <div class="flyout-body flyout-shadow-effect">
                     <!--here comes actual flyout code-->
@@ -30,7 +30,7 @@
                                                     <label class="text-right">Amount1</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input style="margin-left: 5px;" formControlName="Amount1"   type="text"  placeholder="Amount1*"/>
+                                                    <input style="margin-left: 5px;" formControlName="amount1"   type="text"  placeholder="Amount1*"/>
                                                 </div>
                                             </div>
 
@@ -39,7 +39,7 @@
                                                     <label class="text-right">Amount2</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input style="margin-left: 5px;" formControlName="Amount2"  type="text"  placeholder="Amount2*"/>
+                                                    <input style="margin-left: 5px;" formControlName="amount2"  type="text"  placeholder="Amount2*"/>
                                                 </div>
                                             </div>
 
@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
-                                        <button class="button create small float-right"  type="submit" (click)="submit($event)" data-close>ADD</button>
+                                        <button class="button create small float-right" [disabled]="isValid(VerifyForm)"  type="submit" (click)="submit($event)" data-close>Submit</button>
                                     </div>
                                 </div>
                             </section>

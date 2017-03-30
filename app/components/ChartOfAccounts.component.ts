@@ -202,7 +202,14 @@ export class ChartOfAccountsComponent{
           this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.success, "Chart of Account deleted successfully");
           this.fetchChartOfAccountData();
-        }, error => this.handleError(error));
+        }, error => {
+          this.loadingService.triggerLoadingEvent(false);
+          if(error.message){
+            this.toastService.pop(TOAST_TYPE.error, error.message);
+          } else{
+            this.toastService.pop(TOAST_TYPE.error, "Failed to delete Chart of account");
+          }
+        });
   }
   removeCOA(row: any){
      this.coaId = row.id;

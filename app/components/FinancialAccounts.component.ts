@@ -286,9 +286,9 @@ export class FinancialAccountsComponent{
           row['current_balance'] =current_balance.toLocaleString(Session.getCurrentCompanyCurrency(), { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
 
-if(account.is_credit_account==false) {
-  let rrrrr = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>V</span></a>"
-  row['actions'] = rrrrr + "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+if(account.drop_verified==false) {
+  let verify = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>V</span></a>"
+  row['actions'] = verify + "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
 }
 else{
   row['actions'] =  "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";

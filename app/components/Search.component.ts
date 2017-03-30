@@ -137,26 +137,32 @@ export class SearchComponent implements  OnInit{
     }
 
     doSearch(){
-        let data = {
+        let data:any = {
             source: this.source,
             criteria: {
-                amount: {
-                    "condition": this.amountCondition,
-                    "value": this.amountCondition == 'between'? [this.upperLimit, this.lowerLimit]: this.amount
-                },
-                date: {
-                    "condition": this.dateCondition,
-                    "value": this.dateCondition == 'between'? [this.beginDate, this.endDate]: this.date
-                },
-                text: {
-                    "condition": this.textCondition,
-                    "value": this.text
-                },
                 chartOfAccount: this.chartOfAccount,
                 vendor: this.vendor,
                 customer: this.customer
             }
         };
+        if(this.amountCondition && (this.amount || (this.upperLimit && this.lowerLimit))){
+            data.criteria.amount = {
+                "condition": this.amountCondition,
+                "value": this.amountCondition == 'between'? [this.upperLimit, this.lowerLimit]: this.amount
+            }
+        }
+        if(this.dateCondition && (this.date || (this.beginDate && this.endDate))){
+            data.criteria.date = {
+                "condition": this.dateCondition,
+                "value": this.dateCondition == 'between'? [this.beginDate, this.endDate]: this.date
+            }
+        }
+        if(this.textCondition && this.text){
+            data.criteria.text = {
+                "condition": this.textCondition,
+                "value": this.text
+            }
+        }
         sessionStorage.setItem("searchcriteria", JSON.stringify(data));
         this.getSearchResults(data);
     }
@@ -205,8 +211,8 @@ export class SearchComponent implements  OnInit{
             {"name": "title", "title": "Title"},
             {"name": "amount", "title": "Amount"},
             {"name": "date", "title": "Date"},
-            {"name": "id", "title": "Id", "visible": false},
-            {"name": "actions", "title": "", "type": "html"}
+            {"name": "id", "title": "Id", "visible": false, "filterable": false},
+            {"name": "actions", "title": "", "type": "html", "filterable": false}
         ];
         _.each(searchResults, function(result){
             let row:any = {};
