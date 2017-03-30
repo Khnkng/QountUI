@@ -159,7 +159,7 @@
                         <div class="row">
                             <div class="small-12 medium-12 columns">
                                 <button class="button create small float-right" [disabled]="!expenseForm.valid" type="submit" (click)="submit($event)" data-close>{{newExpense?"Create":"Update"}}</button>
-                                <button class="button create small float-right" style="margin-right:10px;" [disabled]="!expenseForm.valid" type="submit" (click)="submit($event);stayFlyout = true" data-close *ngIf="newExpense">Create & New</button>
+                                <button class="button create small float-right" style="margin-right:10px;" [disabled]="!expenseForm.valid" type="submit" (click)="submit($event);stayFlyout = true" data-close *ngIf="newExpense">Create and New</button>
                             </div>
                         </div>
                     </section>
