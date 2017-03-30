@@ -137,6 +137,10 @@ export class BooksComponent{
         let link = ['categorization'];
         this._router.navigate(link);
     }
+    showReconsileScreen(){
+        let link = ['reconcilation'];
+        this._router.navigate(link);
+    }
 
     animateBoxInfo(boxInfo) {
         this.animateValue('payables', boxInfo.payables);
