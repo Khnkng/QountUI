@@ -40,6 +40,7 @@ export class JournalEntryComponent{
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     @ViewChild('newCoaComboBoxDir') newCoaComboBox: ComboBox;
     @ViewChild('reverseJournalDir') reverseJournalComboBox: ComboBox;
+    @ViewChild('newEntityComboBoxDir') newEntityComoboBoc: ComboBox;
     newTags:Array<string>=[];
     allCompanies:Array<any> = [];
     companyId:string;
@@ -59,7 +60,6 @@ export class JournalEntryComponent{
     dimensions:Array<any> = [];
     dimensionFlyoutCSS:any;
     selectedDimensions:Array<any> = [];
-    editingLine:any;
     newCOAActive:boolean = true;
     companyCurrency:string;
     addNewLineFlag:boolean = false;
@@ -69,7 +69,7 @@ export class JournalEntryComponent{
     haveSourceId:boolean = false;
     defaultDate:string;
     stayFlyout:boolean = false;
-
+    editingLineIndex:number;
     creditTotal:number = 0;
     debitTotal:number = 0;
 
@@ -215,6 +215,7 @@ export class JournalEntryComponent{
     }
 
     hideFlyout(){
+        this.editingLineIndex = undefined;
         this.dimensionFlyoutCSS = "collapsed";
     }
 
@@ -245,11 +246,12 @@ export class JournalEntryComponent{
         this.lineActive = true;
         this.resetLineForm();
         this.selectedDimensions = [];
-
+        this.editingLineIndex = index;
         let itemsControl:any = this.jeForm.controls['journalLines'];
         let lineListItem = itemsControl.controls[index];
         let tempLineForm = _.cloneDeep(lineListItem);
         let lineData = this._lineListForm.getData(tempLineForm);
+        this.selectedDimensions = lineData.dimensions || [];
         this.updateLineFormForEdit(lineData);
     }
 
@@ -259,9 +261,23 @@ export class JournalEntryComponent{
         this._lineListForm.updateForm(this.lineForm, lineData);
         this.filteredChartOfAccounts = _.filter(this.chartOfAccounts, {'category': lineData.type});
         let coa = _.find(this.chartOfAccounts, {'id': lineData.coa});
+        let data = this._jeForm.getData(this.jeForm);
+        let entity = {};
+        if(data.jeType == 'Bill'){
+            entity = _.find(this.vendors, {'id': lineData.entity});
+        } else if(data.jeType == 'Payroll'){
+            entity = _.find(this.employees, {'id': lineData.entity});
+        } else if(data.jeType == 'Invoice'){
+            entity = _.find(this.customers, {'customer_id': lineData.entity});
+        }
         this.selectedDimensions = lineData.dimensions;
         setTimeout(function(){
             base.newCoaComboBox.setValue(coa, 'name');
+            if(data.jeType == 'Invoice'){
+                base.newEntityComoboBoc.setValue(entity, 'customer_name');
+            } else{
+                base.newEntityComoboBoc.setValue(entity, 'name');
+            }
         },0);
     }
 
@@ -276,34 +292,8 @@ export class JournalEntryComponent{
             return;
         }
         base.updateLineInView(lineData);
-
-        /*if(this.editingLine.status == 'NEW'){
-            this.resetLineForm();
-            if(this.newJournalEntry){
-                this.saveLineInView(lineData);
-            } else{
-                this.saveLineData(lineData);
-            }
-        } else{
-            if(base.newJournalEntry){
-                base.updateLineInView(lineData);
-            } else{
-                base.updateLineData(lineData);
-            }
-        }*/
         this.selectedDimensions = [];
         this.hideFlyout();
-    }
-
-    /*This will post new line data to backend*/
-    saveLineData(lineData){
-        this.loadingService.triggerLoadingEvent(true);
-        this.journalService.addJournalLine(this.companyId, this.journalEntry.id, lineData)
-            .subscribe(line => {
-                this.saveLineInView(line);
-                this.editingLine = {};
-                this.stopLoaderAndShowMessage(false, "New line added successfully");
-            }, error => this.stopLoaderAndShowMessage(true, "Failed to save Journal Line"));
     }
 
     /*This will just add new line details in VIEW*/
@@ -319,23 +309,10 @@ export class JournalEntryComponent{
         this.jeForm.controls['journalLines'].patchValue(journalData);
     }
 
-    /*This will post updated line data to backend*/
-    updateLineData(lineData){
-        this.loadingService.triggerLoadingEvent(true);
-        this.journalService.updateLineData(this.journalEntry.id, this.companyId, lineData)
-            .subscribe(line => {
-                this.updateLineInView(line);
-                this.editingLine = {};
-                this.stopLoaderAndShowMessage(false, "Line updated successfully");
-            }, error => {
-                this.stopLoaderAndShowMessage(true, "Failed to update the line");
-            });
-    }
-
     /*This will just update line details in VIEW*/
     updateLineInView(line){
         let linesControl:any = this.jeForm.controls['journalLines'];
-        let currentLineControl:any = linesControl.controls[this.editingLine.index];
+        let currentLineControl:any = linesControl.controls[this.editingLineIndex];
         if(currentLineControl.editable){
             currentLineControl.editable = !currentLineControl.editable;
         }
@@ -377,33 +354,23 @@ export class JournalEntryComponent{
 
     //When user double clicks on the line, it toggles and show the fields
     editLine(lineListItem, index){
-        let status = lineListItem.editable;
         let linesControl:any = this.jeForm.controls['journalLines'];
         let data = this._jeForm.getData(lineListItem);
         //It works. Not sure whether it has better ways to do.
         jQuery('#coa-'+index).siblings().children('input').val(this.getCOAName(data.coa));
+        let controls = {
+            entity:{
+                value: data.entity
+            }
+        };
+        jQuery('#vendor-'+index).siblings().children('input').val(this.getEntityName(controls));
+        jQuery('#employee-'+index).siblings().children('input').val(this.getEntityName(controls));
+        jQuery('#invoice-'+index).siblings().children('input').val(this.getEntityName(controls));
         if(index == this.getLastActiveLineIndex(linesControl)){
             this.addDefaultLine(1);
         }
         this.resetAllLinesFromEditing(linesControl);
         lineListItem.editable = !lineListItem.editable;
-    }
-
-    //To be invoked when user clicks on tick mark once done with iINLINE editing
-    updateLine(lineListItem, index){
-        this.editingLine = {
-            index: index
-        };
-        let data = this._lineListForm.getData(lineListItem);
-        if(data.coa=='--None--'||data.coa==''){
-            this.toastService.pop(TOAST_TYPE.error, "Please select Chart of Account");
-            return;
-        }
-        if(this.newJournalEntry){
-            this.updateLineInView(data);
-        } else{
-            this.updateLineData(data);
-        }
     }
 
     setJournalDate(date: string){
@@ -467,7 +434,9 @@ export class JournalEntryComponent{
         let lineData = this._lineListForm.getData(this.lineForm);
         if(entity && entity.id){
             lineData.entity = entity.id;
-        }else if(!entity || entity=='--None--'){
+        } else if(entity && entity.customer_id){
+            lineData.entity = entity.customer_id;
+        } else if(!entity || entity=='--None--'){
             lineData.entity='--None--';
         }
         this._lineListForm.updateForm(this.lineForm, lineData);
@@ -478,9 +447,13 @@ export class JournalEntryComponent{
     }
 
     deleteLine($event, lineIndex){
+        let base = this;
         $event && $event.stopImmediatePropagation();
         let lineList:any = this.jeForm.controls['journalLines'];
         lineList.controls[lineIndex].controls['destroy'].patchValue(true);
+        setTimeout(function(){
+            base.updateLineTotal();
+        });
     }
 
     getCOAName(coaId){
@@ -536,8 +509,12 @@ export class JournalEntryComponent{
         let defaultLine = this._lineListForm.getData(this._fb.group(this._lineListForm.getForm()));
         _.each(linesControl.controls, function (jeLineControl) {
             let lineData = base._lineListForm.getData(jeLineControl);
-            if(!_.isEqual(lineData, defaultLine) && !lineData.destroy){
-                data.push(lineData);
+            if(!_.isEqual(lineData, defaultLine)){
+                if(!base.newJournalEntry){
+                    data.push(lineData);
+                } else if(!lineData.destroy){
+                    data.push(lineData);
+                }
             }
         });
         return data;
@@ -547,27 +524,29 @@ export class JournalEntryComponent{
         let base = this;
         let result = false;
         _.each(lines, function(line){
-            if(line.creditAmount && line.debitAmount){
-                base.toastService.pop(TOAST_TYPE.error, "One of the lines have both Credit and Debit amount");
-                result = true;
-                return false;
-            }
-            if(!line.coa){
-                base.toastService.pop(TOAST_TYPE.error, "Chat of Account is not selected for line");
-                result = true;
-                return false;
-            }
-            if(line.debitAmount == 0 && line.creditAmount == 0){
-                base.toastService.pop(TOAST_TYPE.error, "Line should have either Credit or Debit amount");
-                result = true;
-                return false;
+            if(!line.destroy){
+                if(line.creditAmount && line.debitAmount){
+                    base.toastService.pop(TOAST_TYPE.error, "One of the lines have both Credit and Debit amount");
+                    result = true;
+                    return false;
+                }
+                if(!line.coa){
+                    base.toastService.pop(TOAST_TYPE.error, "Chat of Account is not selected for line");
+                    result = true;
+                    return false;
+                }
+                if(line.debitAmount == 0 && line.creditAmount == 0){
+                    base.toastService.pop(TOAST_TYPE.error, "Line should have either Credit or Debit amount");
+                    result = true;
+                    return false;
+                }
             }
         });
         if(!result){
             this.updateLineTotal();
             if(this.creditTotal != this.debitTotal){
                 this.toastService.pop(TOAST_TYPE.error, "Credit and debit totals doesn't match");
-                return false;
+                result = true;
             }
         }
         return result;
@@ -582,6 +561,7 @@ export class JournalEntryComponent{
                 line.entryType = 'Debit';
                 line.amount = line.debitAmount;
             }
+            line.entity = line.entity? line.entity: null;
             delete line.debitAmount;
             delete line.creditAmount;
         });
@@ -685,20 +665,6 @@ export class JournalEntryComponent{
         this._lineListForm.updateForm(this.newJournalLineForm, lineData);
     }
 
-    saveNewItem(){
-        this.addNewLineFlag = !this.addNewLineFlag;
-        let lineData = this._lineListForm.getData(this.newJournalLineForm);
-        if(this.newJournalEntry){
-            this.saveLineInView(lineData);
-        } else{
-            this.saveLineData(lineData);
-        }
-    }
-
-    hideNewItem(){
-        this.addNewLineFlag = false;
-    }
-
     processJournalEntry(journalEntry){
         journalEntry.journalLines = _.orderBy(journalEntry.journalLines, ['entryType'], ['desc']);
         let base = this;
@@ -733,6 +699,7 @@ export class JournalEntryComponent{
         });
         this.stopLoaderAndShowMessage(false);
         this._jeForm.updateForm(this.jeForm, this.journalEntry);
+        this.updateLineTotal();
         this.reversed = journalEntry.reversed;
         if(journalEntry.reversedFrom){
             this.haveSourceId = true;
