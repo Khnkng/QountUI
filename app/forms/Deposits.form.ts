@@ -17,7 +17,7 @@ export class DepositsForm extends abstractForm{
             "bank_account_id": [''],
             "notes": [''],
             "id": [''],
-            "expense_refund":[false]
+            "deposit_type":['']
         }
     }
 }
@@ -30,7 +30,7 @@ export class DepositsLineForm extends abstractForm{
             amount: [model? model.amount: 0],
             title: [model? model.title: ''],
             chart_of_account_id: [model? model.chart_of_account_id: ''],
-            customer_id: [model? model.customer_id: ''],
+            entity_id: [model? model.entity_id: ''],
             id: [model? model.id: null],
             invoice_id: [model? model.invoice_id: ''],
             notes: [model? model.notes: ''],
