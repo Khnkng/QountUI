@@ -91,6 +91,9 @@ export class ChartOfAccountsComponent{
     let category = _.find(this.categoryTypes, function(categoryType){
       return categoryType.value == value;
     });
+
+
+
     if(category) {
       return category.name;
     }
@@ -100,11 +103,12 @@ export class ChartOfAccountsComponent{
     let subType = _.find(this.allSubTypes[categoryValue], function(subType){
       return subType.value == value;
     });
+
+
     if(subType) {
       return subType.name;
     }
   }
-
 
   populateSubtypes($event){
     if(this.editMode && this.row.parentID){
@@ -217,7 +221,7 @@ export class ChartOfAccountsComponent{
         });
   }
   removeCOA(row: any){
-     this.coaId = row.id;
+    this.coaId = row.id;
     this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
   }
 
@@ -347,18 +351,18 @@ export class ChartOfAccountsComponent{
           row[key] = coa[key];
           if(coa['parentID']){
             row[key] = {options:{
-                classes: "coa-child-"+coa.level,
-                sortValue: base.getName(coa['parentID'])
-              }, value: coa[key]}
+              classes: "coa-child-"+coa.level,
+              sortValue: base.getName(coa['parentID'])
+            }, value: coa[key]}
           } else{
             row[key] = coa[key];
           }
         } else if(key == 'number'){
           if(coa['parentID']){
             row[key] = {options:{
-                classes: "coa-child-"+coa.level,
-                sortValue: base.getNumber(coa['parentID'])
-              }, value: coa[key]
+              classes: "coa-child-"+coa.level,
+              sortValue: base.getNumber(coa['parentID'])
+            }, value: coa[key]
             }
           } else{
             row[key] = coa[key];
