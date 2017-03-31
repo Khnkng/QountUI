@@ -46,7 +46,7 @@ export class ChartOfAccountsComponent{
   row:any;
   coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'type', 'subType', 'desc', 'number'];
   combo:boolean = true;
-  sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices"];
+  sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices", "loansTo"];
   hasParentOrChild: boolean = false;
   showFlyout:boolean = false;
   coaId:any;
