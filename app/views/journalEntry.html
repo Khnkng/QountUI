@@ -76,7 +76,21 @@
                                                     </select>
                                                 </label>
                                             </div>
-                                            <div class="small-12 medium-12 columns" [hidden]="showAdvance">
+                                            <div class="small-12 medium-3 columns">
+                                                <label>JE Type
+                                                    <select class="jeSelect" formControlName="jeType" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                                                        <option value="Bill">Bill</option>
+                                                        <option value="Payroll">Payroll</option>
+                                                        <option value="Invoice">Invoice</option>
+                                                    </select>
+                                                    <select class="jeSelect" formControlName="jeType" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
+                                                        <option value="Bill">Bill</option>
+                                                        <option value="Payroll">Payroll</option>
+                                                        <option value="Other">Other</option>
+                                                    </select>
+                                                </label>
+                                            </div>
+                                            <div class="small-12 medium-9 columns" [hidden]="showAdvance">
                                                 <label>Description
                                                     <textarea formControlName="desc" style="height: 50px;" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId"></textarea>
                                                     <textarea formControlName="desc" style="height: 50px;" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly></textarea>
@@ -153,34 +167,31 @@
                                                     </select>
                                                 </label>
                                             </div>
-
                                         </div>
-
                                     </div>
-                                    <div class="row" [hidden]="showAdvance" [ngClass]="{'applyMargin': isSystemCreatedJE}">
-                                        <div class="columns" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                                    <div class="row" [hidden]="showAdvance">
+                                        <div class="columns">
+                                            <label class="float-right" style="margin-left: 10px;">
+                                                <b>Credit:</b> {{creditTotal| currency:companyCurrency:true:'1.2-2'}}
+                                            </label>
                                             <label class="float-right">
-                                                <i class="icon ion-ios-plus-outline" (click)="showNewLine()"></i> Line
+                                                <b>Debit:</b> {{debitTotal| currency:companyCurrency:true:'1.2-2'}}
                                             </label>
                                         </div>
                                     </div>
                                     <table class="stack line-table" [hidden]="showAdvance">
                                         <thead>
                                             <tr>
-                                                <th width="15%">Title</th>
-                                                <th width="15%">COA</th>
-                                                <th width="10%">Entry Type</th>
-                                                <th width="10%">Amount</th>
-                                                <!--<th width="17%">Memo</th>-->
-                                                <th width="5%"></th>
+                                                <th width="10%">COA</th>
+                                                <th width="5%">Credits</th>
+                                                <th width="5%">Debits</th>
+                                                <th width="20%">Notes</th>
+                                                <th width="10%">Entity</th>
+                                                <th width="3%"></th>
                                             </tr>
                                         </thead>
-                                        <tbody formArrayName="journalLines" *ngIf="jeForm.controls.journalLines.controls.length != 0">
-                                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" (dblclick)="editLine(lineListItem, index)">
-                                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.title.value}}</td>
-                                                <td [hidden]="!lineListItem.editable">
-                                                    <input type="text" [formControl]="lineListItem.controls.title" placeholder="Title"/>
-                                                </td>
+                                        <tbody *ngIf="getLineCount() != 0 && !isSystemCreatedJE">
+                                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" [hidden]="lineListItem.controls.destroy.value" (click)="editLine(lineListItem, index)">
                                                 <td [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
                                                 <td [hidden]="!lineListItem.editable">
                                                     <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" (valueChanged)="updateLineCOA($event, index)">
@@ -188,58 +199,56 @@
                                                     </select>
                                                 </td>
                                                 <td [hidden]="lineListItem.editable">
-                                                    {{lineListItem.controls.entryType.value}}
+                                                    {{lineListItem.controls.creditAmount.value?(lineListItem.controls.creditAmount.value| currency:companyCurrency:true:'1.2-2'):null}}
                                                 </td>
                                                 <td [hidden]="!lineListItem.editable">
-                                                    <select [formControl]="lineListItem.controls.entryType">
-                                                        <option value="Credit">Credit</option>
-                                                        <option value="Debit">Debit</option>
-                                                    </select>
+                                                    <input type="text" [formControl]="lineListItem.controls.creditAmount" placeholder="Credit" numeral [format]="'$0,0.00'" [locale]="companyCurrency" (change)="updateLineTotal()"/>
                                                 </td>
                                                 <td [hidden]="lineListItem.editable">
-                                                    {{lineListItem.controls.amount.value?(lineListItem.controls.amount.value|number : '1.2-2'):null}}
+                                                    {{lineListItem.controls.debitAmount.value?(lineListItem.controls.debitAmount.value| currency:companyCurrency:true:'1.2-2'):null}}
                                                 </td>
                                                 <td [hidden]="!lineListItem.editable">
-                                                    <input type="text" [formControl]="lineListItem.controls.amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                                    <input type="text" [formControl]="lineListItem.controls.debitAmount" placeholder="Debit" numeral [format]="'$0,0.00'" [locale]="companyCurrency" (change)="updateLineTotal()"/>
                                                 </td>
-                                                <!--<td [hidden]="lineListItem.editable">{{lineListItem.controls.memo.value}}</td>
+                                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.notes.value}}</td>
                                                 <td [hidden]="!lineListItem.editable">
-                                                    <textarea [formControl]="lineListItem.controls.memo"></textarea>
-                                                </td>-->
-                                                <td>
-                                                    <i class="icon ion-checkmark-circled" (click)="updateLine(lineListItem, index)" *ngIf="lineListItem.editable"></i>
-                                                    <i class="icon ion-close" *ngIf="lineListItem.editable" (click)="toggleLineEdit(lineListItem)"></i>
-                                                    <i class="icon ion-edit" *ngIf="!lineListItem.editable" (click)="showFlyout('UPDATE', index)"></i>
-                                                    <i class="icon ion-ios-trash-outline" *ngIf="!lineListItem.editable && !isSystemCreatedJE" (click)="deleteLine(index)"></i>
+                                                    <input type="text" [formControl]="lineListItem.controls.notes" placeholder="Notes"/>
                                                 </td>
-                                            </tr>
-                                        </tbody>
-                                        <tbody *ngIf="addNewLineFlag" [formGroup]="newJournalLineForm">
-                                            <tr>
-                                                <td>
-                                                    <input type="text" formControlName="title"/>
+                                                <td [hidden]="lineListItem.editable">{{getEntityName(lineListItem.controls)}}</td>
+                                                <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Bill')">
+                                                    <select id="vendor-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors" (valueChanged)="updateLineEntity($event, index)">
+                                                        <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
+                                                    </select>
                                                 </td>
-                                                <td>
-                                                    <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select COA" formControlName="coa" [listObject]="chartOfAccounts" (valueChanged)="updateNewLineCOA($event)">
-                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                                                <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Payroll')">
+                                                    <select id="employee-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Employee" [listObject]="employees" (valueChanged)="updateLineEntity($event, index)">
+                                                        <option *ngFor="let employee of employees" [value]="employee.id">{{employee.name}}</option>
+                                                    </select>
+                                                </td>
+                                                <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Invoice')">
+                                                    <select id="invoice-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Customer" [listObject]="customers" (valueChanged)="updateLineEntity($event, index)">
+                                                        <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <select formControlName="entryType">
-                                                        <option value="Credit">Credit</option>
-                                                        <option value="Debit">Debit</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <input type="text" formControlName="amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
-                                                </td>
-                                                <td>
-                                                    <i class="icon ion-ios-checkmark-outline" (click)="saveNewItem()"></i>
-                                                    <i class="icon ion-ios-close-outline" (click)="hideNewItem()"></i>
+                                                    <i class="icon ion-edit" (click)="showFlyout('UPDATE', index)"></i>
+                                                    <i class="icon ion-ios-trash-outline" *ngIf="getLineCount() > 2" (click)="deleteLine($event, index)"></i>
                                                 </td>
                                             </tr>
                                         </tbody>
-                                        <tbody *ngIf="jeForm.controls.journalLines.controls.length == 0 && !addNewLineFlag">
+                                        <tbody *ngIf="isSystemCreatedJE">
+                                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index = index;">
+                                                <td>{{getCOAName(lineListItem.controls.coa.value)}}</td>
+                                                <td>{{lineListItem.controls.debitAmount.value?(lineListItem.controls.debitAmount.value|number : '1.2-2'):null}}</td>
+                                                <td>{{lineListItem.controls.creditAmount.value?(lineListItem.controls.creditAmount.value|number : '1.2-2'):null}}</td>
+                                                <td>{{lineListItem.controls.notes.value}}</td>
+                                                <td>{{getEntityName(lineListItem.controls)}}</td>
+                                                <td>
+                                                    <i class="icon ion-edit" (click)="showFlyout('UPDATE', index)"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody *ngIf="getLineCount() == 0">
                                             <tr>
                                                 <td colspan="6" class="text-center">No lines found</td>
                                             </tr>
@@ -322,22 +331,26 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="small-12 medium-6 column">
-                                <label>Entry Type
-                                    <select formControlName="entryType" disabled *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)">
-                                        <option value="Credit">Credit</option>
-                                        <option value="Debit">Debit</option>
-                                    </select>
-                                    <select formControlName="entryType" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
-                                        <option value="Credit">Credit</option>
-                                        <option value="Debit">Debit</option>
-                                    </select>
+                            <div class="small-12 medium-3 column">
+                                <label>Credit
+                                    <input type="text" placeholder="Credit" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId" formControlName="creditAmount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                    <input type="text" placeholder="Credit" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly formControlName="creditAmount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                </label>
+                            </div>
+                            <div class="small-12 medium-3 column">
+                                <label>Debit
+                                    <input type="text" placeholder="Debit" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId" formControlName="debitAmount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                    <input type="text" placeholder="Debit" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly formControlName="debitAmount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
                                 </label>
                             </div>
                             <div class="small-12 medium-6 column">
-                                <label>Amount
-                                    <input type="text" placeholder="Amount" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
-                                    <input type="text" placeholder="Amount" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                <label *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">Entity
+                                    <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors"  formControlName="entity" (valueChanged)="updateEntity($event)">
+                                        <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
+                                    </select>
+                                </label>
+                                <label *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)">Entity
+                                    <input type="text" placeholder="Entity" readonly value="{{getEntityName(lineForm.controls.entity.value)}}"/>
                                 </label>
                             </div>
                         </div>
