@@ -226,10 +226,12 @@ export class ReconcileComponent{
     updateStartingBalance(){
         let base = this;
         let data = {};
-        data["endingBalance"] = this.endingBalance;
-        data["date"] = this.reconcileDate;
-        this.reconcileService.updateStartingBalance(data)
+        data["last_recon_ending_balance"] = this.endingBalance;
+        data["last_recon_date"] = this.reconcileDate;
+        data['recon_by'] = '';
+        this.reconcileService.updateStartingBalance(data,this.selectedBank)
             .subscribe(response  => {
+                base.toastService.pop(TOAST_TYPE.success, "Updated last reconcile data");
             }, error =>  {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to update reconcile date");
             });
