@@ -33,6 +33,7 @@ export class ReconcileComponent{
     tableData:any = {};
     hasEntries:boolean = false;
     tableOptions:any = {search:false, pageSize:6,selectable:true};
+    unreconciledTableOptions:any = {search:false, pageSize:6};
     showForm:boolean = true;
     reconcileData:Array<any> = [];
     reconcileDataCopy:Array<any> = [];
@@ -45,6 +46,7 @@ export class ReconcileComponent{
     inflow:number;
     outflow:number;
     selectedRows:Array<any> = [];
+    /*unreconciledRecords:Array<any> = [];*/
     reconcileDate:any;
 
 
@@ -57,10 +59,15 @@ export class ReconcileComponent{
         this.accountsService.financialAccounts(this.companyId)
             .subscribe(accounts =>{
                 this.accounts = accounts.accounts;
-
             }, error=>{
 
             });
+        /*this.reconcileService.getUnreconciledRecords()
+            .subscribe(reconData  => {
+                this.unreconciledRecords = reconData;
+                this.buildUnreconciledTableData();
+                }, error =>  {
+            });*/
     }
 
     showPreviousPage(){
@@ -143,7 +150,6 @@ export class ReconcileComponent{
                 if(reconcileData.length > 0){
                     this.getStartingBalance();
                     this.buildTableData();
-                    this.showForm = false;
                 }else{
                     base.toastService.pop(TOAST_TYPE.success, "No Entries Found");
                     this.hasEntries = false;
@@ -166,7 +172,9 @@ export class ReconcileComponent{
                 let amount = reconData.last_recon_ending_balance;
                 amount = parseFloat(amount);
                 this.startingBalance = amount;
+                this.showForm = false;
             }, error =>  {
+                this.showForm = true;
                 base.toastService.pop(TOAST_TYPE.error, "Failed to get starting balance");
             });
     }
@@ -195,6 +203,31 @@ export class ReconcileComponent{
             this.hasEntries = true;
         }
     };
+
+   /* buildUnreconciledTableData(){
+        let base = this;
+        this.tableData.columns = [
+            {"name": "type", "title": "Type"},
+            {"name": "date", "title": "Date"},
+            {"name": "amount", "title": "Amount"},
+            {"name": "id", "title": "Entry ID", "visible": false}];
+        this.tableData.rows = [];
+        _.each(base.unreconciledRecords, function(entry){
+            let row:any = {};
+            _.each(Object.keys(entry), function(key){
+               if(key == 'amount'){
+                    let amount = parseFloat(entry[key]);
+                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                } else{
+                    row[key] = entry[key];
+                }
+            });
+            base.tableData.rows.push(row);
+        });
+        if(this.tableData.rows.length > 0){
+            this.hasEntries = true;
+        }
+    };*/
 
     submitReconcile(){
         if(this.selectedRows.length>0) {
@@ -244,6 +277,7 @@ export class ReconcileComponent{
         this.statementOutflow = 0;
         this.statementEndingBalance= 0;
         this.selectedRows= [];
+        this.startingBalance = 0;
     }
     getAccounts() {
         this.accountsService.financialAccounts(this.companyId)

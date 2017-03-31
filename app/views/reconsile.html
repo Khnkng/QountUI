@@ -21,6 +21,13 @@
                     </label>
                 </div>
             </div>
+                <!--<div class="row">
+                    <div class="column large-12 medium-12 small-12 foo-container">
+                        <foo-table class="bighalf-footable" *ngIf="hasEntries" [data]="unreconciledRecords" [options]="unreconciledTableOptions">
+                        </foo-table>
+                        <div *ngIf="!hasEntries">No Records Found</div>
+                    </div>
+                </div>-->
             <div class="row" *ngIf="showForm">
                 <div class="small-12 medium-12 columns">
                     <button class="button create small float-right" [disabled]="!reconcileForm.valid" type="submit" (click)="submit($event)" data-close>submit</button>

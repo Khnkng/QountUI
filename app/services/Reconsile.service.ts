@@ -46,6 +46,13 @@ export class ReconcileService extends  QountServices{
             .catch(this.handleError)
     }
 
+    getUnreconciledRecords() : Observable<any> {
+        var url = this.interpolateUrl(PATH.RECONCILE_UNRECON_DATA, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany()});
+        return this.query(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+            .catch(this.handleError)
+    }
+
+
     private handleError (error: Response) {
         return Observable.throw(error.text());
     }
