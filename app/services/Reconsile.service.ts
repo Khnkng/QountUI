@@ -17,14 +17,26 @@ export class ReconcileService extends  QountServices{
     }
 
     getReconcileData(data:any) : Observable<any> {
-        var url = this.interpolateUrl(PATH.RECONCILE_GET_RECORN,null,{id:Session.getUser().id,companyId:Session.getCurrentCompany()});
+        var url = this.interpolateUrl(PATH.RECONCILE_GET_RECON,null,{id:Session.getUser().id,companyId:Session.getCurrentCompany()});
         return this.create(url,data, SOURCE_TYPE.JAVA).map(res => <any> res.json())
             .catch(this.handleError)
     }
 
     createReconcile(data:any) : Observable<any> {
-        var url = this.interpolateUrl(PATH.RECONCILE_CREATE_RECORN,null,{id:Session.getUser().id,companyId:Session.getCurrentCompany()});
+        var url = this.interpolateUrl(PATH.RECONCILE_CREATE_RECON,null,{id:Session.getUser().id,companyId:Session.getCurrentCompany()});
         return this.create(url, data, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+            .catch(this.handleError)
+    }
+
+    getStartingBalance(bankId:number) : Observable<any> {
+        var url = this.interpolateUrl(PATH.RECONCILE_RECON_STARTING_BALANCE,null,{id:Session.getUser().id,companyId:Session.getCurrentCompany(),bankId:bankId});
+        return this.query(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+            .catch(this.handleError)
+    }
+
+    updateStartingBalance(data:any): Observable<any> {
+        var url = this.interpolateUrl(PATH.RECONCILE_RECON_DATE,null,{id: Session.getUser().id,companyId:Session.getCurrentCompany()});
+        return this.update(url, data, SOURCE_TYPE.JAVA).map(res => <any> res.json())
             .catch(this.handleError)
     }
 

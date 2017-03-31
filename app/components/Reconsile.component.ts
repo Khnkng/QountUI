@@ -46,6 +46,7 @@ export class ReconcileComponent{
     inflow:number;
     outflow:number;
     selectedRows:Array<any> = [];
+    reconcileDate:any;
 
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -92,6 +93,7 @@ export class ReconcileComponent{
     setDueDate(date){
         let data = this._reconcileForm.getData(this.reconcileForm);
         data.date = date;
+        this.reconcileDate = date;
         this._reconcileForm.updateForm(this.reconcileForm, data);
     }
 
@@ -140,6 +142,7 @@ export class ReconcileComponent{
                 this.reconcileData = reconcileData;
                 this.reconcileDataCopy = reconcileData;
                 if(reconcileData.length > 0){
+                    this.getStartingBalance();
                     this.buildTableData();
                     this.showForm = false;
                 }else{
@@ -151,20 +154,22 @@ export class ReconcileComponent{
                 this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile data");
             });
-        this.getStartingBalance();
-
     }
 
     calculateEndingBalance(){
         this.endingBalance = this.startingBalance+this.inflow-this.outflow;
-
     };
 
     getStartingBalance(){
         let base = this;
-        let amount = _.find(this.accounts, {'id': this.selectedBank}).starting_balance;
-        amount = parseFloat(amount);
-        this.startingBalance = amount;
+        this.reconcileService.getStartingBalance(this.selectedBank)
+            .subscribe(startingBalance  => {
+                let amount = startingBalance;
+                amount = parseFloat(amount);
+                this.startingBalance = amount;
+            }, error =>  {
+                base.toastService.pop(TOAST_TYPE.error, "Failed to get starting balance");
+            });
     }
 
     buildTableData(){
@@ -173,7 +178,6 @@ export class ReconcileComponent{
             {"name": "type", "title": "Type"},
             {"name": "date", "title": "Date"},
             {"name": "amount", "title": "Amount"},
-            {"name": "amount", "title": "AmountCopy","visible": false},
             {"name": "id", "title": "Entry ID", "visible": false}];
         this.tableData.rows = [];
         _.each(base.reconcileData, function(entry){
@@ -207,7 +211,8 @@ export class ReconcileComponent{
             this.reconcileService.createReconcile(selected)
                 .subscribe(response => {
                     base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successfull");
-                    this.showReconcileForm();
+                    this.updateStartingBalance();
+                    this.resetReconcileForm();
                     this.getAccounts();
                 }, error => {
                     this.loadingService.triggerLoadingEvent(false);
@@ -218,7 +223,19 @@ export class ReconcileComponent{
         }
     }
 
-    showReconcileForm(){
+    updateStartingBalance(){
+        let base = this;
+        let data = {};
+        data["endingBalance"] = this.endingBalance;
+        data["date"] = this.reconcileDate;
+        this.reconcileService.updateStartingBalance(data)
+            .subscribe(response  => {
+            }, error =>  {
+                base.toastService.pop(TOAST_TYPE.error, "Failed to update reconcile date");
+            });
+    }
+
+    resetReconcileForm(){
         this.showForm = true;
         this.inflow= 0;
         this.outflow= 0;
@@ -227,6 +244,7 @@ export class ReconcileComponent{
         this.statementOutflow = 0;
         this.statementEndingBalance= 0;
         this.selectedRows= [];
+        this.reconcileDate = '';
     }
     getAccounts() {
         this.accountsService.financialAccounts(this.companyId)
