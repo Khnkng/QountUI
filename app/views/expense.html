@@ -129,16 +129,16 @@
                                             </tbody>
                                             <tbody *ngIf="addNewItemFlag" class="expense-item-info" [formGroup]="newItemForm">
                                             <tr>
-                                                <td>
-                                                    <input type="text" placeholder="Title" formControlName="title"/>
-                                                </td>
-                                                <td>
-                                                    <input type="text" placeholder="Amount" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
-                                                </td>
                                                 <td class="combo-box-field">
                                                     <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" formControlName="chart_of_account_id" (valueChanged)="setCOAForNewItem($event)">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" placeholder="Amount" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
+                                                </td>
+                                                <td>
+                                                    <input type="text" placeholder="Notes" formControlName="notes"/>
                                                 </td>
                                                 <td class="combo-box-field">
                                                     <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Entity" [listObject]="entities" formControlName="entity_id" (valueChanged)="setEntityForNewItem($event)">
