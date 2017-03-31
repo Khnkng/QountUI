@@ -79,9 +79,9 @@
                                         <table>
                                             <thead>
                                             <tr>
-                                                <th style="width: 15%;">Line Title</th>
-                                                <th style="width: 15%;">Amount</th>
                                                 <th style="width: 20%;">Exp. COA</th>
+                                                <th style="width: 15%;">Amount</th>
+                                                <th style="width: 15%;">Notes</th>
                                                 <th style="width: 20%;">Entity</th>
                                                 <th style="width: 8%;"></th>
                                             </tr>
@@ -91,19 +91,19 @@
                                                 <td colspan="5" class="text-center">No expense items found</td>
                                             </tr>
                                             <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
-                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.title.value}}</td>
-                                                <td *ngIf="itemForm.editable">
-                                                    <input type="text" placeholder="Line Title" [formControl]="itemForm.controls.title"/>
-                                                </td>
-                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.amount.value? (itemForm.controls.amount.value| currency:companyCurrency:true:'1.2-2'):null}}</td>
-                                                <td *ngIf="itemForm.editable">
-                                                    <input type="text" placeholder="Amount" [formControl]="itemForm.controls.amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
-                                                </td>
                                                 <td *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
                                                     <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
+                                                </td>
+                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.amount.value? (itemForm.controls.amount.value| currency:companyCurrency:true:'1.2-2'):null}}</td>
+                                                <td *ngIf="itemForm.editable">
+                                                    <input type="text" placeholder="Amount" [formControl]="itemForm.controls.amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
+                                                </td>
+                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.notes.value}}</td>
+                                                <td *ngIf="itemForm.editable">
+                                                    <input type="text" placeholder="Notes" [formControl]="itemForm.controls.notes"/>
                                                 </td>
                                                 <td *ngIf="!itemForm.editable">{{getEntityName(itemForm.controls.entity_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
@@ -129,16 +129,16 @@
                                             </tbody>
                                             <tbody *ngIf="addNewItemFlag" class="expense-item-info" [formGroup]="newItemForm">
                                             <tr>
-                                                <td>
-                                                    <input type="text" placeholder="Title" formControlName="title"/>
-                                                </td>
-                                                <td>
-                                                    <input type="text" placeholder="Amount" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
-                                                </td>
                                                 <td class="combo-box-field">
                                                     <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" formControlName="chart_of_account_id" (valueChanged)="setCOAForNewItem($event)">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" placeholder="Amount" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
+                                                </td>
+                                                <td>
+                                                    <input type="text" placeholder="Notes" formControlName="notes"/>
                                                 </td>
                                                 <td class="combo-box-field">
                                                     <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Entity" [listObject]="entities" formControlName="entity_id" (valueChanged)="setEntityForNewItem($event)">
