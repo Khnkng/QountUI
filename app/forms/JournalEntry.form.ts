@@ -27,6 +27,7 @@ export class JournalEntryForm extends abstractForm{
       "endDate": [''],
       "recurringFrequency": [''],
       "desc": [''],
+      "jeType": ['Bill'],
 
       "newType": [],
       "newTitle": [],
@@ -50,7 +51,11 @@ export class JournalLineForm extends abstractForm{
       coa: [model? model.coa: ''],
       entryType: [model? model.entryType: ''],
       amount: [model? model.amount: 0],
+      creditAmount: [model? model.creditAmount: 0],
+      debitAmount: [model? model.debitAmount: 0],
       notes: [model? model.notes: ''],
+      entity: [model? model.entity: ''],
+      destroy: [model? model.destroy: false],
       id: [model? model.id: null],
       dimensions: [model? model.dimensions: []]
     };

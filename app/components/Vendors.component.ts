@@ -278,14 +278,14 @@ deleteVendor(toast){
           .subscribe(success  => {
             this.loadingService.triggerLoadingEvent(false);
             this.showMessage(true, success);
-            this.showFlyout = false;
+           this.hideFlyout();
           }, error =>  this.showMessage(false, error));
     } else {
       this.companyService.addVendor(<VendorModel>data, this.companyId)
           .subscribe(success  => {
             this.loadingService.triggerLoadingEvent(false);
             this.showMessage(true, success);
-            this.showFlyout = false;
+            this.hideFlyout();
           }, error =>  this.showMessage(false, error));
     }
   }
@@ -329,6 +329,8 @@ deleteVendor(toast){
         this._toastService.pop(TOAST_TYPE.success, "Vendor created successfully.");
       }
     } else {
+      this.showFirstStep = true;
+      this.showSecondStep = false;
       this.status = {};
       this.status['error'] = true;
       try {
