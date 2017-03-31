@@ -9,6 +9,8 @@ import {FormBuilder, FormGroup, FormArray} from "@angular/forms";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
+import {EmployeeService} from "qCommon/app/services/Employees.service";
+import {CustomersService} from "qCommon/app/services/Customers.service";
 import {DimensionService} from "qCommon/app/services/DimensionService.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
@@ -40,8 +42,12 @@ export class JournalEntryComponent{
     @ViewChild('reverseJournalDir') reverseJournalComboBox: ComboBox;
     newTags:Array<string>=[];
     allCompanies:Array<any> = [];
-    currentCompany:any;
+    companyId:string;
     chartOfAccounts:Array<any> = [];
+    vendors:Array<any> = [];
+    employees:Array<any> = [];
+    customers:Array<any> = [];
+
     filteredChartOfAccounts:Array<any> = [];
     lines:Array<any> = [];
     routeSub:any;
@@ -64,10 +70,15 @@ export class JournalEntryComponent{
     defaultDate:string;
     stayFlyout:boolean = false;
 
+    creditTotal:number = 0;
+    debitTotal:number = 0;
+
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
-            private companiesService: CompaniesService, private dimensionService: DimensionService, private loadingService: LoadingService) {
+            private companiesService: CompaniesService, private dimensionService: DimensionService, private loadingService: LoadingService,
+            private employeeService: EmployeeService, private customerService: CustomersService) {
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+        this.companyId = Session.getCurrentCompany();
         this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
         this.routeSub = this._route.params.subscribe(params => {
             this.journalID=params['journalID'];
@@ -81,6 +92,15 @@ export class JournalEntryComponent{
                 }
             }
         });
+        this.companiesService.vendors(this.companyId).subscribe(vendors => {
+            this.vendors = vendors;
+        }, error => this.handleError(error));
+        this.employeeService.employees(this.companyId).subscribe(employees => {
+            this.employees = employees;
+        }, error => this.handleError(error));
+        this.customerService.customers(this.companyId).subscribe(customers => {
+            this.customers = customers;
+        }, error => this.handleError(error));
     }
 
     toggleReverseJournal(type, reversedFrom){
@@ -98,6 +118,19 @@ export class JournalEntryComponent{
         } else{
             this.disableReverseJournal = true;
         }
+    }
+
+    updateLineTotal(){
+        let base = this;
+        let journallineData:any = this.jeForm.controls['journalLines'];
+        this.creditTotal = this.debitTotal = 0;
+        _.each(journallineData.controls, function(lineForm){
+            let line = base._lineListForm.getData(lineForm);
+            if(!line.destroy){
+                base.creditTotal += line.creditAmount? parseFloat(line.creditAmount): 0;
+                base.debitTotal += line.debitAmount? parseFloat(line.debitAmount): 0;
+            }
+        });
     }
 
     newForm() {
@@ -190,6 +223,10 @@ export class JournalEntryComponent{
         typeControl.patchValue('');
         let entryTypeControl:any = this.lineForm.controls['entryType'];
         entryTypeControl.patchValue('');
+        let creditAmountControl:any = this.lineForm.controls['creditAmount'];
+        creditAmountControl.patchValue(0);
+        let debitAmountControl:any = this.lineForm.controls['debitAmount'];
+        debitAmountControl.patchValue(0);
         let coaControl:any = this.lineForm.controls['coa'];
         coaControl.patchValue('');
         let amountControl:any = this.lineForm.controls['amount'];
@@ -209,45 +246,20 @@ export class JournalEntryComponent{
         this.resetLineForm();
         this.selectedDimensions = [];
 
-        if(lineStatus == 'NEW'){
-            this.editingLine = {
-                status: 'NEW'
-            };
-        } else{
-            let itemsControl:any = this.jeForm.controls['journalLines'];
-            let lineListItem = itemsControl.controls[index];
-            this.editingLine = {
-                status: 'UPDATE',
-                index: index
-            };
-            let tempLineForm = _.cloneDeep(lineListItem);
-            this.getLineData(tempLineForm);
-        }
-    }
-
-    getLineData(lineForm){
-        let base = this;
-        if(this.newJournalEntry){
-            let lineData = this._lineListForm.getData(lineForm);
-            this.updateLineFormForEdit(lineData);
-        } else{
-            let lineId = lineForm.controls['id'].value;
-            this.journalService.getJournalLine(this.currentCompany.id, this.journalEntry.id, lineId)
-                .subscribe(journalLine => {
-                    this.updateLineFormForEdit(journalLine);
-                }, error => {
-                    this.toastService.pop(TOAST_TYPE.error, "Couldn't fetch Line details");
-                });
-        }
+        let itemsControl:any = this.jeForm.controls['journalLines'];
+        let lineListItem = itemsControl.controls[index];
+        let tempLineForm = _.cloneDeep(lineListItem);
+        let lineData = this._lineListForm.getData(tempLineForm);
+        this.updateLineFormForEdit(lineData);
     }
 
     updateLineFormForEdit(lineData){
         let base = this;
+        this.newLineForm();
         this._lineListForm.updateForm(this.lineForm, lineData);
         this.filteredChartOfAccounts = _.filter(this.chartOfAccounts, {'category': lineData.type});
         let coa = _.find(this.chartOfAccounts, {'id': lineData.coa});
         this.selectedDimensions = lineData.dimensions;
-        this.newLineForm();
         setTimeout(function(){
             base.newCoaComboBox.setValue(coa, 'name');
         },0);
@@ -263,7 +275,9 @@ export class JournalEntryComponent{
             this.toastService.pop(TOAST_TYPE.error, "Please select Chart of Account");
             return;
         }
-        if(this.editingLine.status == 'NEW'){
+        base.updateLineInView(lineData);
+
+        /*if(this.editingLine.status == 'NEW'){
             this.resetLineForm();
             if(this.newJournalEntry){
                 this.saveLineInView(lineData);
@@ -276,7 +290,7 @@ export class JournalEntryComponent{
             } else{
                 base.updateLineData(lineData);
             }
-        }
+        }*/
         this.selectedDimensions = [];
         this.hideFlyout();
     }
@@ -284,7 +298,7 @@ export class JournalEntryComponent{
     /*This will post new line data to backend*/
     saveLineData(lineData){
         this.loadingService.triggerLoadingEvent(true);
-        this.journalService.addJournalLine(this.currentCompany.id, this.journalEntry.id, lineData)
+        this.journalService.addJournalLine(this.companyId, this.journalEntry.id, lineData)
             .subscribe(line => {
                 this.saveLineInView(line);
                 this.editingLine = {};
@@ -308,7 +322,7 @@ export class JournalEntryComponent{
     /*This will post updated line data to backend*/
     updateLineData(lineData){
         this.loadingService.triggerLoadingEvent(true);
-        this.journalService.updateLineData(this.journalEntry.id, this.currentCompany.id, lineData)
+        this.journalService.updateLineData(this.journalEntry.id, this.companyId, lineData)
             .subscribe(line => {
                 this.updateLineInView(line);
                 this.editingLine = {};
@@ -326,20 +340,53 @@ export class JournalEntryComponent{
             currentLineControl.editable = !currentLineControl.editable;
         }
         currentLineControl.controls['notes'].patchValue(line.notes);
-        currentLineControl.controls['type'].patchValue(line.type);
+        currentLineControl.controls['title'].patchValue(line.title);
         currentLineControl.controls['coa'].patchValue(line.coa);
-        currentLineControl.controls['entryType'].patchValue(line.entryType);
-        currentLineControl.controls['amount'].patchValue(line.amount);
+        currentLineControl.controls['entity'].patchValue(line.entity);
+        currentLineControl.controls['creditAmount'].patchValue(line.creditAmount);
+        currentLineControl.controls['debitAmount'].patchValue(line.debitAmount);
         currentLineControl.controls['dimensions'].patchValue(line.dimensions);
+    }
+
+    resetAllLinesFromEditing(linesControl){
+        _.each(linesControl.controls, function(lineControl){
+            lineControl.editable = false;
+        });
+    }
+
+    getLineCount(){
+        let linesControl:any = this.jeForm.controls['journalLines'];
+        let activeLines = [];
+        _.each(linesControl.controls, function(lineControl){
+            if(!lineControl.controls['destroy'].value){
+                activeLines.push(lineControl);
+            }
+        });
+        return activeLines.length;
+    }
+
+    getLastActiveLineIndex(linesControl){
+        let result = false;
+        _.each(linesControl.controls, function(lineControl, index){
+            if(!lineControl.controls['destroy'].value){
+                result = index;
+            }
+        });
+        return result;
     }
 
     //When user double clicks on the line, it toggles and show the fields
     editLine(lineListItem, index){
+        let status = lineListItem.editable;
+        let linesControl:any = this.jeForm.controls['journalLines'];
         let data = this._jeForm.getData(lineListItem);
         //It works. Not sure whether it has better ways to do.
         jQuery('#coa-'+index).siblings().children('input').val(this.getCOAName(data.coa));
-        if(!this.isSystemCreatedJE)
-        lineListItem.editable = true;
+        if(index == this.getLastActiveLineIndex(linesControl)){
+            this.addDefaultLine(1);
+        }
+        this.resetAllLinesFromEditing(linesControl);
+        lineListItem.editable = !lineListItem.editable;
     }
 
     //To be invoked when user clicks on tick mark once done with iINLINE editing
@@ -416,25 +463,24 @@ export class JournalEntryComponent{
         this._lineListForm.updateForm(this.lineForm, lineData);
     }
 
+    updateEntity(entity){
+        let lineData = this._lineListForm.getData(this.lineForm);
+        if(entity && entity.id){
+            lineData.entity = entity.id;
+        }else if(!entity || entity=='--None--'){
+            lineData.entity='--None--';
+        }
+        this._lineListForm.updateForm(this.lineForm, lineData);
+    }
+
     toggleLineEdit(lineListItem){
         lineListItem.editable = !lineListItem.editable;
     }
 
-    deleteLine(lineIndex){
+    deleteLine($event, lineIndex){
+        $event && $event.stopImmediatePropagation();
         let lineList:any = this.jeForm.controls['journalLines'];
-        if(this.newJournalEntry){
-            lineList.controls.splice(lineIndex, 1);
-        } else{
-            let lineId = lineList.controls[lineIndex].controls['id'].value;
-            this.loadingService.triggerLoadingEvent(true);
-            this.journalService.deleteJournalLine(this.currentCompany.id, this.journalEntry.id, lineId)
-                .subscribe(response => {
-                    lineList.controls.splice(lineIndex, 1);
-                    this.stopLoaderAndShowMessage(false, "Deleted Journal Line successfully");
-                }, error =>{
-                    this.stopLoaderAndShowMessage(true, "Failed to delete Journal Line");
-                })
-        }
+        lineList.controls[lineIndex].controls['destroy'].patchValue(true);
     }
 
     getCOAName(coaId){
@@ -443,6 +489,21 @@ export class JournalEntryComponent{
             return coa.name;
         }
         return "";
+    }
+
+    getEntityName(controls){
+        let data = this._jeForm.getData(this.jeForm);
+        if(data.jeType == 'Bill'){
+            let vendor = _.find(this.vendors, {'id': controls.entity.value});
+            return vendor? vendor.name: '';
+        } else if(data.jeType == 'Payroll'){
+            let employee = _.find(this.employees, {'id': controls.entity.value});
+            return employee? employee.name: '';
+        } else if(data.jeType == 'Invoice'){
+            let customer = _.find(this.customers, {'customer_id': controls.entity.value});
+            return customer? customer.customer_name: '';
+        }
+        return '';
     }
 
     cleanData(data){
@@ -457,51 +518,84 @@ export class JournalEntryComponent{
         return data;
     }
 
-    validateLineAmount(lines){
-        let creditTotal = 0;
-        let debitTotal = 0;
-        _.each(lines, function(line){
-            if(line.entryType == 'Credit'){
-                creditTotal += parseInt(line.amount);
-            }
-            if(line.entryType == 'Debit'){
-                debitTotal += parseInt(line.amount);
-            }
-        });
-        if(creditTotal == debitTotal){
-            return true;
-        }
-        return false;
-    }
-
     updateJournalLinesData(data){
         _.each(data.journalLines, function(line){
             if(line.coa=='--None--'||line.coa==''){
                 line.coa=null;
             }
+            if(line.entity=='--None--'||line.entity==''){
+                line.entity=null;
+            }
         });
     }
 
-    getJournalLineData(jeForm){
+    getJournalLineData(jeForm) {
         let base = this;
         let data = [];
         let linesControl = jeForm.controls['journalLines'];
-        _.each(linesControl.controls, function(jeLineControl){
+        let defaultLine = this._lineListForm.getData(this._fb.group(this._lineListForm.getForm()));
+        _.each(linesControl.controls, function (jeLineControl) {
             let lineData = base._lineListForm.getData(jeLineControl);
-            data.push(lineData);
+            if(!_.isEqual(lineData, defaultLine) && !lineData.destroy){
+                data.push(lineData);
+            }
         });
         return data;
+    }
+
+    validateLines(lines){
+        let base = this;
+        let result = false;
+        _.each(lines, function(line){
+            if(line.creditAmount && line.debitAmount){
+                base.toastService.pop(TOAST_TYPE.error, "One of the lines have both Credit and Debit amount");
+                result = true;
+                return false;
+            }
+            if(!line.coa){
+                base.toastService.pop(TOAST_TYPE.error, "Chat of Account is not selected for line");
+                result = true;
+                return false;
+            }
+            if(line.debitAmount == 0 && line.creditAmount == 0){
+                base.toastService.pop(TOAST_TYPE.error, "Line should have either Credit or Debit amount");
+                result = true;
+                return false;
+            }
+        });
+        if(!result){
+            this.updateLineTotal();
+            if(this.creditTotal != this.debitTotal){
+                this.toastService.pop(TOAST_TYPE.error, "Credit and debit totals doesn't match");
+                return false;
+            }
+        }
+        return result;
+    }
+
+    updateLineEntryTypes(lines){
+        _.each(lines, function(line){
+            if(line.creditAmount){
+                line.entryType = 'Credit';
+                line.amount = line.creditAmount;
+            }else if(line.debitAmount){
+                line.entryType = 'Debit';
+                line.amount = line.debitAmount;
+            }
+            delete line.debitAmount;
+            delete line.creditAmount;
+        });
     }
 
     submit($event){
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
-        data.journalLines = this.getJournalLineData(this.jeForm);
         this.updateJournalLinesData(data);
-        if(!this.validateLineAmount(data.journalLines)){
-            this.toastService.pop(TOAST_TYPE.error, "Credit and debit totals doesn't match");
-            return false;
+        data.journalLines = this.getJournalLineData(this.jeForm);
+        if(this.validateLines(data.journalLines)){
+            return;
         }
+        this.updateLineEntryTypes(data.journalLines);
         if(data.reversalDate){
             data.autoReverse = true;
         } else{
@@ -509,14 +603,14 @@ export class JournalEntryComponent{
         }
         this.loadingService.triggerLoadingEvent(true);
         if(this.newJournalEntry){
-            this.journalService.addJournalEntry(this.cleanData(data), this.currentCompany.id)
+            this.journalService.addJournalEntry(this.cleanData(data), this.companyId)
                 .subscribe(journalEntry => {
                     this.stopLoaderAndShowMessage(false, "Journal Entry created successfully");
                     this.showDashboard();
                 }, error=> this.handleError(error));
         } else{
             data.id = this.journalEntry.id;
-            this.journalService.updateJournalEntry(this.cleanData(data), this.currentCompany.id)
+            this.journalService.updateJournalEntry(this.cleanData(data), this.companyId)
                 .subscribe(journalEntry => {
                     this.stopLoaderAndShowMessage(false, "Journal Entry updated successfully");
                     this.showDashboard();
@@ -539,6 +633,11 @@ export class JournalEntryComponent{
         });
     }
 
+    isJournalEntry(entityType){
+        let data = this._jeForm.getData(this.jeForm);
+        return data.jeType == entityType;
+    }
+
     getFilteredCOA(category){
         let base = this;
         let filteredCOA = [];
@@ -558,6 +657,20 @@ export class JournalEntryComponent{
             currentLineData.coa = chartOfAccount.id;
         }else if(!chartOfAccount||chartOfAccount=='--None--'){
             currentLineData.coa='--None--';
+        }
+        this._lineListForm.updateForm(currentLineForm, currentLineData);
+    }
+
+    updateLineEntity(entity, index){
+        let linesControl:any = this.jeForm.controls['journalLines'];
+        let currentLineForm:any = linesControl.controls[index];
+        let currentLineData = this._lineListForm.getData(currentLineForm);
+        if(entity && entity.id){
+            currentLineData.entity = entity.id;
+        } else if(entity && entity.customer_id){
+            currentLineData.entity = entity.customer_id;
+        } else if(!entity || entity=='--None--'){
+            currentLineData.entity='--None--';
         }
         this._lineListForm.updateForm(currentLineForm, currentLineData);
     }
@@ -609,6 +722,12 @@ export class JournalEntryComponent{
         this.disableRecurring = !Boolean(journalEntry.recurring);
         let linesControl:any = this.jeForm.controls['journalLines'];
         _.each(this.journalEntry.journalLines, function(line){
+            if(line.entryType == 'Credit'){
+                line.creditAmount = line.amount;
+            } else if(line.entryType == 'Debit'){
+                line.debitAmount = line.amount;
+            }
+            line.destroy = false;
             let lineListForm = base._fb.group(base._lineListForm.getForm(line));
             linesControl.push(lineListForm);
         });
@@ -648,9 +767,16 @@ export class JournalEntryComponent{
         jQuery('.ui-menu').remove();
     }
 
+    addDefaultLine(count){
+        let linesControl: any = this.jeForm.controls['journalLines'];
+        for(let i=0; i<count; i++){
+            let lineForm = this._fb.group(this._lineListForm.getForm());
+            linesControl.controls.push(lineForm);
+        }
+    }
+
     ngOnInit() {
         let base = this;
-        let companyId = Session.getCurrentCompany();
         let _form = this._jeForm.getForm();
         _form['journalLines'] = new FormArray([]); //this.journalLinesArray;
         this.jeForm = this._fb.group(_form);
@@ -658,29 +784,29 @@ export class JournalEntryComponent{
         let _lineForm = this._lineListForm.getForm();
         this.lineForm = this._fb.group(_lineForm);
 
+        if(this.newJournalEntry){
+            this.addDefaultLine(2);
+        }
+
         this.newForm();
         this.loadingService.triggerLoadingEvent(true);
         this.companiesService.companies().subscribe(companies =>{
             this.allCompanies = companies;
-            if(companyId){
-                this.currentCompany = _.find(this.allCompanies, {id: companyId});
-            } else if(this.allCompanies.length> 0){
-                this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-            }
-            this.dimensionService.dimensions(this.currentCompany.id)
+            this.dimensionService.dimensions(this.companyId)
                 .subscribe(dimensions => {
                     this.dimensions = dimensions;
                 }, error => this.handleError(error));
 
-            this.coaService.chartOfAccounts(this.currentCompany.id)
+            this.coaService.chartOfAccounts(this.companyId)
                 .subscribe(chartOfAccounts => {
                     this.chartOfAccounts = chartOfAccounts;
                     _.sortBy(this.chartOfAccounts, ['number', 'name']);
                     this.toggleAutoReverse();
                     this.toggleRecurring();
                     if(!this.newJournalEntry || this.isReverse){
-                        this.journalService.journalEntry(this.journalID, this.currentCompany.id)
-                            .subscribe(journalEntry => this.processJournalEntry(journalEntry), error => this.handleError(error));
+                        this.journalService.journalEntry(this.journalID, this.companyId)
+                            .subscribe(journalEntry => this.processJournalEntry(journalEntry),
+                                error => this.handleError(error));
                     } else{
                         this.setJournalDate(this.defaultDate);
                         this.stopLoaderAndShowMessage(false);

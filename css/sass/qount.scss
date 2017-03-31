@@ -3230,6 +3230,10 @@ form select.ng-dirty.ng-valid {
   select, input{
     margin: 0;
   }
+
+  tbody tr, thead tr{
+    height: 40px;
+  }
 }
 
 .company-country-input>.custom-combobox>input {
