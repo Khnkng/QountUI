@@ -91,15 +91,20 @@ export class ChartOfAccountsComponent{
     let category = _.find(this.categoryTypes, function(categoryType){
       return categoryType.value == value;
     });
-    return category.name;
+    if(category) {
+      return category.name;
+    }
   }
 
   getSubTypeName(categoryValue, value){
     let subType = _.find(this.allSubTypes[categoryValue], function(subType){
       return subType.value == value;
     });
-    return subType.name;
+    if(subType) {
+      return subType.name;
+    }
   }
+
 
   populateSubtypes($event){
     if(this.editMode && this.row.parentID){
