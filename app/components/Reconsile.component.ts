@@ -163,8 +163,8 @@ export class ReconcileComponent{
     getStartingBalance(){
         let base = this;
         this.reconcileService.getStartingBalance(this.selectedBank)
-            .subscribe(startingBalance  => {
-                let amount = startingBalance;
+            .subscribe(reconData  => {
+                let amount = reconData.last_recon_ending_balance;
                 amount = parseFloat(amount);
                 this.startingBalance = amount;
             }, error =>  {
@@ -228,7 +228,6 @@ export class ReconcileComponent{
         let data = {};
         data["last_recon_ending_balance"] = this.endingBalance;
         data["last_recon_date"] = this.reconcileDate;
-        data['recon_by'] = '';
         this.reconcileService.updateStartingBalance(data,this.selectedBank)
             .subscribe(response  => {
                 base.toastService.pop(TOAST_TYPE.success, "Updated last reconcile data");
@@ -246,7 +245,6 @@ export class ReconcileComponent{
         this.statementOutflow = 0;
         this.statementEndingBalance= 0;
         this.selectedRows= [];
-        this.reconcileDate = '';
     }
     getAccounts() {
         this.accountsService.financialAccounts(this.companyId)
