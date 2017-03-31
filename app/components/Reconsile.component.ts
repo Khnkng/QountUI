@@ -12,7 +12,6 @@ import {ReconcileService} from "../services/Reconsile.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {ReconcileForm} from "../forms/Reconsile.form";
-import {ExpenseService} from "qCommon/app/services/Expense.service";
 
 
 
@@ -50,7 +49,7 @@ export class ReconcileComponent{
 
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
-                private loadingService: LoadingService, private expenseService: ExpenseService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService) {
+                private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService) {
         this.reconcileForm = _fb.group(_reconcileForm.getForm());
         this.companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();

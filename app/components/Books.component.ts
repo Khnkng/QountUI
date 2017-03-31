@@ -15,6 +15,8 @@ import {DepositService} from "qCommon/app/services/Deposit.service";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {BadgeService} from "qCommon/app/services/Badge.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {ReconcileService} from "../services/Reconsile.service";
+
 
 declare var _:any;
 declare var jQuery:any;
@@ -64,11 +66,12 @@ export class BooksComponent{
     confirmSubscription: any;
     DepositToDelete:any;
     journalToDelete:any;
+    unreconciledCount:number;
     categoryData:any = {'depreciation':'Depreciation','payroll':'Payroll','apBalance':'AP balance','arBalance':'AR balance','inventory':'Inventory','credit':'Credit','bill':'Bill','billPayment':'Payment','deposit':'Deposit','expense':'Expense','amortization':'Amortization','openingEntry':'Opening Entry','creditMemo':'Credit Memo','cashApplication':'Cash Application','other':'Other'};
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
                 private toastService: ToastService,private switchBoard:SwitchBoard, private loadingService:LoadingService, private companiesService: CompaniesService,
                 private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService,
-                private badgesService: BadgeService) {
+                private badgesService: BadgeService, private reconcileService: ReconcileService) {
         let companyId = Session.getCurrentCompany();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => {
             switch (this.selectedTab) {
@@ -130,6 +133,10 @@ export class BooksComponent{
             this.uncategorizedEntries = badges.total_uncategorized;
             this.localBadges = {'deposits':depositCount,'expenses':expenseCount,'journalEntries':journalCount};
             sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+        }, error => this.handleError(error));
+
+        this.reconcileService.getUnreconciledCount().subscribe(response => {
+            this.unreconciledCount = response.unreconciled_count;
         }, error => this.handleError(error));
     }
 
