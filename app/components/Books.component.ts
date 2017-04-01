@@ -15,6 +15,8 @@ import {DepositService} from "qCommon/app/services/Deposit.service";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {BadgeService} from "qCommon/app/services/Badge.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {ReconcileService} from "../services/Reconsile.service";
+
 
 declare var _:any;
 declare var jQuery:any;
@@ -64,11 +66,12 @@ export class BooksComponent{
     confirmSubscription: any;
     DepositToDelete:any;
     journalToDelete:any;
+    unreconciledCount:number;
     categoryData:any = {'depreciation':'Depreciation','payroll':'Payroll','apBalance':'AP balance','arBalance':'AR balance','inventory':'Inventory','credit':'Credit','bill':'Bill','billPayment':'Payment','deposit':'Deposit','expense':'Expense','amortization':'Amortization','openingEntry':'Opening Entry','creditMemo':'Credit Memo','cashApplication':'Cash Application','other':'Other'};
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
                 private toastService: ToastService,private switchBoard:SwitchBoard, private loadingService:LoadingService, private companiesService: CompaniesService,
                 private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService,
-                private badgesService: BadgeService) {
+                private badgesService: BadgeService, private reconcileService: ReconcileService) {
         let companyId = Session.getCurrentCompany();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => {
             switch (this.selectedTab) {
@@ -131,10 +134,18 @@ export class BooksComponent{
             this.localBadges = {'deposits':depositCount,'expenses':expenseCount,'journalEntries':journalCount};
             sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
         }, error => this.handleError(error));
+
+        this.reconcileService.getUnreconciledCount().subscribe(response => {
+            this.unreconciledCount = response.unreconciled_count;
+        }, error => this.handleError(error));
     }
 
     showCategorizationScreen(){
         let link = ['categorization'];
+        this._router.navigate(link);
+    }
+    showReconsileScreen(){
+        let link = ['reconcilation'];
         this._router.navigate(link);
     }
 
@@ -314,9 +325,9 @@ export class BooksComponent{
             //{"name": "paid_date", "title": "Paid Date"},
             {"name": "due_date", "title": "Expense Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
-            {"name": "id", "title": "id", 'visible': false},
-            {"name": "journal_id", "title": "Journal ID", 'visible': false},
-            {"name": "actions", "title": "", "type": "html", "sortable": false}];
+            {"name": "id", "title": "id", 'visible': false, 'filterable': false},
+            {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}];
         this.expensesTableData.rows = [];
         data.forEach(function(expense){
             let row:any = {};
@@ -365,9 +376,9 @@ export class BooksComponent{
             {"name": "amount", "title": "Amount"},
             {"name": "date", "title": "Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
-            {"name": "id", "title": "id", 'visible': false},
-            {"name": "journal_id", "title": "Journal ID", 'visible': false},
-            {"name": "actions", "title": "", "type": "html", "sortable": false}];
+            {"name": "id", "title": "id", 'visible': false, 'filterable': false},
+            {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false, 'filterable': false}];
         this.depositsTableData.rows = [];
         data.forEach(function(expense){
             let row:any = {};
@@ -404,23 +415,23 @@ export class BooksComponent{
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
             {"name": "date", "title": "Date"},
-            {"name": "type", "title": "Journal Type","visible":false},
+            {"name": "type", "title": "Journal Type","visible":false, 'filterable': false},
             {"name": "categoryValue", "title": "Category"},
             {"name": "sourceValue", "title": "Source"},
-            {"name": "source", "title": "Source", 'visible': false},
-            {"name": "desc", "title": "Description","visible": false},
-            {"name": "category", "title": "Category","visible": false},
-            {"name": "autoReverse", "title": "Auto Reverse","visible": false},
-            {"name": "reversalDate", "title": "Reversal Date","visible": false},
-            {"name": "recurring", "title": "Recurring","visible": false},
-            {"name": "nextJEDate", "title": "Next JE Date","visible": false},
-            {"name": "sourceID", "title": "Bill ID","visible": false},
-            {"name": "sourceType", "title": "Type","visible": false},
-            {"name": "source", "title": "source","visible": false},
-            {"name": "id", "title": "Jounral ID","visible": false},
-            {"name": "recurringFrequency", "title": "Recurring Frequency","visible": false},
-            {"name": "reverse", "title": "", "type": "html"},
-            {"name": "actions", "title": "", "type": "html"}];
+            {"name": "source", "title": "Source", 'visible': false, 'filterable': false},
+            {"name": "desc", "title": "Description","visible": false, 'filterable': false},
+            {"name": "category", "title": "Category","visible": false, 'filterable': false},
+            {"name": "autoReverse", "title": "Auto Reverse","visible": false, 'filterable': false},
+            {"name": "reversalDate", "title": "Reversal Date","visible": false, 'filterable': false},
+            {"name": "recurring", "title": "Recurring","visible": false, 'filterable': false},
+            {"name": "nextJEDate", "title": "Next JE Date","visible": false, 'filterable': false},
+            {"name": "sourceID", "title": "Bill ID","visible": false, 'filterable': false},
+            {"name": "sourceType", "title": "Type","visible": false, 'filterable': false},
+            {"name": "source", "title": "source","visible": false, 'filterable': false},
+            {"name": "id", "title": "Jounral ID","visible": false, 'filterable': false},
+            {"name": "recurringFrequency", "title": "Recurring Frequency","visible": false, 'filterable': false},
+            {"name": "reverse", "title": "", "type": "html", 'filterable': false},
+            {"name": "actions", "title": "", "type": "html", 'filterable': false}];
         this.jeTableData.rows = [];
         data.forEach(function(journalEntry) {
             let row: any = {};

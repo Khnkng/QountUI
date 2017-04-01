@@ -20,7 +20,9 @@ export class ExpenseForm extends abstractForm{
             "due_date": [''],
             "bank_account_id": [''],
             "id": [''],
-            "sales_refund":[false]
+            "type":[''],
+            "reference_number":[''],
+            "expense_type":['']
         }
     }
 }
@@ -32,7 +34,7 @@ export class ExpenseItemForm extends abstractForm{
             "title": [item? item.title: '', Validators.required],
             "amount": [item? item.amount: '', Validators.required],
             "notes": [item? item.notes: ''],
-            "vendor_id": [item? item.vendor_id: ''],
+            "entity_id": [item? item.entity_id: ''],
             "chart_of_account_id": [item? item.chart_of_account_id: ''],
             "id": [item? item.id: null],
             "destroy": [item? item.destroy: false],

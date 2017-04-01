@@ -12,24 +12,26 @@
                                 <div class="form-section-left expense-row">
                                     <header class="form-section-header">Expense Info</header>
                                     <div class="row">
-                                        <div class="small-12 medium-3 columns">
+                                        <div class="small-12 medium-6 columns">
                                             <label>Title
                                                 <input type="text" formControlName="title" placeholder="Title*" maxlength="30"/>
                                                 <div class="error" [hidden]="expenseForm.controls.title.untouched || expenseForm.controls.title.valid">Expense Title is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-2 columns">
+                                        <div class="small-12 medium-3 columns">
                                             <label>Date
                                                 <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="due_date" placeholder="Date*">
                                                 <div class="error" [hidden]="expenseForm.controls.due_date.untouched || expenseForm.controls.due_date.valid">Date is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-2 columns">
+                                        <div class="small-12 medium-3 columns">
                                             <label>Amount
                                                 <input type="text" formControlName="amount" placeholder="Amount*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
                                                 <div class="error" [hidden]="expenseForm.controls.amount.untouched || expenseForm.controls.amount.valid">Amount is required</div>
                                             </label>
                                         </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="small-12 medium-3 columns">
                                             <label>Bank Account
                                                 <select combo-box #accountComboBoxDir="comboBox" data-placeholder="Select Account" [listObject]="accounts" formControlName="bank_account_id" (valueChanged)="setBankAccount($event)">
@@ -38,31 +40,34 @@
                                                 <div class="error" [hidden]="expenseForm.controls.bank_account_id.untouched || expenseForm.controls.bank_account_id.valid">Please select bank account</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-2 columns">
-                                            <label>
-                                                <div class="form-checkbox">
-                                                    <input type="checkbox" formControlName="sales_refund" class="float-left refund-field"/>
-                                                    <span class="float-left">Sales Refund</span>
-                                                </div>
+                                        <div class="small-12 medium-3 columns">
+                                            <label>Payment Type
+                                                <select formControlName="type" placeholder="Type">
+                                                    <option [value]="'ACH'">ACH</option>
+                                                    <option [value]="'Check'">Check</option>
+                                                    <option [value]="'Wire'">Wire</option>
+                                                    <option [value]="'Other'">Other</option>
+                                                </select>
+                                                <div class="error" [hidden]="expenseForm.controls.type.untouched || expenseForm.controls.type.valid">Expense Type is required</div>
                                             </label>
                                         </div>
-                                        <!--<div class="small-12 medium-1 columns">
-                                            <label>Paid?
-                                                <div class="switch tiny">
-                                                    <input class="switch-input" id="isPaid" type="checkbox" formControlName="is_paid" (change)="togglePaidStatus($event)"/>
-                                                    <label class="switch-paddle" for="isPaid">
-                                                        <span class="show-for-sr">Paid status switch</span>
-                                                    </label>
-                                                </div>
-                                                <div class="error" [hidden]="expenseForm.controls.is_paid.untouched || expenseForm.controls.is_paid.valid">Please paid status</div>
+                                        <div class="small-12 medium-3 columns">
+                                            <label>Reference Number
+                                                <input type="text" formControlName="reference_number" placeholder="Reference number" maxlength="30"/>
+                                                <div class="error" [hidden]="expenseForm.controls.reference_number.untouched || expenseForm.controls.reference_number.valid">Reference number is required</div>
                                             </label>
                                         </div>
-                                        <div class="small-12 medium-2 columns" [hidden]="!isExpensePaid">
-                                            <label>Paid Date
-                                                <input type="text" custom-datepicker [format]="'YYYY/MM/DD'" [mindate]="'past'" (valueChanged)="setPaidDate($event)" formControlName="paid_date" placeholder="Paid Date*">
-                                                <div class="error" [hidden]="expenseForm.controls.paid_date.untouched || expenseForm.controls.paid_date.valid">Paid date is required</div>
+                                        <div class="small-12 medium-3 columns">
+                                            <label>Expense Type
+                                                <select formControlName="expense_type" placeholder="Expense Type" (change)="selectExpenseType($event.target.value)">
+                                                    <option [value]="'bill'">Bill</option>
+                                                    <option [value]="'payroll'">Payroll</option>
+                                                    <option [value]="'salesRefund'">Sales Refund</option>
+                                                    <option [value]="'other'">Other</option>
+                                                </select>
+                                                <div class="error" [hidden]="expenseForm.controls.expense_type.untouched || expenseForm.controls.expense_type.valid">Expense Type is required</div>
                                             </label>
-                                        </div>-->
+                                        </div>
                                     </div>
                                     <header class="form-section-header">Expense Lines</header>
                                     <div class="text-right">
@@ -74,10 +79,10 @@
                                         <table>
                                             <thead>
                                             <tr>
-                                                <th style="width: 15%;">Line Title</th>
-                                                <th style="width: 15%;">Amount</th>
                                                 <th style="width: 20%;">Exp. COA</th>
-                                                <th style="width: 20%;">Vendor</th>
+                                                <th style="width: 15%;">Amount</th>
+                                                <th style="width: 15%;">Notes</th>
+                                                <th style="width: 20%;">Entity</th>
                                                 <th style="width: 8%;"></th>
                                             </tr>
                                             </thead>
@@ -86,24 +91,24 @@
                                                 <td colspan="5" class="text-center">No expense items found</td>
                                             </tr>
                                             <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
-                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.title.value}}</td>
-                                                <td *ngIf="itemForm.editable">
-                                                    <input type="text" placeholder="Line Title" [formControl]="itemForm.controls.title"/>
-                                                </td>
-                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.amount.value? (itemForm.controls.amount.value| currency:companyCurrency:true:'1.2-2'):null}}</td>
-                                                <td *ngIf="itemForm.editable">
-                                                    <input type="text" placeholder="Amount" [formControl]="itemForm.controls.amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
-                                                </td>
                                                 <td *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
                                                     <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
                                                 </td>
-                                                <td *ngIf="!itemForm.editable">{{getVendorName(itemForm.controls.vendor_id.value)}}</td>
+                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.amount.value? (itemForm.controls.amount.value| currency:companyCurrency:true:'1.2-2'):null}}</td>
+                                                <td *ngIf="itemForm.editable">
+                                                    <input type="text" placeholder="Amount" [formControl]="itemForm.controls.amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
+                                                </td>
+                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.notes.value}}</td>
+                                                <td *ngIf="itemForm.editable">
+                                                    <input type="text" placeholder="Notes" [formControl]="itemForm.controls.notes"/>
+                                                </td>
+                                                <td *ngIf="!itemForm.editable">{{getEntityName(itemForm.controls.entity_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
-                                                    <select id="vendor-{{index}}" combo-box #vendorComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors" [formControl]="itemForm.controls.vendor_id" (valueChanged)="setVendorForItem($event, itemForm)">
-                                                        <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
+                                                    <select id="entity-{{index}}" combo-box #vendorComboBoxDir="comboBox" data-placeholder="Select Entity" [listObject]="entities" [formControl]="itemForm.controls.entity_id" (valueChanged)="setEntityForItem($event, itemForm)">
+                                                        <option *ngFor="let entity of entities" [value]="entity.id">{{entity.name}}</option>
                                                     </select>
                                                 </td>
                                                 <td>
@@ -124,20 +129,20 @@
                                             </tbody>
                                             <tbody *ngIf="addNewItemFlag" class="expense-item-info" [formGroup]="newItemForm">
                                             <tr>
-                                                <td>
-                                                    <input type="text" placeholder="Title" formControlName="title"/>
-                                                </td>
-                                                <td>
-                                                    <input type="text" placeholder="Amount" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
-                                                </td>
                                                 <td class="combo-box-field">
                                                     <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" formControlName="chart_of_account_id" (valueChanged)="setCOAForNewItem($event)">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
                                                 </td>
+                                                <td>
+                                                    <input type="text" placeholder="Amount" formControlName="amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
+                                                </td>
+                                                <td>
+                                                    <input type="text" placeholder="Notes" formControlName="notes"/>
+                                                </td>
                                                 <td class="combo-box-field">
-                                                    <select combo-box #newVendorComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors" formControlName="vendor_id" (valueChanged)="setVendorForNewItem($event)">
-                                                        <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
+                                                    <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Entity" [listObject]="entities" formControlName="entity_id" (valueChanged)="setEntityForNewItem($event)">
+                                                        <option *ngFor="let entity of entities" [value]="entity.id">{{entity.name}}</option>
                                                     </select>
                                                 </td>
                                                 <td>
@@ -154,6 +159,7 @@
                         <div class="row">
                             <div class="small-12 medium-12 columns">
                                 <button class="button create small float-right" [disabled]="!expenseForm.valid" type="submit" (click)="submit($event)" data-close>{{newExpense?"Create":"Update"}}</button>
+                                <button class="button create small float-right" style="margin-right:10px;" [disabled]="!expenseForm.valid" type="submit" (click)="submit($event);stayFlyout = true" data-close *ngIf="newExpense">Create and New</button>
                             </div>
                         </div>
                     </section>
@@ -209,9 +215,9 @@
                                 </label>
                             </div>
                             <div class="small-12 medium-6 column">
-                                <label>Vendor
-                                    <select combo-box #editVendorComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors" formControlName="vendor_id" (valueChanged)="setVendorForEditingItem($event)">
-                                        <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
+                                <label>Entity
+                                    <select combo-box #editEntityComboBoxDir="comboBox" data-placeholder="Select entity" [listObject]="entities" formControlName="entity_id" (valueChanged)="setEntityForEditingItem($event)">
+                                        <option *ngFor="let entity of entities" [value]="entity.id">{{entity.name}}</option>
                                     </select>
                                 </label>
                             </div>

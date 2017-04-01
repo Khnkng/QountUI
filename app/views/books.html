@@ -49,10 +49,10 @@
     </div>
     <div class="column small-3 large-3">
       <div class="box-notifier">
-        <div class="box-border blue centered">
+        <div class="box-border blue centered" (click)="showReconsileScreen()">
           <div class="box-icon reconcile"></div>
           <div class="box-notification-circle">
-            3
+            {{unreconciledCount}}
           </div>
         </div>
         <div class="box-label">

@@ -18,6 +18,7 @@ import {InvoicesService} from "invoicesUI/app/services/Invoices.service";
 
 declare let jQuery:any;
 declare let _:any;
+declare var moment:any;
 
 @Component({
     selector: 'deposit',
@@ -44,12 +45,15 @@ export class DepositComponent{
     selectedDimensions:Array<any> = [];
     editItemIndex:number;
     companyCurrency: string;
+    defaultDate:string;
+    stayFlyout:boolean = false;
+    entities:Array<any>=[];
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
-    @ViewChild("newCustomerComboBoxDir") newCustomerComboBox: ComboBox;
+    @ViewChild("newEntityComboBoxDir") newEntityComboBox: ComboBox;
     @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
-    @ViewChild("editCustomerComboBoxDir") editCustomerComboBox: ComboBox;
+    @ViewChild("editEntityComboBoxDir") editEntityComboBox: ComboBox;
     @ViewChild("newInvoiceComboBoxDir") newInvoiceComboBox: ComboBox;
     @ViewChild("editInvoiceComboBoxDir") editInvoiceComboBox: ComboBox;
 
@@ -57,19 +61,27 @@ export class DepositComponent{
                 private _depositLineForm: DepositsLineForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
                 private depositService: DepositService, private toastService: ToastService,
                 private loadingService: LoadingService, private dimensionService: DimensionService,private customersService: CustomersService
-        ,private invoiceService:InvoicesService){
+        ,private invoiceService:InvoicesService,private vendorService: CompaniesService){
         this.routeSub = this._route.params.subscribe(params => {
             this.depositID=params['depositID'];
             if(!this.depositID){
                 this.newDeposit = true;
+                this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
             }
         });
         this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
     showDepositsPage(){
-        let link = [Session.getLastVisitedUrl()];
-        this._router.navigate(link);
+        if(this.stayFlyout){
+            this.ngOnInit();
+            this.stayFlyout = false;
+            this.dimensionFlyoutCSS = "";
+            //location.reload();
+        }else {
+            let link = [Session.getLastVisitedUrl()];
+            this._router.navigate(link);
+        }
     }
 
     showFlyout(index) {
@@ -79,12 +91,12 @@ export class DepositComponent{
         let itemsControl:any = this.depositForm.controls['payments'];
         let data = this._depositLineForm.getData(itemsControl.controls[index]);
         let coa = _.find(this.chartOfAccounts, {'id': data.chart_of_account_id});
-        let customer = _.find(this.customers, {'customer_id': data.customer_id});
+        let entity = _.find(this.entities, {'id': data.entity_id});
         let invoice = _.find(this.invoices, {'id': data.invoice_id});
         this.selectedDimensions = data.dimensions;
         setTimeout(function(){
             base.editCOAComboBox.setValue(coa, 'name');
-            base.editCustomerComboBox.setValue(customer, 'customer_name');
+            base.editEntityComboBox.setValue(entity, 'name');
             base.editInvoiceComboBox.setValue(invoice, 'po_number');
         });
         this.editItemForm = this._fb.group(this._depositLineForm.getForm(data));
@@ -108,12 +120,12 @@ export class DepositComponent{
         this._depositLineForm.updateForm(this.editItemForm, data);
     }
 
-    setCustomerForEditingItem(customer){
+    setEntityForEditingItem(entity){
         let data = this._depositLineForm.getData(this.editItemForm);
-        if(customer && customer.customer_id){
-            data.customer_id = customer.customer_id;
-        }else if(!customer||customer=='--None--'){
-            data.customer_id='--None--';
+        if(entity && entity.id){
+            data.entity_id = entity.id;
+        }else if(!entity||entity=='--None--'){
+            data.entity_id='--None--';
         }
         this._depositLineForm.updateForm(this.editItemForm, data);
     }
@@ -155,6 +167,7 @@ export class DepositComponent{
     processDeposits(deposits){
         let base = this;
         let itemsControl:any = this.depositForm.controls['payments'];
+        this.loadEntities(deposits.deposit_type);
         _.each(deposits.payments, function(depositItem){
             depositItem.amount = parseFloat(depositItem.amount);
             itemsControl.controls.push(base._fb.group(base._depositLineForm.getForm(depositItem)));
@@ -173,7 +186,7 @@ export class DepositComponent{
         this.editingItems[index] = itemData;
         setTimeout(function(){
             jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
-            jQuery('#customer-'+index).siblings().children('input').val(base.getCustomerName(itemData.customer_id));
+            jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
             jQuery('#invoice-'+index).siblings().children('input').val(base.getInvoiceName(itemData.invoice_id));
         });
     }
@@ -216,12 +229,12 @@ export class DepositComponent{
         this._depositLineForm.updateForm(this.newItemForm, data);
     }
 
-    setCustomerForNewItem(customer){
+    setEntityForNewItem(entity){
         let data = this._depositLineForm.getData(this.newItemForm);
-        if(customer && customer.customer_id){
-            data.customer_id = customer.customer_id;
-        }else if(!customer||customer=='--None--'){
-            data.customer_id='--None--';
+        if(entity && entity.id){
+            data.entity_id = entity.id;
+        }else if(!entity||entity=='--None--'){
+            data.entity_id='--None--';
         }
         this._depositLineForm.updateForm(this.newItemForm, data);
     }
@@ -252,9 +265,9 @@ export class DepositComponent{
         return coa? coa.name: '';
     }
 
-    getCustomerName(customerId){
-        let customer = _.find(this.customers, {'customer_id': customerId});
-        return customer? customer.customer_name: '';
+    getEntityName(entityId){
+        let entity = _.find(this.entities, {'id': entityId});
+        return entity? entity.name: '';
     }
 
     getInvoiceName(invoiceId){
@@ -269,7 +282,7 @@ export class DepositComponent{
         itemControl.controls['title'].patchValue(data.title);
         itemControl.controls['amount'].patchValue(data.amount);
         itemControl.controls['chart_of_account_id'].patchValue(data.chart_of_account_id);
-        itemControl.controls['customer_id'].patchValue(data.customer_id);
+        itemControl.controls['entity_id'].patchValue(data.entity_id);
         itemControl.controls['invoice_id'].patchValue(data.invoice_id);
         itemControl.controls['notes'].patchValue(data.notes);
         itemForm.editable = !itemForm.editable;
@@ -291,14 +304,14 @@ export class DepositComponent{
         this._depositLineForm.updateForm(itemForm, data);
     }
 
-    setCustomerForItem(customer, itemForm){
-        if(customer && customer.customer_id){
+    setEntityForItem(entity, itemForm){
+        if(entity && entity.id){
             let data = this._depositLineForm.getData(itemForm);
-            data.customer_id= customer.customer_id;
+            data.entity_id= entity.id;
             this._depositLineForm.updateForm(itemForm, data);
         } else{
             let data = this._depositLineForm.getData(itemForm);
-            data.customer_id= null;
+            data.entity_id= null;
             this._depositLineForm.updateForm(itemForm, data);
         }
     }
@@ -377,7 +390,7 @@ export class DepositComponent{
         itemControl.controls['title'].patchValue(item.title);
         itemControl.controls['amount'].patchValue(item.amount);
         itemControl.controls['chart_of_account_id'].patchValue(item.chart_of_account_id);
-        itemControl.controls['customer_id'].patchValue(item.customer_id);
+        itemControl.controls['entity_id'].patchValue(item.entity_id);
         itemControl.controls['invoice_id'].patchValue(item.invoice_id);
         itemControl.controls['notes'].patchValue(item.notes);
         itemControl.controls['dimensions'].patchValue(item.dimensions);
@@ -391,8 +404,8 @@ export class DepositComponent{
             if(itemData.chart_of_account_id=='--None--'||itemData.chart_of_account_id==''){
                 itemData.chart_of_account_id=null;
             }
-            if(itemData.customer_id=='--None--'||itemData.customer_id==''){
-                itemData.customer_id=null;
+            if(itemData.entity_id=='--None--'||itemData.entity_id==''){
+                itemData.entity_id=null;
             }
             if(itemData.invoice_id=='--None--'||itemData.invoice_id==''){
                 itemData.invoice_id=null;
@@ -435,6 +448,7 @@ export class DepositComponent{
         } else{
             this.depositService.updateDeposit(data, this.currentCompanyId)
                 .subscribe(response =>{
+                    this.toastService.pop(TOAST_TYPE.success, "Deposit Edited successfully");
                     this.loadingService.triggerLoadingEvent(false);
                     this.showDepositsPage();
                 }, error => {
@@ -472,12 +486,6 @@ export class DepositComponent{
             }, error => {
 
             });
-        this.customersService.customers(this.currentCompanyId)
-            .subscribe(customers=> {
-                this.customers = customers;
-            }, error => {
-
-            });
         this.invoiceService.invoices()
             .subscribe(invoices=> {
                 this.invoices = invoices;
@@ -494,6 +502,41 @@ export class DepositComponent{
                     this.toastService.pop(TOAST_TYPE.error, "Failed to load deposit details");
                 })
         } else{
+            this.setDueDate(this.defaultDate);
+            this.loadingService.triggerLoadingEvent(false);
+        }
+    }
+
+    selectDepositType(type){
+        this.loadEntities(type);
+        let depositItems:any = this.depositForm.controls['payments'];
+        _.each(depositItems.controls, function (expenseItem) {
+            expenseItem.controls['entity_id'].patchValue('');
+        });
+    }
+
+    loadEntities(type){
+        this.entities=[];
+        this.loadingService.triggerLoadingEvent(true);
+        if(type=='expenseRefund'){
+            this.vendorService.vendors(this.currentCompanyId)
+                .subscribe(vendors=> {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.entities  = vendors;
+                }, error => {
+                });
+        }else if (type=='invoice'){
+            this.customersService.customers(this.currentCompanyId)
+                .subscribe(customers=> {
+                    this.loadingService.triggerLoadingEvent(false);
+                    _.forEach(customers, function(customer) {
+                        customer['id']=customer.customer_id;
+                        customer['name']=customer.customer_name;
+                    });
+                    this.entities  = customers;
+                }, error => {
+                });
+        }else if (type=='other'){
             this.loadingService.triggerLoadingEvent(false);
         }
     }

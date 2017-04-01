@@ -1,0 +1,105 @@
+<div class="qount-off-canvas-menu" foundation>
+    <div class="flyout expanded" [ngClass]="{'expanded':true}">
+        <section class="flyout-placeholder categorize-flyout">
+            <header class="flyout-header">
+                <h6>Reconcile</h6>
+            </header>
+            <form (ngSubmit)="submit($event)" [formGroup]="reconcileForm" *ngIf="showForm">
+            <div class="row">
+                <div class="small-12 medium-3 columns">
+                    <label>Reconcile Date
+                        <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="date" placeholder="Date*">
+                        <div class="error" [hidden]="reconcileForm.controls.date.untouched || reconcileForm.controls.date.valid">Date is required</div>
+                    </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                    <label>Bank Account
+                        <select combo-box #accountComboBoxDir="comboBox" data-placeholder="Select Account" [listObject]="accounts" formControlName="bankAccountId" (valueChanged)="setBankAccount($event)">
+                            <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
+                        </select>
+                        <div class="error" [hidden]="reconcileForm.controls.bankAccountId.untouched || reconcileForm.controls.bankAccountId.valid">Please select bank account</div>
+                    </label>
+                </div>
+            </div>
+                <!--<div class="row">
+                    <div class="column large-12 medium-12 small-12 foo-container">
+                        <foo-table class="bighalf-footable" *ngIf="hasEntries" [data]="unreconciledRecords" [options]="unreconciledTableOptions">
+                        </foo-table>
+                        <div *ngIf="!hasEntries">No Records Found</div>
+                    </div>
+                </div>-->
+            <div class="row" *ngIf="showForm">
+                <div class="small-12 medium-12 columns">
+                    <button class="button create small float-right" [disabled]="!reconcileForm.valid" type="submit" (click)="submit($event)" data-close>submit</button>
+                </div>
+            </div>
+            </form>
+
+            <div class="row" *ngIf="!showForm">
+                <div class="small-12 medium-3 columns">
+                    <label>Starting Balance
+                        <input type="text"  placeholder="Starting Balance*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="startingBalance" readonly/>
+                    </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                    <label>Statement Inflow
+                        <input type="text" placeholder="Inflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="statementInflow"/>
+                    </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                    <label>Statement Outflow
+                        <input type="text" placeholder="Outflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="statementOutflow"/>
+                    </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                    <label>Statement Ending Balance
+                        <input type="text" placeholder="Amount*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="statementEndingBalance"/>
+                    </label>
+                </div>
+            </div>
+            <div class="row" *ngIf="!showForm">
+                <div class="small-12 medium-3 columns"></div>
+                <div class="small-12 medium-3 columns">
+                    <label>Inflow
+                        <input type="text" placeholder="Inflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="inflow" readonly/>
+                    </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                    <label>Outflow
+                        <input type="text" placeholder="Outflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="outflow" readonly/>
+                    </label>
+                </div>
+                <div class="small-12 medium-3 columns">
+                    <label>Difference / Ending Balance
+                        <input type="text" placeholder="Amount*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="endingBalance" readonly/>
+                    </label>
+                </div>
+            </div>
+
+                <div class="row" *ngIf="!showForm">
+                    <div class="column large-12 medium-12 small-12 foo-container">
+                        <foo-table class="bighalf-footable" *ngIf="hasEntries" [data]="tableData" [options]="tableOptions" (onRowSelect)="handleSelect($event)">
+                        </foo-table>
+                        <div *ngIf="!hasEntries">No Records Found</div>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="!showForm && hasEntries">
+                    <div class="small-12 medium-12 columns">
+                        <button class="button create small float-right"  type="submit" (click)="submitReconcile()" data-close>submit</button>
+                    </div>
+                </div>
+                <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="showForm" (click)="showPreviousPage()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+                </button>
+                <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="!showForm" (click)="resetReconcileForm()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+                </button>
+        </section>
+
+    </div>
+</div>

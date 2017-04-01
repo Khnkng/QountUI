@@ -46,7 +46,7 @@ export class ChartOfAccountsComponent{
   row:any;
   coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'type', 'subType', 'desc', 'number'];
   combo:boolean = true;
-  sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices"];
+  sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices", "loansTo"];
   hasParentOrChild: boolean = false;
   showFlyout:boolean = false;
   coaId:any;
@@ -91,14 +91,23 @@ export class ChartOfAccountsComponent{
     let category = _.find(this.categoryTypes, function(categoryType){
       return categoryType.value == value;
     });
-    return category.name;
+
+
+
+    if(category) {
+      return category.name;
+    }
   }
 
   getSubTypeName(categoryValue, value){
     let subType = _.find(this.allSubTypes[categoryValue], function(subType){
       return subType.value == value;
     });
-    return subType.name;
+
+
+    if(subType) {
+      return subType.name;
+    }
   }
 
   populateSubtypes($event){
@@ -181,6 +190,20 @@ export class ChartOfAccountsComponent{
       }
     }
   }
+
+  hasRelation(coa){
+    let hasParentOrChild = false;
+    if(coa.parentID != "" && coa.subAccount){
+      hasParentOrChild = true; //Child of another COA
+    } else{
+      let children = _.filter(this.chartOfAccounts, {'parentID': coa.id});
+      if(children.length > 0){
+        hasParentOrChild = true;
+      }
+    }
+    return hasParentOrChild;
+  }
+
   deleteCOA(toast){
     this.loadingService.triggerLoadingEvent(true);
     this.coaService.removeCOA(this.coaId, this.currentCompany.id)
@@ -188,10 +211,17 @@ export class ChartOfAccountsComponent{
           this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.success, "Chart of Account deleted successfully");
           this.fetchChartOfAccountData();
-        }, error => this.handleError(error));
+        }, error => {
+          this.loadingService.triggerLoadingEvent(false);
+          if(error.message){
+            this.toastService.pop(TOAST_TYPE.error, error.message);
+          } else{
+            this.toastService.pop(TOAST_TYPE.error, "Failed to delete Chart of account");
+          }
+        });
   }
   removeCOA(row: any){
-     this.coaId = row.id;
+    this.coaId = row.id;
     this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
   }
 
@@ -321,18 +351,18 @@ export class ChartOfAccountsComponent{
           row[key] = coa[key];
           if(coa['parentID']){
             row[key] = {options:{
-                classes: "coa-child-"+coa.level,
-                sortValue: base.getName(coa['parentID'])
-              }, value: coa[key]}
+              classes: "coa-child-"+coa.level,
+              sortValue: base.getName(coa['parentID'])
+            }, value: coa[key]}
           } else{
             row[key] = coa[key];
           }
         } else if(key == 'number'){
           if(coa['parentID']){
             row[key] = {options:{
-                classes: "coa-child-"+coa.level,
-                sortValue: base.getNumber(coa['parentID'])
-              }, value: coa[key]
+              classes: "coa-child-"+coa.level,
+              sortValue: base.getNumber(coa['parentID'])
+            }, value: coa[key]
             }
           } else{
             row[key] = coa[key];
@@ -340,7 +370,10 @@ export class ChartOfAccountsComponent{
         } else{
           row[key] = coa[key];
         }
-        row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+        if(!base.hasRelation(coa)){
+          row['actions'] += "<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        }
       });
       base.tableData.rows.push(row);
     });

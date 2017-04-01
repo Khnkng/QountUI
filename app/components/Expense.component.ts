@@ -13,9 +13,13 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {DimensionService} from "qCommon/app/services/DimensionService.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants"
+import {CustomersService} from "qCommon/app/services/Customers.service"
+import {EmployeeService} from "qCommon/app/services/Employees.service"
+
 
 declare let jQuery:any;
 declare let _:any;
+declare var moment:any;
 
 @Component({
     selector: 'expense',
@@ -42,29 +46,41 @@ export class ExpenseComponent{
     selectedDimensions:Array<any> = [];
     editItemIndex:number;
     companyCurrency:string;
+    defaultDate:string;
+    stayFlyout:boolean = false;
+    entities:Array<any>=[];
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
-    @ViewChild("newVendorComboBoxDir") newVendorComboBox: ComboBox;
+    @ViewChild("newEntityComboBoxDir") newEntityComboBox: ComboBox;
     @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
-    @ViewChild("editVendorComboBoxDir") editVendorComboBox: ComboBox;
+    @ViewChild("editEntityComboBoxDir") editEntityComboBox: ComboBox;
 
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _expenseForm: ExpenseForm,
             private _expenseItemForm: ExpenseItemForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
             private vendorService: CompaniesService, private expenseService: ExpenseService, private toastService: ToastService,
-            private loadingService: LoadingService, private dimensionService: DimensionService){
+            private loadingService: LoadingService, private dimensionService: DimensionService,private customerService:CustomersService,
+            private employeeService:EmployeeService){
         this.routeSub = this._route.params.subscribe(params => {
             this.expenseID=params['expenseID'];
             if(!this.expenseID){
                 this.newExpense = true;
+                this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
             }
         });
         this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
     showExpensesPage(){
-        let link = [Session.getLastVisitedUrl()];
-        this._router.navigate(link);
+        if(this.stayFlyout){
+            this.ngOnInit();
+            this.stayFlyout = false;
+            this.dimensionFlyoutCSS = "";
+            //location.reload();
+        }else {
+            let link = [Session.getLastVisitedUrl()];
+            this._router.navigate(link);
+        }
     }
 
     showFlyout(index) {
@@ -74,11 +90,11 @@ export class ExpenseComponent{
         let itemsControl:any = this.expenseForm.controls['expense_items'];
         let data = this._expenseItemForm.getData(itemsControl.controls[index]);
         let coa = _.find(this.chartOfAccounts, {'id': data.chart_of_account_id});
-        let vendor = _.find(this.vendors, {'id': data.vendor_id});
+        let entity = _.find(this.entities, {'id': data.entity_id});
         this.selectedDimensions = data.dimensions;
         setTimeout(function(){
             base.editCOAComboBox.setValue(coa, 'name');
-            base.editVendorComboBox.setValue(vendor, 'name');
+            base.editEntityComboBox.setValue(entity, 'name');
         });
         this.editItemForm = this._fb.group(this._expenseItemForm.getForm(data));
         this.editItemIndex = index;
@@ -101,10 +117,10 @@ export class ExpenseComponent{
         this._expenseItemForm.updateForm(this.editItemForm, data);
     }
 
-    setVendorForEditingItem(vendor){
+    setEntityForEditingItem(entity){
         let data = this._expenseItemForm.getData(this.editItemForm);
-        if(vendor && vendor.id){
-            data.vendor_id = vendor.id;
+        if(entity && entity.id){
+            data.entity_id = entity.id;
         }
         this._expenseItemForm.updateForm(this.editItemForm, data);
     }
@@ -148,6 +164,7 @@ export class ExpenseComponent{
     processExpense(expense){
         let base = this;
         let itemsControl:any = this.expenseForm.controls['expense_items'];
+        this.loadEntities(expense.expense_type);
         _.each(expense.expense_items, function(expenseItem){
             expenseItem.amount = parseFloat(expenseItem.amount);
             itemsControl.controls.push(base._fb.group(base._expenseItemForm.getForm(expenseItem)));
@@ -166,7 +183,7 @@ export class ExpenseComponent{
         this.editingItems[index] = itemData;
         setTimeout(function(){
             jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
-            jQuery('#vendor-'+index).siblings().children('input').val(base.getVendorName(itemData.vendor_id));
+            jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
         });
     }
 
@@ -219,16 +236,16 @@ export class ExpenseComponent{
         this._expenseItemForm.updateForm(tempForm, data);
     }
 
-    setVendor(vendor, index){
+    setVendor(entity, index){
         let data = this._expenseItemForm.getData(this.expenseForm.controls[index]);
-        data.vendor_id = vendor.id;
+        data.entity_id = entity.id;
         let tempForm = this._fb.group(this.expenseForm.controls[index]);
         this._expenseItemForm.updateForm(tempForm, data);
     }
 
-    setVendorForNewItem(vendor){
+    setEntityForNewItem(entity){
         let data = this._expenseItemForm.getData(this.newItemForm);
-        data.vendor_id = vendor.id;
+        data.entity_id = entity.id;
         this._expenseItemForm.updateForm(this.newItemForm, data);
     }
 
@@ -237,9 +254,9 @@ export class ExpenseComponent{
         return coa? coa.name: '';
     }
 
-    getVendorName(vendorId){
-        let vendor = _.find(this.vendors, {'id': vendorId});
-        return vendor? vendor.name: '';
+    getEntityName(vendorId){
+        let entity = _.find(this.entities, {'id': vendorId});
+        return entity? entity.name: '';
     }
 
     updateItem(index, itemForm){
@@ -249,7 +266,7 @@ export class ExpenseComponent{
         itemControl.controls['title'].patchValue(data.title);
         itemControl.controls['amount'].patchValue(data.amount);
         itemControl.controls['chart_of_account_id'].patchValue(data.chart_of_account_id);
-        itemControl.controls['vendor_id'].patchValue(data.vendor_id);
+        itemControl.controls['entity_id'].patchValue(data.entity_id);
         itemControl.controls['notes'].patchValue(data.notes);
         itemForm.editable = !itemForm.editable;
     }
@@ -270,12 +287,12 @@ export class ExpenseComponent{
         this._expenseItemForm.updateForm(itemForm, data);
     }
 
-    setVendorForItem(vendor, itemForm){
+    setEntityForItem(entity, itemForm){
         let data = this._expenseItemForm.getData(itemForm);
-        if(vendor && vendor.id){
-            data.vendor_id = vendor.id;
-        }else if(!vendor || vendor=='--None--'){
-            data.vendor_id='--None--';
+        if(entity && entity.id){
+            data.entity_id = entity.id;
+        }else if(!entity || entity=='--None--'){
+            data.entity_id='--None--';
         }
         this._expenseItemForm.updateForm(itemForm, data);
     }
@@ -342,7 +359,7 @@ export class ExpenseComponent{
         itemControl.controls['title'].patchValue(item.title);
         itemControl.controls['amount'].patchValue(item.amount);
         itemControl.controls['chart_of_account_id'].patchValue(item.chart_of_account_id);
-        itemControl.controls['vendor_id'].patchValue(item.vendor_id);
+        itemControl.controls['entity_id'].patchValue(item.entity_id);
         itemControl.controls['notes'].patchValue(item.notes);
         itemControl.controls['dimensions'].patchValue(item.dimensions);
     }
@@ -355,8 +372,8 @@ export class ExpenseComponent{
             if(itemData.chart_of_account_id=='--None--'||itemData.chart_of_account_id==''){
                 itemData.chart_of_account_id=null;
             }
-            if(itemData.vendor_id=='--None--'||itemData.vendor_id==''){
-                itemData.vendor_id=null;
+            if(itemData.entity_id=='--None--'||itemData.entity_id==''){
+                itemData.entity_id=null;
             }
             if(!base.newExpense){
                 data.push(itemData);
@@ -397,6 +414,7 @@ export class ExpenseComponent{
             this.expenseService.updateExpense(data, this.currentCompanyId)
                 .subscribe(response =>{
                     this.loadingService.triggerLoadingEvent(false);
+                    this.toastService.pop(TOAST_TYPE.success, "Expense Updated successfully");
                     this.showExpensesPage();
                 }, error => {
                     this.loadingService.triggerLoadingEvent(false);
@@ -433,12 +451,7 @@ export class ExpenseComponent{
             }, error => {
 
             });
-        this.vendorService.vendors(this.currentCompanyId)
-            .subscribe(vendors=> {
-                this.vendors = vendors;
-            }, error => {
 
-            });
         if(!this.newExpense){
             this.expenseService.expense(this.expenseID, this.currentCompanyId)
                 .subscribe(expense => {
@@ -448,7 +461,53 @@ export class ExpenseComponent{
                     this.toastService.pop(TOAST_TYPE.error, "Failed to load expense details");
                 })
         } else{
+            this.setDueDate(this.defaultDate);
             this.loadingService.triggerLoadingEvent(false);
         }
     }
+
+    selectExpenseType(type){
+        this.loadEntities(type);
+        let expenseItems:any = this.expenseForm.controls['expense_items'];
+        _.each(expenseItems.controls, function (expenseItem) {
+            expenseItem.controls['entity_id'].patchValue('');
+        });
+    }
+
+    loadEntities(type){
+        this.entities=[];
+        this.loadingService.triggerLoadingEvent(true);
+        if(type=='bill'){
+            this.vendorService.vendors(this.currentCompanyId)
+                .subscribe(vendors=> {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.entities  = vendors;
+                }, error => {
+                });
+        }else if (type=='payroll'){
+            this.employeeService.employees(this.currentCompanyId)
+                .subscribe(employees=> {
+                    this.loadingService.triggerLoadingEvent(false);
+                    _.forEach(employees, function(employee) {
+                        employee['name']=employee.first_name+""+employee.last_name;
+                    });
+                    this.entities  = employees;
+                }, error => {
+                });
+        }else if (type=='salesRefund'){
+            this.customerService.customers(this.currentCompanyId)
+                .subscribe(customers=> {
+                    this.loadingService.triggerLoadingEvent(false);
+                    _.forEach(customers, function(customer) {
+                        customer['id']=customer.customer_id;
+                        customer['name']=customer.customer_name;
+                    });
+                    this.entities  = customers;
+                }, error => {
+                });
+        }else if (type=='other'){
+            this.loadingService.triggerLoadingEvent(false);
+        }
+    }
+
 }
