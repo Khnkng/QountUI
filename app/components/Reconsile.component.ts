@@ -59,6 +59,7 @@ export class ReconcileComponent{
         this.accountsService.financialAccounts(this.companyId)
             .subscribe(accounts =>{
                 this.accounts = accounts.accounts;
+                this.loadingService.triggerLoadingEvent(false);
             }, error=>{
 
             });
@@ -154,10 +155,11 @@ export class ReconcileComponent{
                     base.toastService.pop(TOAST_TYPE.success, "No Entries Found");
                     this.hasEntries = false;
                     this.showForm = true;
+                    this.loadingService.triggerLoadingEvent(false);
                 }
                 }, error =>  {
-                this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile data");
+                this.loadingService.triggerLoadingEvent(false);
             });
     }
 
@@ -169,13 +171,15 @@ export class ReconcileComponent{
         let base = this;
         this.reconcileService.getStartingBalance(this.selectedBank)
             .subscribe(reconData  => {
+                this.showForm = false;
                 let amount = reconData.last_recon_ending_balance;
                 amount = parseFloat(amount);
                 this.startingBalance = amount;
-                this.showForm = false;
+                this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
-                this.showForm = true;
                 base.toastService.pop(TOAST_TYPE.error, "Failed to get starting balance");
+                this.showForm = true;
+                this.loadingService.triggerLoadingEvent(false);
             });
     }
 
