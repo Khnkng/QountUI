@@ -50,27 +50,27 @@
                                         </div>
                                     </div>
                                     <header class="form-section-header">Deposit Lines</header>
-                                    <div class="text-right">
+                                    <!--<div class="text-right">
                                         <span (click)="showNewItem()">
                                             <i class="icon ion-ios-plus-outline"></i> Line
                                         </span>
-                                    </div>
+                                    </div>-->
                                     <div formArrayName="payments">
                                         <table>
                                             <thead>
                                             <tr>
-                                                <th style="width: 15%;">COA</th>
-                                                <th style="width: 15%;">Amount</th>
-                                                <th style="width: 15%;">Notes</th>
-                                                <th style="width: 15%;">Entity</th>
-                                                <th style="width: 8%;"></th>
+                                                <th style="width: 20%;">COA</th>
+                                                <th style="width: 10%;">Amount</th>
+                                                <th style="width: 45%;">Notes</th>
+                                                <th style="width: 29%;">Entity</th>
+                                                <th style="width: 5%;"></th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr *ngIf="depositForm.controls.payments.controls.length == 0 && !addNewItemFlag">
                                                 <td colspan="7" class="text-center">No Deposits items found</td>
                                             </tr>
-                                            <tr *ngFor="let itemForm of depositForm.controls.payments.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
+                                            <tr *ngFor="let itemForm of depositForm.controls.payments.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (click)="editItem(index, itemForm)">
                                                 <td *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
                                                     <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
@@ -92,22 +92,16 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                        <span *ngIf="!itemForm.editable" (click)="showFlyout(index)">
+                                                        <span (click)="showFlyout(index)">
                                                             <i class="icon ion-edit"></i>
                                                         </span>
-                                                    <span *ngIf="!itemForm.editable" (click)="deleteItem(index)">
+                                                    <span *ngIf="getLineCount() > 2" (click)="deleteItem($event,index)">
                                                             <i class="icon ion-ios-trash-outline"></i>
-                                                        </span>
-                                                    <span *ngIf="itemForm.editable" (click)="updateItem(index, itemForm)">
-                                                            <i class="icon ion-ios-checkmark-outline"></i>
-                                                        </span>
-                                                    <span *ngIf="itemForm.editable" (click)="toggleLine(index, itemForm)">
-                                                            <i class="icon ion-ios-close-outline"></i>
                                                         </span>
                                                 </td>
                                             </tr>
                                             </tbody>
-                                            <tbody *ngIf="addNewItemFlag" class="expense-item-info" [formGroup]="newItemForm">
+                                            <!--<tbody *ngIf="addNewItemFlag" class="expense-item-info" [formGroup]="newItemForm">
                                             <tr>
                                                 <td class="combo-box-field">
                                                     <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" formControlName="chart_of_account_id" (valueChanged)="setCOAForNewItem($event)">
@@ -130,7 +124,7 @@
                                                     <i class="icon ion-ios-close-outline" (click)="hideNewItem()"></i>
                                                 </td>
                                             </tr>
-                                            </tbody>
+                                            </tbody>-->
                                         </table>
                                     </div>
                                 </div>
