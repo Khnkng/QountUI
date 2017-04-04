@@ -3,7 +3,7 @@
  */
 
 import {Component} from "@angular/core";
-import {Component, ViewChild} from "@angular/core";
+import {ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 import {RuleForm, RuleActionForm} from "../forms/Rule.form";
 import {FormGroup, FormBuilder, FormArray} from "@angular/forms";
@@ -289,19 +289,7 @@ export class RulesComponent {
         }
 
     }
-    showNotes(amount:any){
-        let data= this._ruleForm.getData(this.ruleForm);
-        if(data.notesType=='--None--'){
-            data.notesType="";
-            let notesValue:any = this.ruleForm.controls['notesValue'];
-            notesValue.patchValue("");
-        }
-        else{
-            data.notesValue=data.notesValue;
-            let notesValue:any = this.ruleForm.controls['notesValue'];
-            notesValue.patchValue(data.notesValue);
-        }
-    }
+
     showCOA(coa:any) {
         let data= this._ruleForm.getData(this.ruleForm);
         data.chartOfAccount = coa.id;
@@ -485,14 +473,6 @@ export class RulesComponent {
 
                 }
 
-                else if(rule.conditions[i].attributeName=='Notes'){
-                    let comparisionType: any = this.ruleForm.controls['notesType'];
-                    comparisionType.patchValue(rule.conditions[i].comparisionType);
-
-                    let comparisionValue: any = this.ruleForm.controls['notesValue'];
-                    comparisionValue.patchValue(rule.conditions[i].comparisionValue);
-
-                }
                 else if(rule.conditions[i].attributeName=='Vendor'){
                     let base=this;
                     let coa = _.find(base.vendors, function(_coa) {
@@ -609,8 +589,6 @@ cleanData(data){
     delete data.comparisionType;
     delete data.comparisionValue;
     delete data.logicalOperator;
-    delete data.notesValue;
-    delete data.notesType;
     delete data.attributeName1;
     delete data.comparisionValue2;
     delete data.attributeName;
@@ -688,14 +666,6 @@ cleanData(data){
             condition5['comparisionType']="EQUALS_TO";
             condition5['comparisionValue']=source.value;
             var conditionrow5=data.conditions.push(condition5);
-            let notesType:any = this.ruleForm.controls['notesType'];
-            notesType.patchValue(notesType.value);
-            let notesValue:any = this.ruleForm.controls['notesValue'];
-            notesValue.patchValue(notesValue.value);
-            condition6['attributeName']="Notes";
-            condition6['comparisionType']=notesType.value;
-            condition6['comparisionValue']=notesValue.value;
-            var conditionrow6=data.conditions.push(condition6);
             data.id = this.row.id;
             console.log("data",data);
             this.cleanData(data);
@@ -780,14 +750,7 @@ cleanData(data){
             condition5['comparisionType']="EQUALS_TO";
             condition5['comparisionValue']=source.value;
             var conditionrow5=data.conditions.push(condition5);
-            let notesType:any = this.ruleForm.controls['notesType'];
-            notesType.patchValue(notesType.value);
-            let notesValue:any = this.ruleForm.controls['notesValue'];
-            notesValue.patchValue(notesValue.value);
-            condition6['attributeName']="Notes";
-            condition6['comparisionType']=notesType.value;
-            condition6['comparisionValue']=notesValue.value;
-            var conditionrow6=data.conditions.push(condition6);
+
             this.cleanData(data);
             this.ruleservice.addRule(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
