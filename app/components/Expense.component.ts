@@ -61,6 +61,7 @@ export class ExpenseComponent{
             private vendorService: CompaniesService, private expenseService: ExpenseService, private toastService: ToastService,
             private loadingService: LoadingService, private dimensionService: DimensionService,private customerService:CustomersService,
             private employeeService:EmployeeService){
+        this.currentCompanyId = Session.getCurrentCompany();
         this.routeSub = this._route.params.subscribe(params => {
             this.expenseID=params['expenseID'];
             if(!this.expenseID){
@@ -71,6 +72,7 @@ export class ExpenseComponent{
         this.accountsService.financialAccounts(this.currentCompanyId)
             .subscribe(accounts=> {
                 this.accounts = accounts.accounts;
+                this.loadExpense();
             }, error => {
 
             });
@@ -97,9 +99,11 @@ export class ExpenseComponent{
         let data = this._expenseItemForm.getData(itemsControl.controls[index]);
         let coa = _.find(this.chartOfAccounts, {'id': data.chart_of_account_id});
         let entity = _.find(this.entities, {'id': data.entity_id});
+        let account = _.find(this.accounts, {'id': data.bank_account_id});
         this.selectedDimensions = data.dimensions;
         setTimeout(function(){
             base.editCOAComboBox.setValue(coa, 'name');
+            base.accountComboBox.setValue(account, 'name');
             base.editEntityComboBox.setValue(entity, 'name');
         });
         this.editItemForm = this._fb.group(this._expenseItemForm.getForm(data));
@@ -583,5 +587,18 @@ export class ExpenseComponent{
         });
         return data;
     }
-
+    loadExpense(){
+        if(!this.newExpense){
+            this.expenseService.expense(this.expenseID, this.currentCompanyId)
+                .subscribe(expense => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.processExpense(expense.expenses);
+                }, error =>{
+                    this.toastService.pop(TOAST_TYPE.error, "Failed to load expense details");
+                })
+        } else{
+            this.setDueDate(this.defaultDate);
+            this.loadingService.triggerLoadingEvent(false);
+        }
+    }
 }
