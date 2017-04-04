@@ -69,6 +69,12 @@ export class DepositComponent{
                 this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
             }
         });
+        this.accountsService.financialAccounts(this.currentCompanyId)
+            .subscribe(accounts=> {
+                this.accounts = accounts.accounts;
+            }, error => {
+
+            });
         this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
