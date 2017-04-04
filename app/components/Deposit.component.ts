@@ -37,7 +37,7 @@ export class DepositComponent{
     customers:Array<any> = [];
     invoices:Array<any> = [];
     chartOfAccounts:Array<any> = [];
-    addNewItemFlag:boolean = false;
+   // addNewItemFlag:boolean = false;
     editingItems:any={};
     dimensionFlyoutCSS:any;
     itemActive:boolean = false;
@@ -50,11 +50,11 @@ export class DepositComponent{
     entities:Array<any>=[];
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
-    @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
-    @ViewChild("newEntityComboBoxDir") newEntityComboBox: ComboBox;
+  //  @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
+  //  @ViewChild("newEntityComboBoxDir") newEntityComboBox: ComboBox;
     @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
     @ViewChild("editEntityComboBoxDir") editEntityComboBox: ComboBox;
-    @ViewChild("newInvoiceComboBoxDir") newInvoiceComboBox: ComboBox;
+  //  @ViewChild("newInvoiceComboBoxDir") newInvoiceComboBox: ComboBox;
     @ViewChild("editInvoiceComboBoxDir") editInvoiceComboBox: ComboBox;
 
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _depositForm: DepositsForm,
@@ -69,6 +69,12 @@ export class DepositComponent{
                 this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
             }
         });
+        this.accountsService.financialAccounts(this.currentCompanyId)
+            .subscribe(accounts=> {
+                this.accounts = accounts.accounts;
+            }, error => {
+
+            });
         this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
@@ -180,24 +186,33 @@ export class DepositComponent{
     }
 
     editItem(index, itemForm){
+        let linesControl:any = this.depositForm.controls['payments'];
         let base = this;
         itemForm.editable = !itemForm.editable;
         let itemData = this._depositLineForm.getData(itemForm);
-        this.editingItems[index] = itemData;
+        //this.editingItems[index] = itemData;
         setTimeout(function(){
             jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
             jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
             jQuery('#invoice-'+index).siblings().children('input').val(base.getInvoiceName(itemData.invoice_id));
         });
+
+        if(index == this.getLastActiveLineIndex(linesControl)){
+            this.addDefaultLine(1);
+        }
+        this.resetAllLinesFromEditing(linesControl);
+        itemForm.editable = !itemForm.editable;
+
     }
 
-    deleteItem(index){
+    deleteItem($event,index){
+        $event && $event.stopImmediatePropagation();
         let itemsList:any = this.depositForm.controls['payments'];
         let itemControl = itemsList.controls[index];
         itemControl.controls['destroy'].patchValue(true);
     }
 
-    showNewItem(){
+    /*showNewItem(){
         this.addNewItemFlag = true;
         this.newItemForm = this._fb.group(this._depositLineForm.getForm());
         let base=this;
@@ -206,20 +221,20 @@ export class DepositComponent{
             if(account)
                 base.newCOAComboBox.setValue(account,'name');
         });
-    }
+    }*/
 
-    hideNewItem(){
+    /*hideNewItem(){
         this.addNewItemFlag = false;
-    }
+    }*/
 
-    saveNewItem(){
+    /*saveNewItem(){
         this.addNewItemFlag = !this.addNewItemFlag;
         let tempItemForm = _.cloneDeep(this.newItemForm);
         let itemsControl:any = this.depositForm.controls['payments'];
         itemsControl.controls.push(tempItemForm);
-    }
+    }*/
 
-    setCOAForNewItem(chartOfAccount){
+    /*setCOAForNewItem(chartOfAccount){
         let data = this._depositLineForm.getData(this.newItemForm);
         if(chartOfAccount && chartOfAccount.id){
             data.chart_of_account_id = chartOfAccount.id;
@@ -247,7 +262,7 @@ export class DepositComponent{
             data.invoice_id='--None--';
         }
         this._depositLineForm.updateForm(this.newItemForm, data);
-    }
+    }*/
 
     setCOA(chartOfAccount, index){
         let data = this._depositLineForm.getData(this.depositForm.controls[index]);
@@ -434,6 +449,8 @@ export class DepositComponent{
             this.toastService.pop(TOAST_TYPE.error, "Deposit amount and Item total did not match.");
             return;
         }
+
+        data.payments = this.getExpenseLineData(this.depositForm);
         this.loadingService.triggerLoadingEvent(true);
         if(this.newDeposit){
             this.depositService.addDeposit(data, this.currentCompanyId)
@@ -465,6 +482,10 @@ export class DepositComponent{
 
         let _itemForm = this._depositLineForm.getForm();
         this.newItemForm = this._fb.group(_itemForm);
+
+        if(this.newDeposit){
+            this.addDefaultLine(2);
+        }
 
         this.currentCompanyId = Session.getCurrentCompany();
         this.loadingService.triggerLoadingEvent(true);
@@ -539,5 +560,60 @@ export class DepositComponent{
         }else if (type=='other'){
             this.loadingService.triggerLoadingEvent(false);
         }
+    }
+
+    /*view changes*/
+
+    addDefaultLine(count){
+        let linesControl: any = this.depositForm.controls['payments'];
+        for(let i=0; i<count; i++){
+            let lineForm = this._fb.group(this._depositLineForm.getForm());
+            linesControl.controls.push(lineForm);
+        }
+    }
+
+    getLineCount(){
+        let linesControl:any = this.depositForm.controls['payments'];
+        let activeLines = [];
+        _.each(linesControl.controls, function(lineControl){
+            if(!lineControl.controls['destroy'].value){
+                activeLines.push(lineControl);
+            }
+        });
+        return activeLines.length;
+    }
+
+    resetAllLinesFromEditing(linesControl){
+        _.each(linesControl.controls, function(lineControl){
+            lineControl.editable = false;
+        });
+    }
+
+    getLastActiveLineIndex(linesControl){
+        let result = false;
+        _.each(linesControl.controls, function(lineControl, index){
+            if(!lineControl.controls['destroy'].value){
+                result = index;
+            }
+        });
+        return result;
+    }
+
+    getExpenseLineData(depositForm) {
+        let base = this;
+        let data = [];
+        let linesControl = depositForm.controls['payments'];
+        let defaultLine = this._depositLineForm.getData(this._fb.group(this._depositLineForm.getForm()));
+        _.each(linesControl.controls, function (jeLineControl) {
+            let lineData = base._depositLineForm.getData(jeLineControl);
+            if(!_.isEqual(lineData, defaultLine)){
+                if(!base.newDeposit){
+                    data.push(lineData);
+                } else if(!lineData.destroy){
+                    data.push(lineData);
+                }
+            }
+        });
+        return data;
     }
 }

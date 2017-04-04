@@ -51,8 +51,8 @@ export class ExpenseComponent{
     entities:Array<any>=[];
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
-    @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
-    @ViewChild("newEntityComboBoxDir") newEntityComboBox: ComboBox;
+   // @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
+   // @ViewChild("newEntityComboBoxDir") newEntityComboBox: ComboBox;
     @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
     @ViewChild("editEntityComboBoxDir") editEntityComboBox: ComboBox;
 
@@ -68,6 +68,12 @@ export class ExpenseComponent{
                 this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
             }
         });
+        this.accountsService.financialAccounts(this.currentCompanyId)
+            .subscribe(accounts=> {
+                this.accounts = accounts.accounts;
+            }, error => {
+
+            });
         this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
@@ -177,23 +183,29 @@ export class ExpenseComponent{
     }
 
     editItem(index, itemForm){
+        let linesControl:any = this.expenseForm.controls['expense_items'];
         let base = this;
+         let itemData = this._expenseItemForm.getData(itemForm);
+         //this.editingItems[index] = itemData;
+         setTimeout(function(){
+         jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
+         jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
+         });
+        if(index == this.getLastActiveLineIndex(linesControl)){
+            this.addDefaultLine(1);
+        }
+        this.resetAllLinesFromEditing(linesControl);
         itemForm.editable = !itemForm.editable;
-        let itemData = this._expenseItemForm.getData(itemForm);
-        this.editingItems[index] = itemData;
-        setTimeout(function(){
-            jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
-            jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
-        });
     }
 
-    deleteItem(index){
+    deleteItem($event,index){
+        $event && $event.stopImmediatePropagation();
         let itemsList:any = this.expenseForm.controls['expense_items'];
         let itemControl = itemsList.controls[index];
         itemControl.controls['destroy'].patchValue(true);
     }
 
-    showNewItem(){
+    /*showNewItem(){
         this.addNewItemFlag = true;
         this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
         let base=this;
@@ -202,20 +214,20 @@ export class ExpenseComponent{
             if(account)
                 base.newCOAComboBox.setValue(account,'name');
         });
-    }
+    }*/
 
-    hideNewItem(){
+    /*hideNewItem(){
         this.addNewItemFlag = false;
-    }
+    }*/
 
-    saveNewItem(){
+    /*saveNewItem(){
         this.addNewItemFlag = !this.addNewItemFlag;
         let tempItemForm = _.cloneDeep(this.newItemForm);
         let itemsControl:any = this.expenseForm.controls['expense_items'];
         itemsControl.controls.push(tempItemForm);
-    }
+    }*/
 
-    setCOAForNewItem(chartOfAccount){
+    /*setCOAForNewItem(chartOfAccount){
         let data = this._expenseItemForm.getData(this.newItemForm);
         if(chartOfAccount&&chartOfAccount.id){
             data.chart_of_account_id = chartOfAccount.id;
@@ -223,7 +235,7 @@ export class ExpenseComponent{
             data.chart_of_account_id='--None--';
         }
         this._expenseItemForm.updateForm(this.newItemForm, data);
-    }
+    }*/
 
     setCOA(chartOfAccount, index){
         let data = this._expenseItemForm.getData(this.expenseForm.controls[index]);
@@ -243,11 +255,11 @@ export class ExpenseComponent{
         this._expenseItemForm.updateForm(tempForm, data);
     }
 
-    setEntityForNewItem(entity){
+    /*setEntityForNewItem(entity){
         let data = this._expenseItemForm.getData(this.newItemForm);
         data.entity_id = entity.id;
         this._expenseItemForm.updateForm(this.newItemForm, data);
-    }
+    }*/
 
     getCOAName(chartOfAccountId){
         let coa = _.find(this.chartOfAccounts, {'id': chartOfAccountId});
@@ -399,6 +411,8 @@ export class ExpenseComponent{
             this.toastService.pop(TOAST_TYPE.error, "Expense amount and Item total did not match.");
             return;
         }
+        data.expense_items = this.getExpenseLineData(this.expenseForm);
+
         this.loadingService.triggerLoadingEvent(true);
         if(this.newExpense){
             this.expenseService.addExpense(data, this.currentCompanyId)
@@ -423,6 +437,7 @@ export class ExpenseComponent{
         }
     }
 
+
     ngOnInit(){
         let _form = this._expenseForm.getForm();
         _form['expense_items'] = new FormArray([]); //this.expenseItemsArray;
@@ -430,6 +445,10 @@ export class ExpenseComponent{
 
         let _itemForm = this._expenseItemForm.getForm();
         this.newItemForm = this._fb.group(_itemForm);
+
+        if(this.newExpense){
+            this.addDefaultLine(2);
+        }
 
         this.currentCompanyId = Session.getCurrentCompany();
         this.loadingService.triggerLoadingEvent(true);
@@ -508,6 +527,61 @@ export class ExpenseComponent{
         }else if (type=='other'){
             this.loadingService.triggerLoadingEvent(false);
         }
+    }
+
+   /*view changes*/
+
+    addDefaultLine(count){
+        let linesControl: any = this.expenseForm.controls['expense_items'];
+        for(let i=0; i<count; i++){
+            let lineForm = this._fb.group(this._expenseItemForm.getForm());
+            linesControl.controls.push(lineForm);
+        }
+    }
+
+    getLineCount(){
+        let linesControl:any = this.expenseForm.controls['expense_items'];
+        let activeLines = [];
+        _.each(linesControl.controls, function(lineControl){
+            if(!lineControl.controls['destroy'].value){
+                activeLines.push(lineControl);
+            }
+        });
+        return activeLines.length;
+    }
+
+    resetAllLinesFromEditing(linesControl){
+        _.each(linesControl.controls, function(lineControl){
+            lineControl.editable = false;
+        });
+    }
+
+    getLastActiveLineIndex(linesControl){
+        let result = false;
+        _.each(linesControl.controls, function(lineControl, index){
+            if(!lineControl.controls['destroy'].value){
+                result = index;
+            }
+        });
+        return result;
+    }
+
+    getExpenseLineData(expenseForm) {
+        let base = this;
+        let data = [];
+        let linesControl = expenseForm.controls['expense_items'];
+        let defaultLine = this._expenseItemForm.getData(this._fb.group(this._expenseItemForm.getForm()));
+        _.each(linesControl.controls, function (jeLineControl) {
+            let lineData = base._expenseItemForm.getData(jeLineControl);
+            if(!_.isEqual(lineData, defaultLine)){
+                if(!base.newExpense){
+                    data.push(lineData);
+                } else if(!lineData.destroy){
+                    data.push(lineData);
+                }
+            }
+        });
+        return data;
     }
 
 }
