@@ -474,19 +474,6 @@ export class ExpenseComponent{
             }, error => {
 
             });
-
-        if(!this.newExpense){
-            this.expenseService.expense(this.expenseID, this.currentCompanyId)
-                .subscribe(expense => {
-                    this.loadingService.triggerLoadingEvent(false);
-                    this.processExpense(expense.expenses);
-                }, error =>{
-                    this.toastService.pop(TOAST_TYPE.error, "Failed to load expense details");
-                })
-        } else{
-            this.setDueDate(this.defaultDate);
-            this.loadingService.triggerLoadingEvent(false);
-        }
     }
 
     selectExpenseType(type){

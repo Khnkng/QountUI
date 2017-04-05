@@ -519,19 +519,6 @@ export class DepositComponent{
             }, error => {
 
             });
-
-        if(!this.newDeposit){
-            this.depositService.deposit(this.depositID, this.currentCompanyId)
-                .subscribe(deposit => {
-                    this.loadingService.triggerLoadingEvent(false);
-                    this.processDeposits(deposit.deposit);
-                }, error =>{
-                    this.toastService.pop(TOAST_TYPE.error, "Failed to load deposit details");
-                })
-        } else{
-            this.setDueDate(this.defaultDate);
-            this.loadingService.triggerLoadingEvent(false);
-        }
     }
 
     selectDepositType(type){
