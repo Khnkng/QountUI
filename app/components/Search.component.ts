@@ -5,10 +5,12 @@
 import {Component, Output, EventEmitter, OnInit} from "@angular/core";
 import {Router, NavigationEnd} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
+import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {CustomersService} from "qCommon/app/services/Customers.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {ToastService} from "qCommon/app/services/Toast.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -18,7 +20,7 @@ declare let _:any;
     templateUrl: '/app/views/search.html'
 })
 
-export class SearchComponent implements  OnInit{
+export class SearchComponent{
     source:Array<string> = [];
     companyCurrency:string;
     amountCondition:string;
@@ -45,7 +47,7 @@ export class SearchComponent implements  OnInit{
     tableOptions:any = {};
 
     constructor(private _router: Router, private coaService: ChartOfAccountsService, private companyService: CompaniesService,
-                private customersService: CustomersService, private loadingService: LoadingService) {
+                private customersService: CustomersService, private loadingService: LoadingService, private toastService: ToastService) {
         this.companyCurrency=Session.getCurrentCompanyCurrency();
         this.companyId=Session.getCurrentCompany();
 
@@ -125,30 +127,66 @@ export class SearchComponent implements  OnInit{
     }
 
     setChartOfAccount(chartOfAccount){
-        this.chartOfAccount = chartOfAccount.id;
+        if(chartOfAccount && chartOfAccount.id){
+            this.chartOfAccount = chartOfAccount.id;
+        } else if(chartOfAccount == '--None--'){
+            this.chartOfAccount = null;
+        }
     }
 
     setVendor(vendor){
-        this.vendor = vendor.id;
+        if(vendor && vendor.id){
+            this.vendor = vendor.id;
+        } else if(vendor == '--None--'){
+            this.vendor = null;
+        }
     }
 
     setCustomer(customer){
-        this.customer = customer.id;
+        if(customer && customer.customer_id){
+            this.customer = customer.customer_id;
+        } else if(customer == '--None--'){
+            this.customer = null;
+        }
+    }
+
+    validate(){
+        if(this.amountCondition != 'between' && isNaN(this.amount)){
+            this.toastService.pop(TOAST_TYPE.error, "Please enter numbers in the amount");
+            return false;
+        }
+        if(this.amountCondition == 'between' && (isNaN(this.lowerLimit) || isNaN(this.upperLimit))){
+            this.toastService.pop(TOAST_TYPE.error, "Please enter numbers in the amount fields");
+            return false;
+        }
+        return true;
+    }
+
+    getSortedAmount(){
+        return _.sortBy([this.lowerLimit, this.upperLimit]);
     }
 
     doSearch(){
+        if(!this.validate()){
+            return;
+        }
         let data:any = {
             source: this.source,
-            criteria: {
-                chartOfAccount: this.chartOfAccount,
-                vendor: this.vendor,
-                customer: this.customer
-            }
+            criteria: {}
         };
+        if(this.vendor){
+            data.criteria.vendor = this.vendor;
+        }
+        if(this.chartOfAccount){
+            data.criteria.chartOfAccount = this.chartOfAccount;
+        }
+        if(this.customer){
+            data.criteria.customer = this.customer;
+        }
         if(this.amountCondition && (this.amount || (this.upperLimit && this.lowerLimit))){
             data.criteria.amount = {
                 "condition": this.amountCondition,
-                "value": this.amountCondition == 'between'? [this.upperLimit, this.lowerLimit]: this.amount
+                "value": this.amountCondition == 'between'? this.getSortedAmount(): this.amount
             }
         }
         if(this.dateCondition && (this.date || (this.beginDate && this.endDate))){

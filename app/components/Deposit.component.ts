@@ -62,6 +62,7 @@ export class DepositComponent{
                 private depositService: DepositService, private toastService: ToastService,
                 private loadingService: LoadingService, private dimensionService: DimensionService,private customersService: CustomersService
         ,private invoiceService:InvoicesService,private vendorService: CompaniesService){
+        this.currentCompanyId = Session.getCurrentCompany();
         this.routeSub = this._route.params.subscribe(params => {
             this.depositID=params['depositID'];
             if(!this.depositID){
@@ -69,6 +70,14 @@ export class DepositComponent{
                 this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
             }
         });
+        this.accountsService.financialAccounts(this.currentCompanyId)
+            .subscribe(accounts=> {
+                this.accounts = accounts.accounts;
+                this.loaddeposit();
+
+            }, error => {
+
+            });
         this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
@@ -94,10 +103,13 @@ export class DepositComponent{
         let entity = _.find(this.entities, {'id': data.entity_id});
         let invoice = _.find(this.invoices, {'id': data.invoice_id});
         this.selectedDimensions = data.dimensions;
+        let account = _.find(this.accounts, {'id': data.bank_account_id});
         setTimeout(function(){
             base.editCOAComboBox.setValue(coa, 'name');
+            base.accountComboBox.setValue(account, 'name');
             base.editEntityComboBox.setValue(entity, 'name');
             base.editInvoiceComboBox.setValue(invoice, 'po_number');
+
         });
         this.editItemForm = this._fb.group(this._depositLineForm.getForm(data));
         this.editItemIndex = index;
@@ -609,5 +621,19 @@ export class DepositComponent{
             }
         });
         return data;
+    }
+    loaddeposit(){
+        if(!this.newDeposit){
+            this.depositService.deposit(this.depositID, this.currentCompanyId)
+                .subscribe(deposit => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.processDeposits(deposit.deposit);
+                }, error =>{
+                    this.toastService.pop(TOAST_TYPE.error, "Failed to load deposit details");
+                })
+        } else{
+            this.setDueDate(this.defaultDate);
+            this.loadingService.triggerLoadingEvent(false);
+        }
     }
 }
