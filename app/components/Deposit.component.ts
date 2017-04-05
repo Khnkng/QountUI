@@ -97,7 +97,9 @@ export class DepositComponent{
         }
     }
 
-    showFlyout(index) {
+    showFlyout($event, index) {
+        $event && $event.preventDefault();
+        $event && $event.stopImmediatePropagation();
         let base = this;
         this.itemActive = true;
         this.dimensionFlyoutCSS = "expanded";
@@ -115,6 +117,7 @@ export class DepositComponent{
             base.editInvoiceComboBox.setValue(invoice, 'po_number');
 
         });
+        this.resetAllLinesFromEditing(itemsControl);
         this.editItemForm = this._fb.group(this._depositLineForm.getForm(data));
         this.editItemIndex = index;
     }
