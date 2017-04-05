@@ -81,9 +81,14 @@ export class ExpenseComponent{
 
     showExpensesPage(){
         if(this.stayFlyout){
-            this.ngOnInit();
+           let base=this
+            this.initialize();
             this.stayFlyout = false;
             this.dimensionFlyoutCSS = "";
+            setTimeout(function(){
+                base.accountComboBox.setValue(null, 'name');
+            });
+            this.setDueDate(this.defaultDate);
             //location.reload();
         }else {
             let link = [Session.getLastVisitedUrl()];
@@ -443,6 +448,10 @@ export class ExpenseComponent{
 
 
     ngOnInit(){
+        this.initialize();
+    }
+
+    initialize(){
         let _form = this._expenseForm.getForm();
         _form['expense_items'] = new FormArray([]); //this.expenseItemsArray;
         this.expenseForm = this._fb.group(_form);
@@ -459,12 +468,6 @@ export class ExpenseComponent{
         this.dimensionService.dimensions(this.currentCompanyId)
             .subscribe(dimensions =>{
                 this.dimensions = dimensions;
-            }, error => {
-
-            });
-        this.accountsService.financialAccounts(this.currentCompanyId)
-            .subscribe(accounts=> {
-               this.accounts = accounts.accounts;
             }, error => {
 
             });

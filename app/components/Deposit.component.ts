@@ -74,7 +74,6 @@ export class DepositComponent{
             .subscribe(accounts=> {
                 this.accounts = accounts.accounts;
                 this.loaddeposit();
-
             }, error => {
 
             });
@@ -83,9 +82,14 @@ export class DepositComponent{
 
     showDepositsPage(){
         if(this.stayFlyout){
-            this.ngOnInit();
+            let base=this;
+            this.initialize();
             this.stayFlyout = false;
             this.dimensionFlyoutCSS = "";
+            setTimeout(function(){
+                base.accountComboBox.setValue(null, 'name');
+            });
+            this.setDueDate(this.defaultDate);
             //location.reload();
         }else {
             let link = [Session.getLastVisitedUrl()];
@@ -482,6 +486,10 @@ export class DepositComponent{
     }
 
     ngOnInit(){
+        this.initialize();
+    }
+
+    initialize(){
         let _form = this._depositForm.getForm();
         _form['payments'] = new FormArray([]); //this.depositItemsArray;
         this.depositForm = this._fb.group(_form);
@@ -498,12 +506,6 @@ export class DepositComponent{
         this.dimensionService.dimensions(this.currentCompanyId)
             .subscribe(dimensions =>{
                 this.dimensions = dimensions;
-            }, error => {
-
-            });
-        this.accountsService.financialAccounts(this.currentCompanyId)
-            .subscribe(accounts=> {
-                this.accounts = accounts.accounts;
             }, error => {
 
             });
