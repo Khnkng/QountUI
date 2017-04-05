@@ -193,6 +193,7 @@ export class DepositComponent{
             base.accountComboBox.setValue(account, 'name');
         });
         this._depositForm.updateForm(this.depositForm, deposits);
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     editItem(index, itemForm){
@@ -533,18 +534,15 @@ export class DepositComponent{
 
     loadEntities(type){
         this.entities=[];
-        this.loadingService.triggerLoadingEvent(true);
         if(type=='expenseRefund'){
             this.vendorService.vendors(this.currentCompanyId)
                 .subscribe(vendors=> {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.entities  = vendors;
                 }, error => {
                 });
         }else if (type=='invoice'){
             this.customersService.customers(this.currentCompanyId)
                 .subscribe(customers=> {
-                    this.loadingService.triggerLoadingEvent(false);
                     _.forEach(customers, function(customer) {
                         customer['id']=customer.customer_id;
                         customer['name']=customer.customer_name;
@@ -553,7 +551,6 @@ export class DepositComponent{
                 }, error => {
                 });
         }else if (type=='other'){
-            this.loadingService.triggerLoadingEvent(false);
         }
     }
 
@@ -615,9 +612,9 @@ export class DepositComponent{
         if(!this.newDeposit){
             this.depositService.deposit(this.depositID, this.currentCompanyId)
                 .subscribe(deposit => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.processDeposits(deposit.deposit);
                 }, error =>{
+                    this.loadingService.triggerLoadingEvent(false);
                     this.toastService.pop(TOAST_TYPE.error, "Failed to load deposit details");
                 })
         } else{

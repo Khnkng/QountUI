@@ -189,6 +189,7 @@ export class ExpenseComponent{
            base.accountComboBox.setValue(account, 'name');
         });
         this._expenseForm.updateForm(this.expenseForm, expense);
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     editItem(index, itemForm){
@@ -489,18 +490,15 @@ export class ExpenseComponent{
 
     loadEntities(type){
         this.entities=[];
-        this.loadingService.triggerLoadingEvent(true);
         if(type=='bill'){
             this.vendorService.vendors(this.currentCompanyId)
                 .subscribe(vendors=> {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.entities  = vendors;
                 }, error => {
                 });
         }else if (type=='payroll'){
             this.employeeService.employees(this.currentCompanyId)
                 .subscribe(employees=> {
-                    this.loadingService.triggerLoadingEvent(false);
                     _.forEach(employees, function(employee) {
                         employee['name']=employee.first_name+""+employee.last_name;
                     });
@@ -510,7 +508,6 @@ export class ExpenseComponent{
         }else if (type=='salesRefund'){
             this.customerService.customers(this.currentCompanyId)
                 .subscribe(customers=> {
-                    this.loadingService.triggerLoadingEvent(false);
                     _.forEach(customers, function(customer) {
                         customer['id']=customer.customer_id;
                         customer['name']=customer.customer_name;
@@ -519,7 +516,6 @@ export class ExpenseComponent{
                 }, error => {
                 });
         }else if (type=='other'){
-            this.loadingService.triggerLoadingEvent(false);
         }
     }
 
@@ -581,10 +577,10 @@ export class ExpenseComponent{
         if(!this.newExpense){
             this.expenseService.expense(this.expenseID, this.currentCompanyId)
                 .subscribe(expense => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.processExpense(expense.expenses);
                 }, error =>{
                     this.toastService.pop(TOAST_TYPE.error, "Failed to load expense details");
+                    this.loadingService.triggerLoadingEvent(false);
                 })
         } else{
             this.setDueDate(this.defaultDate);

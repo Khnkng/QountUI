@@ -31,11 +31,12 @@ export class ReconcileComponent{
     entries:Array<any> = [];
     companyCurrency:string;
     tableData:any = {};
-    hasEntries:boolean = false;
+    depositsTableData:any = {};
+    expensesTableData:any = {};
     tableOptions:any = {search:false, pageSize:6,selectable:true};
     unreconciledTableOptions:any = {search:false, pageSize:6};
     showForm:boolean = true;
-    reconcileData:Array<any> = [];
+    reconcileData:any = {};
     reconcileDataCopy:Array<any> = [];
     selectedBank:any='';
     startingBalance:any;
@@ -48,6 +49,18 @@ export class ReconcileComponent{
     selectedRows:Array<any> = [];
     /*unreconciledRecords:Array<any> = [];*/
     reconcileDate:any;
+    tabDisplay:Array<any> = [{'display':'none'},{'display':'none'},{'display':'none'},{'display':'none'}];
+    bgColors:Array<string>=[
+        '#d45945',
+        '#d47e47',
+        '#2980b9',
+        '#3dc36f'
+    ];
+    tabBackground:string = "#d45945";
+    selectedTabColor:string = "#d45945";
+    selectedTab:any='deposits';
+    selectedColor:any='red-tab';
+    tabHeight:string;
 
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -148,16 +161,13 @@ export class ReconcileComponent{
             .subscribe(reconcileData  => {
                 this.reconcileData = reconcileData;
                 this.reconcileDataCopy = reconcileData;
-                if(reconcileData.length > 0){
                     this.getStartingBalance();
+                    this.buildDepositsTableData();
+                    this.buildExpensesTableData();
                     this.buildTableData();
-                }else{
-                    base.toastService.pop(TOAST_TYPE.success, "No Entries Found");
-                    this.hasEntries = false;
-                    this.showForm = true;
                     this.loadingService.triggerLoadingEvent(false);
-                }
-                }, error =>  {
+                    this.selectTab(0,'');
+            }, error =>  {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile data");
                 this.loadingService.triggerLoadingEvent(false);
             });
@@ -183,6 +193,49 @@ export class ReconcileComponent{
             });
     }
 
+    buildDepositsTableData(){
+        let base = this;
+        this.depositsTableData.columns = [
+            {"name": "type", "title": "Type"},
+            {"name": "date", "title": "Date"},
+            {"name": "amount", "title": "Amount"},
+            {"name": "id", "title": "Entry ID", "visible": false}];
+        this.depositsTableData.rows = [];
+        _.each(base.reconcileData.deposits, function(entry){
+            let row:any = {};
+            _.each(Object.keys(entry), function(key){
+               if(key == 'amount'){
+                    let amount = parseFloat(entry[key]);
+                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                } else{
+                    row[key] = entry[key];
+                }
+            });
+            base.depositsTableData.rows.push(row);
+        });
+    };
+
+    buildExpensesTableData(){
+        let base = this;
+        this.expensesTableData.columns = [
+            {"name": "type", "title": "Type"},
+            {"name": "date", "title": "Date"},
+            {"name": "amount", "title": "Amount"},
+            {"name": "id", "title": "Entry ID", "visible": false}];
+        this.expensesTableData.rows = [];
+        _.each(base.reconcileData.expenses, function(entry){
+            let row:any = {};
+            _.each(Object.keys(entry), function(key){
+               if(key == 'amount'){
+                    let amount = parseFloat(entry[key]);
+                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                } else{
+                    row[key] = entry[key];
+                }
+            });
+            base.expensesTableData.rows.push(row);
+        });
+    };
     buildTableData(){
         let base = this;
         this.tableData.columns = [
@@ -191,7 +244,9 @@ export class ReconcileComponent{
             {"name": "amount", "title": "Amount"},
             {"name": "id", "title": "Entry ID", "visible": false}];
         this.tableData.rows = [];
-        _.each(base.reconcileData, function(entry){
+        let all = base.reconcileData.deposits;
+        all = all.concat(base.reconcileData.expenses);
+        _.each(all, function(entry){
             let row:any = {};
             _.each(Object.keys(entry), function(key){
                if(key == 'amount'){
@@ -203,9 +258,6 @@ export class ReconcileComponent{
             });
             base.tableData.rows.push(row);
         });
-        if(this.tableData.rows.length > 0){
-            this.hasEntries = true;
-        }
     };
 
    /* buildUnreconciledTableData(){
@@ -250,7 +302,8 @@ export class ReconcileComponent{
                     this.updateStartingBalance();
                     this.resetReconcileForm();
                     this.getAccounts();
-                }, error => {
+                    this.updateTabHeight();
+                    }, error => {
                     this.loadingService.triggerLoadingEvent(false);
                     base.toastService.pop(TOAST_TYPE.error, "Failed to reconcile data");
                 });
@@ -291,4 +344,61 @@ export class ReconcileComponent{
             });
     }
 
+    reRoutePage(tabId) {
+        if(tabId==0){
+            let link = ['books', 'deposits'];
+            this._router.navigate(link);
+            return;
+        }
+        else if(tabId==1){
+            let link = ['books', 'expenses'];
+            this._router.navigate(link);
+            return;
+        }
+        else{
+            let link = ['books', 'journalEntries'];
+            this._router.navigate(link);
+            return;
+        }
+
+    }
+    selectTab(tabNo, color) {
+        this.selectedTab=tabNo;
+        this.selectedColor=color;
+        let base = this;
+        this.tabDisplay.forEach(function(tab, index){
+            base.tabDisplay[index] = {'display':'none'}
+        });
+        this.tabDisplay[tabNo] = {'display':'block'};
+        this.tabBackground = this.bgColors[tabNo];
+        this.loadingService.triggerLoadingEvent(true);
+    }
+
+    updateTabHeight(){
+        let base = this;
+        let topOfDiv = jQuery('.tab-content').offset().top;
+        topOfDiv = topOfDiv<150? 170:topOfDiv;
+        let bottomOfVisibleWindow = Math.max(jQuery(document).height(), jQuery(window).height());
+        base.tabHeight = (bottomOfVisibleWindow - topOfDiv -25)+"px";
+        jQuery('.tab-content').css('height', base.tabHeight);
+        switch(this.selectedTab){
+            case 0:
+                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75)/42)-3;
+                break;
+            case 1:
+                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75)/42)-3;
+                break;
+            case 2:
+                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75)/42)-3;
+                break;
+        }
+    }
+    ngAfterViewInit() {
+        if(!this.showForm) {
+            let base = this;
+            jQuery(document).ready(function () {
+                base.updateTabHeight();
+            });
+        }
+    }
 }
