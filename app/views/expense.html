@@ -112,7 +112,7 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                        <span (click)="showFlyout(index)">
+                                                        <span (click)="showFlyout($event, index)">
                                                             <i class="icon ion-edit"></i>
                                                         </span>
                                                     <span *ngIf="getLineCount() > 2" (click)="deleteItem($event,index)">

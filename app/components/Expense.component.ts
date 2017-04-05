@@ -96,7 +96,9 @@ export class ExpenseComponent{
         }
     }
 
-    showFlyout(index) {
+    showFlyout($event, index) {
+        $event && $event.preventDefault();
+        $event && $event.stopImmediatePropagation();
         let base = this;
         this.itemActive = true;
         this.dimensionFlyoutCSS = "expanded";
@@ -111,6 +113,7 @@ export class ExpenseComponent{
             base.accountComboBox.setValue(account, 'name');
             base.editEntityComboBox.setValue(entity, 'name');
         });
+        this.resetAllLinesFromEditing(itemsControl);
         this.editItemForm = this._fb.group(this._expenseItemForm.getForm(data));
         this.editItemIndex = index;
     }

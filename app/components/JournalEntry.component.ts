@@ -241,7 +241,9 @@ export class JournalEntryComponent{
         }
     }
 
-    showFlyout(lineStatus, index){
+    showFlyout($event, index){
+        $event && $event.preventDefault();
+        $event && $event.stopImmediatePropagation();
         this.dimensionFlyoutCSS = "expanded";
         this.lineActive = true;
         this.resetLineForm();
@@ -253,6 +255,7 @@ export class JournalEntryComponent{
         let lineData = this._lineListForm.getData(tempLineForm);
         this.selectedDimensions = lineData.dimensions || [];
         this.updateLineFormForEdit(lineData);
+        this.resetAllLinesFromEditing(itemsControl);
     }
 
     updateLineFormForEdit(lineData){

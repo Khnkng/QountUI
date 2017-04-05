@@ -231,7 +231,7 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <i class="icon ion-edit" (click)="showFlyout('UPDATE', index)"></i>
+                                                    <i class="icon ion-edit" (click)="showFlyout($event, index)"></i>
                                                     <i class="icon ion-ios-trash-outline" *ngIf="getLineCount() > 2" (click)="deleteLine($event, index)"></i>
                                                 </td>
                                             </tr>
@@ -244,7 +244,7 @@
                                                 <td>{{lineListItem.controls.notes.value}}</td>
                                                 <td>{{getEntityName(lineListItem.controls)}}</td>
                                                 <td>
-                                                    <i class="icon ion-edit" (click)="showFlyout('UPDATE', index)"></i>
+                                                    <i class="icon ion-edit" (click)="showFlyout($event, index)"></i>
                                                 </td>
                                             </tr>
                                         </tbody>

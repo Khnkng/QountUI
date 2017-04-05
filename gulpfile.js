@@ -130,11 +130,11 @@ gulp.task('watch', ['serve'], function () {
   livereload.listen();
   gulp.watch('app/assets/*.js', ['js']);
   gulp.watch('app/**/*.ts', ['typescript-compile']);
-  gulp.watch('node_modules/reportsUI/app/**/*.*', ['typescript-compile']);
-  gulp.watch('node_modules/billsUI/app/**/*.*', ['typescript-compile']);
-  gulp.watch('node_modules/invoicesUI/app/**/*.*', ['typescript-compile']);
-  gulp.watch('node_modules/qCommon/app/**/*.*', ['typescript-compile']);
-  gulp.watch(['./index.html', './app/views/*.html'], ['html']);
+  gulp.watch('node_modules/reportsUI/app/**/*.ts', ['typescript-compile']);
+  gulp.watch('node_modules/billsUI/app/**/*.ts', ['typescript-compile']);
+  gulp.watch('node_modules/invoicesUI/app/**/*.ts', ['typescript-compile']);
+  gulp.watch('node_modules/qCommon/app/**/*.ts', ['typescript-compile']);
+  gulp.watch(['./index.html', './app/views/*.html', 'node_modules/billsUI/app/**/*.html'], ['html']);
   gulp.watch('app/**/*.css', ['css']);
   gulp.watch('images/**/*.*', ['images']);
   gulp.watch('css/**/*.scss', ['sass']);
