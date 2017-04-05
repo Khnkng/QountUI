@@ -108,6 +108,7 @@ export class ItemCodesComponent{
   }
 
   showEditItemCode(row: any){
+    this.loadingService.triggerLoadingEvent(true);
     this.codeService.getItemCode(row.id)
         .subscribe(item => {
          this.row=item;
@@ -120,6 +121,7 @@ export class ItemCodesComponent{
           sales_price.patchValue(item.sales_price);
           let desc:any = this.itemcodeForm.controls['desc'];
           desc.patchValue(item.desc);
+          this.loadingService.triggerLoadingEvent(true);
         }, error => this.handleError(error));
     let base = this;
     this.editMode = true;

@@ -176,6 +176,7 @@ deleteVendor(toast){
         this.editMode = true;
         this.showFlyout = true;
         this.row = row;
+        this.loadingService.triggerLoadingEvent(true);
         this.customersService.customer(row.customer_id, this.companyId)
             .subscribe(customer => {
                 this.row = customer;
@@ -210,6 +211,11 @@ deleteVendor(toast){
                 setTimeout(function () {
                     base.vendorCountryComboBox.setValue(country, 'name');
                 },100);
+
+                setTimeout(function(){
+                    base.loadingService.triggerLoadingEvent(false);
+                },2000);
+
                 this._customersForm.updateForm(this.customerForm, row);
             }, error => this.handleError(error));
     }

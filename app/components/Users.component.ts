@@ -144,7 +144,8 @@ export class UsersComponent {
 
     showEditVendor(row:any) {
         this.editMode = true;
-        jQuery(this.createUser.nativeElement).foundation('open');
+    //    jQuery(this.createUser.nativeElement).foundation('open');
+        this.showFlyout=true;
         this.row = row;
         this.newForm1();
         this._usersForm.updateForm(this.userForm, row);
@@ -168,7 +169,7 @@ export class UsersComponent {
             data.id=this.row.id;
             this.usersService.updateUser(<UsersModel>data, this.companyId)
                 .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
-            jQuery(this.createUser.nativeElement).foundation('close');
+         //   jQuery(this.createUser.nativeElement).foundation('close');
         } else {
             this.usersService.addUser(<UsersModel>data, this.companyId)
                 .subscribe(success  => {
