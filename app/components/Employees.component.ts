@@ -51,9 +51,7 @@ export class EmployeesComponent {
         if(this.companyId){
             this.loadingService.triggerLoadingEvent(true);
             this.employeeService.employees(this.companyId).subscribe(employees => {
-
                 this.buildTableData(employees);
-                this.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
         }else {
             this._toastService.pop(TOAST_TYPE.error, "Please add company first");
@@ -91,6 +89,7 @@ export class EmployeesComponent {
         setTimeout(function(){
             base.hasEmployeesList = true;
         }, 0)
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     showCreateEmployee() {
@@ -181,6 +180,7 @@ export class EmployeesComponent {
     }
 
     showMessage(status, obj) {
+        this.loadingService.triggerLoadingEvent(false);
         if(status) {
             this.status = {};
             this.status['success'] = true;
@@ -223,6 +223,7 @@ export class EmployeesComponent {
 
 
     handleError(error) {
+        this.loadingService.triggerLoadingEvent(false);
         this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }
     hideFlyout(){

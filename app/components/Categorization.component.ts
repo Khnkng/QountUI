@@ -38,7 +38,7 @@ export class CategorizationComponent{
                 this.accounts = accounts.accounts;
                 this.fetchUncategorizedEntries();
             }, error=>{
-
+                this.loadingService.triggerLoadingEvent(false);
             });
     }
 
@@ -66,7 +66,7 @@ export class CategorizationComponent{
                 });
                 this.buildTableData();
             }, error =>{
-
+                this.loadingService.triggerLoadingEvent(false);
             });
     }
 

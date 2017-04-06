@@ -83,12 +83,12 @@ export class ExpenseComponent{
         if(this.stayFlyout){
            let base=this
             this.initialize();
-            this.stayFlyout = false;
             this.dimensionFlyoutCSS = "";
             setTimeout(function(){
                 base.accountComboBox.setValue(null, 'name');
             });
             this.setDueDate(this.defaultDate);
+            this.setDefaultExpenseType();
             //location.reload();
         }else {
             let link = [Session.getLastVisitedUrl()];
@@ -106,11 +106,9 @@ export class ExpenseComponent{
         let data = this._expenseItemForm.getData(itemsControl.controls[index]);
         let coa = _.find(this.chartOfAccounts, {'id': data.chart_of_account_id});
         let entity = _.find(this.entities, {'id': data.entity_id});
-        let account = _.find(this.accounts, {'id': data.bank_account_id});
         this.selectedDimensions = data.dimensions;
         setTimeout(function(){
             base.editCOAComboBox.setValue(coa, 'name');
-            base.accountComboBox.setValue(account, 'name');
             base.editEntityComboBox.setValue(entity, 'name');
         });
         this.resetAllLinesFromEditing(itemsControl);
@@ -481,6 +479,10 @@ export class ExpenseComponent{
             }, error => {
 
             });
+        if(this.stayFlyout){
+            this.loadingService.triggerLoadingEvent(false);
+            this.stayFlyout = false;
+        }
     }
 
     selectExpenseType(type){
@@ -587,7 +589,15 @@ export class ExpenseComponent{
                 })
         } else{
             this.setDueDate(this.defaultDate);
+            this.setDefaultExpenseType();
             this.loadingService.triggerLoadingEvent(false);
         }
+    }
+
+    setDefaultExpenseType(){
+        let data = this._expenseForm.getData(this.expenseForm);
+        data.expense_type = 'bill';
+        this._expenseForm.updateForm(this.expenseForm, data);
+        this.loadEntities('bill');
     }
 }

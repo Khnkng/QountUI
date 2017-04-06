@@ -99,11 +99,11 @@ export class BooksComponent{
             this.routeSub = this._route.params.subscribe(params => {
                 if(params['tabId']=='deposits'){
                     this.selectTab(0,"");
-                    this.hasJournalEntries = false;
+                    this.hasDeposits = false;
                 }
                 else if(params['tabId']=='expenses'){
                     this.selectTab(1,"");
-                    this.hasJournalEntries = false;
+                    this.hasExpenses = false;
                 }
                 else if(params['tabId']=='journalEntries'){
                     this.selectTab(2,"");
@@ -176,11 +176,10 @@ export class BooksComponent{
                 this.accounts = accounts.accounts;
                 this.expenseService.expenses(this.currentCompany.id)
                     .subscribe(expenses => {
-                        this.loadingService.triggerLoadingEvent(false);
                         this.buildExpenseTableData(expenses.expenses);
                     }, error => this.handleError(error));
             }, error=> {
-
+                this.loadingService.triggerLoadingEvent(false);
             });
     }
 
@@ -190,11 +189,10 @@ export class BooksComponent{
                 this.accounts = accounts.accounts;
                 this.depositService.deposits(this.currentCompany.id)
                     .subscribe(deposits => {
-                        this.loadingService.triggerLoadingEvent(false);
                         this.buildDepositTableData(deposits.deposits);
                     }, error => this.handleError(error));
             }, error=> {
-
+                this.loadingService.triggerLoadingEvent(false);
             });
     }
 
@@ -223,7 +221,6 @@ export class BooksComponent{
     fetchJournalEntries(){
         this.journalService.journalEntries(this.currentCompany.id)
             .subscribe(journalEntries => {
-                this.loadingService.triggerLoadingEvent(false);
                 this.buildTableData(journalEntries);
             }, error => this.handleError(error));
     }
@@ -278,6 +275,7 @@ export class BooksComponent{
                 base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully");
                 this.fetchJournalEntries();
             }, error => {
+                this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.error, "Failed to delete Journal Entry");
             });
     }
@@ -288,6 +286,7 @@ export class BooksComponent{
     }
 
     handleError(error){
+        this.loadingService.triggerLoadingEvent(false);
         this.toastService.pop(TOAST_TYPE.error, "Could not perform action.")
     }
 
@@ -363,7 +362,7 @@ export class BooksComponent{
         setTimeout(function(){
             base.hasExpenses = true;
         });
-
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     buildDepositTableData(data){
@@ -406,6 +405,7 @@ export class BooksComponent{
         setTimeout(function(){
             base.hasDeposits = true;
         });
+        base.loadingService.triggerLoadingEvent(false);
     }
 
     buildTableData(data){
@@ -478,6 +478,7 @@ export class BooksComponent{
         setTimeout(function(){
            base.hasJournalEntries = true;
         });
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     isAlreadyReversed(journalId){

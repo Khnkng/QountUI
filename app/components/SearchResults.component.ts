@@ -30,8 +30,8 @@ export class SearchResultsComponent implements OnInit{
                 private loadingService: LoadingService) {
         this.companyId = Session.getCurrentCompany();
         let searchCriteria = sessionStorage.getItem("searchcriteria");
-        this.loadingService.triggerLoadingEvent(true);
         if(searchCriteria){
+            this.loadingService.triggerLoadingEvent(true);
             searchCriteria = JSON.parse(searchCriteria);
             this.companyService.doSearch(searchCriteria, this.companyId)
                 .subscribe(searchResults => {

@@ -43,7 +43,6 @@ export class PaymentsComponent{
                     .subscribe(payments => {
                         let payments=payments?payments:[];
                         this.buildTableData(payments);
-                        this.loadingService.triggerLoadingEvent(false);
                     }, error => this.handleError(error));
             }
         });
@@ -86,6 +85,7 @@ export class PaymentsComponent{
                 //this.loadingService.triggerLoadingEvent(false);
                 this.bills=paymentsDetails;
                 this.dimensionFlyoutCSS = "expanded";
+                this.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
     }
 
@@ -124,6 +124,7 @@ export class PaymentsComponent{
         setTimeout(function(){
             base.hasPayments = true;
         }, 0);
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     hideFlyout(){

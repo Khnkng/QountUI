@@ -48,6 +48,8 @@ export class AppComponent  implements OnInit{
     };
     sub:any;
     queryParams:any;
+    isOverlay:boolean=false;
+    isLoading:boolean=false;
 
     constructor(_switchBoard:SwitchBoard, private _router:Router, private route: ActivatedRoute, private toastService: ToastService, private socketService: SocketService) {
         let self = this;
@@ -67,6 +69,8 @@ export class AppComponent  implements OnInit{
             this.isSideMenuExpanded = flag;
             this.togglemenu(flag)
         });
+
+        this.switchBoard.onLoadingWheel.subscribe(toggle => this.toggleLoader(toggle));
 
         this.sub = this.route
             .queryParams
@@ -202,6 +206,11 @@ export class AppComponent  implements OnInit{
 
     ngOnDestroy() {
         this.sub.unsubscribe();
+    }
+
+    toggleLoader(toggle){
+        this.isLoading=toggle;
+        this.isOverlay=toggle;
     }
 
 }

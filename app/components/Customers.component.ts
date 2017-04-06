@@ -65,11 +65,10 @@ export class CustomersComponent {
         if(this.companyId){
             this.loadingService.triggerLoadingEvent(true);
             this.customersService.customers(this.companyId).subscribe(customers => {
-
                 this.buildTableData(customers);
-                this.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
         }else {
+            this.loadingService.triggerLoadingEvent(false);
             this._toastService.pop(TOAST_TYPE.error, "Please add company first");
         }
     }
@@ -109,6 +108,7 @@ export class CustomersComponent {
         setTimeout(function(){
             base.hasCustomersList = true;
         }, 0)
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     showCreateVendor() {
@@ -211,12 +211,8 @@ deleteVendor(toast){
                 setTimeout(function () {
                     base.vendorCountryComboBox.setValue(country, 'name');
                 },100);
-
-                setTimeout(function(){
-                    base.loadingService.triggerLoadingEvent(false);
-                },2000);
-
                 this._customersForm.updateForm(this.customerForm, row);
+                base.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
     }
 
@@ -250,6 +246,7 @@ deleteVendor(toast){
     }
 
     showMessage(status, obj) {
+        this.loadingService.triggerLoadingEvent(false);
         if(status) {
             this.status = {};
             this.status['success'] = true;
@@ -296,6 +293,7 @@ deleteVendor(toast){
 
 
     handleError(error) {
+        this.loadingService.triggerLoadingEvent(false);
         this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }
     hideFlyout(){

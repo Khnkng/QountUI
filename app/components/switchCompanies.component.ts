@@ -46,7 +46,6 @@ export class SwitchCompanyComponent{
 
     fetchCompanies(){
         this.companiesService.companies().subscribe(companies => {
-            this.loadingService.triggerLoadingEvent(false);
             this.allCompanies = companies;
             if(this.currentCompanyId){
                 this.currentCompany = _.find(this.allCompanies, {id: this.currentCompanyId});
@@ -67,7 +66,7 @@ export class SwitchCompanyComponent{
     }
 
     handleError(error){
-
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     handleAction($event){
@@ -126,6 +125,7 @@ export class SwitchCompanyComponent{
         setTimeout(function(){
             base.hasCompanyList = true;
         }, 0);
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     refreshTable(){

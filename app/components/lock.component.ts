@@ -69,10 +69,10 @@ export class lockComponent {
                 private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
         this.LockForm = this._fb.group(_lockform.getLock());
         this.companyId = Session.getCurrentCompany();this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteLock(toast));
+        this.loadingService.triggerLoadingEvent(true);
         this.companyService.getLockofCompany(this.companyId)
             .subscribe(lockList  => {
                 this.buildTableData(lockList);
-                this.loadingService.triggerLoadingEvent(false);
                 this.lockList=lockList;
                 for(var i=0;i<lockList.length;i++)
                 {
@@ -121,12 +121,14 @@ export class lockComponent {
         setTimeout(function(){
             base.hasItemCodes = true;
         });
+        this.loadingService.triggerLoadingEvent(false);
     }
     handleAction($event){
         let action = $event.action;
         delete $event.action;
         delete $event.actions;
         if(action == 'edit') {
+            this.loadingService.triggerLoadingEvent(true);
             this.companyService.lock(this.companyId,$event.id).subscribe(tax => {
                 this.row = tax;
                this.locksrow=tax.shared_with;
@@ -145,6 +147,7 @@ export class lockComponent {
         this.editMode = true;
         this.LockForm = this._fb.group(this._lockform.getLock());
         this.getLockDetails(row);
+        this.loadingService.triggerLoadingEvent(false);
     }
     removeLock(row:any){
         let vendor:VendorModel = row;
@@ -247,7 +250,6 @@ export class lockComponent {
             this.showMessage(true, success);
             this.companyService.getLockofCompany(this.companyId)
                 .subscribe(lockList  => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.lockList=lockList;
                     for(var i=0;i<lockList.length;i++)
                     {
@@ -267,6 +269,7 @@ export class lockComponent {
     }
 
     handleError(error) {
+        this.loadingService.triggerLoadingEvent(false);
         this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }
     showMessage(status, obj) {
