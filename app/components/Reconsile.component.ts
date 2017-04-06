@@ -47,6 +47,8 @@ export class ReconcileComponent{
     inflow:number;
     outflow:number;
     selectedRows:Array<any> = [];
+    selectedDepositRows:Array<any> = [];
+    selectedExpenseRows:Array<any> = [];
     selectedDepositsCount:number;
     selectedExpensesCount:number;
     /*unreconciledRecords:Array<any> = [];*/
@@ -130,7 +132,48 @@ export class ReconcileComponent{
         this._reconcileForm.updateForm(this.reconcileForm, data);
     }
 
+    handleDepositsSelect(event:any) {
+        this.selectedRows = [];
+        let base = this;
+        base.inflow = 0;
+        base.outflow = 0;
+        base.selectedDepositsCount = 0;
+        let deposits = [];
+        _.each(event, function(bill){
+            base.selectedDepositRows.push(bill);
+        });
+        this.selectedDepositRows = _.uniqBy(this.selectedDepositRows, 'id');
+        _.remove(this.selectedDepositRows, {'tempIsSelected': false});
+        _.each(this.selectedDepositRows,function(row){
+                base.selectedDepositsCount = base.selectedDepositsCount+1;
+               deposits.push(_.find(base.reconcileDataCopy.deposits, {id: row.id}));
+                base.inflow = base.inflow+parseFloat(_.find(base.reconcileDataCopy.deposits, {id: row.id}).amount);
+        });
+        this.calculateEndingBalance();
+    }
+    handleExpensesSelect(event:any) {
+        this.selectedRows = [];
+        let base = this;
+        base.inflow = 0;
+        base.outflow= 0;
+        base.selectedExpensesCount = 0;
+        let expenses = [];
+        _.each(event, function(bill){
+            base.selectedExpenseRows.push(bill);
+        });
+        this.selectedExpenseRows = _.uniqBy(this.selectedExpenseRows, 'id');
+        _.remove(this.selectedExpenseRows, {'tempIsSelected': false});
+        _.each(this.selectedExpenseRows,function(row){
+                base.selectedExpensesCount = base.selectedExpensesCount+1;
+                expenses.push(_.find(base.reconcileDataCopy.expenses, {id: row.id}));
+                base.outflow = base.outflow+parseFloat(_.find(base.reconcileDataCopy.expenses, {id: row.id}).amount);
+        });
+        this.calculateEndingBalance();
+    }
+
     handleSelect(event:any) {
+        this.selectedDepositRows = [];
+        this.selectedExpenseRows = [];
         let base = this;
         base.inflow = 0;
         base.outflow= 0;
@@ -292,14 +335,17 @@ export class ReconcileComponent{
     };*/
 
     submitReconcile(){
-        if(this.selectedRows.length>0) {
             let base = this;
+            base.selectedRows = base.selectedRows.concat(base.selectedDepositRows);
+            base.selectedRows = base.selectedRows.concat(base.selectedExpenseRows);
+        if(base.selectedRows.length>0) {
             this.loadingService.triggerLoadingEvent(true);
             let selected = [];
             let createRow = {};
             _.each(this.selectedRows, function (row) {
                 createRow['type'] = row.type;
                 createRow['id'] = row.id;
+                createRow['bank_account_id'] = base.selectedBank;
                 selected.push(createRow);
             });
             this.reconcileService.createReconcile(selected)
@@ -325,7 +371,9 @@ export class ReconcileComponent{
         this.reconcileService.updateStartingBalance(data,this.selectedBank)
             .subscribe(response  => {
                 base.toastService.pop(TOAST_TYPE.success, "Updated last reconcile data");
+                this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
+                this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.error, "Failed to update reconcile date");
             });
     }
@@ -340,6 +388,10 @@ export class ReconcileComponent{
         this.statementEndingBalance= 0;
         this.selectedRows= [];
         this.startingBalance = 0;
+        this.selectedDepositRows = [];
+        this.selectedExpenseRows = [];
+        this.selectedDepositsCount = 0;
+        this.selectedExpensesCount = 0;
     }
     getAccounts() {
         this.accountsService.financialAccounts(this.companyId)
