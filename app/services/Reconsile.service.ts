@@ -36,7 +36,7 @@ export class ReconcileService extends  QountServices{
 
     updateStartingBalance(data:any,bankId): Observable<any> {
         var url = this.interpolateUrl(PATH.RECONCILE_RECON_DATE,null,{id: Session.getUser().id,companyId:Session.getCurrentCompany(),bankId:bankId});
-        return this.create(url, data, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+        return this.update(url, data, SOURCE_TYPE.JAVA).map(res => <any> res.json())
             .catch(this.handleError)
     }
 
