@@ -59,11 +59,11 @@
                                         <table>
                                             <thead>
                                             <tr>
-                                                <th style="width: 20%;">COA</th>
-                                                <th style="width: 10%;">Amount</th>
-                                                <th style="width: 45%;">Notes</th>
-                                                <th style="width: 29%;">Entity</th>
-                                                <th style="width: 5%;"></th>
+                                                <th width="10%;">COA</th>
+                                                <th width="10%;">Amount</th>
+                                                <th width="40%;">Notes</th>
+                                                <th width="10%;">Entity</th>
+                                                <th width="5%;"></th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -95,7 +95,7 @@
                                                     <span (click)="showFlyout($event, index)">
                                                         <i class="icon ion-edit"></i>
                                                     </span>
-                                                    <span *ngIf="getLineCount() > 2" (click)="deleteItem($event,index)">
+                                                    <span *ngIf="getLineCount() > 1" (click)="deleteItem($event,index)">
                                                         <i class="icon ion-ios-trash-outline"></i>
                                                     </span>
                                                 </td>
