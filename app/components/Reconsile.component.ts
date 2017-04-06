@@ -74,7 +74,7 @@ export class ReconcileComponent{
                 this.accounts = accounts.accounts;
                 this.loadingService.triggerLoadingEvent(false);
             }, error=>{
-
+                this.loadingService.triggerLoadingEvent(false);
             });
         /*this.reconcileService.getUnreconciledRecords()
             .subscribe(reconData  => {

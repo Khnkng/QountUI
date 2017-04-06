@@ -66,6 +66,7 @@ export class FinancialAccountsComponent{
             this.chartOfAccounts = _.filter(chartOfAccounts, {'type': 'bank'});
             this.getFinancialAccounts(this.currentCompany);
           }, error =>{
+            this.loadingService.triggerLoadingEvent(false);
             this.toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
           });
       /*this.financialAccountsService.financialInstitutions()
@@ -78,6 +79,7 @@ export class FinancialAccountsComponent{
   }
 
   handleError(error){
+    this.loadingService.triggerLoadingEvent(false);
     this.row = {};
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
   }
@@ -116,6 +118,7 @@ export class FinancialAccountsComponent{
             base.transitCOAComboBox.setValue(transitCOA, 'name');
           },0);
         }, error => {
+          this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.error, "Failed to load financial account details");
         });
   }
@@ -207,7 +210,7 @@ export class FinancialAccountsComponent{
               this.launchYodleeWidget();
             }
           }, error =>{
-            this.loadingService.triggerLoadingEvent(true);
+            this.loadingService.triggerLoadingEvent(false);
             this.toastService.pop(TOAST_TYPE.error, "Failed to update financial account");
             this.showFlyout = false;
           });
@@ -242,7 +245,6 @@ export class FinancialAccountsComponent{
   getFinancialAccounts(companyId){
     this.financialAccountsService.financialAccounts(companyId)
         .subscribe(response => {
-          this.loadingService.triggerLoadingEvent(false);
           this.buildTableData(response.accounts);
         }, error => this.handleError(error));
   }
@@ -300,6 +302,7 @@ else{
     setTimeout(function(){
       base.hasAccounts = true;
     }, 0)
+    this.loadingService.triggerLoadingEvent(false);
   }
 
   setImportType(type){

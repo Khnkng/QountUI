@@ -84,12 +84,12 @@ export class DepositComponent{
         if(this.stayFlyout){
             let base=this;
             this.initialize();
-            this.stayFlyout = false;
             this.dimensionFlyoutCSS = "";
             setTimeout(function(){
                 base.accountComboBox.setValue(null, 'name');
             });
             this.setDueDate(this.defaultDate);
+            this.setDefaultDepositType();
             //location.reload();
         }else {
             let link = [Session.getLastVisitedUrl()];
@@ -109,10 +109,8 @@ export class DepositComponent{
         let entity = _.find(this.entities, {'id': data.entity_id});
         let invoice = _.find(this.invoices, {'id': data.invoice_id});
         this.selectedDimensions = data.dimensions;
-        let account = _.find(this.accounts, {'id': data.bank_account_id});
         setTimeout(function(){
             base.editCOAComboBox.setValue(coa, 'name');
-            base.accountComboBox.setValue(account, 'name');
             base.editEntityComboBox.setValue(entity, 'name');
             base.editInvoiceComboBox.setValue(invoice, 'po_number');
 
@@ -525,6 +523,10 @@ export class DepositComponent{
             }, error => {
 
             });
+        if(this.stayFlyout){
+            this.loadingService.triggerLoadingEvent(false);
+            this.stayFlyout = false;
+        }
     }
 
     selectDepositType(type){
@@ -622,7 +624,16 @@ export class DepositComponent{
                 })
         } else{
             this.setDueDate(this.defaultDate);
+            this.setDefaultDepositType();
             this.loadingService.triggerLoadingEvent(false);
         }
     }
+
+    setDefaultDepositType(){
+        let data = this._depositForm.getData(this.depositForm);
+        data.deposit_type = 'invoice';
+        this._depositForm.updateForm(this.depositForm, data);
+        this.loadEntities('invoice');
+    }
+
 }

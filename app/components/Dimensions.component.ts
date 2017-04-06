@@ -56,7 +56,6 @@ export class DimensionsComponent{
       }
       this.dimensionService.dimensions(this.currentCompany.id)
           .subscribe(dimensions => {
-            this.loadingService.triggerLoadingEvent(false);
             this.buildTableData(dimensions);
           }, error => this.handleError(error));
     }, error => this.handleError(error));
@@ -66,6 +65,7 @@ export class DimensionsComponent{
   }
   handleError(error){
     this.row = {};
+    this.loadingService.triggerLoadingEvent(false);
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
   }
 
@@ -246,5 +246,6 @@ export class DimensionsComponent{
     setTimeout(function(){
       base.hasDimensions = true;
     }, 0)
+    this.loadingService.triggerLoadingEvent(false);
   }
 }

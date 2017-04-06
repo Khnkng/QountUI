@@ -81,7 +81,6 @@ export class VendorComponent {
       }
       this.companyService.vendors(this.companyId).subscribe(vendors => {
         this.buildTableData(vendors);
-        this.loadingService.triggerLoadingEvent(false);
       }, error => this.handleError(error));
     }, error => this.handleError(error));
     this.coaService.chartOfAccounts(this.companyId)
@@ -161,6 +160,7 @@ export class VendorComponent {
     setTimeout(function(){
       base.hasVendorsList = true;
     }, 0)
+    this.loadingService.triggerLoadingEvent(false);
   }
 
   showCreateVendor() {
@@ -216,14 +216,13 @@ deleteVendor(toast){
         this.companyService.vendors(this.companyId)
             .subscribe(vendors  => {
               this.buildTableData(vendors);
-              this.loadingService.triggerLoadingEvent(false);
               this._toastService.pop(TOAST_TYPE.success, "Vendor deleted successfully");
             }, error =>  this.handleError1(error));
       }, error =>  this.handleError(error));
 
 }
   handleError1(error){
-
+    this.loadingService.triggerLoadingEvent(false);
   }
   vendorDelete(row:any) {
     let vendor:VendorModel = row;
@@ -276,14 +275,12 @@ deleteVendor(toast){
       data.id = this.row.id;
       this.companyService.updateVendor(<VendorModel>data, this.companyId)
           .subscribe(success  => {
-            this.loadingService.triggerLoadingEvent(false);
             this.showMessage(true, success);
            this.hideFlyout();
           }, error =>  this.showMessage(false, error));
     } else {
       this.companyService.addVendor(<VendorModel>data, this.companyId)
           .subscribe(success  => {
-            this.loadingService.triggerLoadingEvent(false);
             this.showMessage(true, success);
             this.hideFlyout();
           }, error =>  this.showMessage(false, error));
@@ -329,6 +326,7 @@ deleteVendor(toast){
         this._toastService.pop(TOAST_TYPE.success, "Vendor created successfully.");
       }
     } else {
+      this.loadingService.triggerLoadingEvent(false);
       this.showFirstStep = true;
       this.showSecondStep = false;
       this.status = {};
@@ -419,7 +417,7 @@ deleteVendor(toast){
       this._vendorForm.updateForm(this.vendorForm, vendor);
       setTimeout(function(){
         base.loadingService.triggerLoadingEvent(false);
-      },2000);
+      },500);
     }, error => this.handleError(error));
   }
 

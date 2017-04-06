@@ -65,7 +65,6 @@ export class ItemCodesComponent{
       this.coaService.chartOfAccounts(this.currentCompany.id)
           .subscribe(chartOfAccounts => {
             this.filterChartOfAccounts(chartOfAccounts);
-            this.loadingService.triggerLoadingEvent(false);
           }, error=> this.handleError(error));
     }, error => this.handleError(error));
   }
@@ -74,6 +73,7 @@ export class ItemCodesComponent{
   }
 
   handleError(error){
+    this.loadingService.triggerLoadingEvent(false);
     this.row = {};
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
   }
@@ -121,7 +121,7 @@ export class ItemCodesComponent{
           sales_price.patchValue(item.sales_price);
           let desc:any = this.itemcodeForm.controls['desc'];
           desc.patchValue(item.desc);
-          this.loadingService.triggerLoadingEvent(true);
+          this.loadingService.triggerLoadingEvent(false);
         }, error => this.handleError(error));
     let base = this;
     this.editMode = true;
@@ -144,7 +144,7 @@ export class ItemCodesComponent{
     this.loadingService.triggerLoadingEvent(true);
     this.codeService.removeItemCode(this.itemCodeId)
         .subscribe(coa => {
-          this.loadingService.triggerLoadingEvent(false);
+         // this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.success, "Item code deleted successfully");
           //this.itemCodes.splice(_.findIndex(this.itemCodes, {id: this.itemCodeId}, 1));
           this.codeService.itemCodes(this.currentCompany.id)
@@ -218,7 +218,7 @@ export class ItemCodesComponent{
       data.companyID = this.currentCompany.id;
       this.codeService.updateItemCode(data)
           .subscribe(itemCode => {
-            base.loadingService.triggerLoadingEvent(false);
+            //base.loadingService.triggerLoadingEvent(false);
             base.row = {};
             base.toastService.pop(TOAST_TYPE.success, "ItemCode updated successfully");
             let index = _.findIndex(base.itemCodes, {id: data.id});
@@ -230,7 +230,7 @@ export class ItemCodesComponent{
       data.companyID = this.currentCompany.id;
       this.codeService.addItemCode(data)
           .subscribe(newItemcode => {
-            this.loadingService.triggerLoadingEvent(false);
+            //this.loadingService.triggerLoadingEvent(false);
             this.handleItemCode(newItemcode);
             this.showFlyout = false;
           }, error => this.handleError(error));
@@ -282,6 +282,7 @@ export class ItemCodesComponent{
     setTimeout(function(){
       base.hasItemCodes = true;
     }, 0)
+    this.loadingService.triggerLoadingEvent(false);
   }
 
   getCOAName(coaId){
