@@ -71,7 +71,7 @@
                                                 <td colspan="7" class="text-center">No Deposits items found</td>
                                             </tr>
                                             <tr *ngFor="let itemForm of depositForm.controls.payments.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (click)="editItem(index, itemForm)">
-                                                <td *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
+                                                <td class="truncate" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
                                                     <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
@@ -81,11 +81,11 @@
                                                 <td *ngIf="itemForm.editable">
                                                     <input type="text" placeholder="Amount" [formControl]="itemForm.controls.amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
                                                 </td>
-                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.notes.value}}</td>
+                                                <td class="truncate" *ngIf="!itemForm.editable">{{itemForm.controls.notes.value}}</td>
                                                 <td *ngIf="itemForm.editable">
                                                     <input type="text" placeholder="Notes" [formControl]="itemForm.controls.notes"/>
                                                 </td>
-                                                <td *ngIf="!itemForm.editable">{{getEntityName(itemForm.controls.entity_id.value)}}</td>
+                                                <td class="truncate" *ngIf="!itemForm.editable">{{getEntityName(itemForm.controls.entity_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
                                                     <select id="entity-{{index}}" combo-box #EntityComboBoxDir="comboBox" data-placeholder="Select Entity" [listObject]="entities" [formControl]="itemForm.controls.entity_id" (valueChanged)="setEntityForItem($event, itemForm)">
                                                         <option *ngFor="let entity of entities" [value]="entity.id">{{entity.name}}</option>
