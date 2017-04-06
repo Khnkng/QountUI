@@ -273,7 +273,9 @@ export class BooksComponent{
             .subscribe(response => {
                 this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully");
-                this.fetchJournalEntries();
+                this.hasJournalEntries = false;
+                this.selectTab(2,"");
+                this.getBookBadges();
             }, error => {
                 this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.error, "Failed to delete Journal Entry");
@@ -314,7 +316,6 @@ export class BooksComponent{
 
     buildExpenseTableData(data){
         let base = this;
-        this.isLoading = false;
         this.expensesTableData.search = true;
         this.handleBadges(data.length, 1);
         this.expensesTableData.columns = [
@@ -355,19 +356,22 @@ export class BooksComponent{
             }
             base.expensesTableData.rows.push(row);
         });
-        if(this.expensesTableData.rows.length > 0){
+        if(data.length > 0){
             this.hasExpenses = true;
+            this.isLoading=false;
+        }else {
+            this.hasExpenses = false;
+            this.isLoading=false;
         }
-        this.hasExpenses = false;
+        /*this.hasExpenses = false;
         setTimeout(function(){
             base.hasExpenses = true;
-        });
+        });*/
         this.loadingService.triggerLoadingEvent(false);
     }
 
     buildDepositTableData(data){
         let base = this;
-        this.isLoading = false;
         this.handleBadges(data.length, 0);
         this.depositsTableData.search = true;
         this.depositsTableData.columns = [
@@ -398,19 +402,22 @@ export class BooksComponent{
             }
             base.depositsTableData.rows.push(row);
         });
-        if(this.depositsTableData.rows.length > 0){
+        if(data.length > 0){
             this.hasDeposits = true;
+            this.isLoading=false;
+        }else {
+            this.hasDeposits = false;
+            this.isLoading=false;
         }
-        this.hasDeposits = false;
+        /*this.hasDeposits = false;
         setTimeout(function(){
             base.hasDeposits = true;
-        });
+        });*/
         base.loadingService.triggerLoadingEvent(false);
     }
 
     buildTableData(data){
         let base = this;
-        this.isLoading = false;
         this.handleBadges(data.length, 2);
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
@@ -471,13 +478,17 @@ export class BooksComponent{
             }
             base.jeTableData.rows.push(row);
         });
-        if(this.jeTableData.rows.length > 0){
+        if(data.length > 0){
             this.hasJournalEntries = true;
+            this.isLoading=false;
+        }else{
+            this.hasJournalEntries = false;
+            this.isLoading=false;
         }
-        this.hasJournalEntries = false;
+        /*this.hasJournalEntries = false;
         setTimeout(function(){
            base.hasJournalEntries = true;
-        });
+        });*/
         this.loadingService.triggerLoadingEvent(false);
     }
 
@@ -524,7 +535,9 @@ export class BooksComponent{
         this.depositService.removeDeposit(this.DepositToDelete, this.currentCompany)
             .subscribe(response=> {
                 this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
-                this.fetchDeposits();
+               // this.fetchDeposits();
+                this.hasDeposits = false;
+                this.selectTab(0,"");
                 this.getBookBadges();
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
@@ -544,7 +557,9 @@ export class BooksComponent{
         this.expenseService.removeExpense(this.ruleToDelete, this.currentCompany)
             .subscribe(response=> {
                 this.toastService.pop(TOAST_TYPE.success, "Deleted expense successfully");
-                this.fetchExpenses();
+               // this.fetchExpenses();
+                this.hasExpenses = false;
+                this.selectTab(1,"");
                 this.getBookBadges();
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
