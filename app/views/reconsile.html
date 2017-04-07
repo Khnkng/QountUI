@@ -57,7 +57,7 @@
             <div class="row" *ngIf="!showForm">
                 <div class="small-12 medium-3 columns">
                     <label>Starting Balance
-                        <input type="text"  placeholder="Starting Balance*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="startingBalance" readonly/>
+                        <input type="text" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"  placeholder="Starting Balance*" [(ngModel)]="startingBalance" readonly/>
                     </label>
                 </div>
                 <div class="small-12 medium-3 columns">

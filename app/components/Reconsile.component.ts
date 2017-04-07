@@ -135,7 +135,6 @@ export class ReconcileComponent{
     handleDepositsSelect(event:any) {
         let base = this;
         base.inflow = 0;
-        base.outflow = 0;
         base.selectedDepositsCount = 0;
         let deposits = [];
         _.each(event, function(bill){
@@ -152,7 +151,6 @@ export class ReconcileComponent{
     }
     handleExpensesSelect(event:any) {
         let base = this;
-        base.inflow = 0;
         base.outflow= 0;
         base.selectedExpensesCount = 0;
         let expenses = [];
@@ -214,6 +212,11 @@ export class ReconcileComponent{
     }
 
     calculateEndingBalance(){
+        if(this.inflow == undefined){
+            this.inflow = 0;
+        }else if(this.outflow == undefined){
+            this.outflow = 0;
+        }
         this.endingBalance = this.startingBalance+this.inflow-this.outflow;
     };
 
@@ -230,8 +233,8 @@ export class ReconcileComponent{
                 this.buildTableData();
                 this.selectTab(0,'');
                 setTimeout(function(){
-                    base.updateTabHeight();
-                },1000);
+                   //base.updateTabHeight();
+                });
                 this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to get starting balance");
@@ -393,6 +396,7 @@ export class ReconcileComponent{
         this.selectedExpenseRows = [];
         this.selectedDepositsCount = 0;
         this.selectedExpensesCount = 0;
+        this.tabHeight = '';
     }
     getAccounts() {
         this.accountsService.financialAccounts(this.companyId)
@@ -429,6 +433,7 @@ export class ReconcileComponent{
         });
         this.tabDisplay[tabNo] = {'display':'block'};
         this.tabBackground = this.bgColors[tabNo];
+        //this.updateTabHeight();
     }
 
     updateTabHeight(){
@@ -456,7 +461,7 @@ export class ReconcileComponent{
         if(!this.showForm) {
             let base = this;
             jQuery(document).ready(function () {
-                base.updateTabHeight();
+                //base.updateTabHeight();
             });
         }
     }
