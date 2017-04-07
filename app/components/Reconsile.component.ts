@@ -33,7 +33,7 @@ export class ReconcileComponent{
     tableData:any = {};
     depositsTableData:any = {};
     expensesTableData:any = {};
-    tableOptions:any = {search:false, pageSize:6,selectable:true};
+    tableOptions:any = {search:false, pageSize:5,selectable:true};
     unreconciledTableOptions:any = {search:false, pageSize:6};
     showForm:boolean = true;
     reconcileData:any = {};
@@ -133,7 +133,6 @@ export class ReconcileComponent{
     }
 
     handleDepositsSelect(event:any) {
-        this.selectedRows = [];
         let base = this;
         base.inflow = 0;
         base.outflow = 0;
@@ -152,7 +151,6 @@ export class ReconcileComponent{
         this.calculateEndingBalance();
     }
     handleExpensesSelect(event:any) {
-        this.selectedRows = [];
         let base = this;
         base.inflow = 0;
         base.outflow= 0;
@@ -172,8 +170,6 @@ export class ReconcileComponent{
     }
 
     handleSelect(event:any) {
-        this.selectedDepositRows = [];
-        this.selectedExpenseRows = [];
         let base = this;
         base.inflow = 0;
         base.outflow= 0;
@@ -215,7 +211,9 @@ export class ReconcileComponent{
                     this.buildExpensesTableData();
                     this.buildTableData();
                     this.selectTab(0,'');
-                    //base.updateTabHeight();
+                setTimeout(function(){
+                    base.updateTabHeight();
+                },1000);
             }, error =>  {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile data");
                 this.loadingService.triggerLoadingEvent(false);
@@ -262,6 +260,7 @@ export class ReconcileComponent{
             });
             base.depositsTableData.rows.push(row);
         });
+
     };
 
     buildExpensesTableData(){
@@ -335,9 +334,11 @@ export class ReconcileComponent{
     };*/
 
     submitReconcile(){
-            let base = this;
-            base.selectedRows = base.selectedRows.concat(base.selectedDepositRows);
-            base.selectedRows = base.selectedRows.concat(base.selectedExpenseRows);
+        let base = this;
+        base.selectedRows = base.selectedRows.concat(base.selectedDepositRows);
+        base.selectedRows = base.selectedRows.concat(base.selectedExpenseRows);
+        base.selectedRows = _.uniqBy(this.selectedRows, 'id');
+
         if(base.selectedRows.length>0) {
             this.loadingService.triggerLoadingEvent(true);
             let selected = [];
@@ -430,23 +431,22 @@ export class ReconcileComponent{
         this.tabBackground = this.bgColors[tabNo];
     }
 
-    /*updateTabHeight(){
+    updateTabHeight(){
         let base = this;
-        console.log(jQuery('.tab-content').offset(),jQuery('.tab-content').top,"asasxas");
         let topOfDiv = jQuery('.tab-content').offset().top;
         topOfDiv = topOfDiv<150? 170:topOfDiv;
         let bottomOfVisibleWindow = Math.max(jQuery(document).height(), jQuery(window).height());
-        base.tabHeight = (bottomOfVisibleWindow - topOfDiv -25)+"px";
+        base.tabHeight = (bottomOfVisibleWindow - topOfDiv -75)+"px";
         jQuery('.tab-content').css('height', base.tabHeight);
         switch(this.selectedTab){
             case 0:
-                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 100)/42)-3;
+                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75)/42)-3;
                 break;
             case 1:
-                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 100)/42)-3;
+                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75)/42)-3;
                 break;
             case 2:
-                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 100)/42)-3;
+                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75)/42)-3;
                 break;
         }
     }
@@ -457,5 +457,5 @@ export class ReconcileComponent{
                 base.updateTabHeight();
             });
         }
-    }*/
+    }
 }
