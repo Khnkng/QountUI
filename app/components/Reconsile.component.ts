@@ -206,14 +206,7 @@ export class ReconcileComponent{
             .subscribe(reconcileData  => {
                 this.reconcileData = reconcileData;
                 this.reconcileDataCopy = reconcileData;
-                    this.getStartingBalance();
-                    this.buildDepositsTableData();
-                    this.buildExpensesTableData();
-                    this.buildTableData();
-                    this.selectTab(0,'');
-                setTimeout(function(){
-                    base.updateTabHeight();
-                },1000);
+                this.getStartingBalance();
             }, error =>  {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile data");
                 this.loadingService.triggerLoadingEvent(false);
@@ -232,6 +225,13 @@ export class ReconcileComponent{
                 let amount = reconData.last_recon_ending_balance;
                 amount = parseFloat(amount);
                 this.startingBalance = amount;
+                this.buildDepositsTableData();
+                this.buildExpensesTableData();
+                this.buildTableData();
+                this.selectTab(0,'');
+                setTimeout(function(){
+                    base.updateTabHeight();
+                },1000);
                 this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to get starting balance");
@@ -433,21 +433,23 @@ export class ReconcileComponent{
 
     updateTabHeight(){
         let base = this;
-        let topOfDiv = jQuery('.tab-content').offset().top;
-        topOfDiv = topOfDiv<150? 170:topOfDiv;
-        let bottomOfVisibleWindow = Math.max(jQuery(document).height(), jQuery(window).height());
-        base.tabHeight = (bottomOfVisibleWindow - topOfDiv -75)+"px";
-        jQuery('.tab-content').css('height', base.tabHeight);
-        switch(this.selectedTab){
-            case 0:
-                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75)/42)-3;
-                break;
-            case 1:
-                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75)/42)-3;
-                break;
-            case 2:
-                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75)/42)-3;
-                break;
+        if(jQuery('.tab-content') !== undefined) {
+            let topOfDiv = jQuery('.tab-content').offset().top;
+            topOfDiv = topOfDiv < 150 ? 170 : topOfDiv;
+            let bottomOfVisibleWindow = Math.max(jQuery(document).height(), jQuery(window).height());
+            base.tabHeight = (bottomOfVisibleWindow - topOfDiv - 75) + "px";
+            jQuery('.tab-content').css('height', base.tabHeight);
+            switch (this.selectedTab) {
+                case 0:
+                    base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75) / 42) - 3;
+                    break;
+                case 1:
+                    base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75) / 42) - 3;
+                    break;
+                case 2:
+                    base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75) / 42) - 3;
+                    break;
+            }
         }
     }
     ngAfterViewInit() {
