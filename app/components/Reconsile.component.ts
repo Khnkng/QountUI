@@ -39,6 +39,7 @@ export class ReconcileComponent{
     reconcileData:any = {};
     reconcileDataCopy:Array<any> = [];
     selectedBank:any='';
+    selectedBankName:string='';
     startingBalance:any;
     statementInflow:any;
     statementOutflow:any;
@@ -65,7 +66,6 @@ export class ReconcileComponent{
     selectedTab:any='deposits';
     selectedColor:any='red-tab';
     tabHeight:string;
-
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
                 private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService) {
@@ -94,7 +94,7 @@ export class ReconcileComponent{
     }
 
     ngOnInit(){
-
+        let input = elementRef.nativeElement.querySelector('input')
     }
 
 
@@ -126,6 +126,7 @@ export class ReconcileComponent{
         if(account && account.id){
             data.bankAccountId = account.id;
             this.selectedBank = account.id;
+            this.selectedBankName = account.name;
         }else if(!account||account=='--None--'){
             data.bankAccountId='--None--';
         }
@@ -168,6 +169,7 @@ export class ReconcileComponent{
     }
 
     handleSelect(event:any) {
+
         let base = this;
         base.inflow = 0;
         base.outflow= 0;
@@ -178,6 +180,7 @@ export class ReconcileComponent{
         _.each(event, function(bill){
             base.selectedRows.push(bill);
         });
+        base.selectedRows = base.selectedRows.concat(base.selectedDepositRows,base.selectedExpenseRows);
         this.selectedRows = _.uniqBy(this.selectedRows, 'id');
         _.remove(this.selectedRows, {'tempIsSelected': false});
         _.each(this.selectedRows,function(row){
@@ -199,6 +202,7 @@ export class ReconcileComponent{
         $event && $event.preventDefault();
         let base = this;
         let data = this._reconcileForm.getData(this.reconcileForm);
+        this.statementEndingBalance = data.statementEndingBalance;
         this.loadingService.triggerLoadingEvent(true);
         this.reconcileService.getReconcileData(data)
             .subscribe(reconcileData  => {
@@ -209,6 +213,7 @@ export class ReconcileComponent{
                 base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile data");
                 this.loadingService.triggerLoadingEvent(false);
             });
+        this.reconcileForm.reset();
     }
 
     calculateEndingBalance(){

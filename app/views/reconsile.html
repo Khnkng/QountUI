@@ -2,7 +2,7 @@
     <div class="flyout expanded" [ngClass]="{'expanded':true}">
         <section class="flyout-placeholder categorize-flyout">
             <header class="flyout-header">
-                <h6>Reconcile</h6>
+                <h6><span>Reconcile</span><span *ngIf="!showForm">|</span><span *ngIf="!showForm">{{selectedBankName}}</span></h6>
             </header>
             <form (ngSubmit)="submit($event)" [formGroup]="reconcileForm" *ngIf="showForm">
             <div class="row">
@@ -53,50 +53,63 @@
                 </div>
             </div>
             </form>
-
             <div class="row" *ngIf="!showForm">
-                <div class="small-12 medium-3 columns">
-                    <label>Starting Balance
-                        <input type="text" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"  placeholder="Starting Balance*" [(ngModel)]="startingBalance" readonly/>
-                    </label>
+                <div class="recon-main">
+                <div class="small-12 medium-9 columns">
+                 <div class="row">
+                    <div class="small-12 medium-4 columns">
+                        <div>{{statementEndingBalance | currency:companyCurrency:true:'1.2-2'}}</div>
+                        <label>Statement Ending Balance</label>
+                    </div>
+                    <div class="small-12 medium-1 columns">
+                        <div style="font-size: 20px;"> - </div>
+                    </div>
+                    <div class="small-12 medium-4 columns text-center">
+                        <div>{{endingBalance | currency:companyCurrency:true:'1.2-2'}}</div>
+                        <label>Books Ending Balance</label>
+                        <div class="recon-pipe">|</div>
+                    </div>
+                 </div>
+            <div class="row" *ngIf="!showForm">
+                <div class="small-12 medium-2 columns"></div>
+                <div class="small-12 medium-10 columns">
+                <div class="row hr-divider" style=""></div>
+                <div class="row">
+                <div class="small-12 medium-4 columns">
+                    <div>{{startingBalance | currency:companyCurrency:true:'1.2-2'}}</div>
+                    <div><label>Starting Balance</label></div>
                 </div>
-                <div class="small-12 medium-3 columns">
-                    <label>Books Inflow
-                        <input type="text" placeholder="Books Inflow*" [(ngModel)]="selectedDepositsCount" readonly/>
-                    </label>
+                <div class="small-12 medium-1 columns">
+                    <div style="font-size: 20px;"> - </div>
                 </div>
-                <div class="small-12 medium-3 columns">
-                    <label>Books Outflow
-                        <input type="text" placeholder="Books Outflow*" [(ngModel)]="selectedExpensesCount" readonly/>
-                    </label>
+                    <div class="small-12 medium-3 columns">
+                        <div>{{outflow | currency:companyCurrency:true:'1.2-2'}}</div>
+                        <div><label><span class="recon-selected-count">{{selectedExpensesCount}}</span><span>Expenses</span></label></div>
+                    </div>
+
+                <div class="small-12 medium-1 columns">
+                    <div style="font-size: 20px;"> + </div>
                 </div>
-                <div class="small-12 medium-3 columns">
-                    <label>Books Ending Balance
-                        <input type="text" placeholder="Books Ending Balance*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="endingBalance" readonly/>
-                    </label>
+                    <div class="small-12 medium-3 columns">
+                        <div>{{inflow | currency:companyCurrency:true:'1.2-2'}}</div>
+                        <div><label><span class="recon-selected-count">{{selectedDepositsCount}}</span><span>Deposits</span></label></div>
+                    </div>
+                </div>
                 </div>
             </div>
-            <!--<div class="row" *ngIf="!showForm">
-
-            </div>-->
-            <div class="row" *ngIf="!showForm">
-                <div class="small-12 medium-3 columns"></div>
-                <div class="small-12 medium-3 columns">
-                    <label>Inflow
-                        <input type="text" placeholder="Books Inflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [(ngModel)]="inflow" readonly/>
-                    </label>
                 </div>
                 <div class="small-12 medium-3 columns">
-                    <label>Outflow
-                        <input type="text" placeholder="Books Outflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [(ngModel)]="outflow" readonly/>
-                    </label>
+                    <div class="row recon-difference">
+                        <div class="small-12 medium-1 colimns"></div>
+                        <div class="small-12 medium-6 columns">
+                            <div>{{statementEndingBalance - endingBalance | currency:companyCurrency:true:'1.2-2'}}</div>
+                            <div><label><u>Difference</u></label></div>
+                        </div>
+                    </div>
                 </div>
-                <!--<div class="small-12 medium-3 columns">
-                    <label>Ending Balance
-                        <input type="text" placeholder="Books Ending Balance*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="endingBalance" readonly/>
-                    </label>
-                </div>-->
+                </div>
             </div>
+
                 <div class="row" *ngIf="!showForm">
                     <div class="tab-container" style="width:100%;" foundation>
                         <div class="row tabber">
@@ -117,7 +130,7 @@
                             <div [hidden]="tabDisplay[0].display !== 'block'" class="column small-12 medium-12 large-12">
                                 <div class="row">
                                     <div class="column foo-container">
-                                        <foo-table class="bigpay-dashboard bighalf-footable" [data]="depositsTableData" [options]="tableOptions" (onRowSelect)="handleDepositsSelect($event)"></foo-table>
+                                        <foo-table class="bigpay-dashboard bighalf-footable" [data]="depositsTableData" [options]="tableOptions" (onRowSelect)="handleDepositsSelect($event)" #depositsTable></foo-table>
                                         <!--<div class="callout text-center" [hidden]="isLoading" *ngIf="!hasDepositEntries">
                                             <div class="woo-woo">Woot Woot!</div>
                                             <p>There are no Deposits.</p>
