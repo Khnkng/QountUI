@@ -2,7 +2,7 @@
  * Created by venkatkollikonda on 24/03/17.
  */
 
-import {Component, ViewChild} from "@angular/core";
+import {Component, ViewChild,ElementRef} from "@angular/core";
 import {Session} from "qCommon/app/services/Session";
 import {Router, ActivatedRoute} from "@angular/router";
 import {FormBuilder, FormGroup} from "@angular/forms";
@@ -12,6 +12,8 @@ import {ReconcileService} from "../services/Reconsile.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {ReconcileForm} from "../forms/Reconsile.form";
+import {FTable} from "qCommon/app/directives/footable.directive";
+
 
 
 
@@ -33,6 +35,7 @@ export class ReconcileComponent{
     tableData:any = {};
     depositsTableData:any = {};
     expensesTableData:any = {};
+    reconActivityTableData:any = {};
     tableOptions:any = {search:false, pageSize:5,selectable:true};
     unreconciledTableOptions:any = {search:false, pageSize:6};
     showForm:boolean = true;
@@ -53,6 +56,7 @@ export class ReconcileComponent{
     selectedDepositsCount:number;
     selectedExpensesCount:number;
     /*unreconciledRecords:Array<any> = [];*/
+    reconActivity:Array<any> = [];
     reconcileDate:any;
     tabDisplay:Array<any> = [{'display':'none'},{'display':'none'},{'display':'none'},{'display':'none'}];
     bgColors:Array<string>=[
@@ -66,6 +70,7 @@ export class ReconcileComponent{
     selectedTab:any='deposits';
     selectedColor:any='red-tab';
     tabHeight:string;
+    @ViewChild('depositsTable') el:ElementRef;
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
                 private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService) {
@@ -80,12 +85,13 @@ export class ReconcileComponent{
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
             });
-        /*this.reconcileService.getUnreconciledRecords()
-            .subscribe(reconData  => {
-                this.unreconciledRecords = reconData;
-                this.buildUnreconciledTableData();
+
+        this.reconcileService.getReconActivityRecords()
+            .subscribe(reconActivityData  => {
+                this.reconActivity = reconActivityData;
+                this.buildReconActivityTableData();
                 }, error =>  {
-            });*/
+            });
     }
 
     showPreviousPage(){
@@ -144,7 +150,7 @@ export class ReconcileComponent{
         _.remove(this.selectedDepositRows, {'tempIsSelected': false});
         _.each(this.selectedDepositRows,function(row){
                 base.selectedDepositsCount = base.selectedDepositsCount+1;
-               deposits.push(_.find(base.reconcileDataCopy.deposits, {id: row.id}));
+                deposits.push(_.find(base.reconcileDataCopy.deposits, {id: row.id}));
                 base.inflow = base.inflow+parseFloat(_.find(base.reconcileDataCopy.deposits, {id: row.id}).amount);
         });
         this.calculateEndingBalance();
@@ -168,7 +174,12 @@ export class ReconcileComponent{
     }
 
     handleSelect(event:any) {
-
+        if(this.selectedDepositRows.length > 0) {
+            this.resetDepositsTab();
+        }
+        if(this.selectedExpenseRows.length > 0) {
+            this.resetExpensesTab();
+        }
         let base = this;
         base.inflow = 0;
         base.outflow= 0;
@@ -179,7 +190,6 @@ export class ReconcileComponent{
         _.each(event, function(bill){
             base.selectedRows.push(bill);
         });
-        base.selectedRows = base.selectedRows.concat(base.selectedDepositRows,base.selectedExpenseRows);
         this.selectedRows = _.uniqBy(this.selectedRows, 'id');
         _.remove(this.selectedRows, {'tempIsSelected': false});
         _.each(this.selectedRows,function(row){
@@ -212,7 +222,6 @@ export class ReconcileComponent{
                 base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile data");
                 this.loadingService.triggerLoadingEvent(false);
             });
-        this.reconcileForm.reset();
     }
 
     calculateEndingBalance(){
@@ -236,13 +245,14 @@ export class ReconcileComponent{
                 this.buildExpensesTableData();
                 this.buildTableData();
                 this.selectTab(0,'');
+                this.reconcileForm.reset();
                 setTimeout(function(){
                    //base.updateTabHeight();
                 });
                 this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
+                base.reconcileForm.reset();
                 base.toastService.pop(TOAST_TYPE.error, "Failed to get starting balance");
-                this.showForm = true;
                 this.loadingService.triggerLoadingEvent(false);
             });
     }
@@ -340,12 +350,25 @@ export class ReconcileComponent{
         }
     };*/
 
+    buildReconActivityTableData(){
+        let base = this;
+        this.reconActivityTableData.columns = [
+            {"name": "company_id", "title": "company"},
+            {"name": "bank_Account_id", "title": "Bank"},
+            {"name": "recon_date", "title": "Recon Date"},
+            {"name": "id", "title": "Entry ID", "visible": false}];
+        this.tableData.rows = [];
+        _.each(base.reconActivity, function(entry){
+            let row:any = {};
+            _.each(Object.keys(entry), function(key){
+                row[key] = entry[key];
+            });
+            base.tableData.rows.push(row);
+        });
+    };
+
     submitReconcile(){
         let base = this;
-        base.selectedRows = base.selectedRows.concat(base.selectedDepositRows);
-        base.selectedRows = base.selectedRows.concat(base.selectedExpenseRows);
-        base.selectedRows = _.uniqBy(this.selectedRows, 'id');
-
         if(base.selectedRows.length>0) {
             this.loadingService.triggerLoadingEvent(true);
             let selected = [];
@@ -461,9 +484,24 @@ export class ReconcileComponent{
             }
         }
     }
+
+    resetDepositsTab(){
+        jQuery(this.el.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
+            jQuery(cbox).attr("checked", false);
+        });
+        this.selectedDepositRows = [];
+    }
+
+    resetExpensesTab() {
+        jQuery(this.el.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
+            jQuery(cbox).attr("checked", false);
+        });
+        this.selectedExpenseRows = [];
+    }
     ngAfterViewInit() {
         if(!this.showForm) {
             let base = this;
+            console.log(this.el.nativeElement,"asxasxas");
             jQuery(document).ready(function () {
                 //base.updateTabHeight();
             });

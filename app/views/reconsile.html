@@ -35,24 +35,23 @@
                     <div class="small-12 medium-3 column">
                         <label>Statement Ending Balance
                             <input type="text" formControlName="statementEndingBalance" placeholder="Statement Ending Balance*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
+                            <div class="error" [hidden]="reconcileForm.controls.statementEndingBalance.untouched || reconcileForm.controls.statementEndingBalance.valid">Please Enter Ending Balance</div>
                         </label>
                     </div>
                 </div>
 
 
-                <!--<div class="row">
-                    <div class="column large-12 medium-12 small-12 foo-container">
-                        <foo-table class="bighalf-footable" *ngIf="hasEntries" [data]="unreconciledRecords" [options]="unreconciledTableOptions">
-                        </foo-table>
-                        <div *ngIf="!hasEntries">No Records Found</div>
-                    </div>
-                </div>-->
             <div class="row" *ngIf="showForm">
                 <div class="small-12 medium-12 columns">
                     <button class="button create small float-right" [disabled]="!reconcileForm.valid" type="submit" (click)="submit($event)" data-close>submit</button>
                 </div>
             </div>
             </form>
+            <div class="row" *ngIf="showForm">
+                <div class="column large-12 medium-12 small-12 foo-container">
+                    <foo-table class="bigpay-dashboard bighalf-footable" [data]="reconActivityTableData" [options]="unreconciledTableOptions"></foo-table>
+                </div>
+            </div>
             <div class="row" *ngIf="!showForm">
                 <div class="recon-main">
                 <div class="small-12 medium-9 columns">

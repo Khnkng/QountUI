@@ -14,7 +14,7 @@ export class ReconcileForm extends abstractForm{
             "bankAccountId": ['', Validators.required],
             "statementInflow":[''],
             "statementOutflow":[''],
-            "statementEndingBalance":['']
+            "statementEndingBalance":['',Validators.required]
         }
     }
 
