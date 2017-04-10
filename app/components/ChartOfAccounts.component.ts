@@ -73,7 +73,6 @@ export class ChartOfAccountsComponent{
   fetchChartOfAccountData(){
     this.coaService.chartOfAccounts(this.currentCompany.id)
         .subscribe(chartOfAccounts => {
-          this.loadingService.triggerLoadingEvent(false);
           this.buildTableData(chartOfAccounts);
         }, error=> this.handleError(error));
   }
@@ -270,7 +269,7 @@ export class ChartOfAccountsComponent{
       this.coaService.updateCOA(data.id, data, this.currentCompany.id)
           .subscribe(coa => {
             base.showFlyout = false;
-            base.loadingService.triggerLoadingEvent(false);
+          //  base.loadingService.triggerLoadingEvent(false);
             base.row = {};
             base.toastService.pop(TOAST_TYPE.success, "Chart of Account updated successfully");
             this.fetchChartOfAccountData();
@@ -279,7 +278,7 @@ export class ChartOfAccountsComponent{
       this.coaService.addChartOfAccount(data, this.currentCompany.id)
           .subscribe(newCOA => {
             base.showFlyout = false;
-            this.loadingService.triggerLoadingEvent(false);
+            //this.loadingService.triggerLoadingEvent(false);
             this.handleCOA(newCOA);
           }, error => this.handleCOAError(error));
     }
@@ -380,6 +379,7 @@ export class ChartOfAccountsComponent{
     setTimeout(function(){
       base.hasCOAList = true;
     }, 0)
+    this.loadingService.triggerLoadingEvent(false);
   }
 
   getNumber(coaId){

@@ -235,7 +235,7 @@ export class ItemCodesComponent{
             this.showFlyout = false;
           }, error => this.handleError(error));
     }
-    this.buildTableData(this.itemCodes);
+    //this.buildTableData(this.itemCodes);
 
   }
 

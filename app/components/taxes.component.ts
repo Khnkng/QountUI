@@ -294,7 +294,6 @@ export class TaxesComponent {
                 this.companyService.getTaxofCompany(this.companyId)
                     .subscribe(taxesList  => {
                         this.buildTableData(taxesList);
-                        this.loadingService.triggerLoadingEvent(false);
                         this.taxesList=taxesList;
                     }, error =>  this.handleError(error));
                 this.TaxesForm.reset();
@@ -303,8 +302,6 @@ export class TaxesComponent {
                 this.companyService.getTaxofCompany(this.companyId)
                     .subscribe(taxesList  => {
                         this.buildTableData(taxesList);
-                        this.loadingService.triggerLoadingEvent(false);
-                        this.taxesList=taxesList;
                     }, error =>  this.handleError(error));
 
                 this.TaxesForm.reset();
@@ -338,6 +335,7 @@ export class TaxesComponent {
     }
     getTaxDetails(vendorID){
         let base=this;
+        this.loadingService.triggerLoadingEvent(true);
         this.companyService.tax(this.companyId,vendorID).subscribe(tax => {
             this.row = tax;
             let selectedCOAControl:any = this.TaxesForm.controls['name'];
@@ -369,6 +367,7 @@ export class TaxesComponent {
             visibleOnInvoices.patchValue(tax.visibleOnInvoices);
 
             this._taxesForm.updateForm(this.TaxesForm, tax);
+            this.loadingService.triggerLoadingEvent(false);
 
         }, error => this.handleError(error));
     }

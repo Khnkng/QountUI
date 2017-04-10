@@ -226,13 +226,13 @@ export class FinancialAccountsComponent{
               this.launchYodleeWidget();
             }
           }, error => {
-            this.loadingService.triggerLoadingEvent(true);
+            this.loadingService.triggerLoadingEvent(false);
             this.toastService.pop(TOAST_TYPE.error, "Failed to create Account");
             this.showFlyout = false;
           });
     }
 
-    this.buildTableData(this.accounts);
+    //this.buildTableData(this.accounts);
     //this.showFlyout = false;
   }
 

@@ -107,7 +107,7 @@ export class CustomersComponent {
         });
         setTimeout(function(){
             base.hasCustomersList = true;
-        }, 0)
+        });
         this.loadingService.triggerLoadingEvent(false);
     }
 
@@ -229,14 +229,12 @@ deleteVendor(toast){
             data.customer_id=this.row.customer_id;
             this.customersService.updateCustomer(<CustomersModel>data, this.companyId)
                 .subscribe(success  => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                 }, error =>  this.showMessage(false, error));
             this.showFlyout = false;
         } else {
             this.customersService.addCustomer(<CustomersModel>data, this.companyId)
                 .subscribe(success  => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
 
                 }, error =>  this.showMessage(false, error));
@@ -246,7 +244,6 @@ deleteVendor(toast){
     }
 
     showMessage(status, obj) {
-        this.loadingService.triggerLoadingEvent(false);
         if(status) {
             this.status = {};
             this.status['success'] = true;
@@ -264,6 +261,7 @@ deleteVendor(toast){
             }
             this.newCustomer();
         } else {
+            this.loadingService.triggerLoadingEvent(false);
             this.status = {};
             this.status['error'] = true;
             this._toastService.pop(TOAST_TYPE.error, "Failed to update the customer");

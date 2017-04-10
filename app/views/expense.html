@@ -93,7 +93,7 @@
                                             <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (click)="editItem(index, itemForm)">
                                                 <td  class="truncate" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
-                                                    <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
+                                                    <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
                                                 </td>
