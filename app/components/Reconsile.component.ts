@@ -349,8 +349,8 @@ export class ReconcileComponent{
         if(base.selectedRows.length>0) {
             this.loadingService.triggerLoadingEvent(true);
             let selected = [];
-            let createRow = {};
             _.each(this.selectedRows, function (row) {
+                let createRow = {};
                 createRow['type'] = row.type;
                 createRow['id'] = row.id;
                 createRow['bank_account_id'] = base.selectedBank;
