@@ -33,12 +33,13 @@ export class ReconcileComponent{
     tableData:any = {};
     depositsTableData:any = {};
     expensesTableData:any = {};
-    tableOptions:any = {search:false, pageSize:6,selectable:true};
+    tableOptions:any = {search:false, pageSize:5,selectable:true};
     unreconciledTableOptions:any = {search:false, pageSize:6};
     showForm:boolean = true;
     reconcileData:any = {};
     reconcileDataCopy:Array<any> = [];
     selectedBank:any='';
+    selectedBankName:string='';
     startingBalance:any;
     statementInflow:any;
     statementOutflow:any;
@@ -47,6 +48,8 @@ export class ReconcileComponent{
     inflow:number;
     outflow:number;
     selectedRows:Array<any> = [];
+    selectedDepositRows:Array<any> = [];
+    selectedExpenseRows:Array<any> = [];
     selectedDepositsCount:number;
     selectedExpensesCount:number;
     /*unreconciledRecords:Array<any> = [];*/
@@ -63,7 +66,6 @@ export class ReconcileComponent{
     selectedTab:any='deposits';
     selectedColor:any='red-tab';
     tabHeight:string;
-
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
                 private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService) {
@@ -92,7 +94,6 @@ export class ReconcileComponent{
     }
 
     ngOnInit(){
-
     }
 
 
@@ -124,13 +125,50 @@ export class ReconcileComponent{
         if(account && account.id){
             data.bankAccountId = account.id;
             this.selectedBank = account.id;
+            this.selectedBankName = account.name;
         }else if(!account||account=='--None--'){
             data.bankAccountId='--None--';
         }
         this._reconcileForm.updateForm(this.reconcileForm, data);
     }
 
+    handleDepositsSelect(event:any) {
+        let base = this;
+        base.inflow = 0;
+        base.selectedDepositsCount = 0;
+        let deposits = [];
+        _.each(event, function(bill){
+            base.selectedDepositRows.push(bill);
+        });
+        this.selectedDepositRows = _.uniqBy(this.selectedDepositRows, 'id');
+        _.remove(this.selectedDepositRows, {'tempIsSelected': false});
+        _.each(this.selectedDepositRows,function(row){
+                base.selectedDepositsCount = base.selectedDepositsCount+1;
+               deposits.push(_.find(base.reconcileDataCopy.deposits, {id: row.id}));
+                base.inflow = base.inflow+parseFloat(_.find(base.reconcileDataCopy.deposits, {id: row.id}).amount);
+        });
+        this.calculateEndingBalance();
+    }
+    handleExpensesSelect(event:any) {
+        let base = this;
+        base.outflow= 0;
+        base.selectedExpensesCount = 0;
+        let expenses = [];
+        _.each(event, function(bill){
+            base.selectedExpenseRows.push(bill);
+        });
+        this.selectedExpenseRows = _.uniqBy(this.selectedExpenseRows, 'id');
+        _.remove(this.selectedExpenseRows, {'tempIsSelected': false});
+        _.each(this.selectedExpenseRows,function(row){
+                base.selectedExpensesCount = base.selectedExpensesCount+1;
+                expenses.push(_.find(base.reconcileDataCopy.expenses, {id: row.id}));
+                base.outflow = base.outflow+parseFloat(_.find(base.reconcileDataCopy.expenses, {id: row.id}).amount);
+        });
+        this.calculateEndingBalance();
+    }
+
     handleSelect(event:any) {
+
         let base = this;
         base.inflow = 0;
         base.outflow= 0;
@@ -141,6 +179,7 @@ export class ReconcileComponent{
         _.each(event, function(bill){
             base.selectedRows.push(bill);
         });
+        base.selectedRows = base.selectedRows.concat(base.selectedDepositRows,base.selectedExpenseRows);
         this.selectedRows = _.uniqBy(this.selectedRows, 'id');
         _.remove(this.selectedRows, {'tempIsSelected': false});
         _.each(this.selectedRows,function(row){
@@ -162,24 +201,26 @@ export class ReconcileComponent{
         $event && $event.preventDefault();
         let base = this;
         let data = this._reconcileForm.getData(this.reconcileForm);
+        this.statementEndingBalance = data.statementEndingBalance;
         this.loadingService.triggerLoadingEvent(true);
         this.reconcileService.getReconcileData(data)
             .subscribe(reconcileData  => {
                 this.reconcileData = reconcileData;
                 this.reconcileDataCopy = reconcileData;
-                    this.getStartingBalance();
-                    this.buildDepositsTableData();
-                    this.buildExpensesTableData();
-                    this.buildTableData();
-                    this.selectTab(0,'');
-                    //base.updateTabHeight();
+                this.getStartingBalance();
             }, error =>  {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile data");
                 this.loadingService.triggerLoadingEvent(false);
             });
+        this.reconcileForm.reset();
     }
 
     calculateEndingBalance(){
+        if(this.inflow == undefined){
+            this.inflow = 0;
+        }else if(this.outflow == undefined){
+            this.outflow = 0;
+        }
         this.endingBalance = this.startingBalance+this.inflow-this.outflow;
     };
 
@@ -191,6 +232,13 @@ export class ReconcileComponent{
                 let amount = reconData.last_recon_ending_balance;
                 amount = parseFloat(amount);
                 this.startingBalance = amount;
+                this.buildDepositsTableData();
+                this.buildExpensesTableData();
+                this.buildTableData();
+                this.selectTab(0,'');
+                setTimeout(function(){
+                   //base.updateTabHeight();
+                });
                 this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to get starting balance");
@@ -219,6 +267,7 @@ export class ReconcileComponent{
             });
             base.depositsTableData.rows.push(row);
         });
+
     };
 
     buildExpensesTableData(){
@@ -292,14 +341,19 @@ export class ReconcileComponent{
     };*/
 
     submitReconcile(){
-        if(this.selectedRows.length>0) {
-            let base = this;
+        let base = this;
+        base.selectedRows = base.selectedRows.concat(base.selectedDepositRows);
+        base.selectedRows = base.selectedRows.concat(base.selectedExpenseRows);
+        base.selectedRows = _.uniqBy(this.selectedRows, 'id');
+
+        if(base.selectedRows.length>0) {
             this.loadingService.triggerLoadingEvent(true);
             let selected = [];
             let createRow = {};
             _.each(this.selectedRows, function (row) {
                 createRow['type'] = row.type;
                 createRow['id'] = row.id;
+                createRow['bank_account_id'] = base.selectedBank;
                 selected.push(createRow);
             });
             this.reconcileService.createReconcile(selected)
@@ -325,7 +379,9 @@ export class ReconcileComponent{
         this.reconcileService.updateStartingBalance(data,this.selectedBank)
             .subscribe(response  => {
                 base.toastService.pop(TOAST_TYPE.success, "Updated last reconcile data");
+                this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
+                this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.error, "Failed to update reconcile date");
             });
     }
@@ -340,6 +396,11 @@ export class ReconcileComponent{
         this.statementEndingBalance= 0;
         this.selectedRows= [];
         this.startingBalance = 0;
+        this.selectedDepositRows = [];
+        this.selectedExpenseRows = [];
+        this.selectedDepositsCount = 0;
+        this.selectedExpensesCount = 0;
+        this.tabHeight = '';
     }
     getAccounts() {
         this.accountsService.financialAccounts(this.companyId)
@@ -376,34 +437,36 @@ export class ReconcileComponent{
         });
         this.tabDisplay[tabNo] = {'display':'block'};
         this.tabBackground = this.bgColors[tabNo];
+        //this.updateTabHeight();
     }
 
-    /*updateTabHeight(){
+    updateTabHeight(){
         let base = this;
-        console.log(jQuery('.tab-content').offset(),jQuery('.tab-content').top,"asasxas");
-        let topOfDiv = jQuery('.tab-content').offset().top;
-        topOfDiv = topOfDiv<150? 170:topOfDiv;
-        let bottomOfVisibleWindow = Math.max(jQuery(document).height(), jQuery(window).height());
-        base.tabHeight = (bottomOfVisibleWindow - topOfDiv -25)+"px";
-        jQuery('.tab-content').css('height', base.tabHeight);
-        switch(this.selectedTab){
-            case 0:
-                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 100)/42)-3;
-                break;
-            case 1:
-                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 100)/42)-3;
-                break;
-            case 2:
-                base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 100)/42)-3;
-                break;
+        if(jQuery('.tab-content') !== undefined) {
+            let topOfDiv = jQuery('.tab-content').offset().top;
+            topOfDiv = topOfDiv < 150 ? 170 : topOfDiv;
+            let bottomOfVisibleWindow = Math.max(jQuery(document).height(), jQuery(window).height());
+            base.tabHeight = (bottomOfVisibleWindow - topOfDiv - 75) + "px";
+            jQuery('.tab-content').css('height', base.tabHeight);
+            switch (this.selectedTab) {
+                case 0:
+                    base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75) / 42) - 3;
+                    break;
+                case 1:
+                    base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75) / 42) - 3;
+                    break;
+                case 2:
+                    base.tableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75) / 42) - 3;
+                    break;
+            }
         }
     }
     ngAfterViewInit() {
         if(!this.showForm) {
             let base = this;
             jQuery(document).ready(function () {
-                base.updateTabHeight();
+                //base.updateTabHeight();
             });
         }
-    }*/
+    }
 }
