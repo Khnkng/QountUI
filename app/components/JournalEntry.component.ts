@@ -573,8 +573,8 @@ export class JournalEntryComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
-        this.updateJournalLinesData(data);
         data.journalLines = this.getJournalLineData(this.jeForm);
+        this.updateJournalLinesData(data);
         if(this.validateLines(data.journalLines)){
             return;
         }
