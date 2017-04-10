@@ -71,6 +71,7 @@ export class ReconcileComponent{
     selectedColor:any='red-tab';
     tabHeight:string;
     @ViewChild('depositsTable') el:ElementRef;
+    @ViewChild('expensesTable') el1:ElementRef;
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
                 private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService) {
@@ -93,6 +94,7 @@ export class ReconcileComponent{
                 }, error =>  {
             });
     }
+
 
     showPreviousPage(){
         let link = ['books', 'deposits'];
@@ -284,7 +286,7 @@ export class ReconcileComponent{
         let base = this;
         this.expensesTableData.columns = [
             {"name": "type", "title": "Type"},
-            {"name": "date", "title": "Date"},
+            {"name": "due_date", "title": "Date"},
             {"name": "amount", "title": "Amount"},
             {"name": "id", "title": "Entry ID", "visible": false}];
         this.expensesTableData.rows = [];
@@ -325,31 +327,6 @@ export class ReconcileComponent{
         });
     };
 
-   /* buildUnreconciledTableData(){
-        let base = this;
-        this.tableData.columns = [
-            {"name": "type", "title": "Type"},
-            {"name": "date", "title": "Date"},
-            {"name": "amount", "title": "Amount"},
-            {"name": "id", "title": "Entry ID", "visible": false}];
-        this.tableData.rows = [];
-        _.each(base.unreconciledRecords, function(entry){
-            let row:any = {};
-            _.each(Object.keys(entry), function(key){
-               if(key == 'amount'){
-                    let amount = parseFloat(entry[key]);
-                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                } else{
-                    row[key] = entry[key];
-                }
-            });
-            base.tableData.rows.push(row);
-        });
-        if(this.tableData.rows.length > 0){
-            this.hasEntries = true;
-        }
-    };*/
-
     buildReconActivityTableData(){
         let base = this;
         this.reconActivityTableData.columns = [
@@ -357,13 +334,13 @@ export class ReconcileComponent{
             {"name": "bank_Account_id", "title": "Bank"},
             {"name": "recon_date", "title": "Recon Date"},
             {"name": "id", "title": "Entry ID", "visible": false}];
-        this.tableData.rows = [];
+        this.reconActivityTableData.rows = [];
         _.each(base.reconActivity, function(entry){
             let row:any = {};
             _.each(Object.keys(entry), function(key){
                 row[key] = entry[key];
             });
-            base.tableData.rows.push(row);
+            base.reconActivityTableData.rows.push(row);
         });
     };
 
@@ -493,7 +470,7 @@ export class ReconcileComponent{
     }
 
     resetExpensesTab() {
-        jQuery(this.el.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
+        jQuery(this.el1.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
             jQuery(cbox).attr("checked", false);
         });
         this.selectedExpenseRows = [];
