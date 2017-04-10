@@ -116,7 +116,7 @@ deleteExpense(toast){
   this.loadingService.triggerLoadingEvent(true);
   this.expensesSerice.removeExpense(this.currentCompany.id,this.itemCodeId)
       .subscribe(coa => {
-        this.loadingService.triggerLoadingEvent(false);
+     //   this.loadingService.triggerLoadingEvent(false);
         this.expensesSerice.getAllExpenses(this.currentCompany.id)
             .subscribe(expenseCodes => this.buildTableData(expenseCodes), error=> this.handleError(error));
         this.toastService.pop(TOAST_TYPE.success, "Expense code deleted successfully");
@@ -185,12 +185,12 @@ deleteExpense(toast){
       //data.companyID = this.currentCompany.id;
       this.expensesSerice.addExpense(data,this.currentCompany.id)
           .subscribe(newItemcode => {
-            this.loadingService.triggerLoadingEvent(false);
+           // this.loadingService.triggerLoadingEvent(false);
             this.handleExpense(newItemcode);
             this.showFlyout = false;
           }, error => this.handleError(error));
     }
-    this.buildTableData(this.expenses);
+    //this.buildTableData(this.expenses);
   }
 
   handleExpense(expense){
