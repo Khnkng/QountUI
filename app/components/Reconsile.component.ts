@@ -94,7 +94,6 @@ export class ReconcileComponent{
     }
 
     ngOnInit(){
-        let input = elementRef.nativeElement.querySelector('input')
     }
 
 
