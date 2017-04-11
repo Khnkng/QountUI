@@ -49,7 +49,7 @@
             </form>
             <div class="row" *ngIf="showForm">
                 <div class="column large-12 medium-12 small-12 foo-container">
-                    <foo-table class="bigpay-dashboard bighalf-footable" [data]="reconActivityTableData" [options]="unreconciledTableOptions"></foo-table>
+                    <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasData" [data]="reconActivityTableData" [options]="unreconciledTableOptions"></foo-table>
                 </div>
             </div>
             <div class="row" *ngIf="!showForm">
@@ -107,7 +107,7 @@
                     <div class="row recon-difference">
                         <div class="small-12 medium-2 columns"></div>
                         <div class="small-12 medium-10 columns">
-                            <div>{{statementEndingBalance - endingBalance | currency:companyCurrency:true:'1.2-2'}}</div>
+                            <div>{{reconDifference | currency:companyCurrency:true:'1.2-2'}}</div>
                             <div><label><u>Difference</u></label></div>
                         </div>
                     </div>

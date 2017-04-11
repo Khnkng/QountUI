@@ -12,6 +12,8 @@ import {ReconcileService} from "../services/Reconsile.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {ReconcileForm} from "../forms/Reconsile.form";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
+
 
 
 
@@ -35,6 +37,7 @@ export class ReconcileComponent{
     depositsTableData:any = {};
     expensesTableData:any = {};
     reconActivityTableData:any = {};
+    hasData:boolean = false;
     tableOptions:any = {search:false, pageSize:5,selectable:true};
     unreconciledTableOptions:any = {search:false, pageSize:6};
     showForm:boolean = true;
@@ -58,6 +61,7 @@ export class ReconcileComponent{
     reconActivity:Array<any> = [];
     reconcileDate:any;
     reconDifference:number;
+    companies:Array<any> = [];
     tabDisplay:Array<any> = [{'display':'none'},{'display':'none'},{'display':'none'},{'display':'none'}];
     bgColors:Array<string>=[
         '#d45945',
@@ -74,7 +78,7 @@ export class ReconcileComponent{
     @ViewChild('expensesTable') el1:ElementRef;
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
-                private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService) {
+                private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService, private companyService: CompaniesService) {
         this.reconcileForm = _fb.group(_reconcileForm.getForm());
         this.companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
@@ -82,16 +86,22 @@ export class ReconcileComponent{
         this.accountsService.financialAccounts(this.companyId)
             .subscribe(accounts =>{
                 this.accounts = accounts.accounts;
+                this.fetchReconActivityData();
                 this.loadingService.triggerLoadingEvent(false);
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
             });
 
+    }
+
+    fetchReconActivityData(){
         this.reconcileService.getReconActivityRecords()
             .subscribe(reconActivityData  => {
                 this.reconActivity = reconActivityData;
                 this.buildReconActivityTableData();
-                }, error =>  {
+                this.hasData = true;
+            }, error =>  {
+                this.loadingService.triggerLoadingEvent(false);
             });
     }
 
@@ -109,6 +119,7 @@ export class ReconcileComponent{
         let account = _.find(this.accounts, {'id': accountId});
         return account? account.name: "";
     }
+
 
     redirectToEntryPage($event){
         if($event.type == 'Expense'){
@@ -336,7 +347,7 @@ export class ReconcileComponent{
     buildReconActivityTableData(){
         let base = this;
         this.reconActivityTableData.columns = [
-            {"name": "company_id", "title": "company"},
+            {"name": "company_id", "title": "company ID","visible":false},
             {"name": "bank_Account_id", "title": "Bank ID","visible":false},
             {"name": "bank", "title": "Bank"},
             {"name": "recon_date", "title": "Recon Date"},
@@ -347,8 +358,9 @@ export class ReconcileComponent{
             _.each(Object.keys(entry), function(key){
                 if(key == 'bank_Account_id'){
                     row['bank'] = base.getBankAccountName(entry[key])
+                }else {
+                    row[key] = entry[key];
                 }
-                row[key] = entry[key];
             });
             base.reconActivityTableData.rows.push(row);
         });
@@ -412,6 +424,7 @@ export class ReconcileComponent{
         this.selectedDepositsCount = 0;
         this.selectedExpensesCount = 0;
         this.tabHeight = '';
+        this.fetchReconActivityData();
     }
     getAccounts() {
         this.accountsService.financialAccounts(this.companyId)
