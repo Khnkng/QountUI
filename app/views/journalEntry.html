@@ -183,8 +183,8 @@
                                         <thead>
                                             <tr>
                                                 <th width="10%">COA</th>
-                                                <th width="5%">Credits</th>
                                                 <th width="5%">Debits</th>
+                                                <th width="5%">Credits</th>
                                                 <th width="20%">Notes</th>
                                                 <th width="10%">Entity</th>
                                                 <th width="3%"></th>
@@ -199,16 +199,16 @@
                                                     </select>
                                                 </td>
                                                 <td [hidden]="lineListItem.editable">
-                                                    {{lineListItem.controls.creditAmount.value?(lineListItem.controls.creditAmount.value| currency:companyCurrency:true:'1.2-2'):null}}
-                                                </td>
-                                                <td [hidden]="!lineListItem.editable">
-                                                    <input type="text" [formControl]="lineListItem.controls.creditAmount" placeholder="Credit" numeral [format]="'$0,0.00'" [locale]="companyCurrency" (change)="updateLineTotal()"/>
-                                                </td>
-                                                <td [hidden]="lineListItem.editable">
                                                     {{lineListItem.controls.debitAmount.value?(lineListItem.controls.debitAmount.value| currency:companyCurrency:true:'1.2-2'):null}}
                                                 </td>
                                                 <td [hidden]="!lineListItem.editable">
                                                     <input type="text" [formControl]="lineListItem.controls.debitAmount" placeholder="Debit" numeral [format]="'$0,0.00'" [locale]="companyCurrency" (change)="updateLineTotal()"/>
+                                                </td>
+                                                <td [hidden]="lineListItem.editable">
+                                                    {{lineListItem.controls.creditAmount.value?(lineListItem.controls.creditAmount.value| currency:companyCurrency:true:'1.2-2'):null}}
+                                                </td>
+                                                <td [hidden]="!lineListItem.editable">
+                                                    <input type="text" [formControl]="lineListItem.controls.creditAmount" placeholder="Credit" numeral [format]="'$0,0.00'" [locale]="companyCurrency" (change)="updateLineTotal()"/>
                                                 </td>
                                                 <td class="truncate" [hidden]="lineListItem.editable">{{lineListItem.controls.notes.value}}</td>
                                                 <td [hidden]="!lineListItem.editable">

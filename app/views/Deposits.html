@@ -59,8 +59,8 @@
                                         <table>
                                             <thead>
                                             <tr>
-                                                <th width="10%;">COA</th>
-                                                <th width="10%;">Amount</th>
+                                                <th width="13.5%;">COA</th>
+                                                <th width="6.5%;">Amount</th>
                                                 <th width="40%;">Notes</th>
                                                 <th width="10%;">Entity</th>
                                                 <th width="5%;"></th>
@@ -73,7 +73,7 @@
                                             <tr *ngFor="let itemForm of depositForm.controls.payments.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (click)="editItem(index, itemForm)">
                                                 <td class="truncate" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
-                                                    <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
+                                                    <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
                                                 </td>
