@@ -12,7 +12,6 @@ import {ReconcileService} from "../services/Reconsile.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {ReconcileForm} from "../forms/Reconsile.form";
-import {FTable} from "qCommon/app/directives/footable.directive";
 
 
 
@@ -58,6 +57,7 @@ export class ReconcileComponent{
     /*unreconciledRecords:Array<any> = [];*/
     reconActivity:Array<any> = [];
     reconcileDate:any;
+    reconDifference:number;
     tabDisplay:Array<any> = [{'display':'none'},{'display':'none'},{'display':'none'},{'display':'none'}];
     bgColors:Array<string>=[
         '#d45945',
@@ -156,6 +156,7 @@ export class ReconcileComponent{
                 base.inflow = base.inflow+parseFloat(_.find(base.reconcileDataCopy.deposits, {id: row.id}).amount);
         });
         this.calculateEndingBalance();
+        this.calculateReconDifference();
     }
     handleExpensesSelect(event:any) {
         let base = this;
@@ -173,9 +174,10 @@ export class ReconcileComponent{
                 base.outflow = base.outflow+parseFloat(_.find(base.reconcileDataCopy.expenses, {id: row.id}).amount);
         });
         this.calculateEndingBalance();
+        this.calculateReconDifference();
     }
 
-    handleSelect(event:any) {
+    /*handleSelect(event:any) {
         if(this.selectedDepositRows.length > 0) {
             this.resetDepositsTab();
         }
@@ -206,7 +208,7 @@ export class ReconcileComponent{
             }
         });
         this.calculateEndingBalance();
-    }
+    }*/
 
 
     submit($event){
@@ -234,6 +236,10 @@ export class ReconcileComponent{
         }
         this.endingBalance = this.startingBalance+this.inflow-this.outflow;
     };
+
+    calculateReconDifference(){
+        this.reconDifference = this.statementEndingBalance - this.endingBalance;
+    }
 
     getStartingBalance(){
         let base = this;
@@ -331,13 +337,17 @@ export class ReconcileComponent{
         let base = this;
         this.reconActivityTableData.columns = [
             {"name": "company_id", "title": "company"},
-            {"name": "bank_Account_id", "title": "Bank"},
+            {"name": "bank_Account_id", "title": "Bank ID","visible":false},
+            {"name": "bank", "title": "Bank"},
             {"name": "recon_date", "title": "Recon Date"},
             {"name": "id", "title": "Entry ID", "visible": false}];
         this.reconActivityTableData.rows = [];
         _.each(base.reconActivity, function(entry){
             let row:any = {};
             _.each(Object.keys(entry), function(key){
+                if(key == 'bank_Account_id'){
+                    row['bank'] = base.getBankAccountName(entry[key])
+                }
                 row[key] = entry[key];
             });
             base.reconActivityTableData.rows.push(row);
@@ -346,6 +356,7 @@ export class ReconcileComponent{
 
     submitReconcile(){
         let base = this;
+        base.selectedRows = base.selectedRows.concat(base.selectedDepositRows,base.selectedExpenseRows);
         if(base.selectedRows.length>0) {
             this.loadingService.triggerLoadingEvent(true);
             let selected = [];

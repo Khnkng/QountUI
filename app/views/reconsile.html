@@ -98,9 +98,15 @@
             </div>
                 </div>
                 <div class="small-12 medium-3 columns">
+                    <div class="row">
+                        <div class="small-12 medium-12 columns">
+                            <button class="button create small float-right"  type="submit" (click)="submitReconcile()" data-close>{{reconDifference == 0 ? 'Finish now':'Save For Later'}}</button>
+                            <button class="button create small float-right" style="margin-right:10px;" data-close>Edit Info</button>
+                        </div>
+                    </div>
                     <div class="row recon-difference">
-                        <div class="small-12 medium-1 colimns"></div>
-                        <div class="small-12 medium-6 columns">
+                        <div class="small-12 medium-2 columns"></div>
+                        <div class="small-12 medium-10 columns">
                             <div>{{statementEndingBalance - endingBalance | currency:companyCurrency:true:'1.2-2'}}</div>
                             <div><label><u>Difference</u></label></div>
                         </div>
@@ -120,10 +126,10 @@
                                 <label>Expenses</label>
                                <!-- <span class="badge"></span>-->
                             </div>
-                            <div class="column tab blue-tab" (click)="selectTab(2,'')" [ngClass]="{'selected': tabDisplay[2].display == 'block'}">
+                            <!--<div class="column tab blue-tab" (click)="selectTab(2,'')" [ngClass]="{'selected': tabDisplay[2].display == 'block'}">
                                 <label>All</label>
-                                <!--<span class="badge"></span>-->
-                            </div>
+                                &lt;!&ndash;<span class="badge"></span>&ndash;&gt;
+                            </div>-->
                         </div>
                         <div class="row collapse tab-content reconcile-tab-content">
                             <div [hidden]="tabDisplay[0].display !== 'block'" class="column small-12 medium-12 large-12">
@@ -148,26 +154,26 @@
                                     </div>
                                 </div>
                             </div>
-                            <div [hidden]="tabDisplay[2].display !== 'block'" class="column small-12 medium-12 large-12">
+                           <!-- <div [hidden]="tabDisplay[2].display !== 'block'" class="column small-12 medium-12 large-12">
                                 <div class="row">
                                     <div class="column foo-container">
                                         <foo-table class="bigpay-dashboard bighalf-footable je-footable" [data]="tableData" [options]="tableOptions" (onRowSelect)="handleSelect($event)"></foo-table>
-                                        <!--<div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasEntries">
+                                        &lt;!&ndash;<div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasEntries">
                                             <div class="woo-woo">Woot Woot!</div>
                                             <p>There are no entries.</p>
-                                        </div>-->
+                                        </div>&ndash;&gt;
                                     </div>
                                 </div>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div>
 
-                <div class="row" *ngIf="!showForm">
+                <!--<div class="row" *ngIf="!showForm">
                     <div class="small-12 medium-12 columns">
                         <button class="button create small float-right" style="margin-top:10px;"  type="submit" (click)="submitReconcile()" data-close>submit</button>
                     </div>
-                </div>
+                </div>-->
                 <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="showForm" (click)="showPreviousPage()">
                 <span aria-hidden="true">
                   <i class="ion-ios-close-empty"></i>

@@ -3411,7 +3411,7 @@ dropdown-content.dropdown-content:before {
 }
 
 .recon-main {
-  margin: 0 15px;
+  margin: 0 15px 15px;
   padding:10px 0;
   width:100%;
   background-color: #E8F2FC;
@@ -3442,3 +3442,9 @@ dropdown-content.dropdown-content:before {
 .recon-selected-count {
    margin-right:5px;
 }
+
+.recon-main u {
+  border-bottom: 1px dotted #000;
+  text-decoration: none;
+}
+
