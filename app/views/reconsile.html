@@ -2,7 +2,7 @@
     <div class="flyout expanded" [ngClass]="{'expanded':true}">
         <section class="flyout-placeholder categorize-flyout">
             <header class="flyout-header">
-                <h6><span>Reconcile</span><span *ngIf="!showForm">|</span><span *ngIf="!showForm">{{selectedBankName}}</span></h6>
+                <h6><span class="recon-selected-count">Reconcile</span><span class="recon-selected-count" *ngIf="!showForm">|</span><span *ngIf="!showForm">{{selectedBankName}}</span></h6>
             </header>
             <form (ngSubmit)="submit($event)" [formGroup]="reconcileForm" *ngIf="showForm">
             <div class="row">
