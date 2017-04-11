@@ -320,7 +320,10 @@ export class BooksComponent{
         this.handleBadges(data.length, 1);
         this.expensesTableData.columns = [
             {"name": "title", "title": "Title"},
-            {"name": "amount", "title": "Amount"},
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = parseFloat(amount);
+                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }},
             //{"name": "status", "title": "Status", "type": "html", "sortable": false},
             //{"name": "paid_date", "title": "Paid Date"},
             {"name": "due_date", "title": "Expense Date"},
@@ -330,13 +333,15 @@ export class BooksComponent{
             {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}];
         this.expensesTableData.rows = [];
         data.forEach(function(expense){
+
+
             let row:any = {};
             _.each(Object.keys(expense), function(key){
                 if(key == 'bank_account_id'){
                     row[key] = base.getBankAccountName(expense[key]);
                 } else if(key == 'amount'){
                     let amount = parseFloat(expense[key]);
-                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    row[key] = amount.toFixed(2); // just to support regular number with .00
                 } else{
                     row[key] = expense[key];
                 }
@@ -376,7 +381,10 @@ export class BooksComponent{
         this.depositsTableData.search = true;
         this.depositsTableData.columns = [
             {"name": "title", "title": "Title"},
-            {"name": "amount", "title": "Amount"},
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = parseFloat(amount);
+                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }},
             {"name": "date", "title": "Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
@@ -388,10 +396,13 @@ export class BooksComponent{
             _.each(Object.keys(expense), function(key){
                 if(key == 'bank_account_id'){
                     row[key] = base.getBankAccountName(expense[key]);
-                } else if(key == 'amount'){
+
+                }  else if(key == 'amount'){
+                    console.log("expense[key]",expense[key]);
                     let amount = parseFloat(expense[key]);
-                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                } else{
+                    //row[key] = amount.toLocaleString(base.companyCurrency, {currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 }) // just to support regular number with .00
+                    row[key] = amount.toFixed(2);
+                }else{
                     row[key] = expense[key];
                 }
             });
@@ -415,7 +426,6 @@ export class BooksComponent{
         });*/
         base.loadingService.triggerLoadingEvent(false);
     }
-
     buildTableData(data){
         let base = this;
         this.handleBadges(data.length, 2);
@@ -473,6 +483,7 @@ export class BooksComponent{
                 action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>C</span></a>"+action;
             }
             row['actions'] = action;
+
             if(row['type'] == 'Original' && journalEntry['source'] === 'Manual' && !base.isAlreadyReversed(journalEntry['id']) && journalEntry['sourceID']){
                 row['reverse'] = "<a style='font-size:0.1rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action reverseButton' data-action='reverse'>Reverse</a>";
             }
