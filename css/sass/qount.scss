@@ -2714,16 +2714,17 @@ table.footable-editing-right tr.footable-editing td {
     }
   }
   .box-notification-circle{
-    width: 22px;
+    min-width: 22px;
     height: 22px;
     border-radius: 11px;
     background-color: $qount-brand-red-pastel;
     color: #ffffff;
     position: relative;
-    left:50px;
+    left:20px;
     bottom: 5px;
     font-size: .9em;
-
+    display:inherit;
+    padding:0 2px;
   }
   .box-label{
     color: $qount-text;
