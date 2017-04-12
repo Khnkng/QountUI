@@ -62,8 +62,10 @@ export class lockComponent {
     tagListValue:any;
     locksrow:any;
     lockslist:any;
+    currentlock:any;
     haslockdate:boolean=false;
     hasnolockdate:boolean=true;
+    currentlockdate:any;
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _lockform:LockForm,
                 private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
                 private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
@@ -82,6 +84,15 @@ export class lockComponent {
                 };
                 this.showFlyout = false;
             }, error =>  this.handleError(error));
+
+        this.companyService.getcurrentLock(this.companyId)
+            .subscribe(currentlock  => {
+
+                this.currentlock=currentlock.min_lock_date;
+                console.log("this.currentlock",this.currentlock);
+                });
+
+
         var today = new Date();
         var dd = today.getDate();
         var mm = today.getMonth()+1; //January is 0!
