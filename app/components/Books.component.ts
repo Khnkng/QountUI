@@ -543,7 +543,7 @@ export class BooksComponent{
 
     removeDepo(toast){
         this.loadingService.triggerLoadingEvent(true);
-        this.depositService.removeDeposit(this.DepositToDelete, this.currentCompany)
+        this.depositService.removeDeposit(this.DepositToDelete, this.currentCompany.id)
             .subscribe(response=> {
                 this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
                // this.fetchDeposits();
@@ -565,7 +565,7 @@ export class BooksComponent{
     }
     removeExp(toast){
         this.loadingService.triggerLoadingEvent(true);
-        this.expenseService.removeExpense(this.ruleToDelete, this.currentCompany)
+        this.expenseService.removeExpense(this.ruleToDelete, this.currentCompany.id)
             .subscribe(response=> {
                 this.toastService.pop(TOAST_TYPE.success, "Deleted expense successfully");
                // this.fetchExpenses();
