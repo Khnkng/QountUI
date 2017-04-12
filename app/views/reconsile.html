@@ -107,11 +107,19 @@
                             <button class="button create small float-right" style="margin-right:10px;" data-close>Edit Info</button>
                         </div>
                     </div>-->
+
                     <div class="row recon-difference">
-                        <div class="small-12 medium-2 columns"></div>
+                        <div class="small-12 medium-2 columns" style="padding: 5px 0 0 25px;" [style.color]="reconDifference == 0 ?'#0FB45A':'#FF3219'">
+                            <div><i class="ion-checkmark-circled" *ngIf="reconDifference == 0"></i><i class="ion-alert-circled" *ngIf="reconDifference !== 0"></i></div>
+                        </div>
                         <div class="small-12 medium-10 columns">
                             <div>{{reconDifference | currency:companyCurrency:true:'1.2-2'}}</div>
                             <div><label><u>Difference</u></label></div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="!showForm && editable">
+                        <div class="small-12 medium-12 columns">
+                            <button class="button create small float-right"  [ngClass]="{'reconSubmit': reconDifference == 0}" style="margin-top:10px;"  type="submit" (click)="submitReconcile()" data-close [disabled]="reconDifference !== 0">submit</button>
                         </div>
                     </div>
                 </div>
@@ -172,11 +180,7 @@
                     </div>
                 </div>
 
-                <div class="row" *ngIf="!showForm && editable">
-                    <div class="small-12 medium-12 columns">
-                        <button class="button create small float-right" style="margin-top:10px;"  type="submit" (click)="submitReconcile()" data-close>submit</button>
-                    </div>
-                </div>
+
                 <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="showForm" (click)="showPreviousPage()">
                 <span aria-hidden="true">
                   <i class="ion-ios-close-empty"></i>

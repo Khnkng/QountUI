@@ -209,6 +209,7 @@ export class ReconcileComponent{
                 this.selectedDepositsCount = reconcileDetails.deposits.length;
                 this.selectedExpensesCount = reconcileDetails.expenses.length;
                 this.tableOptions.selectable = false;
+                this.reconDifference = 0;
                 this.buildDepositsTableData();
                 this.buildExpensesTableData();
                 this.selectTab(0,'');
@@ -258,6 +259,7 @@ export class ReconcileComponent{
                 let amount = reconData.last_recon_ending_balance;
                 amount = parseFloat(amount);
                 this.startingBalance = amount;
+                this.endingBalance = amount;
                 this.buildDepositsTableData();
                 this.buildExpensesTableData();
                 this.buildTableData();
@@ -419,20 +421,21 @@ export class ReconcileComponent{
 
     resetReconcileForm(){
         this.showForm = true;
-        this.inflow= 0;
-        this.outflow= 0;
-        this.endingBalance= 0;
-        this.statementInflow = 0;
-        this.statementOutflow = 0;
-        this.statementEndingBalance= 0;
+        this.inflow= null;
+        this.outflow= null;
+        this.endingBalance= null;
+        this.statementInflow = null;
+        this.statementOutflow = null;
+        this.statementEndingBalance= null;
         this.selectedRows= [];
-        this.startingBalance = 0;
+        this.startingBalance = null;
         this.selectedDepositRows = [];
         this.selectedExpenseRows = [];
-        this.selectedDepositsCount = 0;
-        this.selectedExpensesCount = 0;
+        this.selectedDepositsCount = null;
+        this.selectedExpensesCount = null;
         this.tabHeight = '';
         this.editable = true;
+        this.reconDifference = null;
         this.tableOptions.selectable = true;
     }
     getAccounts() {
