@@ -22,8 +22,8 @@ export class ReconcileService extends  QountServices{
             .catch(this.handleError)
     }
 
-    createReconcile(data:any) : Observable<any> {
-        var url = this.interpolateUrl(PATH.RECONCILE_CREATE_RECON,null,{id:Session.getUser().id,companyId:Session.getCurrentCompany()});
+    createReconcile(data:any,bankId:number) : Observable<any> {
+        var url = this.interpolateUrl(PATH.RECONCILE_CREATE_RECON,null,{id:Session.getUser().id,companyId:Session.getCurrentCompany(),bankId:data.bankId});
         return this.update(url, data, SOURCE_TYPE.JAVA).map(res => <any> res.json())
             .catch(this.handleError)
     }
@@ -54,6 +54,12 @@ export class ReconcileService extends  QountServices{
 
     getUnreconciledRecords() : Observable<any> {
         var url = this.interpolateUrl(PATH.RECONCILE_UNRECON_DATA, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany()});
+        return this.query(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+            .catch(this.handleError)
+    }
+
+    getReconDetails(data:any) : Observable<any> {
+        var url = this.interpolateUrl(PATH.RECONCILE_RECON_DETAILS, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany(),bankId:data.bank_Account_id,reconActivityID:data.id});
         return this.query(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
             .catch(this.handleError)
     }

@@ -76,6 +76,7 @@ export class ReconcileComponent{
     tabHeight:string;
     @ViewChild('depositsTable') el:ElementRef;
     @ViewChild('expensesTable') el1:ElementRef;
+    editable:boolean = true;
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
                 private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService, private companyService: CompaniesService) {
@@ -87,7 +88,6 @@ export class ReconcileComponent{
             .subscribe(accounts =>{
                 this.accounts = accounts.accounts;
                 this.fetchReconActivityData();
-                this.loadingService.triggerLoadingEvent(false);
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
             });
@@ -100,6 +100,7 @@ export class ReconcileComponent{
                 this.reconActivity = reconActivityData;
                 this.buildReconActivityTableData();
                 this.hasData = true;
+                this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
                 this.loadingService.triggerLoadingEvent(false);
             });
@@ -188,38 +189,36 @@ export class ReconcileComponent{
         this.calculateReconDifference();
     }
 
-    /*handleSelect(event:any) {
-        if(this.selectedDepositRows.length > 0) {
-            this.resetDepositsTab();
-        }
-        if(this.selectedExpenseRows.length > 0) {
-            this.resetExpensesTab();
-        }
+    handleReconActivity($event) {
+        console.log($event);
         let base = this;
-        base.inflow = 0;
-        base.outflow= 0;
-        base.selectedDepositsCount = 0;
-        base.selectedExpensesCount = 0;
-        let deposits = [];
-        let expenses = [];
-        _.each(event, function(bill){
-            base.selectedRows.push(bill);
-        });
-        this.selectedRows = _.uniqBy(this.selectedRows, 'id');
-        _.remove(this.selectedRows, {'tempIsSelected': false});
-        _.each(this.selectedRows,function(row){
-            if(row.type == 'deposit') {
-                base.selectedDepositsCount = base.selectedDepositsCount+1;
-               deposits.push(_.find(base.reconcileDataCopy.deposits, {id: row.id}));
-                base.inflow = base.inflow+parseFloat(_.find(base.reconcileDataCopy.deposits, {id: row.id}).amount);
-            }else{
-                base.selectedExpensesCount = base.selectedExpensesCount+1;
-                expenses.push(_.find(base.reconcileDataCopy.expenses, {id: row.id}));
-                base.outflow = base.outflow+parseFloat(_.find(base.reconcileDataCopy.expenses, {id: row.id}).amount);
-            }
-        });
-        this.calculateEndingBalance();
-    }*/
+        this.editable = false;
+        this.loadingService.triggerLoadingEvent(true);
+        this.reconcileService.getReconDetails($event)
+            .subscribe(reconcileDetails => {
+                this.showForm = false;
+                this.reconcileData = reconcileDetails;
+                this.reconcileDataCopy = reconcileDetails;
+                this.selectedBankName = $event.bank;
+                let amount = reconcileDetails.last_recon_ending_balance;
+                amount = parseFloat(amount);
+                this.endingBalance = amount;
+                this.startingBalance = reconcileDetails.startingBalance;
+                this.inflow = reconcileDetails.sum_of_deposits;
+                this.outflow = reconcileDetails.sum_of_expenses;
+                this.statementEndingBalance = amount;
+                this.selectedDepositsCount = reconcileDetails.deposits.length;
+                this.selectedExpensesCount = reconcileDetails.expenses.length;
+                this.tableOptions.selectable = false;
+                this.buildDepositsTableData();
+                this.buildExpensesTableData();
+                this.selectTab(0,'');
+                this.loadingService.triggerLoadingEvent(false);
+            }, error =>  {
+                base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile details");
+                this.loadingService.triggerLoadingEvent(false);
+            });
+    }
 
 
     submit($event){
@@ -351,13 +350,15 @@ export class ReconcileComponent{
             {"name": "bank_Account_id", "title": "Bank ID","visible":false},
             {"name": "bank", "title": "Bank"},
             {"name": "recon_date", "title": "Recon Date"},
-            {"name": "id", "title": "Entry ID", "visible": false}];
+            {"name": "id", "title": "Entry ID", "visible": false},
+            {"name": "actions", "title": "", "type": "html", 'filterable': false}];
         this.reconActivityTableData.rows = [];
         _.each(base.reconActivity, function(entry){
             let row:any = {};
             _.each(Object.keys(entry), function(key){
                 if(key == 'bank_Account_id'){
-                    row['bank'] = base.getBankAccountName(entry[key])
+                    row[key] = entry[key];
+                    row['bank'] = base.getBankAccountName(entry[key]);
                 }else {
                     row[key] = entry[key];
                 }
@@ -368,27 +369,42 @@ export class ReconcileComponent{
 
     submitReconcile(){
         let base = this;
-        base.selectedRows = base.selectedRows.concat(base.selectedDepositRows,base.selectedExpenseRows);
-        if(base.selectedRows.length>0) {
+        if(base.selectedDepositRows.length>0 || base.selectedExpenseRows.length > 0) {
             this.loadingService.triggerLoadingEvent(true);
-            let selected = [];
-            _.each(this.selectedRows, function (row) {
+            let deposits = [];
+            let expenses = [];
+            let selected = {};
+            _.each(this.selectedDepositRows, function (row) {
                 let createRow = {};
-                createRow['type'] = row.type;
                 createRow['id'] = row.id;
                 createRow['bank_account_id'] = base.selectedBank;
-                selected.push(createRow);
+                deposits.push(createRow);
             });
-            this.reconcileService.createReconcile(selected)
+            _.each(this.selectedExpenseRows, function (row) {
+                let createRow = {};
+                createRow['id'] = row.id;
+                createRow['bank_account_id'] = base.selectedBank;
+                expenses.push(createRow);
+            });
+            selected["deposits"] = deposits;
+            selected["expenses"] = expenses;
+            selected["last_recon_ending_balance"] = this.endingBalance;
+            selected["last_recon_date"] = this.reconcileDate;
+            selected["startingBalance"] = this.startingBalance;
+            selected["sum_of_deposits"] = this.inflow;
+            selected["sum_of_expenses"] = this.outflow;
+            console.log(selected);
+            /*this.reconcileService.createReconcile(selected,base.selectedBank)
                 .subscribe(response => {
                     base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successfull");
-                    this.updateStartingBalance();
+                    //this.updateStartingBalance();
                     this.resetReconcileForm();
                     this.getAccounts();
-                    }, error => {
-                    this.loadingService.triggerLoadingEvent(false);
+                    this.fetchReconActivityData();
+                }, error => {
                     base.toastService.pop(TOAST_TYPE.error, "Failed to reconcile data");
-                });
+                    this.loadingService.triggerLoadingEvent(false);
+                });*/
         }else{
             this.toastService.pop(TOAST_TYPE.success,"No Records Selected");
         }
@@ -424,7 +440,8 @@ export class ReconcileComponent{
         this.selectedDepositsCount = 0;
         this.selectedExpensesCount = 0;
         this.tabHeight = '';
-        this.fetchReconActivityData();
+        this.editable = true;
+        this.tableOptions.selectable = true;
     }
     getAccounts() {
         this.accountsService.financialAccounts(this.companyId)
@@ -487,22 +504,36 @@ export class ReconcileComponent{
     }
 
     resetDepositsTab(){
+        let base =this;
+        let selectedRows = [];
         jQuery(this.el.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
-            jQuery(cbox).attr("checked", false);
+            let row = jQuery(cbox).closest('tr').data('__FooTableRow__');
+            let obj = row.val();
+            jQuery(cbox).attr("checked", true);
+            obj.tempIsSelected = true;
+            selectedRows.push(obj);
         });
-        this.selectedDepositRows = [];
+        this.handleDepositsSelect(selectedRows);
+
     }
 
     resetExpensesTab() {
+        let base =this;
+        let selectedRows = [];
         jQuery(this.el1.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
-            jQuery(cbox).attr("checked", false);
+            let row = jQuery(cbox).closest('tr').data('__FooTableRow__');
+            let obj = row.val();
+            jQuery(cbox).attr("checked", true);
+            obj.tempIsSelected = true;
+            selectedRows.push(obj);
         });
-        this.selectedExpenseRows = [];
+        this.handleExpensesSelect(selectedRows);
+        this.loadingService.triggerLoadingEvent(false);
+
     }
     ngAfterViewInit() {
         if(!this.showForm) {
             let base = this;
-            console.log(this.el.nativeElement,"asxasxas");
             jQuery(document).ready(function () {
                 //base.updateTabHeight();
             });

@@ -2,7 +2,10 @@
     <div class="flyout expanded" [ngClass]="{'expanded':true}">
         <section class="flyout-placeholder categorize-flyout">
             <header class="flyout-header">
-                <h6><span class="recon-selected-count">Reconcile</span><span class="recon-selected-count" *ngIf="!showForm">|</span><span *ngIf="!showForm">{{selectedBankName}}</span></h6>
+                <h6><span class="recon-selected-count">Reconcile</span>
+                    <span class="recon-selected-count" *ngIf="!showForm">|</span>
+                    <span *ngIf="!showForm">{{selectedBankName}}</span>
+                </h6>
             </header>
             <form (ngSubmit)="submit($event)" [formGroup]="reconcileForm" *ngIf="showForm">
             <div class="row">
@@ -49,10 +52,10 @@
             </form>
             <div class="row" *ngIf="showForm">
                 <div class="column large-12 medium-12 small-12 foo-container">
-                    <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasData" [data]="reconActivityTableData" [options]="unreconciledTableOptions"></foo-table>
+                    <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasData" [data]="reconActivityTableData" [options]="unreconciledTableOptions" (onRowClick)="handleReconActivity($event)"></foo-table>
                 </div>
             </div>
-            <div class="row" *ngIf="!showForm">
+            <div class="row" *ngIf="!showForm && editable">
                 <div class="recon-main">
                 <div class="small-12 medium-9 columns">
                  <div class="row">
@@ -98,12 +101,12 @@
             </div>
                 </div>
                 <div class="small-12 medium-3 columns">
-                    <div class="row">
+                    <!--<div class="row">
                         <div class="small-12 medium-12 columns">
                             <button class="button create small float-right"  type="submit" (click)="submitReconcile()" data-close>{{reconDifference == 0 ? 'Finish now':'Save For Later'}}</button>
                             <button class="button create small float-right" style="margin-right:10px;" data-close>Edit Info</button>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="row recon-difference">
                         <div class="small-12 medium-2 columns"></div>
                         <div class="small-12 medium-10 columns">
@@ -169,11 +172,11 @@
                     </div>
                 </div>
 
-                <!--<div class="row" *ngIf="!showForm">
+                <div class="row" *ngIf="!showForm">
                     <div class="small-12 medium-12 columns">
                         <button class="button create small float-right" style="margin-top:10px;"  type="submit" (click)="submitReconcile()" data-close>submit</button>
                     </div>
-                </div>-->
+                </div>
                 <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="showForm" (click)="showPreviousPage()">
                 <span aria-hidden="true">
                   <i class="ion-ios-close-empty"></i>
