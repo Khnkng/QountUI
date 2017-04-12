@@ -23,7 +23,7 @@ export class ReconcileService extends  QountServices{
     }
 
     createReconcile(data:any,bankId:number) : Observable<any> {
-        var url = this.interpolateUrl(PATH.RECONCILE_CREATE_RECON,null,{id:Session.getUser().id,companyId:Session.getCurrentCompany(),bankId:data.bankId});
+        var url = this.interpolateUrl(PATH.RECONCILE_CREATE_RECON,null,{id:Session.getUser().id,companyId:Session.getCurrentCompany(),bankId:bankId});
         return this.update(url, data, SOURCE_TYPE.JAVA).map(res => <any> res.json())
             .catch(this.handleError)
     }

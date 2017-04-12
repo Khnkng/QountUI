@@ -55,7 +55,7 @@
                     <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasData" [data]="reconActivityTableData" [options]="unreconciledTableOptions" (onRowClick)="handleReconActivity($event)"></foo-table>
                 </div>
             </div>
-            <div class="row" *ngIf="!showForm && editable">
+            <div class="row" *ngIf="!showForm">
                 <div class="recon-main">
                 <div class="small-12 medium-9 columns">
                  <div class="row">
@@ -172,7 +172,7 @@
                     </div>
                 </div>
 
-                <div class="row" *ngIf="!showForm">
+                <div class="row" *ngIf="!showForm && editable">
                     <div class="small-12 medium-12 columns">
                         <button class="button create small float-right" style="margin-top:10px;"  type="submit" (click)="submitReconcile()" data-close>submit</button>
                     </div>

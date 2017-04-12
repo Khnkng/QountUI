@@ -190,7 +190,6 @@ export class ReconcileComponent{
     }
 
     handleReconActivity($event) {
-        console.log($event);
         let base = this;
         this.editable = false;
         this.loadingService.triggerLoadingEvent(true);
@@ -200,10 +199,10 @@ export class ReconcileComponent{
                 this.reconcileData = reconcileDetails;
                 this.reconcileDataCopy = reconcileDetails;
                 this.selectedBankName = $event.bank;
-                let amount = reconcileDetails.last_recon_ending_balance;
+                let amount = reconcileDetails.ending_balance;
                 amount = parseFloat(amount);
                 this.endingBalance = amount;
-                this.startingBalance = reconcileDetails.startingBalance;
+                this.startingBalance = reconcileDetails.starting_balance;
                 this.inflow = reconcileDetails.sum_of_deposits;
                 this.outflow = reconcileDetails.sum_of_expenses;
                 this.statementEndingBalance = amount;
@@ -349,7 +348,7 @@ export class ReconcileComponent{
             {"name": "company_id", "title": "company ID","visible":false},
             {"name": "bank_Account_id", "title": "Bank ID","visible":false},
             {"name": "bank", "title": "Bank"},
-            {"name": "recon_date", "title": "Recon Date"},
+            {"name": "last_Recon_date", "title": "Recon Date"},
             {"name": "id", "title": "Entry ID", "visible": false},
             {"name": "actions", "title": "", "type": "html", 'filterable': false}];
         this.reconActivityTableData.rows = [];
@@ -375,22 +374,16 @@ export class ReconcileComponent{
             let expenses = [];
             let selected = {};
             _.each(this.selectedDepositRows, function (row) {
-                let createRow = {};
-                createRow['id'] = row.id;
-                createRow['bank_account_id'] = base.selectedBank;
-                deposits.push(createRow);
+                deposits.push(row.id);
             });
             _.each(this.selectedExpenseRows, function (row) {
-                let createRow = {};
-                createRow['id'] = row.id;
-                createRow['bank_account_id'] = base.selectedBank;
-                expenses.push(createRow);
+                expenses.push(row.id);
             });
             selected["deposits"] = deposits;
             selected["expenses"] = expenses;
             selected["last_recon_ending_balance"] = this.endingBalance;
             selected["last_recon_date"] = this.reconcileDate;
-            selected["startingBalance"] = this.startingBalance;
+            selected["starting_balance"] = this.startingBalance;
             selected["sum_of_deposits"] = this.inflow;
             selected["sum_of_expenses"] = this.outflow;
             this.reconcileService.createReconcile(selected,base.selectedBank)
