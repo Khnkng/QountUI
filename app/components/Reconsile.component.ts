@@ -393,8 +393,7 @@ export class ReconcileComponent{
             selected["startingBalance"] = this.startingBalance;
             selected["sum_of_deposits"] = this.inflow;
             selected["sum_of_expenses"] = this.outflow;
-            console.log(selected);
-            /*this.reconcileService.createReconcile(selected,base.selectedBank)
+            this.reconcileService.createReconcile(selected,base.selectedBank)
                 .subscribe(response => {
                     base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successfull");
                     //this.updateStartingBalance();
@@ -404,7 +403,7 @@ export class ReconcileComponent{
                 }, error => {
                     base.toastService.pop(TOAST_TYPE.error, "Failed to reconcile data");
                     this.loadingService.triggerLoadingEvent(false);
-                });*/
+                });
         }else{
             this.toastService.pop(TOAST_TYPE.success,"No Records Selected");
         }
