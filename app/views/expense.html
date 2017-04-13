@@ -70,18 +70,16 @@
                                         </div>
                                     </div>
                                     <header class="form-section-header">Expense Lines</header>
-                                    <!--<div class="text-right">
-                                        <span (click)="showNewItem()">
-                                            <i class="icon ion-ios-plus-outline"></i> Line
-                                        </span>
-                                    </div>-->
+                                    <div class="text-right">
+                                        <span class='icon badge je-badge' style="cursor:pointer" (click)="showMappingPage()">M</span>
+                                    </div>
                                     <div formArrayName="expense_items">
                                         <table>
                                             <thead>
                                             <tr>
-                                                <th width="10%">Exp. COA</th>
-                                                <th width="10%">Amount</th>
-                                                <th width="40%">Notes</th>
+                                                <th width="15%">Exp. COA</th>
+                                                <th width="7%">Amount</th>
+                                                <th width="38%">Notes</th>
                                                 <th width="10%">Entity</th>
                                                 <th width="5%"></th>
                                             </tr>
@@ -257,5 +255,36 @@
                 </div>
             </div>
         </form>
+    </div>
+</div>
+
+
+
+<div class="report-wrapper report-wrapper1 mapping-buttons journal-flyout">
+    <div class="sidenav customization-panel" [ngClass]="mappingFlyoutCSS" foundation>
+
+        <div class="row" >
+            <div class="column small-12 medium-6">
+                <h5>Payments</h5>
+            </div>
+            <div class="columns small-6 small-offset-6 right">
+                <button class="button small text-button" style="top: 35px;" (click)="hideMappingPage()">
+                    <i class="ion-ios-close-empty"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="row chart-of-accounts" foundation>
+            <div class="column large-12 medium-12 small-12 foo-container">
+                <foo-table #fooTableDir="fooTable" class="bighalf-footable search-right" *ngIf="hasMappings" [data]="tableData" [options]="tableOptions" (onRowSelect)="handleSelect($event)"></foo-table>
+            </div>
+        </div>
+        <div class="row" *ngIf="hasMappings">
+            <div class="small-12 medium-12 columns">
+                <input type="button" class="button small float-right" value="Next" (click)="saveMappingID()"/>
+            </div>
+        </div>
+
+
     </div>
 </div>

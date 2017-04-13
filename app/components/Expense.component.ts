@@ -12,9 +12,10 @@ import {ExpenseService} from "qCommon/app/services/Expense.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {DimensionService} from "qCommon/app/services/DimensionService.service";
-import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants"
-import {CustomersService} from "qCommon/app/services/Customers.service"
-import {EmployeeService} from "qCommon/app/services/Employees.service"
+import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {CustomersService} from "qCommon/app/services/Customers.service";
+import {EmployeeService} from "qCommon/app/services/Employees.service";
+import {PaymentsService} from "qCommon/app/services/Payments.service";
 
 
 declare let jQuery:any;
@@ -49,6 +50,15 @@ export class ExpenseComponent{
     defaultDate:string;
     stayFlyout:boolean = false;
     entities:Array<any>=[];
+    mappingFlyoutCSS:any;
+    tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName'];
+    mappings = [];
+    hasMappings: boolean = false;
+    tableData:any = {};
+    tableOptions:any = {};
+    row:any;
+    selectedMappingID:string;
+    expenseType:string;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
    // @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
@@ -60,7 +70,7 @@ export class ExpenseComponent{
             private _expenseItemForm: ExpenseItemForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
             private vendorService: CompaniesService, private expenseService: ExpenseService, private toastService: ToastService,
             private loadingService: LoadingService, private dimensionService: DimensionService,private customerService:CustomersService,
-            private employeeService:EmployeeService){
+            private employeeService:EmployeeService,private paymentsService:PaymentsService){
         this.currentCompanyId = Session.getCurrentCompany();
         this.routeSub = this._route.params.subscribe(params => {
             this.expenseID=params['expenseID'];
@@ -79,11 +89,33 @@ export class ExpenseComponent{
         this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
+    showMappingPage(){
+        if(this.selectedMappingID){
+            let link = ['/payments', this.selectedMappingID];
+            this._router.navigate(link);
+        }else {
+            this.mappingFlyoutCSS="expanded";
+            this.loadingService.triggerLoadingEvent(true);
+            this.paymentsService.mappings(this.currentCompanyId,this.expenseType,"false")
+                .subscribe(mappings => {
+                    let mappings=mappings?mappings:[];
+                    this.buildTableData(mappings);
+                }, error => {
+                    this.loadingService.triggerLoadingEvent(false);
+                });
+        }
+    }
+    hideMappingPage(){
+        this.mappingFlyoutCSS="collapsed";
+    }
+
     showExpensesPage(){
         if(this.stayFlyout){
-           let base=this
+           let base=this;
             this.initialize();
             this.dimensionFlyoutCSS = "";
+            this.mappingFlyoutCSS="";
+            this.selectedMappingID=null;
             setTimeout(function(){
                 base.accountComboBox.setValue(null, 'name');
             });
@@ -91,7 +123,12 @@ export class ExpenseComponent{
             this.setDefaultExpenseType();
             //location.reload();
         }else {
-            let link = [Session.getLastVisitedUrl()];
+            let link:any;
+            if(Session.getLastVisitedUrl().indexOf('/payments')==0){
+                link = ["/books/expenses"];
+            }else {
+                link = [Session.getLastVisitedUrl()];
+            }
             this._router.navigate(link);
         }
     }
@@ -180,6 +217,7 @@ export class ExpenseComponent{
     processExpense(expense){
         let base = this;
         let itemsControl:any = this.expenseForm.controls['expense_items'];
+        this.selectedMappingID=expense.mapping_id;
         this.loadEntities(expense.expense_type);
         _.each(expense.expense_items, function(expenseItem){
             expenseItem.amount = parseFloat(expenseItem.amount);
@@ -495,6 +533,7 @@ export class ExpenseComponent{
 
     loadEntities(type){
         this.entities=[];
+        this.expenseType=type;
         if(type=='bill'){
             this.vendorService.vendors(this.currentCompanyId)
                 .subscribe(vendors=> {
@@ -600,4 +639,49 @@ export class ExpenseComponent{
         this._expenseForm.updateForm(this.expenseForm, data);
         this.loadEntities('bill');
     }
+
+    buildTableData(mappings) {
+        this.hasMappings = false;
+        this.mappings = mappings;
+        this.tableData.rows = [];
+        this.tableOptions.search = true;
+        this.tableOptions.singleSelectable = true;
+        this.tableOptions.pageSize = 9;
+        this.tableData.columns = [
+            {"name": "groupID", "title": "Id","visible":false,"filterable": false},
+            {"name": "title", "title": "Payment Title"},
+            {"name": "amount", "title": "Amount"},
+            {"name": "date", "title": "Date"},
+            {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
+            {"name": "vendorName", "title": "Vendor"}
+        ];
+        let base = this;
+        mappings.forEach(function(pyment) {
+            let row:any = {};
+            _.each(base.tableColumns, function(key) {
+                row[key] = pyment[key];
+                if(key == 'amount'){
+                    let amount = parseFloat(pyment[key]);
+                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            });
+            base.tableData.rows.push(row);
+        });
+        setTimeout(function(){
+            base.hasMappings = true;
+        }, 0);
+        this.loadingService.triggerLoadingEvent(false);
+    }
+    handleSelect(event:any) {
+        if(event&&event[0])
+        this.selectedMappingID=event[0]['groupID'];
+    }
+
+    saveMappingID(){
+        let data = this._expenseForm.getData(this.expenseForm);
+        data.mapping_id = this.selectedMappingID;
+        this._expenseForm.updateForm(this.expenseForm, data);
+        this.mappingFlyoutCSS="collapsed";
+    }
+
 }

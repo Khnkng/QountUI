@@ -29,6 +29,7 @@ export class PaymentsComponent{
     dimensionFlyoutCSS:any;
     bills:Array<any>=[];
     routeSub:any;
+    fromPayments:boolean=false;
 
     constructor(private switchBoard: SwitchBoard, private toastService: ToastService, private loadingService:LoadingService
                 ,private paymentsService:PaymentsService,private _router:Router, private _route: ActivatedRoute,){
@@ -39,7 +40,7 @@ export class PaymentsComponent{
             if(params['paymentID']){
                 this.getPaymentDetails(params['paymentID'])
             }else {
-                this.paymentsService.payments(companyId)
+                this.paymentsService.mappings(companyId,"bill","true")
                     .subscribe(payments => {
                         let payments=payments?payments:[];
                         this.buildTableData(payments);
@@ -68,6 +69,7 @@ export class PaymentsComponent{
         delete $event.action;
         delete $event.actions;
         if(action == 'edit') {
+            this.fromPayments=true;
             this.getPaymentDetails($event.groupID)
         }else {
             this.navigateToJE($event.journalID);
@@ -128,7 +130,13 @@ export class PaymentsComponent{
     }
 
     hideFlyout(){
-        this.dimensionFlyoutCSS = "collapsed";
+        if(this.fromPayments){
+            this.dimensionFlyoutCSS = "collapsed";
+        }else {
+            this.goToPreviousPage();
+        }
+
+
     }
 
     moveToBills(bill){

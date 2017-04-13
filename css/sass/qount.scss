@@ -3449,6 +3449,18 @@ dropdown-content.dropdown-content:before {
   text-decoration: none;
 }
 
+.footable .radio {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+
+.mapping-buttons {
+  button {
+    margin-top: 0px !important;
+    margin-left: 10px;
+  }
+}
 .reconSubmit {
   background-color: $qount-brand-green;
 }
