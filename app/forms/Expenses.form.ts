@@ -22,7 +22,8 @@ export class ExpenseForm extends abstractForm{
             "id": [''],
             "type":[''],
             "reference_number":[''],
-            "expense_type":['']
+            "expense_type":[''],
+            "mapping_id":['']
         }
     }
 }

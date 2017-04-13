@@ -15,6 +15,7 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants"
 import {CustomersService} from "qCommon/app/services/Customers.service";
 import {DepositService} from "qCommon/app/services/Deposit.service";
 import {InvoicesService} from "invoicesUI/app/services/Invoices.service";
+import {PaymentsService} from "qCommon/app/services/Payments.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -49,6 +50,17 @@ export class DepositComponent{
     stayFlyout:boolean = false;
     entities:Array<any>=[];
 
+    /*mapping changes*/
+    /*mappingFlyoutCSS:any;
+    tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName'];
+    mappings = [];
+    hasMappings: boolean = false;
+    tableData:any = {};
+    tableOptions:any = {};
+    row:any;
+    selectedMappingID:string;
+    expenseType:string;*/
+
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
   //  @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
   //  @ViewChild("newEntityComboBoxDir") newEntityComboBox: ComboBox;
@@ -61,7 +73,7 @@ export class DepositComponent{
                 private _depositLineForm: DepositsLineForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
                 private depositService: DepositService, private toastService: ToastService,
                 private loadingService: LoadingService, private dimensionService: DimensionService,private customersService: CustomersService
-        ,private invoiceService:InvoicesService,private vendorService: CompaniesService){
+        ,private invoiceService:InvoicesService,private vendorService: CompaniesService,private paymentsService:PaymentsService){
         this.currentCompanyId = Session.getCurrentCompany();
         this.routeSub = this._route.params.subscribe(params => {
             this.depositID=params['depositID'];
@@ -92,7 +104,12 @@ export class DepositComponent{
             this.setDefaultDepositType();
             //location.reload();
         }else {
-            let link = [Session.getLastVisitedUrl()];
+            let link:any;
+            if(Session.getLastVisitedUrl().indexOf('/payments')==0){
+                link = ["/books/deposits"];
+            }else {
+                link = [Session.getLastVisitedUrl()];
+            }
             this._router.navigate(link);
         }
     }
@@ -184,6 +201,7 @@ export class DepositComponent{
     processDeposits(deposits){
         let base = this;
         let itemsControl:any = this.depositForm.controls['payments'];
+        //this.selectedMappingID=deposits.mapping_id;
         this.loadEntities(deposits.deposit_type);
         _.each(deposits.payments, function(depositItem){
             depositItem.amount = parseFloat(depositItem.amount);
@@ -539,6 +557,7 @@ export class DepositComponent{
 
     loadEntities(type){
         this.entities=[];
+       // this.expenseType=type;
         if(type=='expenseRefund'){
             this.vendorService.vendors(this.currentCompanyId)
                 .subscribe(vendors=> {
@@ -635,5 +654,69 @@ export class DepositComponent{
         this._depositForm.updateForm(this.depositForm, data);
         this.loadEntities('invoice');
     }
+/*mapping changes*/
+    /*showMappingPage(){
+        if(this.selectedMappingID){
+            let link = ['/payments', this.selectedMappingID];
+            this._router.navigate(link);
+        }else {
+            this.mappingFlyoutCSS="expanded";
+            this.loadingService.triggerLoadingEvent(true);
+            this.paymentsService.mappings(this.currentCompanyId,"bill","false")
+                .subscribe(mappings => {
+                    let mappings=mappings?mappings:[];
+                    this.buildTableData(mappings);
+                }, error => {
+                    this.loadingService.triggerLoadingEvent(false);
+                });
+        }
+    }
+    hideMappingPage(){
+        this.mappingFlyoutCSS="collapsed";
+    }
+
+    buildTableData(mappings) {
+        this.hasMappings = false;
+        this.mappings = mappings;
+        this.tableData.rows = [];
+        this.tableOptions.search = true;
+        this.tableOptions.singleSelectable = true;
+        this.tableOptions.pageSize = 9;
+        this.tableData.columns = [
+            {"name": "groupID", "title": "Id","visible":false,"filterable": false},
+            {"name": "title", "title": "Payment Title"},
+            {"name": "amount", "title": "Amount"},
+            {"name": "date", "title": "Date"},
+            {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
+            {"name": "vendorName", "title": "Vendor"}
+        ];
+        let base = this;
+        mappings.forEach(function(pyment) {
+            let row:any = {};
+            _.each(base.tableColumns, function(key) {
+                row[key] = pyment[key];
+                if(key == 'amount'){
+                    let amount = parseFloat(pyment[key]);
+                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+            });
+            base.tableData.rows.push(row);
+        });
+        setTimeout(function(){
+            base.hasMappings = true;
+        }, 0);
+        this.loadingService.triggerLoadingEvent(false);
+    }
+    handleSelect(event:any) {
+        if(event&&event[0])
+            this.selectedMappingID=event[0]['groupID'];
+    }
+
+    saveMappingID(){
+        let data = this._depositForm.getData(this.depositForm);
+        data.mapping_id = this.selectedMappingID;
+        this._depositForm.updateForm(this.depositForm, data);
+        this.mappingFlyoutCSS="collapsed";
+    }*/
 
 }
