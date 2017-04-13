@@ -24,9 +24,9 @@ export class FinancialAccountForm extends abstractForm{
       "type":['', Validators.required],
       "importType":['MANUAL'],
       "chart_of_account_id": [''],
-      "account_number":[''],
-      "routing_number":[''],
-      "name_on_account":[''],
+      "account_number":['',Validators.required],
+      "routing_number":['',Validators.required],
+      "name_on_account":['',Validators.required],
       "transit_chart_of_account_id":['']
     }
   }

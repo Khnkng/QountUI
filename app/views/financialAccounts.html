@@ -99,10 +99,12 @@
                                             <div class="row">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Routing Number</label>
+
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" formControlName="routing_number" placeholder="Routing Number*"/>
-                                                    <div class="error" [hidden]="accountForm.controls.routing_number.untouched || accountForm.controls.routing_number.valid">Routing number is required.</div>
+                                                    <input type="text" formControlName="routing_number" placeholder="Routing Number*" pattern="[0-5]{5}$"/>
+                                                    <div class="error" *ngIf="accountForm.controls.routing_number.touched && accountForm.controls.routing_number.hasError('required')">Routing Number  is required</div>
+                                                    <div class="error" *ngIf="accountForm.controls.routing_number.touched && accountForm.controls.routing_number.hasError('pattern')">Routing Number should have 5 digits only</div>
                                                 </div>
                                             </div>
                                             <div class="row" >
@@ -110,7 +112,7 @@
                                                     <label class="text-right">Account Number</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" formControlName="account_number" placeholder="Account Number*"/>
+                                                    <input type="text" formControlName="account_number" placeholder="Account Number*" maxlength="32"/>
                                                     <div class="error" [hidden]="accountForm.controls.account_number.untouched || accountForm.controls.account_number.valid">Account number is required.</div>
                                                 </div>
                                             </div>
@@ -199,7 +201,7 @@
 
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
-                                        <button class="button small float-right" [disabled]="!accountForm.valid && isValid(accountForm)" (click)="submit($event)">Save</button>
+                                        <button class="button small float-right" [disabled]="!accountForm.valid && !isValid(accountForm)" (click)="submit($event)">Save</button>
                                     </div>
                                 </div>
                             </section>
