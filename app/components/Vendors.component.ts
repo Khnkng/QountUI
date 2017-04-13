@@ -298,6 +298,11 @@ deleteVendor(toast){
     this.showSecondStep = false;
   }
 
+  hideSecondStep(){
+    this.showFirstStep = true;
+    this.showSecondStep = false;
+  }
+
   hideMailFlyout(){
     this.showMailFlyout = !this.showMailFlyout;
   }
