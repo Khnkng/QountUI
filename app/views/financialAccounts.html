@@ -102,9 +102,9 @@
 
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" formControlName="routing_number" placeholder="Routing Number*" pattern="[0-5]{5}$"/>
+                                                    <input type="text" formControlName="routing_number" placeholder="Routing Number*" pattern="[0-9]{9}$"/>
                                                     <div class="error" *ngIf="accountForm.controls.routing_number.touched && accountForm.controls.routing_number.hasError('required')">Routing Number  is required</div>
-                                                    <div class="error" *ngIf="accountForm.controls.routing_number.touched && accountForm.controls.routing_number.hasError('pattern')">Routing Number should have 5 digits only</div>
+                                                    <div class="error" *ngIf="accountForm.controls.routing_number.touched && accountForm.controls.routing_number.hasError('pattern')">Routing Number should have 9 digits only</div>
                                                 </div>
                                             </div>
                                             <div class="row" >
