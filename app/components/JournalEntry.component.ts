@@ -2,7 +2,7 @@
  * Created by seshu on 26-02-2016.
  */
 
-import {Component, ViewChild} from "@angular/core";
+import {Component, ViewChild,ElementRef} from "@angular/core";
 import {Session} from "qCommon/app/services/Session";
 import {JournalEntryForm, JournalLineForm} from "../forms/JournalEntry.form";
 import {FormBuilder, FormGroup, FormArray} from "@angular/forms";
@@ -72,6 +72,8 @@ export class JournalEntryComponent{
     editingLineIndex:number;
     creditTotal:number = 0;
     debitTotal:number = 0;
+    focusedIdx = -1;
+    @ViewChild('list') el:ElementRef;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -357,6 +359,7 @@ export class JournalEntryComponent{
 
     //When user double clicks on the line, it toggles and show the fields
     editLine(lineListItem, index){
+        console.log(index);
         let linesControl:any = this.jeForm.controls['journalLines'];
         let data = this._jeForm.getData(lineListItem);
         //It works. Not sure whether it has better ways to do.
@@ -374,6 +377,31 @@ export class JournalEntryComponent{
         }
         this.resetAllLinesFromEditing(linesControl);
         lineListItem.editable = !lineListItem.editable;
+    }
+
+    handleKeyEvent(event: Event,index,key){
+        let base = this;
+        if(key === 'Arrow Down'){
+                base.editLine(this.jeForm.controls.journalLines.controls[index+1], index+1);
+            setTimeout(function(){
+                let elem = jQuery(base.el.nativeElement).find("tr")[index+1];
+                jQuery(elem).find("td input[placeholder='Debit']").each(function(id,field) {
+                    jQuery(field).focus();
+                },1000);
+            });
+        }else{
+            if(index == 0) {
+                base.editLine(this.jeForm.controls.journalLines.controls[index], index);
+            }else{
+                base.editLine(this.jeForm.controls.journalLines.controls[index-1], index-1);
+                setTimeout(function(){
+                    let elem = jQuery(base.el.nativeElement).find("tr")[index-1];
+                    jQuery(elem).find("td input[placeholder='Debit']").each(function(id,field) {
+                        jQuery(field).focus();
+                    },1000);
+                });
+            }
+        }
     }
 
     setJournalDate(date: string){
@@ -457,6 +485,7 @@ export class JournalEntryComponent{
         setTimeout(function(){
             base.updateLineTotal();
         });
+        console.log(jQuery(this.el.nativeElement).find("tr"),"in del");
     }
 
     getCOAName(coaId){
@@ -805,4 +834,6 @@ export class JournalEntryComponent{
     showRecurringOpts(){
         this.showAdvance = !this.showAdvance;
     }
+
+
 }

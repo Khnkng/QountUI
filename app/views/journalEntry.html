@@ -190,8 +190,8 @@
                                                 <th width="3%"></th>
                                             </tr>
                                         </thead>
-                                        <tbody *ngIf="getLineCount() != 0 && !isSystemCreatedJE">
-                                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" [hidden]="lineListItem.controls.destroy.value" (click)="editLine(lineListItem, index)">
+                                        <tbody *ngIf="getLineCount() != 0 && !isSystemCreatedJE" #list>
+                                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;"  [hidden]="lineListItem.controls.destroy.value" (click)="editLine(lineListItem, index)"  (keydown.ArrowDown)="handleKeyEvent( $event,index,'Arrow Down')" (keydown.ArrowUp)="handleKeyEvent( $event,index,'Arrow Up' )">
                                                 <td class="truncate" [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
                                                 <td [hidden]="!lineListItem.editable">
                                                     <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" (valueChanged)="updateLineCOA($event, index)">
