@@ -145,7 +145,7 @@ export class ExpenseComponent{
         let entity = _.find(this.entities, {'id': data.entity_id});
         this.selectedDimensions = data.dimensions;
         setTimeout(function(){
-            base.editCOAComboBox.setValue(coa, 'name');
+            base.editCOAComboBox.setValue(coa, 'displayName');
             base.editEntityComboBox.setValue(entity, 'name');
         });
         this.resetAllLinesFromEditing(itemsControl);
@@ -312,7 +312,7 @@ export class ExpenseComponent{
 
     getCOAName(chartOfAccountId){
         let coa = _.find(this.chartOfAccounts, {'id': chartOfAccountId});
-        return coa? coa.name: '';
+        return coa? coa.displayName: '';
     }
 
     getEntityName(vendorId){
@@ -513,7 +513,11 @@ export class ExpenseComponent{
             });
         this.coaService.chartOfAccounts(this.currentCompanyId)
             .subscribe(chartOfAccounts=> {
+                _.forEach(chartOfAccounts, function(coa) {
+                    coa['displayName']=coa.number+' - '+coa.name;
+                });
                 this.chartOfAccounts = chartOfAccounts;
+
             }, error => {
 
             });
