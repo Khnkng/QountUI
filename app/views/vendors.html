@@ -204,7 +204,10 @@
                           <label class="text-right">Routing Number</label>
                         </div>
                         <div class="small-6 columns">
-                          <input type="text" formControlName="bank_account_routing_number" placeholder="Routing Number*"/>
+                          <input type="text" formControlName="bank_account_routing_number" placeholder="Routing Number*" pattern="[0-9]{9}$"/>
+
+                          <div class="error" *ngIf="vendorForm.controls.bank_account_routing_number.touched && vendorForm.controls.bank_account_routing_number.hasError('required')">Routing Number  is required</div>
+                          <div class="error" *ngIf="vendorForm.controls.bank_account_routing_number.touched && vendorForm.controls.bank_account_routing_number.hasError('pattern')">Routing Number should have 9 digits only</div>
                         </div>
                       </div>
                       <div class="row" >
