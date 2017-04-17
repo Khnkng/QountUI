@@ -127,7 +127,7 @@ export class DepositComponent{
         let invoice = _.find(this.invoices, {'id': data.invoice_id});
         this.selectedDimensions = data.dimensions;
         setTimeout(function(){
-            base.editCOAComboBox.setValue(coa, 'name');
+            base.editCOAComboBox.setValue(coa, 'displayName');
             base.editEntityComboBox.setValue(entity, 'name');
             base.editInvoiceComboBox.setValue(invoice, 'po_number');
 
@@ -307,7 +307,7 @@ export class DepositComponent{
 
     getCOAName(chartOfAccountId){
         let coa = _.find(this.chartOfAccounts, {'id': chartOfAccountId});
-        return coa? coa.name: '';
+        return coa? coa.displayName: '';
     }
 
     getEntityName(entityId){
@@ -531,6 +531,9 @@ export class DepositComponent{
             });
         this.coaService.chartOfAccounts(this.currentCompanyId)
             .subscribe(chartOfAccounts=> {
+                _.forEach(chartOfAccounts, function(coa) {
+                    coa['displayName']=coa.number+' - '+coa.name;
+                });
                 this.chartOfAccounts = chartOfAccounts;
             }, error => {
 
