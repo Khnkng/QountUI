@@ -40,7 +40,7 @@ export class PaymentsComponent{
             if(params['paymentID']){
                 this.getPaymentDetails(params['paymentID'])
             }else {
-                this.paymentsService.mappings(companyId,"bill","true")
+                this.paymentsService.mappings(companyId,"bill","true",null)
                     .subscribe(payments => {
                         let payments=payments?payments:[];
                         this.buildTableData(payments);
