@@ -59,6 +59,7 @@ export class ExpenseComponent{
     row:any;
     selectedMappingID:string;
     expenseType:string;
+    bankAccountID:string;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
    // @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
@@ -94,9 +95,15 @@ export class ExpenseComponent{
             let link = ['/payments', this.selectedMappingID];
             this._router.navigate(link);
         }else {
+            if(!this.bankAccountID)
+            {
+                this.toastService.pop(TOAST_TYPE.error, "Please select bank account.");
+                return
+            }
+
             this.mappingFlyoutCSS="expanded";
             this.loadingService.triggerLoadingEvent(true);
-            this.paymentsService.mappings(this.currentCompanyId,this.expenseType,"false")
+            this.paymentsService.mappings(this.currentCompanyId,this.expenseType,"false",this.bankAccountID)
                 .subscribe(mappings => {
                     let mappings=mappings?mappings:[];
                     this.buildTableData(mappings);
@@ -189,6 +196,7 @@ export class ExpenseComponent{
         let data = this._expenseForm.getData(this.expenseForm);
         if(account && account.id){
             data.bank_account_id = account.id;
+            this.bankAccountID=account.id;
         }else if(!account||account=='--None--'){
             data.bank_account_id='--None--';
         }
