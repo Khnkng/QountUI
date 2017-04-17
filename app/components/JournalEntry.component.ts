@@ -238,6 +238,8 @@ export class JournalEntryComponent{
         memoControl.patchValue('');
         let dimensionsControl:any = this.lineForm.controls['dimensions'];
         dimensionsControl.patchValue([]);
+        let journalLinesControl:any = this.lineForm.controls['journalLines'];
+        journalLinesControl.patchValue([]);
         if(this.newCoaComboBox){
             this.newCoaComboBox.clearValue();
         }
@@ -359,7 +361,6 @@ export class JournalEntryComponent{
 
     //When user double clicks on the line, it toggles and show the fields
     editLine(lineListItem, index){
-        console.log(index);
         let linesControl:any = this.jeForm.controls['journalLines'];
         let data = this._jeForm.getData(lineListItem);
         //It works. Not sure whether it has better ways to do.
@@ -380,27 +381,54 @@ export class JournalEntryComponent{
     }
 
     handleKeyEvent(event: Event,index,key){
+        let current_ele = jQuery(this.el.nativeElement).find("tr")[index].closest('tr');
+        let focusedIndex;
+        jQuery(current_ele).find("td input").each(function(id,field) {
+            if(jQuery(field).is(':focus')) {
+                focusedIndex = id;
+            }
+        });
         let base = this;
         if(key === 'Arrow Down'){
-                base.editLine(this.jeForm.controls.journalLines.controls[index+1], index+1);
+            let nextIndex = this.getNextElement(current_ele,'Arrow Down');
+            base.editLine(this.jeForm.controls.journalLines.controls[nextIndex], nextIndex);
             setTimeout(function(){
-                let elem = jQuery(base.el.nativeElement).find("tr")[index+1];
-                jQuery(elem).find("td input[placeholder='Debit']").each(function(id,field) {
-                    jQuery(field).focus();
-                },1000);
+                let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
+                jQuery(elem).find("td input").each(function(id,field) {
+                    if(id == focusedIndex) {
+                        jQuery(field).focus();
+                    }
+                });
             });
         }else{
             if(index == 0) {
                 base.editLine(this.jeForm.controls.journalLines.controls[index], index);
             }else{
-                base.editLine(this.jeForm.controls.journalLines.controls[index-1], index-1);
+                let nextIndex = this.getNextElement(current_ele,'Arrow Up');
+                base.editLine(this.jeForm.controls.journalLines.controls[nextIndex], nextIndex);
                 setTimeout(function(){
-                    let elem = jQuery(base.el.nativeElement).find("tr")[index-1];
-                    jQuery(elem).find("td input[placeholder='Debit']").each(function(id,field) {
-                        jQuery(field).focus();
-                    },1000);
+                    let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
+                    jQuery(elem).find("td input").each(function(id,field) {
+                        if(id == focusedIndex) {
+                            jQuery(field).focus();
+                        }
+                    });
                 });
             }
+        }
+    }
+
+    getNextElement(current_ele,event){
+        let next_ele;
+        if(event === 'Arrow Down'){
+            next_ele= jQuery(current_ele).next('tr');
+        }else{
+            next_ele = jQuery(current_ele).prev('tr');
+        }
+        if(next_ele[0].hidden){
+            return this.getNextElement(next_ele,event);
+        }else{
+            return next_ele[0].sectionRowIndex;
         }
     }
 
@@ -484,8 +512,8 @@ export class JournalEntryComponent{
         lineList.controls[lineIndex].controls['destroy'].patchValue(true);
         setTimeout(function(){
             base.updateLineTotal();
+            base.handleKeyEvent($event,lineIndex,'Arrow Down');
         });
-        console.log(jQuery(this.el.nativeElement).find("tr"),"in del");
     }
 
     getCOAName(coaId){
