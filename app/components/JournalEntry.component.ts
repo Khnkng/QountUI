@@ -238,8 +238,6 @@ export class JournalEntryComponent{
         memoControl.patchValue('');
         let dimensionsControl:any = this.lineForm.controls['dimensions'];
         dimensionsControl.patchValue([]);
-        let journalLinesControl:any = this.lineForm.controls['journalLines'];
-        journalLinesControl.patchValue([]);
         if(this.newCoaComboBox){
             this.newCoaComboBox.clearValue();
         }
