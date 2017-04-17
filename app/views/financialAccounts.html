@@ -96,26 +96,28 @@
                                                     <div class="error" [hidden]="accountForm.controls.name_on_account.untouched || accountForm.controls.name_on_account.valid">Name on account is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row" *ngIf="showPaymentInfo">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Routing Number</label>
 
                                                 </div>
-                                                <div class="small-6 columns">
-                                                    <input type="text" formControlName="routing_number" placeholder="Routing Number*" pattern="[0-9]{9}$"/>
-                                                    <div class="error" *ngIf="accountForm.controls.routing_number.touched && accountForm.controls.routing_number.hasError('required')">Routing Number  is required</div>
-                                                    <div class="error" *ngIf="accountForm.controls.routing_number.touched && accountForm.controls.routing_number.hasError('pattern')">Routing Number should have 9 digits only</div>
+                                                <div class="small-6 columns" >
+                                                    <input type="text" formControlName="routing_number" placeholder="Routing Number*"/>
+                                                    <!--<div class="error" *ngIf="accountForm.controls.routing_number.touched && accountForm.controls.routing_number.hasError('required')">Routing Number  is required</div>
+                                                    <div class="error" *ngIf="accountForm.controls.routing_number.touched && accountForm.controls.routing_number.hasError('pattern')">Routing Number should have 9 digits only</div>-->
                                                 </div>
                                             </div>
-                                            <div class="row" >
+                                            <div class="row" *ngIf="showPaymentInfo">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Account Number</label>
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="account_number" placeholder="Account Number*" maxlength="32"/>
-                                                    <div class="error" [hidden]="accountForm.controls.account_number.untouched || accountForm.controls.account_number.valid">Account number is required.</div>
+                                                    <!--<div class="error" [hidden]="accountForm.controls.account_number.untouched || accountForm.controls.account_number.valid">Account number is required.</div>-->
                                                 </div>
                                             </div>
+
+
 
 
                                             <!--<div class="row">
@@ -206,6 +208,9 @@
                                 </div>
                             </section>
                         </form>
+                        <div style="position: relative;top:-75px;margin-left: 30px;width:150px;">
+                            <label style="display: inline;margin-right: 10px;">Payment Info</label><input type="checkbox" [(ngModel)]="showPaymentInfo"/>
+                        </div>
                         <div style="position: relative;top:-75px;margin-left: 30px;width:150px;">
                             <label style="display: inline;margin-right: 10px;">Auto Import</label><input type="checkbox" [(ngModel)]="showYodleeWidget"/>
                         </div>

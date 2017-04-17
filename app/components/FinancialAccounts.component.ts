@@ -52,6 +52,7 @@ export class FinancialAccountsComponent{
   accountSubmitted:boolean;
 
   companyCurrency:string='USD';
+  showPaymentInfo:boolean = false;
 
 
   constructor(private _router:Router,private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
@@ -267,6 +268,7 @@ export class FinancialAccountsComponent{
       {"name": "starting_balance_date", "title": "Start Balance Date"},
       {"name": "current_balance", "title": "Current Balance"},
       {"name": "id", "title": "Id", "visible": false},
+      {"name": "yodlee_provider_id", "title": "Yodle_Provider", "visible": false},
       {"name": "actions", "title": ""}
     ];
     let base = this;
@@ -287,14 +289,19 @@ export class FinancialAccountsComponent{
           let current_balance=account['current_balance']?Number(account['current_balance']):0;
           row['current_balance'] =current_balance.toLocaleString(Session.getCurrentCompanyCurrency(), { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
+        let yodlee_action="";
+        if(account.yodlee_provider_id){
+          yodlee_action = "<a class='action'><i class='icon ion-reply'></i></a>";
+        }
 
 if(account.drop_verified==false) {
   let verify = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>V</span></a>"
-  row['actions'] = verify + "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+  row['actions'] = yodlee_action + verify + "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
 }
 else{
-  row['actions'] =  "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+  row['actions'] = yodlee_action + "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
 }
+
 
       });
       base.tableData.rows.push(row);
@@ -322,6 +329,7 @@ else{
   hideFlyout(){
     this.row = {};
     this.showFlyout = !this.showFlyout;
+    this.showPaymentInfo = false;
   }
 
   launchYodleeWidget() {
