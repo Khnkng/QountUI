@@ -82,6 +82,8 @@ import {SearchResultsComponent} from "./components/SearchResults.component";
 import {ReconcileComponent} from "./components/Reconsile.component";
 import {ReconcileForm} from "./forms/Reconsile.form";
 import {ReconcileService} from "./services/Reconsile.service";
+import {DocumentsComponent} from "./components/Documents.component";
+import {DocumentService} from "./services/Documents.service";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -277,18 +279,23 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: ReconcileComponent,
             canActivate: [LoggedInActivator]
         },
+        {
+            path: 'documents/:tabId',
+            component: DocumentsComponent,
+            canActivate: [LoggedInActivator]
+        },
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
         VendorComponent,TaxesComponent,VerificationComponent,ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
-        ResetPasswordComponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,
+        ResetPasswordComponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
         CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
-        TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm,
+        TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm, DocumentService,
         FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
