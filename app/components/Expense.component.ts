@@ -1,5 +1,5 @@
 
-import {Component, ViewChild} from "@angular/core";
+import {Component, ViewChild,ElementRef} from "@angular/core";
 import {Session} from "qCommon/app/services/Session";
 import {ActivatedRoute, Router} from "@angular/router";
 import {FormBuilder, FormGroup, FormArray} from "@angular/forms";
@@ -66,6 +66,8 @@ export class ExpenseComponent{
    // @ViewChild("newEntityComboBoxDir") newEntityComboBox: ComboBox;
     @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
     @ViewChild("editEntityComboBoxDir") editEntityComboBox: ComboBox;
+    @ViewChild('list') el:ElementRef;
+
 
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _expenseForm: ExpenseForm,
             private _expenseItemForm: ExpenseItemForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
@@ -255,11 +257,66 @@ export class ExpenseComponent{
         itemForm.editable = !itemForm.editable;
     }
 
+
+    handleKeyEvent(event: Event,index,key){
+        let current_ele = jQuery(this.el.nativeElement).find("tr")[index].closest('tr');
+        let focusedIndex;
+        jQuery(current_ele).find("td input").each(function(id,field) {
+            if(jQuery(field).is(':focus')) {
+                focusedIndex = id;
+            }
+        });
+        let base = this;
+        if(key === 'Arrow Down'){
+            let nextIndex = this.getNextElement(current_ele,index,'Arrow Down');
+            base.editItem(nextIndex,this.expenseForm.controls.expense_items.controls[nextIndex]);
+            setTimeout(function(){
+                let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
+                jQuery(elem).find("td input").each(function(id,field) {
+                    if(id == focusedIndex) {
+                        jQuery(field).focus();
+                    }
+                });
+            });
+        }else{
+                let nextIndex = this.getNextElement(current_ele,index,'Arrow Up');
+                base.editItem(nextIndex,this.expenseForm.controls.expense_items.controls[nextIndex]);
+                setTimeout(function(){
+                    let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
+                    jQuery(elem).find("td input").each(function(id,field) {
+                        if(id == focusedIndex) {
+                            jQuery(field).focus();
+                        }
+                    });
+                });
+        }
+    }
+
+    getNextElement(current_ele,curr_index,event){
+        let next_ele;
+        if(event === 'Arrow Down'){
+            next_ele= jQuery(current_ele).next('tr');
+        }else{
+            next_ele = jQuery(current_ele).prev('tr');
+        }
+        if(next_ele.length >0) {
+            if (next_ele[0].hidden) {
+                return this.getNextElement(next_ele,next_ele[0].sectionRowIndex, event);
+            } else {
+                return next_ele[0].sectionRowIndex;
+            }
+        }else{
+            return curr_index;
+        }
+    }
+
+
     deleteItem($event,index){
         $event && $event.stopImmediatePropagation();
         let itemsList:any = this.expenseForm.controls['expense_items'];
         let itemControl = itemsList.controls[index];
         itemControl.controls['destroy'].patchValue(true);
+        this.handleKeyEvent($event,index,'Arrow Down');
     }
 
     /*showNewItem(){

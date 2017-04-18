@@ -388,7 +388,7 @@ export class JournalEntryComponent{
         });
         let base = this;
         if(key === 'Arrow Down'){
-            let nextIndex = this.getNextElement(current_ele,'Arrow Down');
+            let nextIndex = this.getNextElement(current_ele,index,'Arrow Down');
             base.editLine(this.jeForm.controls.journalLines.controls[nextIndex], nextIndex);
             setTimeout(function(){
                 let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
@@ -399,10 +399,7 @@ export class JournalEntryComponent{
                 });
             });
         }else{
-            if(index == 0) {
-                base.editLine(this.jeForm.controls.journalLines.controls[index], index);
-            }else{
-                let nextIndex = this.getNextElement(current_ele,'Arrow Up');
+                let nextIndex = this.getNextElement(current_ele,index,'Arrow Up');
                 base.editLine(this.jeForm.controls.journalLines.controls[nextIndex], nextIndex);
                 setTimeout(function(){
                     let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
@@ -412,21 +409,24 @@ export class JournalEntryComponent{
                         }
                     });
                 });
-            }
         }
     }
 
-    getNextElement(current_ele,event){
+    getNextElement(current_ele,curr_index,event){
         let next_ele;
         if(event === 'Arrow Down'){
             next_ele= jQuery(current_ele).next('tr');
         }else{
             next_ele = jQuery(current_ele).prev('tr');
         }
-        if(next_ele[0].hidden){
-            return this.getNextElement(next_ele,event);
+        if(next_ele.length >0) {
+            if (next_ele[0].hidden) {
+                return this.getNextElement(next_ele,next_ele[0].sectionRowIndex, event);
+            } else {
+                return next_ele[0].sectionRowIndex;
+            }
         }else{
-            return next_ele[0].sectionRowIndex;
+            return curr_index;
         }
     }
 
