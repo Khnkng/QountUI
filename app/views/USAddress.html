@@ -34,8 +34,11 @@
             <label class="text-right">Zip Code</label>
         </div>
         <div class="small-6 columns">
-            <input type="text" formControlName="zipcode" placeholder="Zip Code*"/>
-            <div class="error" [hidden]="addressForm.controls.zipcode.untouched || addressForm.controls.zipcode.valid">Zip code is required</div>
+            <input type="text" formControlName="zipcode" placeholder="Zip Code*" minlength="5" maxlength="6"/>
+            <div class="error" *ngIf="addressForm.controls.zipcode.touched && addressForm.controls.zipcode.hasError('required')">Zip Code is required</div>
+            <div class="error" *ngIf="addressForm.controls.zipcode.hasError('minlength')">Zip Code should have 5-6 digits only</div>
+
+
         </div>
     </div>
     <div class="row">

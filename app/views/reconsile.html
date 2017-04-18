@@ -2,7 +2,10 @@
     <div class="flyout expanded" [ngClass]="{'expanded':true}">
         <section class="flyout-placeholder categorize-flyout">
             <header class="flyout-header">
-                <h6>Reconcile</h6>
+                <h6><span class="recon-selected-count">Reconcile</span>
+                    <span class="recon-selected-count" *ngIf="!showForm">|</span>
+                    <span *ngIf="!showForm">{{selectedBankName}}</span>
+                </h6>
             </header>
             <form (ngSubmit)="submit($event)" [formGroup]="reconcileForm" *ngIf="showForm">
             <div class="row">
@@ -21,80 +24,169 @@
                     </label>
                 </div>
             </div>
-                <!--<div class="row">
-                    <div class="column large-12 medium-12 small-12 foo-container">
-                        <foo-table class="bighalf-footable" *ngIf="hasEntries" [data]="unreconciledRecords" [options]="unreconciledTableOptions">
-                        </foo-table>
-                        <div *ngIf="!hasEntries">No Records Found</div>
+                <div class="row">
+                    <div class="small-12 medium-3 column">
+                        <label>Statement Inflow
+                            <input type="text" formControlName="statementInflow" placeholder="Statement Inflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
+                        </label>
                     </div>
-                </div>-->
+                    <div class="small-12 medium-3 column">
+                        <label>Statement Outflow
+                            <input type="text" formControlName="statementOutflow" placeholder="Statement Outflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-3 column">
+                        <label>Statement Ending Balance
+                            <input type="text" formControlName="statementEndingBalance" placeholder="Statement Ending Balance*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
+                            <div class="error" [hidden]="reconcileForm.controls.statementEndingBalance.untouched || reconcileForm.controls.statementEndingBalance.valid">Please Enter Ending Balance</div>
+                        </label>
+                    </div>
+                </div>
+
+
             <div class="row" *ngIf="showForm">
                 <div class="small-12 medium-12 columns">
                     <button class="button create small float-right" [disabled]="!reconcileForm.valid" type="submit" (click)="submit($event)" data-close>submit</button>
                 </div>
             </div>
             </form>
-
-            <div class="row" *ngIf="!showForm">
-                <div class="small-12 medium-3 columns">
-                    <label>Starting Balance
-                        <input type="text"  placeholder="Starting Balance*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="startingBalance" readonly/>
-                    </label>
-                </div>
-                <div class="small-12 medium-3 columns">
-                    <label>Statement Inflow
-                        <input type="text" placeholder="Inflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="statementInflow"/>
-                    </label>
-                </div>
-                <div class="small-12 medium-3 columns">
-                    <label>Statement Outflow
-                        <input type="text" placeholder="Outflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="statementOutflow"/>
-                    </label>
-                </div>
-                <div class="small-12 medium-3 columns">
-                    <label>Statement Ending Balance
-                        <input type="text" placeholder="Amount*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="statementEndingBalance"/>
-                    </label>
+            <div class="row" *ngIf="showForm">
+                <div class="column large-12 medium-12 small-12 foo-container">
+                    <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasData" [data]="reconActivityTableData" [options]="unreconciledTableOptions" (onRowClick)="handleReconActivity($event)"></foo-table>
                 </div>
             </div>
             <div class="row" *ngIf="!showForm">
-                <div class="small-12 medium-3 columns"></div>
-                <div class="small-12 medium-3 columns">
-                    <label>Inflow
-                        <input type="text" placeholder="Inflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="inflow" readonly/>
-                    </label>
+                <div class="recon-main">
+                <div class="small-12 medium-9 columns">
+                 <div class="row">
+                    <div class="small-12 medium-4 columns">
+                        <div>{{statementEndingBalance | currency:companyCurrency:true:'1.2-2'}}</div>
+                        <label>Statement Ending Balance</label>
+                    </div>
+                    <div class="small-12 medium-1 columns">
+                        <div style="font-size: 20px;"> - </div>
+                    </div>
+                    <div class="small-12 medium-4 columns text-center">
+                        <div>{{endingBalance | currency:companyCurrency:true:'1.2-2'}}</div>
+                        <label>Books Ending Balance</label>
+                        <div class="recon-pipe">|</div>
+                    </div>
+                 </div>
+            <div class="row" *ngIf="!showForm">
+                <div class="small-12 medium-2 columns"></div>
+                <div class="small-12 medium-10 columns">
+                <div class="row hr-divider" style=""></div>
+                <div class="row">
+                <div class="small-12 medium-4 columns">
+                    <div>{{startingBalance | currency:companyCurrency:true:'1.2-2'}}</div>
+                    <div><label>Starting Balance</label></div>
+                </div>
+                <div class="small-12 medium-1 columns">
+                    <div style="font-size: 20px;"> - </div>
+                </div>
+                    <div class="small-12 medium-3 columns">
+                        <div>{{outflow | currency:companyCurrency:true:'1.2-2'}}</div>
+                        <div><label><span class="recon-selected-count">{{selectedExpensesCount}}</span><span>Expenses</span></label></div>
+                    </div>
+
+                <div class="small-12 medium-1 columns">
+                    <div style="font-size: 20px;"> + </div>
+                </div>
+                    <div class="small-12 medium-3 columns">
+                        <div>{{inflow | currency:companyCurrency:true:'1.2-2'}}</div>
+                        <div><label><span class="recon-selected-count">{{selectedDepositsCount}}</span><span>Deposits</span></label></div>
+                    </div>
+                </div>
+                </div>
+            </div>
                 </div>
                 <div class="small-12 medium-3 columns">
-                    <label>Outflow
-                        <input type="text" placeholder="Outflow*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="outflow" readonly/>
-                    </label>
+                    <!--<div class="row">
+                        <div class="small-12 medium-12 columns">
+                            <button class="button create small float-right"  type="submit" (click)="submitReconcile()" data-close>{{reconDifference == 0 ? 'Finish now':'Save For Later'}}</button>
+                            <button class="button create small float-right" style="margin-right:10px;" data-close>Edit Info</button>
+                        </div>
+                    </div>-->
+
+                    <div class="row recon-difference">
+                        <div class="small-12 medium-2 columns" style="padding: 5px 0 0 25px;" [style.color]="reconDifference == 0 ?'#0FB45A':'#FF3219'">
+                            <div><i class="ion-checkmark-circled" *ngIf="reconDifference == 0"></i><i class="ion-alert-circled" *ngIf="reconDifference !== 0"></i></div>
+                        </div>
+                        <div class="small-12 medium-10 columns">
+                            <div>{{reconDifference | currency:companyCurrency:true:'1.2-2'}}</div>
+                            <div><label><u>Difference</u></label></div>
+                        </div>
+                    </div>
+                    <div class="row" *ngIf="!showForm && editable">
+                        <div class="small-12 medium-12 columns">
+                            <button class="button create small float-right"  [ngClass]="{'reconSubmit': reconDifference == 0}" style="margin-top:10px;"  type="submit" (click)="submitReconcile()" data-close [disabled]="reconDifference !== 0">Reconcile</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="small-12 medium-3 columns">
-                    <label>Difference / Ending Balance
-                        <input type="text" placeholder="Amount*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" [(ngModel)]="endingBalance" readonly/>
-                    </label>
                 </div>
             </div>
 
                 <div class="row" *ngIf="!showForm">
-                    <div class="column large-12 medium-12 small-12 foo-container">
-                        <foo-table class="bighalf-footable" *ngIf="hasEntries" [data]="tableData" [options]="tableOptions" (onRowSelect)="handleSelect($event)">
-                        </foo-table>
-                        <div *ngIf="!hasEntries">No Records Found</div>
+                    <div class="tab-container" style="width:100%;" foundation>
+                        <div class="row tabber">
+                            <div class="column tab red-tab" (click)="selectTab(0,'')" [ngClass]="{'selected': tabDisplay[0].display == 'block'}">
+                                <label>Deposits</label>
+                                <!--<span class="badge">{{depositsTableData.length}}</span>-->
+                            </div>
+                            <div class="column tab orange-tab" (click)="selectTab(1,'')" [ngClass]="{'selected': tabDisplay[1].display == 'block'}">
+                                <label>Expenses</label>
+                               <!-- <span class="badge"></span>-->
+                            </div>
+                            <!--<div class="column tab blue-tab" (click)="selectTab(2,'')" [ngClass]="{'selected': tabDisplay[2].display == 'block'}">
+                                <label>All</label>
+                                &lt;!&ndash;<span class="badge"></span>&ndash;&gt;
+                            </div>-->
+                        </div>
+                        <div class="row collapse tab-content reconcile-tab-content">
+                            <div [hidden]="tabDisplay[0].display !== 'block'" class="column small-12 medium-12 large-12">
+                                <div class="row">
+                                    <div class="column foo-container">
+                                        <foo-table class="bigpay-dashboard bighalf-footable" [data]="depositsTableData" [options]="tableOptions" (onRowSelect)="handleDepositsSelect($event)" #depositsTable></foo-table>
+                                        <!--<div class="callout text-center" [hidden]="isLoading" *ngIf="!hasDepositEntries">
+                                            <div class="woo-woo">Woot Woot!</div>
+                                            <p>There are no Deposits.</p>
+                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div [hidden]="tabDisplay[1].display !== 'block'" class="column small-12 medium-12 large-12">
+                                <div class="row">
+                                    <div class="column foo-container">
+                                        <foo-table class="bigpay-dashboard bighalf-footable" [data]="expensesTableData" [options]="tableOptions" (onRowSelect)="handleExpensesSelect($event)" #expensesTable></foo-table>
+                                        <!--<div class="callout text-center" [hidden]="isLoading">
+                                            <div class="woo-woo">Woot Woot!</div>
+                                            <p>There are no Expenses.</p>
+                                        </div>-->
+                                    </div>
+                                </div>
+                            </div>
+                           <!-- <div [hidden]="tabDisplay[2].display !== 'block'" class="column small-12 medium-12 large-12">
+                                <div class="row">
+                                    <div class="column foo-container">
+                                        <foo-table class="bigpay-dashboard bighalf-footable je-footable" [data]="tableData" [options]="tableOptions" (onRowSelect)="handleSelect($event)"></foo-table>
+                                        &lt;!&ndash;<div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasEntries">
+                                            <div class="woo-woo">Woot Woot!</div>
+                                            <p>There are no entries.</p>
+                                        </div>&ndash;&gt;
+                                    </div>
+                                </div>
+                            </div>-->
+                        </div>
                     </div>
                 </div>
 
-                <div class="row" *ngIf="!showForm && hasEntries">
-                    <div class="small-12 medium-12 columns">
-                        <button class="button create small float-right"  type="submit" (click)="submitReconcile()" data-close>submit</button>
-                    </div>
-                </div>
+
                 <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="showForm" (click)="showPreviousPage()">
                 <span aria-hidden="true">
                   <i class="ion-ios-close-empty"></i>
                 </span>
                 </button>
-                <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="!showForm" (click)="resetReconcileForm()">
+                <button class="close-flyout"  aria-label="Close modal" type="button" *ngIf="!showForm" (click)="resetReconcileForm()">
                 <span aria-hidden="true">
                   <i class="ion-ios-close-empty"></i>
                 </span>

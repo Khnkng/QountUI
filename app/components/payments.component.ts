@@ -23,12 +23,13 @@ export class PaymentsComponent{
     tableOptions:any = {};
     currentCompany:any;
     row:any;
-    tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName'];
+    tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName','bankName'];
     confirmSubscription:any;
     companyCurrency:string;
     dimensionFlyoutCSS:any;
     bills:Array<any>=[];
     routeSub:any;
+    fromPayments:boolean=false;
 
     constructor(private switchBoard: SwitchBoard, private toastService: ToastService, private loadingService:LoadingService
                 ,private paymentsService:PaymentsService,private _router:Router, private _route: ActivatedRoute,){
@@ -39,11 +40,10 @@ export class PaymentsComponent{
             if(params['paymentID']){
                 this.getPaymentDetails(params['paymentID'])
             }else {
-                this.paymentsService.payments(companyId)
+                this.paymentsService.mappings(companyId,"bill","true",null)
                     .subscribe(payments => {
                         let payments=payments?payments:[];
                         this.buildTableData(payments);
-                        this.loadingService.triggerLoadingEvent(false);
                     }, error => this.handleError(error));
             }
         });
@@ -69,7 +69,10 @@ export class PaymentsComponent{
         delete $event.action;
         delete $event.actions;
         if(action == 'edit') {
-            this.getPaymentDetails($event.groupID)
+            this.fromPayments=true;
+            let link = ['/payments', $event.groupID];
+            this._router.navigate(link);
+            //this.getPaymentDetails($event.groupID)
         }else {
             this.navigateToJE($event.journalID);
         }
@@ -86,6 +89,7 @@ export class PaymentsComponent{
                 //this.loadingService.triggerLoadingEvent(false);
                 this.bills=paymentsDetails;
                 this.dimensionFlyoutCSS = "expanded";
+                this.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
     }
 
@@ -102,6 +106,7 @@ export class PaymentsComponent{
             {"name": "date", "title": "Date"},
             {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
             {"name": "vendorName", "title": "Vendor"},
+            {name:"bankName","title":"Bank"},
             {"name": "actions", "title": ""}
         ];
         let base = this;
@@ -124,10 +129,17 @@ export class PaymentsComponent{
         setTimeout(function(){
             base.hasPayments = true;
         }, 0);
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     hideFlyout(){
-        this.dimensionFlyoutCSS = "collapsed";
+        if(this.fromPayments){
+            this.dimensionFlyoutCSS = "collapsed";
+        }else {
+            this.goToPreviousPage();
+        }
+
+
     }
 
     moveToBills(bill){
@@ -141,7 +153,16 @@ export class PaymentsComponent{
     }
 
     goToPreviousPage(){
-        let link = [Session.getLastVisitedUrl()];
+        let link:any;
+        if(Session.getLastVisitedUrl().indexOf('/payments/bill')==0){
+            link = ["/payments"];
+        }else {
+            link = [Session.getLastVisitedUrl()];
+        }
         this._router.navigate(link);
+    }
+
+    goToDashboard(){
+        this._router.navigate(["/payments/dashboard/enter"]);
     }
 }

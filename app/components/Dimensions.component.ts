@@ -46,7 +46,6 @@ export class DimensionsComponent{
     let companyId = Session.getCurrentCompany();
     this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteDimensions(toast));
     this.loadingService.triggerLoadingEvent(true);
-
     this.companiesService.companies().subscribe(companies => {
       this.allCompanies = companies;
       if(companyId){
@@ -56,7 +55,6 @@ export class DimensionsComponent{
       }
       this.dimensionService.dimensions(this.currentCompany.id)
           .subscribe(dimensions => {
-            this.loadingService.triggerLoadingEvent(false);
             this.buildTableData(dimensions);
           }, error => this.handleError(error));
     }, error => this.handleError(error));
@@ -66,6 +64,7 @@ export class DimensionsComponent{
   }
   handleError(error){
     this.row = {};
+    this.loadingService.triggerLoadingEvent(false);
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
   }
 
@@ -122,7 +121,7 @@ export class DimensionsComponent{
     this.loadingService.triggerLoadingEvent(true);
     this.dimensionService.removeDimension(this.dimensionName, this.currentCompany.id)
         .subscribe(coa => {
-          this.loadingService.triggerLoadingEvent(false);
+         // this.loadingService.triggerLoadingEvent(false);
           this.toastService.pop(TOAST_TYPE.success, "Dimension deleted successfully");
           this.dimensions.splice(_.findIndex(this.dimensions, {name: this.dimensionName}), 1);
           this.buildTableData(this.dimensions);
@@ -188,7 +187,7 @@ export class DimensionsComponent{
           .subscribe(dimension => {
             base.row = {};
             this.showFlyout = false;
-            base.loadingService.triggerLoadingEvent(false);
+           // base.loadingService.triggerLoadingEvent(false);
             base.toastService.pop(TOAST_TYPE.success, "Dimension updated successfully");
             let index = _.findIndex(base.dimensions, {name: dimension.name});
             base.dimensions[index] = dimension;
@@ -197,12 +196,12 @@ export class DimensionsComponent{
     } else{
       this.dimensionService.addDimensions(data, this.currentCompany.id)
           .subscribe(newDimension => {
-            this.loadingService.triggerLoadingEvent(false);
+           // this.loadingService.triggerLoadingEvent(false);
             this.showFlyout = false;
             this.handleDimension(newDimension);
           }, error => this.handleError(error));
     }
-    this.buildTableData(this.dimensions);
+    //this.buildTableData(this.dimensions);
   }
 
   cleanData(data){
@@ -246,5 +245,6 @@ export class DimensionsComponent{
     setTimeout(function(){
       base.hasDimensions = true;
     }, 0)
+    this.loadingService.triggerLoadingEvent(false);
   }
 }

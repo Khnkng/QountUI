@@ -44,7 +44,7 @@ export class ChartOfAccountsComponent{
   allCompanies:Array<any>;
   mappings:Array<any>;
   row:any;
-  coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'type', 'subType', 'desc', 'number'];
+  coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'type', 'subType', 'desc', 'number', 'balance'];
   combo:boolean = true;
   sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices", "loansTo"];
   hasParentOrChild: boolean = false;
@@ -73,7 +73,6 @@ export class ChartOfAccountsComponent{
   fetchChartOfAccountData(){
     this.coaService.chartOfAccounts(this.currentCompany.id)
         .subscribe(chartOfAccounts => {
-          this.loadingService.triggerLoadingEvent(false);
           this.buildTableData(chartOfAccounts);
         }, error=> this.handleError(error));
   }
@@ -270,7 +269,7 @@ export class ChartOfAccountsComponent{
       this.coaService.updateCOA(data.id, data, this.currentCompany.id)
           .subscribe(coa => {
             base.showFlyout = false;
-            base.loadingService.triggerLoadingEvent(false);
+          //  base.loadingService.triggerLoadingEvent(false);
             base.row = {};
             base.toastService.pop(TOAST_TYPE.success, "Chart of Account updated successfully");
             this.fetchChartOfAccountData();
@@ -279,7 +278,7 @@ export class ChartOfAccountsComponent{
       this.coaService.addChartOfAccount(data, this.currentCompany.id)
           .subscribe(newCOA => {
             base.showFlyout = false;
-            this.loadingService.triggerLoadingEvent(false);
+            //this.loadingService.triggerLoadingEvent(false);
             this.handleCOA(newCOA);
           }, error => this.handleCOAError(error));
     }
@@ -325,6 +324,7 @@ export class ChartOfAccountsComponent{
       {"name": "categoryType", "title": "Type"},
       {"name": "subTypeCode", "title": "Sub Type"},
       {"name": "parentName", "title": "Parent"},
+      {"name": "balance", "title": "Balance"},
       {"name": "type", "title": "Type", "visible": false},
       {"name": "subType", "title": "Sub type", "visible": false},
       {"name": "desc", "title": "Description", "visible": false},
@@ -380,6 +380,7 @@ export class ChartOfAccountsComponent{
     setTimeout(function(){
       base.hasCOAList = true;
     }, 0)
+    this.loadingService.triggerLoadingEvent(false);
   }
 
   getNumber(coaId){

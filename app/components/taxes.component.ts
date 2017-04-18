@@ -79,15 +79,12 @@ export class TaxesComponent {
             });
         this.coaService.chartOfAccounts(this.companyId)
             .subscribe(chartOfAccounts => {
-                this.loadingService.triggerLoadingEvent(false);
                 // this.buildTableData(chartOfAccounts);
                 this.chartOfAccounts=chartOfAccounts;
-                console.log("chartOfAccounts",chartOfAccounts);
             }, error=> this.handleError(error));
         this.companyService.getTaxofCompany(this.companyId)
             .subscribe(taxesList  => {
                 this.buildTableData(taxesList);
-                this.loadingService.triggerLoadingEvent(false);
                 this.taxesList=taxesList;
                 console.log("taxesListtaxesList",taxesList);
                 // this.showMessage(true, success);
@@ -132,6 +129,7 @@ export class TaxesComponent {
 
             base.hasItemCodes = true;
         }, 0)
+        this.loadingService.triggerLoadingEvent(false);
     }
     getCompanyName(companyId){
         let company = _.find(this.companies, {id: companyId});
@@ -193,7 +191,7 @@ export class TaxesComponent {
             }, error =>  this.handleError(error));
     }
     handleError1(error){
-
+        this.loadingService.triggerLoadingEvent(false);
     }
     removeTax(row:any) {
         let vendor:VendorModel = row;
@@ -234,7 +232,6 @@ export class TaxesComponent {
             }
             this.companyService.updateTax(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
@@ -249,7 +246,6 @@ export class TaxesComponent {
 
             this.companyService.addTax(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
@@ -294,12 +290,10 @@ export class TaxesComponent {
         if(status) {
             this.status = {};
             this.status['success'] = true;
-            this.hasVendorsList=false;
             if(this.editMode) {
                 this.companyService.getTaxofCompany(this.companyId)
                     .subscribe(taxesList  => {
                         this.buildTableData(taxesList);
-                        this.loadingService.triggerLoadingEvent(false);
                         this.taxesList=taxesList;
                     }, error =>  this.handleError(error));
                 this.TaxesForm.reset();
@@ -308,8 +302,6 @@ export class TaxesComponent {
                 this.companyService.getTaxofCompany(this.companyId)
                     .subscribe(taxesList  => {
                         this.buildTableData(taxesList);
-                        this.loadingService.triggerLoadingEvent(false);
-                        this.taxesList=taxesList;
                     }, error =>  this.handleError(error));
 
                 this.TaxesForm.reset();
@@ -318,6 +310,7 @@ export class TaxesComponent {
         } else {
             this.status = {};
             this.status['error'] = true;
+            this.loadingService.triggerLoadingEvent(false);
             try {
                 let resp = JSON.parse(obj);
                 if(resp.message){
@@ -332,6 +325,7 @@ export class TaxesComponent {
     }
 
     handleError(error) {
+        this.loadingService.triggerLoadingEvent(false);
         this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }
 
@@ -341,6 +335,7 @@ export class TaxesComponent {
     }
     getTaxDetails(vendorID){
         let base=this;
+        this.loadingService.triggerLoadingEvent(true);
         this.companyService.tax(this.companyId,vendorID).subscribe(tax => {
             this.row = tax;
             let selectedCOAControl:any = this.TaxesForm.controls['name'];
@@ -372,6 +367,7 @@ export class TaxesComponent {
             visibleOnInvoices.patchValue(tax.visibleOnInvoices);
 
             this._taxesForm.updateForm(this.TaxesForm, tax);
+            this.loadingService.triggerLoadingEvent(false);
 
         }, error => this.handleError(error));
     }

@@ -99,11 +99,11 @@ export class BooksComponent{
             this.routeSub = this._route.params.subscribe(params => {
                 if(params['tabId']=='deposits'){
                     this.selectTab(0,"");
-                    this.hasJournalEntries = false;
+                    this.hasDeposits = false;
                 }
                 else if(params['tabId']=='expenses'){
                     this.selectTab(1,"");
-                    this.hasJournalEntries = false;
+                    this.hasExpenses = false;
                 }
                 else if(params['tabId']=='journalEntries'){
                     this.selectTab(2,"");
@@ -176,11 +176,10 @@ export class BooksComponent{
                 this.accounts = accounts.accounts;
                 this.expenseService.expenses(this.currentCompany.id)
                     .subscribe(expenses => {
-                        this.loadingService.triggerLoadingEvent(false);
                         this.buildExpenseTableData(expenses.expenses);
                     }, error => this.handleError(error));
             }, error=> {
-
+                this.loadingService.triggerLoadingEvent(false);
             });
     }
 
@@ -190,11 +189,10 @@ export class BooksComponent{
                 this.accounts = accounts.accounts;
                 this.depositService.deposits(this.currentCompany.id)
                     .subscribe(deposits => {
-                        this.loadingService.triggerLoadingEvent(false);
                         this.buildDepositTableData(deposits.deposits);
                     }, error => this.handleError(error));
             }, error=> {
-
+                this.loadingService.triggerLoadingEvent(false);
             });
     }
 
@@ -223,7 +221,6 @@ export class BooksComponent{
     fetchJournalEntries(){
         this.journalService.journalEntries(this.currentCompany.id)
             .subscribe(journalEntries => {
-                this.loadingService.triggerLoadingEvent(false);
                 this.buildTableData(journalEntries);
             }, error => this.handleError(error));
     }
@@ -276,8 +273,11 @@ export class BooksComponent{
             .subscribe(response => {
                 this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully");
-                this.fetchJournalEntries();
+                this.hasJournalEntries = false;
+                this.selectTab(2,"");
+                this.getBookBadges();
             }, error => {
+                this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.error, "Failed to delete Journal Entry");
             });
     }
@@ -288,6 +288,7 @@ export class BooksComponent{
     }
 
     handleError(error){
+        this.loadingService.triggerLoadingEvent(false);
         this.toastService.pop(TOAST_TYPE.error, "Could not perform action.")
     }
 
@@ -315,12 +316,14 @@ export class BooksComponent{
 
     buildExpenseTableData(data){
         let base = this;
-        this.isLoading = false;
         this.expensesTableData.search = true;
         this.handleBadges(data.length, 1);
         this.expensesTableData.columns = [
             {"name": "title", "title": "Title"},
-            {"name": "amount", "title": "Amount"},
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = parseFloat(amount);
+                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }},
             //{"name": "status", "title": "Status", "type": "html", "sortable": false},
             //{"name": "paid_date", "title": "Paid Date"},
             {"name": "due_date", "title": "Expense Date"},
@@ -330,13 +333,15 @@ export class BooksComponent{
             {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}];
         this.expensesTableData.rows = [];
         data.forEach(function(expense){
+
+
             let row:any = {};
             _.each(Object.keys(expense), function(key){
                 if(key == 'bank_account_id'){
                     row[key] = base.getBankAccountName(expense[key]);
                 } else if(key == 'amount'){
                     let amount = parseFloat(expense[key]);
-                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    row[key] = amount.toFixed(2); // just to support regular number with .00
                 } else{
                     row[key] = expense[key];
                 }
@@ -356,24 +361,30 @@ export class BooksComponent{
             }
             base.expensesTableData.rows.push(row);
         });
-        if(this.expensesTableData.rows.length > 0){
+        if(data.length > 0){
             this.hasExpenses = true;
+            this.isLoading=false;
+        }else {
+            this.hasExpenses = false;
+            this.isLoading=false;
         }
-        this.hasExpenses = false;
+        /*this.hasExpenses = false;
         setTimeout(function(){
             base.hasExpenses = true;
-        });
-
+        });*/
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     buildDepositTableData(data){
         let base = this;
-        this.isLoading = false;
         this.handleBadges(data.length, 0);
         this.depositsTableData.search = true;
         this.depositsTableData.columns = [
             {"name": "title", "title": "Title"},
-            {"name": "amount", "title": "Amount"},
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = parseFloat(amount);
+                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }},
             {"name": "date", "title": "Date"},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
@@ -385,10 +396,13 @@ export class BooksComponent{
             _.each(Object.keys(expense), function(key){
                 if(key == 'bank_account_id'){
                     row[key] = base.getBankAccountName(expense[key]);
-                } else if(key == 'amount'){
+
+                }  else if(key == 'amount'){
+                    console.log("expense[key]",expense[key]);
                     let amount = parseFloat(expense[key]);
-                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                } else{
+                    //row[key] = amount.toLocaleString(base.companyCurrency, {currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 }) // just to support regular number with .00
+                    row[key] = amount.toFixed(2);
+                }else{
                     row[key] = expense[key];
                 }
             });
@@ -399,18 +413,21 @@ export class BooksComponent{
             }
             base.depositsTableData.rows.push(row);
         });
-        if(this.depositsTableData.rows.length > 0){
+        if(data.length > 0){
             this.hasDeposits = true;
+            this.isLoading=false;
+        }else {
+            this.hasDeposits = false;
+            this.isLoading=false;
         }
-        this.hasDeposits = false;
+        /*this.hasDeposits = false;
         setTimeout(function(){
             base.hasDeposits = true;
-        });
+        });*/
+        base.loadingService.triggerLoadingEvent(false);
     }
-
     buildTableData(data){
         let base = this;
-        this.isLoading = false;
         this.handleBadges(data.length, 2);
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
@@ -466,18 +483,24 @@ export class BooksComponent{
                 action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>C</span></a>"+action;
             }
             row['actions'] = action;
+
             if(row['type'] == 'Original' && journalEntry['source'] === 'Manual' && !base.isAlreadyReversed(journalEntry['id']) && journalEntry['sourceID']){
                 row['reverse'] = "<a style='font-size:0.1rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action reverseButton' data-action='reverse'>Reverse</a>";
             }
             base.jeTableData.rows.push(row);
         });
-        if(this.jeTableData.rows.length > 0){
+        if(data.length > 0){
             this.hasJournalEntries = true;
+            this.isLoading=false;
+        }else{
+            this.hasJournalEntries = false;
+            this.isLoading=false;
         }
-        this.hasJournalEntries = false;
+        /*this.hasJournalEntries = false;
         setTimeout(function(){
            base.hasJournalEntries = true;
-        });
+        });*/
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     isAlreadyReversed(journalId){
@@ -520,10 +543,12 @@ export class BooksComponent{
 
     removeDepo(toast){
         this.loadingService.triggerLoadingEvent(true);
-        this.depositService.removeDeposit(this.DepositToDelete, this.currentCompany)
+        this.depositService.removeDeposit(this.DepositToDelete, this.currentCompany.id)
             .subscribe(response=> {
                 this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
-                this.fetchDeposits();
+               // this.fetchDeposits();
+                this.hasDeposits = false;
+                this.selectTab(0,"");
                 this.getBookBadges();
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
@@ -540,10 +565,12 @@ export class BooksComponent{
     }
     removeExp(toast){
         this.loadingService.triggerLoadingEvent(true);
-        this.expenseService.removeExpense(this.ruleToDelete, this.currentCompany)
+        this.expenseService.removeExpense(this.ruleToDelete, this.currentCompany.id)
             .subscribe(response=> {
                 this.toastService.pop(TOAST_TYPE.success, "Deleted expense successfully");
-                this.fetchExpenses();
+               // this.fetchExpenses();
+                this.hasExpenses = false;
+                this.selectTab(1,"");
                 this.getBookBadges();
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);

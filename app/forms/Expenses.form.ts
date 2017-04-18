@@ -22,7 +22,8 @@ export class ExpenseForm extends abstractForm{
             "id": [''],
             "type":[''],
             "reference_number":[''],
-            "expense_type":['']
+            "expense_type":[''],
+            "mapping_id":['']
         }
     }
 }
@@ -31,8 +32,8 @@ export class ExpenseForm extends abstractForm{
 export class ExpenseItemForm extends abstractForm{
     getForm(item?) {
         return {
-            "title": [item? item.title: '', Validators.required],
-            "amount": [item? item.amount: '', Validators.required],
+            "title": [item? item.title: ''],
+            "amount": [item? item.amount: 0],
             "notes": [item? item.notes: ''],
             "entity_id": [item? item.entity_id: ''],
             "chart_of_account_id": [item? item.chart_of_account_id: ''],

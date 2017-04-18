@@ -5,7 +5,7 @@
                 <h6>Search</h6>
             </header>
             <div class="flyout-body flyout-shadow-effect">
-                <section class="form-section clearfix search-reveal" *ngIf="!showSearchCriteria">
+                <section class="form-section clearfix search-reveal" [hidden]="showSearchCriteria">
                     <div class="row">
                         <div class="small-12 medium-12 columns">
                             <div class="form-section-left expense-row">
@@ -15,7 +15,7 @@
                         </div>
                     </div>
                 </section>
-                <section class="form-section clearfix search-reveal" *ngIf="showSearchCriteria">
+                <section class="form-section clearfix search-reveal" [hidden]="!showSearchCriteria">
                     <div class="row">
                         <div class="small-12 medium-12 columns">
                             <div class="form-section-left expense-row">
@@ -85,6 +85,7 @@
                                                 <div class="small-12 medium-4 columns">
                                                     <select [(ngModel)]="dateCondition">
                                                         <option value=""></option>
+                                                        <option value="equals">equals</option>
                                                         <option value="before">before</option>
                                                         <option value="after">after</option>
                                                         <option value="between">between</option>
@@ -109,7 +110,7 @@
                                     </div>
                                     <div class="small-12 medium-3 columns">
                                         <label>Chart of Accounts
-                                            <select combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" (valueChanged)="setChartOfAccount($event)">
+                                            <select combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" (valueChanged)="setChartOfAccount($event)" [(ngModel)]="chartOfAccount">
                                                 <option *ngFor="let account of chartOfAccounts" [value]="account.id">{{account.name}}</option>
                                             </select>
                                         </label>
@@ -123,8 +124,8 @@
                                     </div>
                                     <div class="small-12 medium-2 columns">
                                         <label>Customers
-                                            <select combo-box #customerComboBoxDir="comboBox" data-placeholder="Select Customer" [listObject]="customers" (valueChanged)="setCustomer($event)">
-                                                <option *ngFor="let customer of customers" [value]="customer.id">{{customer.name}}</option>
+                                            <select combo-box #customerComboBoxDir="comboBox" data-placeholder="Select Customer" [listObject]="customers" (valueChanged)="setCustomer($event)" [(ngModel)]="customer">
+                                                <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
                                             </select>
                                         </label>
                                     </div>

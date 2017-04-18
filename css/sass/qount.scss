@@ -193,7 +193,7 @@ h1, h2, h3, h4, h5, h6 {
   background-color:#81c868;
 }
 
-a:hover, a:focus .je-badge{
+a:focus .je-badge{
   color: #ffffff;
 }
 
@@ -2714,16 +2714,17 @@ table.footable-editing-right tr.footable-editing td {
     }
   }
   .box-notification-circle{
-    width: 22px;
+    min-width: 22px;
     height: 22px;
     border-radius: 11px;
     background-color: $qount-brand-red-pastel;
     color: #ffffff;
     position: relative;
-    left:50px;
+    left:20px;
     bottom: 5px;
     font-size: .9em;
-
+    display:inherit;
+    padding:0 2px;
   }
   .box-label{
     color: $qount-text;
@@ -3397,3 +3398,70 @@ dropdown-content.dropdown-content:before {
 .jeSelect:disabled {
   background-color: inherit;
 }
+
+.bill-table {
+  position: relative !important;
+  width: 100%;
+}
+.entry-callout{
+  margin-top: 3rem;
+}
+.reconcile-tab-content {
+  min-height: 310px !important;
+  padding-top: initial !important;
+}
+
+.recon-main {
+  margin: 0 15px 15px;
+  padding:10px 0;
+  width:100%;
+  background-color: $qount-table-tr-hover;
+  color:#696E73;
+}
+
+.recon-main label {
+  color:#696E73;
+}
+
+.hr-divider {
+  border-top:1px solid $qount-brand-grey;
+  border-left:1px solid $qount-brand-grey;
+  border-right:1px solid $qount-brand-grey;
+  padding:5px;
+}
+
+.recon-pipe{
+  line-height:1.3;
+  color: #CCCCCC;
+}
+
+.recon-difference {
+  padding:30px 0;
+  border-left:1px solid $qount-brand-grey;
+}
+
+.recon-selected-count {
+   margin-right:5px;
+}
+
+.recon-main u {
+  border-bottom: 1px dotted $qount-brand-grey;
+  text-decoration: none;
+}
+
+.footable .radio {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+
+.mapping-buttons {
+  button {
+    margin-top: 0px !important;
+    margin-left: 10px;
+  }
+}
+.reconSubmit {
+  background-color: $qount-brand-green;
+}
+

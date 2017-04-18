@@ -2,7 +2,7 @@
  * Created by seshu on 26-02-2016.
  */
 
-import {Component, ViewChild} from "@angular/core";
+import {Component, ViewChild,ElementRef} from "@angular/core";
 import {Session} from "qCommon/app/services/Session";
 import {JournalEntryForm, JournalLineForm} from "../forms/JournalEntry.form";
 import {FormBuilder, FormGroup, FormArray} from "@angular/forms";
@@ -72,6 +72,8 @@ export class JournalEntryComponent{
     editingLineIndex:number;
     creditTotal:number = 0;
     debitTotal:number = 0;
+    focusedIdx = -1;
+    @ViewChild('list') el:ElementRef;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -241,7 +243,9 @@ export class JournalEntryComponent{
         }
     }
 
-    showFlyout(lineStatus, index){
+    showFlyout($event, index){
+        $event && $event.preventDefault();
+        $event && $event.stopImmediatePropagation();
         this.dimensionFlyoutCSS = "expanded";
         this.lineActive = true;
         this.resetLineForm();
@@ -253,6 +257,7 @@ export class JournalEntryComponent{
         let lineData = this._lineListForm.getData(tempLineForm);
         this.selectedDimensions = lineData.dimensions || [];
         this.updateLineFormForEdit(lineData);
+        this.resetAllLinesFromEditing(itemsControl);
     }
 
     updateLineFormForEdit(lineData){
@@ -373,6 +378,58 @@ export class JournalEntryComponent{
         lineListItem.editable = !lineListItem.editable;
     }
 
+    handleKeyEvent(event: Event,index,key){
+        let current_ele = jQuery(this.el.nativeElement).find("tr")[index].closest('tr');
+        let focusedIndex;
+        jQuery(current_ele).find("td input").each(function(id,field) {
+            if(jQuery(field).is(':focus')) {
+                focusedIndex = id;
+            }
+        });
+        let base = this;
+        if(key === 'Arrow Down'){
+            let nextIndex = this.getNextElement(current_ele,index,'Arrow Down');
+            base.editLine(this.jeForm.controls.journalLines.controls[nextIndex], nextIndex);
+            setTimeout(function(){
+                let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
+                jQuery(elem).find("td input").each(function(id,field) {
+                    if(id == focusedIndex) {
+                        jQuery(field).focus();
+                    }
+                });
+            });
+        }else{
+                let nextIndex = this.getNextElement(current_ele,index,'Arrow Up');
+                base.editLine(this.jeForm.controls.journalLines.controls[nextIndex], nextIndex);
+                setTimeout(function(){
+                    let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
+                    jQuery(elem).find("td input").each(function(id,field) {
+                        if(id == focusedIndex) {
+                            jQuery(field).focus();
+                        }
+                    });
+                });
+        }
+    }
+
+    getNextElement(current_ele,curr_index,event){
+        let next_ele;
+        if(event === 'Arrow Down'){
+            next_ele= jQuery(current_ele).next('tr');
+        }else{
+            next_ele = jQuery(current_ele).prev('tr');
+        }
+        if(next_ele.length >0) {
+            if (next_ele[0].hidden) {
+                return this.getNextElement(next_ele,next_ele[0].sectionRowIndex, event);
+            } else {
+                return next_ele[0].sectionRowIndex;
+            }
+        }else{
+            return curr_index;
+        }
+    }
+
     setJournalDate(date: string){
         let jeDateControl:any = this.jeForm.controls['date'];
         jeDateControl.patchValue(date);
@@ -453,6 +510,7 @@ export class JournalEntryComponent{
         lineList.controls[lineIndex].controls['destroy'].patchValue(true);
         setTimeout(function(){
             base.updateLineTotal();
+            base.handleKeyEvent($event,lineIndex,'Arrow Down');
         });
     }
 
@@ -570,8 +628,8 @@ export class JournalEntryComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
-        this.updateJournalLinesData(data);
         data.journalLines = this.getJournalLineData(this.jeForm);
+        this.updateJournalLinesData(data);
         if(this.validateLines(data.journalLines)){
             return;
         }
@@ -802,4 +860,6 @@ export class JournalEntryComponent{
     showRecurringOpts(){
         this.showAdvance = !this.showAdvance;
     }
+
+
 }

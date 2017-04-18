@@ -69,31 +69,28 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <header class="form-section-header">Expense Lines</header>
-                                    <div class="text-right">
-                                        <span (click)="showNewItem()">
-                                            <i class="icon ion-ios-plus-outline"></i> Line
-                                        </span>
-                                    </div>
-                                    <div formArrayName="expense_items">
+                                    <header class="form-section-header">Expense Lines
+                                        <span class='icon badge je-badge' style="cursor:pointer;float: right;margin-top: 6px;" (click)="showMappingPage()">M</span>
+                                    </header>
+                                    <div formArrayName="expense_items" style="margin-top: 12px;">
                                         <table>
                                             <thead>
                                             <tr>
-                                                <th style="width: 20%;">Exp. COA</th>
-                                                <th style="width: 15%;">Amount</th>
-                                                <th style="width: 15%;">Notes</th>
-                                                <th style="width: 20%;">Entity</th>
-                                                <th style="width: 8%;"></th>
+                                                <th width="15%">Exp. COA</th>
+                                                <th width="7%">Amount</th>
+                                                <th width="38%">Notes</th>
+                                                <th width="10%">Entity</th>
+                                                <th width="5%"></th>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody #list>
                                             <tr *ngIf="expenseForm.controls.expense_items.controls.length == 0">
                                                 <td colspan="5" class="text-center">No expense items found</td>
                                             </tr>
-                                            <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (dblclick)="editItem(index, itemForm)">
-                                                <td *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
+                                            <tr *ngFor="let itemForm of expenseForm.controls.expense_items.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (click)="editItem(index, itemForm)" (keydown.ArrowDown)="handleKeyEvent( $event,index,'Arrow Down')" (keydown.ArrowUp)="handleKeyEvent($event,index,'Arrow Up')">
+                                                <td  class="truncate" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
-                                                    <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
+                                                    <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
                                                 </td>
@@ -101,33 +98,27 @@
                                                 <td *ngIf="itemForm.editable">
                                                     <input type="text" placeholder="Amount" [formControl]="itemForm.controls.amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true"/>
                                                 </td>
-                                                <td *ngIf="!itemForm.editable">{{itemForm.controls.notes.value}}</td>
+                                                <td class="truncate" *ngIf="!itemForm.editable">{{itemForm.controls.notes.value}}</td>
                                                 <td *ngIf="itemForm.editable">
                                                     <input type="text" placeholder="Notes" [formControl]="itemForm.controls.notes"/>
                                                 </td>
-                                                <td *ngIf="!itemForm.editable">{{getEntityName(itemForm.controls.entity_id.value)}}</td>
+                                                <td class="truncate" *ngIf="!itemForm.editable">{{getEntityName(itemForm.controls.entity_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
                                                     <select id="entity-{{index}}" combo-box #vendorComboBoxDir="comboBox" data-placeholder="Select Entity" [listObject]="entities" [formControl]="itemForm.controls.entity_id" (valueChanged)="setEntityForItem($event, itemForm)">
                                                         <option *ngFor="let entity of entities" [value]="entity.id">{{entity.name}}</option>
                                                     </select>
                                                 </td>
                                                 <td>
-                                                        <span *ngIf="!itemForm.editable" (click)="showFlyout(index)">
-                                                            <i class="icon ion-edit"></i>
-                                                        </span>
-                                                    <span *ngIf="!itemForm.editable" (click)="deleteItem(index)">
-                                                            <i class="icon ion-ios-trash-outline"></i>
-                                                        </span>
-                                                    <span *ngIf="itemForm.editable" (click)="updateItem(index, itemForm)">
-                                                            <i class="icon ion-ios-checkmark-outline"></i>
-                                                        </span>
-                                                    <span *ngIf="itemForm.editable" (click)="toggleLine(index, itemForm)">
-                                                            <i class="icon ion-ios-close-outline"></i>
-                                                        </span>
+                                                    <span (click)="showFlyout($event, index)">
+                                                        <i class="icon ion-edit"></i>
+                                                    </span>
+                                                    <span *ngIf="getLineCount() > 1" (click)="deleteItem($event,index)">
+                                                        <i class="icon ion-ios-trash-outline"></i>
+                                                    </span>
                                                 </td>
                                             </tr>
                                             </tbody>
-                                            <tbody *ngIf="addNewItemFlag" class="expense-item-info" [formGroup]="newItemForm">
+                                            <!--<tbody *ngIf="addNewItemFlag" class="expense-item-info" [formGroup]="newItemForm">
                                             <tr>
                                                 <td class="combo-box-field">
                                                     <select combo-box #newCOAComboBoxDir="comboBox" data-placeholder="Select Chart of Account" [listObject]="chartOfAccounts" formControlName="chart_of_account_id" (valueChanged)="setCOAForNewItem($event)">
@@ -150,7 +141,7 @@
                                                     <i class="icon ion-ios-close-outline" (click)="hideNewItem()"></i>
                                                 </td>
                                             </tr>
-                                            </tbody>
+                                            </tbody>-->
                                         </table>
                                     </div>
                                 </div>
@@ -263,5 +254,36 @@
                 </div>
             </div>
         </form>
+    </div>
+</div>
+
+
+
+<div class="report-wrapper report-wrapper1 mapping-buttons journal-flyout">
+    <div class="sidenav customization-panel" [ngClass]="mappingFlyoutCSS" foundation>
+
+        <div class="row" >
+            <div class="column small-12 medium-6">
+                <h5>Payments</h5>
+            </div>
+            <div class="columns small-6 small-offset-6 right">
+                <button class="button small text-button" style="top: 35px;" (click)="hideMappingPage()">
+                    <i class="ion-ios-close-empty"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="row chart-of-accounts" foundation>
+            <div class="column large-12 medium-12 small-12 foo-container">
+                <foo-table #fooTableDir="fooTable" class="bighalf-footable search-right" *ngIf="hasMappings" [data]="tableData" [options]="tableOptions" (onRowSelect)="handleSelect($event)"></foo-table>
+            </div>
+        </div>
+        <div class="row" *ngIf="hasMappings">
+            <div class="small-12 medium-12 columns">
+                <input type="button" class="button small float-right" value="Next" (click)="saveMappingID()"/>
+            </div>
+        </div>
+
+
     </div>
 </div>

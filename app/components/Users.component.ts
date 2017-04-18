@@ -52,14 +52,13 @@ export class UsersComponent {
                 this.canAddUsers = true;
             }
         }
-        this.loadingService.triggerLoadingEvent(true);
         this.usersService.roles().subscribe(roles => {
             _.remove(roles, {'id':'Admin'});
             this.roles=roles;
         }, error => this.handleError(error));
         if(this.companyId){
+            this.loadingService.triggerLoadingEvent(true);
             this.usersService.users(this.companyId).subscribe(users => {
-                this.loadingService.triggerLoadingEvent(false);
                 this.buildTableData(users)
             }, error => this.handleError(error));
         }
@@ -95,6 +94,7 @@ export class UsersComponent {
         setTimeout(function(){
             base.hasUsersList = true;
         }, 0)
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     showCreateUser() {
@@ -123,7 +123,6 @@ export class UsersComponent {
         this.loadingService.triggerLoadingEvent(true);
         this.usersService.removeUser(this.userId, this.companyId)
             .subscribe(success  => {
-                this.loadingService.triggerLoadingEvent(false);
                 this._toastService.pop(TOAST_TYPE.success, "User deleted successfully");
                 this.usersService.users(this.companyId)
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
@@ -144,7 +143,8 @@ export class UsersComponent {
 
     showEditVendor(row:any) {
         this.editMode = true;
-        jQuery(this.createUser.nativeElement).foundation('open');
+    //    jQuery(this.createUser.nativeElement).foundation('open');
+        this.showFlyout=true;
         this.row = row;
         this.newForm1();
         this._usersForm.updateForm(this.userForm, row);
@@ -164,15 +164,13 @@ export class UsersComponent {
         var data = this._usersForm.getData(this.userForm);
         this.companyId = Session.getCurrentCompany();
         if(this.editMode) {
-            this.loadingService.triggerLoadingEvent(false);
             data.id=this.row.id;
             this.usersService.updateUser(<UsersModel>data, this.companyId)
                 .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
-            jQuery(this.createUser.nativeElement).foundation('close');
+         //   jQuery(this.createUser.nativeElement).foundation('close');
         } else {
             this.usersService.addUser(<UsersModel>data, this.companyId)
                 .subscribe(success  => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                 }, error =>  this.showMessage(false, error));
         }
@@ -196,6 +194,7 @@ export class UsersComponent {
                 this._toastService.pop(TOAST_TYPE.success, "user created successfully.");
             }
         } else {
+            this.loadingService.triggerLoadingEvent(false);
             this.status = {};
             this.status['error'] = true;
             this._toastService.pop(TOAST_TYPE.error, "Failed to update the user");
@@ -204,6 +203,7 @@ export class UsersComponent {
     }
 
     handleError(error) {
+        this.loadingService.triggerLoadingEvent(false);
         this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Item code?");
     }
 

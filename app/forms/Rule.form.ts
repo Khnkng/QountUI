@@ -23,8 +23,6 @@ export class RuleForm extends abstractForm{
             "comparisionValue": ['', Validators.required],
             "logicalOperator":[''],
             "effectiveDate": [''],
-            "notesValue":[''],
-            "notesType":[''],
             "endDate":[''],
             "attributeName1": [''],
             "comparisionValue2":[''],

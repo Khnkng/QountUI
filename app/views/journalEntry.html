@@ -183,26 +183,20 @@
                                         <thead>
                                             <tr>
                                                 <th width="10%">COA</th>
-                                                <th width="5%">Credits</th>
                                                 <th width="5%">Debits</th>
+                                                <th width="5%">Credits</th>
                                                 <th width="20%">Notes</th>
                                                 <th width="10%">Entity</th>
                                                 <th width="3%"></th>
                                             </tr>
                                         </thead>
-                                        <tbody *ngIf="getLineCount() != 0 && !isSystemCreatedJE">
-                                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" [hidden]="lineListItem.controls.destroy.value" (click)="editLine(lineListItem, index)">
-                                                <td [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
+                                        <tbody *ngIf="getLineCount() != 0 && !isSystemCreatedJE" #list>
+                                            <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" [hidden]="lineListItem.controls.destroy.value" (click)="editLine(lineListItem, index)"  (keydown.ArrowDown)="handleKeyEvent( $event,index,'Arrow Down')" (keydown.ArrowUp)="handleKeyEvent( $event,index,'Arrow Up' )">
+                                                <td class="truncate" [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
                                                 <td [hidden]="!lineListItem.editable">
                                                     <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" (valueChanged)="updateLineCOA($event, index)">
                                                         <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
-                                                </td>
-                                                <td [hidden]="lineListItem.editable">
-                                                    {{lineListItem.controls.creditAmount.value?(lineListItem.controls.creditAmount.value| currency:companyCurrency:true:'1.2-2'):null}}
-                                                </td>
-                                                <td [hidden]="!lineListItem.editable">
-                                                    <input type="text" [formControl]="lineListItem.controls.creditAmount" placeholder="Credit" numeral [format]="'$0,0.00'" [locale]="companyCurrency" (change)="updateLineTotal()"/>
                                                 </td>
                                                 <td [hidden]="lineListItem.editable">
                                                     {{lineListItem.controls.debitAmount.value?(lineListItem.controls.debitAmount.value| currency:companyCurrency:true:'1.2-2'):null}}
@@ -210,11 +204,17 @@
                                                 <td [hidden]="!lineListItem.editable">
                                                     <input type="text" [formControl]="lineListItem.controls.debitAmount" placeholder="Debit" numeral [format]="'$0,0.00'" [locale]="companyCurrency" (change)="updateLineTotal()"/>
                                                 </td>
-                                                <td [hidden]="lineListItem.editable">{{lineListItem.controls.notes.value}}</td>
+                                                <td [hidden]="lineListItem.editable">
+                                                    {{lineListItem.controls.creditAmount.value?(lineListItem.controls.creditAmount.value| currency:companyCurrency:true:'1.2-2'):null}}
+                                                </td>
+                                                <td [hidden]="!lineListItem.editable">
+                                                    <input type="text" [formControl]="lineListItem.controls.creditAmount" placeholder="Credit" numeral [format]="'$0,0.00'" [locale]="companyCurrency" (change)="updateLineTotal()"/>
+                                                </td>
+                                                <td class="truncate" [hidden]="lineListItem.editable">{{lineListItem.controls.notes.value}}</td>
                                                 <td [hidden]="!lineListItem.editable">
                                                     <input type="text" [formControl]="lineListItem.controls.notes" placeholder="Notes"/>
                                                 </td>
-                                                <td [hidden]="lineListItem.editable">{{getEntityName(lineListItem.controls)}}</td>
+                                                <td class="truncate" [hidden]="lineListItem.editable">{{getEntityName(lineListItem.controls)}}</td>
                                                 <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Bill')">
                                                     <select id="vendor-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors" (valueChanged)="updateLineEntity($event, index)">
                                                         <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
@@ -231,7 +231,7 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <i class="icon ion-edit" (click)="showFlyout('UPDATE', index)"></i>
+                                                    <i class="icon ion-edit" (click)="showFlyout($event, index)"></i>
                                                     <i class="icon ion-ios-trash-outline" *ngIf="getLineCount() > 2" (click)="deleteLine($event, index)"></i>
                                                 </td>
                                             </tr>
@@ -244,7 +244,7 @@
                                                 <td>{{lineListItem.controls.notes.value}}</td>
                                                 <td>{{getEntityName(lineListItem.controls)}}</td>
                                                 <td>
-                                                    <i class="icon ion-edit" (click)="showFlyout('UPDATE', index)"></i>
+                                                    <i class="icon ion-edit" (click)="showFlyout($event, index)"></i>
                                                 </td>
                                             </tr>
                                         </tbody>

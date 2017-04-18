@@ -30,7 +30,14 @@ export class VendorForm extends abstractForm{
       "zipcode": [''],
       "has1099":[''],
       "paymentMethod":[''],
-      "coa":['']
+      "coa":[''],
+      "name_on_bank_account":[''],
+      "bank_account_type":[''],
+      "bank_account_holder_type":['company'],
+      "bank_account_number":[''],
+      "bank_account_routing_number":[''],
+      "contact_first_name":['', Validators.required],
+      "contact_last_name":['', Validators.required]
     }
   }
 }

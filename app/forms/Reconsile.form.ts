@@ -11,7 +11,10 @@ export class ReconcileForm extends abstractForm{
     getForm() {
         return {
             "date": ['', Validators.required],
-            "bankAccountId": ['', Validators.required]
+            "bankAccountId": ['', Validators.required],
+            "statementInflow":[''],
+            "statementOutflow":[''],
+            "statementEndingBalance":['',Validators.required]
         }
     }
 

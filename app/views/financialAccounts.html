@@ -23,9 +23,10 @@
                 <div class="flyout-body flyout-shadow-effect">
                     <!--here comes actual flyout code-->
                     <div id="addAccount" #addAccount class="create-vendor">
-                        <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="accountForm">
 
                             <section class="form-section clearfix">
+                                <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="accountForm">
+
                                 <div class="row">
                                     <div class="small-12 medium-12 columns">
                                         <!--<div class="row">
@@ -96,24 +97,28 @@
                                                     <div class="error" [hidden]="accountForm.controls.name_on_account.untouched || accountForm.controls.name_on_account.valid">Name on account is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row">
+                                            <div class="row" *ngIf="showPaymentInfo">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Routing Number</label>
+
                                                 </div>
-                                                <div class="small-6 columns">
+                                                <div class="small-6 columns" >
                                                     <input type="text" formControlName="routing_number" placeholder="Routing Number*"/>
-                                                    <div class="error" [hidden]="accountForm.controls.routing_number.untouched || accountForm.controls.routing_number.valid">Routing number is required.</div>
+                                                    <!--<div class="error" *ngIf="accountForm.controls.routing_number.touched && accountForm.controls.routing_number.hasError('required')">Routing Number  is required</div>
+                                                    <div class="error" *ngIf="accountForm.controls.routing_number.touched && accountForm.controls.routing_number.hasError('pattern')">Routing Number should have 9 digits only</div>-->
                                                 </div>
                                             </div>
-                                            <div class="row" >
+                                            <div class="row">
                                                 <div class="small-4 columns">
-                                                    <label class="text-right">Account Number</label>
+                                                    <label class="text-right">Payment Info</label>
                                                 </div>
-                                                <div class="small-6 columns">
-                                                    <input type="text" formControlName="account_number" placeholder="Account Number*"/>
-                                                    <div class="error" [hidden]="accountForm.controls.account_number.untouched || accountForm.controls.account_number.valid">Account number is required.</div>
+                                                <div class="small-6 columns" >
+                                                    <input type="checkbox" style="margin-top:5px;" formControlName="showPaymentInfo" (change)="changeShowPaymentInfo()"/>
                                                 </div>
                                             </div>
+
+
+
 
 
                                             <!--<div class="row">
@@ -161,7 +166,7 @@
                                                     <div class="error" [hidden]="accountForm.controls.starting_balance.untouched || accountForm.controls.starting_balance.valid">Starting Balance is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row" style="margin-top: 15px">
+                                            <div class="row">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Starting Balance Date</label>
                                                 </div>
@@ -170,6 +175,17 @@
                                                     <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Starting balance date is required.</div>
                                                 </div>
                                             </div>
+
+                                            <div class="row" *ngIf="showPaymentInfo">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Account Number</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="account_number" placeholder="Account Number*" maxlength="32"/>
+                                                    <!--<div class="error" [hidden]="accountForm.controls.account_number.untouched || accountForm.controls.account_number.valid">Account number is required.</div>-->
+                                                </div>
+                                            </div>
+
                                             <div class="row" style="margin-top: 15px">
                                                 <div class="small-10 columns">.
                                                 </div>
@@ -191,22 +207,21 @@
                                                     <input type="password" formControlName="password" placeholder="Password"/>
                                                 </div>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
-
-
-
-                                <div class="row">
-                                    <div class="small-12 medium-12 columns">
-                                        <button class="button small float-right" [disabled]="!accountForm.valid && isValid(accountForm)" (click)="submit($event)">Save</button>
-                                    </div>
-                                </div>
-                            </section>
-                        </form>
-                        <div style="position: relative;top:-75px;margin-left: 30px;width:150px;">
-                            <label style="display: inline;margin-right: 10px;">Auto Import</label><input type="checkbox" [(ngModel)]="showYodleeWidget"/>
+                        <div class="row">
+                            <div class="small-12 medium-12 columns">
+                                <button class="button small float-right" [disabled]="!accountForm.valid && !isValid(accountForm)" (click)="submit($event)">Save</button>
+                            </div>
                         </div>
+                     </form>
+                </section>
+            </div>
+
+                    <div style="position: relative;top:-75px;margin-left: 30px;width:150px;">
+                        <label style="display: inline;margin-right: 10px;">Auto Import</label><input type="checkbox" [(ngModel)]="showYodleeWidget"/>
                     </div>
 
                 </div>

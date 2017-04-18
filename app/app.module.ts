@@ -106,7 +106,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         },{
             path: 'resetpassword/:token',
             component: ResetPasswordComponent,
-            canActivate: [LoggedInActivator]
+            canActivate: [DashBoardActivator]
         },{
             path: 'yodleeToken',
             component: YodleeTokenComponent

@@ -62,17 +62,19 @@ export class lockComponent {
     tagListValue:any;
     locksrow:any;
     lockslist:any;
+    currentlock:any;
     haslockdate:boolean=false;
     hasnolockdate:boolean=true;
+    currentlockdate:any;
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _lockform:LockForm,
                 private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
                 private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
         this.LockForm = this._fb.group(_lockform.getLock());
         this.companyId = Session.getCurrentCompany();this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteLock(toast));
+        this.loadingService.triggerLoadingEvent(true);
         this.companyService.getLockofCompany(this.companyId)
             .subscribe(lockList  => {
                 this.buildTableData(lockList);
-                this.loadingService.triggerLoadingEvent(false);
                 this.lockList=lockList;
                 for(var i=0;i<lockList.length;i++)
                 {
@@ -82,6 +84,15 @@ export class lockComponent {
                 };
                 this.showFlyout = false;
             }, error =>  this.handleError(error));
+
+        this.companyService.getcurrentLock(this.companyId)
+            .subscribe(currentlock  => {
+
+                this.currentlock=currentlock.min_lock_date;
+                console.log("this.currentlock",this.currentlock);
+                });
+
+
         var today = new Date();
         var dd = today.getDate();
         var mm = today.getMonth()+1; //January is 0!
@@ -121,12 +132,14 @@ export class lockComponent {
         setTimeout(function(){
             base.hasItemCodes = true;
         });
+        this.loadingService.triggerLoadingEvent(false);
     }
     handleAction($event){
         let action = $event.action;
         delete $event.action;
         delete $event.actions;
         if(action == 'edit') {
+            this.loadingService.triggerLoadingEvent(true);
             this.companyService.lock(this.companyId,$event.id).subscribe(tax => {
                 this.row = tax;
                this.locksrow=tax.shared_with;
@@ -145,6 +158,7 @@ export class lockComponent {
         this.editMode = true;
         this.LockForm = this._fb.group(this._lockform.getLock());
         this.getLockDetails(row);
+        this.loadingService.triggerLoadingEvent(false);
     }
     removeLock(row:any){
         let vendor:VendorModel = row;
@@ -247,7 +261,6 @@ export class lockComponent {
             this.showMessage(true, success);
             this.companyService.getLockofCompany(this.companyId)
                 .subscribe(lockList  => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.lockList=lockList;
                     for(var i=0;i<lockList.length;i++)
                     {
@@ -267,6 +280,7 @@ export class lockComponent {
     }
 
     handleError(error) {
+        this.loadingService.triggerLoadingEvent(false);
         this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }
     showMessage(status, obj) {

@@ -65,11 +65,10 @@ export class CustomersComponent {
         if(this.companyId){
             this.loadingService.triggerLoadingEvent(true);
             this.customersService.customers(this.companyId).subscribe(customers => {
-
                 this.buildTableData(customers);
-                this.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
         }else {
+            this.loadingService.triggerLoadingEvent(false);
             this._toastService.pop(TOAST_TYPE.error, "Please add company first");
         }
     }
@@ -108,7 +107,8 @@ export class CustomersComponent {
         });
         setTimeout(function(){
             base.hasCustomersList = true;
-        }, 0)
+        });
+        this.loadingService.triggerLoadingEvent(false);
     }
 
     showCreateVendor() {
@@ -176,6 +176,7 @@ deleteVendor(toast){
         this.editMode = true;
         this.showFlyout = true;
         this.row = row;
+        this.loadingService.triggerLoadingEvent(true);
         this.customersService.customer(row.customer_id, this.companyId)
             .subscribe(customer => {
                 this.row = customer;
@@ -211,6 +212,7 @@ deleteVendor(toast){
                     base.vendorCountryComboBox.setValue(country, 'name');
                 },100);
                 this._customersForm.updateForm(this.customerForm, row);
+                base.loadingService.triggerLoadingEvent(false);
             }, error => this.handleError(error));
     }
 
@@ -227,14 +229,12 @@ deleteVendor(toast){
             data.customer_id=this.row.customer_id;
             this.customersService.updateCustomer(<CustomersModel>data, this.companyId)
                 .subscribe(success  => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                 }, error =>  this.showMessage(false, error));
             this.showFlyout = false;
         } else {
             this.customersService.addCustomer(<CustomersModel>data, this.companyId)
                 .subscribe(success  => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
 
                 }, error =>  this.showMessage(false, error));
@@ -261,6 +261,7 @@ deleteVendor(toast){
             }
             this.newCustomer();
         } else {
+            this.loadingService.triggerLoadingEvent(false);
             this.status = {};
             this.status['error'] = true;
             this._toastService.pop(TOAST_TYPE.error, "Failed to update the customer");
@@ -290,6 +291,7 @@ deleteVendor(toast){
 
 
     handleError(error) {
+        this.loadingService.triggerLoadingEvent(false);
         this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }
     hideFlyout(){

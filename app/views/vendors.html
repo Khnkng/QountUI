@@ -133,6 +133,9 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="contact_first_name" placeholder="First Name">
+
+                          <div class="error" [hidden]="vendorForm.controls.contact_first_name.untouched || vendorForm.controls.contact_first_name.valid">Contact Name is required</div>
+
                         </div>
                       </div>
                       <div class="row">
@@ -141,6 +144,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="contact_last_name" placeholder="Last Name">
+                          <div class="error" [hidden]="vendorForm.controls.contact_last_name.untouched || vendorForm.controls.contact_last_name.valid">Contact LName is required</div>
                         </div>
                       </div>
                       <Address [code]="countryCode" #addressDir="address"></Address>
@@ -200,7 +204,10 @@
                           <label class="text-right">Routing Number</label>
                         </div>
                         <div class="small-6 columns">
-                          <input type="text" formControlName="bank_account_routing_number" placeholder="Routing Number*"/>
+                          <input type="text" formControlName="bank_account_routing_number" placeholder="Routing Number*" pattern="[0-9]{9}$"/>
+
+                          <div class="error" *ngIf="vendorForm.controls.bank_account_routing_number.touched && vendorForm.controls.bank_account_routing_number.hasError('required')">Routing Number  is required</div>
+                          <div class="error" *ngIf="vendorForm.controls.bank_account_routing_number.touched && vendorForm.controls.bank_account_routing_number.hasError('pattern')">Routing Number should have 9 digits only</div>
                         </div>
                       </div>
                       <div class="row" >
@@ -230,7 +237,12 @@
             </form>
           </div>
         </div>
-        <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+        <button class="close-flyout" aria-label="Close modal" type="button" [hidden]="!showFirstStep" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+        </button>
+        <button class="close-flyout" aria-label="Close modal" type="button" [hidden]="!showSecondStep" (click)="hideSecondStep()">
                 <span aria-hidden="true">
                   <i class="ion-ios-close-empty"></i>
                 </span>
