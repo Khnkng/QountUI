@@ -69,11 +69,10 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <header class="form-section-header">Expense Lines</header>
-                                    <div class="text-right">
-                                        <span class='icon badge je-badge' style="cursor:pointer" (click)="showMappingPage()">M</span>
-                                    </div>
-                                    <div formArrayName="expense_items">
+                                    <header class="form-section-header">Expense Lines
+                                        <span class='icon badge je-badge' style="cursor:pointer;float: right;margin-top: 6px;" (click)="showMappingPage()">M</span>
+                                    </header>
+                                    <div formArrayName="expense_items" style="margin-top: 12px;">
                                         <table>
                                             <thead>
                                             <tr>
@@ -92,7 +91,7 @@
                                                 <td  class="truncate" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
                                                 <td *ngIf="itemForm.editable" class="combo-box-field">
                                                     <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">
-                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.displayName}}</option>
+                                                        <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
                                                 </td>
                                                 <td *ngIf="!itemForm.editable">{{itemForm.controls.amount.value? (itemForm.controls.amount.value| currency:companyCurrency:true:'1.2-2'):null}}</td>

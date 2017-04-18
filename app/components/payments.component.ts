@@ -23,7 +23,7 @@ export class PaymentsComponent{
     tableOptions:any = {};
     currentCompany:any;
     row:any;
-    tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName'];
+    tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName','bankName'];
     confirmSubscription:any;
     companyCurrency:string;
     dimensionFlyoutCSS:any;
@@ -104,6 +104,7 @@ export class PaymentsComponent{
             {"name": "date", "title": "Date"},
             {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
             {"name": "vendorName", "title": "Vendor"},
+            {name:"bankName","title":"Bank"},
             {"name": "actions", "title": ""}
         ];
         let base = this;
