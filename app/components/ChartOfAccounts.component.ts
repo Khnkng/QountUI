@@ -44,7 +44,7 @@ export class ChartOfAccountsComponent{
   allCompanies:Array<any>;
   mappings:Array<any>;
   row:any;
-  coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'type', 'subType', 'desc', 'number'];
+  coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'type', 'subType', 'desc', 'number', 'balance'];
   combo:boolean = true;
   sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices", "loansTo"];
   hasParentOrChild: boolean = false;
@@ -324,6 +324,7 @@ export class ChartOfAccountsComponent{
       {"name": "categoryType", "title": "Type"},
       {"name": "subTypeCode", "title": "Sub Type"},
       {"name": "parentName", "title": "Parent"},
+      {"name": "balance", "title": "Balance"},
       {"name": "type", "title": "Type", "visible": false},
       {"name": "subType", "title": "Sub type", "visible": false},
       {"name": "desc", "title": "Description", "visible": false},
