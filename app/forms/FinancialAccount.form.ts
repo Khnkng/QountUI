@@ -27,7 +27,8 @@ export class FinancialAccountForm extends abstractForm{
       "account_number":[''],
       "routing_number":[''],
       "name_on_account":['',Validators.required],
-      "transit_chart_of_account_id":['']
+      "transit_chart_of_account_id":[''],
+      "showPaymentInfo":[false]
     }
   }
 }

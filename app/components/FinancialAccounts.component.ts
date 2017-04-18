@@ -168,7 +168,6 @@ export class FinancialAccountsComponent{
   }
 
   handleAction($event){
-    console.log("$event",$event);
     let action = $event.action;
     delete $event.action;
     delete $event.actions;
@@ -330,6 +329,7 @@ else{
     this.row = {};
     this.showFlyout = !this.showFlyout;
     this.showPaymentInfo = false;
+    this.accountForm.reset();
   }
 
   launchYodleeWidget() {
@@ -352,5 +352,14 @@ else{
       });
 
     });
+  }
+
+  changeShowPaymentInfo(){
+    let data = this._financialAccountForm.getData(this.accountForm);
+    if(data.showPaymentInfo){
+      this.showPaymentInfo = true;
+    } else{
+      this.showPaymentInfo = false;
+    }
   }
 }
