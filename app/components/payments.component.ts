@@ -70,7 +70,9 @@ export class PaymentsComponent{
         delete $event.actions;
         if(action == 'edit') {
             this.fromPayments=true;
-            this.getPaymentDetails($event.groupID)
+            let link = ['/payments', $event.groupID];
+            this._router.navigate(link);
+            //this.getPaymentDetails($event.groupID)
         }else {
             this.navigateToJE($event.journalID);
         }
@@ -151,7 +153,16 @@ export class PaymentsComponent{
     }
 
     goToPreviousPage(){
-        let link = [Session.getLastVisitedUrl()];
+        let link:any;
+        if(Session.getLastVisitedUrl().indexOf('/payments/bill')==0){
+            link = ["/payments"];
+        }else {
+            link = [Session.getLastVisitedUrl()];
+        }
         this._router.navigate(link);
+    }
+
+    goToDashboard(){
+        this._router.navigate(["/payments/dashboard/enter"]);
     }
 }
