@@ -18,7 +18,6 @@ declare var Highcharts:any;
     templateUrl: '/app/views/paymentdashboard.html'
 })
 export class paymentdashboardComponent {
-    
     report:any={};
     reportChartOptions:any;
     hasItemCodes: boolean = false;
@@ -143,6 +142,7 @@ export class paymentdashboardComponent {
                 categories: columns
             },
             yAxis: {
+                min: 0,
                 title: {
                     text: 'Total Amount'
                 },colors: ['#4885ed', '#3cba54', '#f4c20d', '#00BFFF', '#db3236', '#64E572',
@@ -183,7 +183,7 @@ export class paymentdashboardComponent {
             },
             scrollbar: {
                 enabled: true
-            },
+            }
             series: series
         }
             this.reportasas=true;
