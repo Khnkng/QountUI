@@ -1,0 +1,83 @@
+<div style="float: right">
+    <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="icon ion-close-circled"></i>
+                </span>
+    </button>
+</div>
+<div class="row">
+
+    <div class="row expanded" foundation>
+
+        <div class="column medium-8">
+            <div class="row">
+                <div class="column medium-4">
+                    <br/>
+                    <div class="rect">Total Payable
+                        <br/>$35,000</div> </div>
+                <div class="column medium-4">
+                    <br/>
+                    <div class="rect" style="background-color: lightsteelblue">Avg Days To Pay
+                        <br/>36 Days</div>
+                </div>
+                <div class="column medium-4">
+                    <br/>
+                    <div class="rect" style="background-color: lightskyblue">Past Due<br/> $45,000</div></div>
+            </div>
+        </div>
+        <div class="column medium-4 expanded bills-actions">
+            <div style="color:#00aaff;" class="bills-actions--header centered">
+                <pre></pre>
+            </div>
+            <div class="row collapse bills-actions--type" style="margin-top: 12px">
+                <div class="column medium-5 bills-actions--type--amount">
+                    $70,000
+                </div>
+                <div class="column medium-2 text-left">
+                    <span class="badge entered" style="margin-top: -21px;">1</span>
+                </div>
+                <div class="column medium-5  text-left" style="margin-left:-29px;">
+                    Book Balance:$70,000
+                </div>
+
+
+            </div>
+            <br/>
+            <div class="row collapse bills-actions--type" style="margin-top: -5px">
+                <div class="column medium-5 bills-actions--type--amount">
+                    $80,000
+                </div>
+                <div class="column medium-2 text-left">
+                    <span class="badge entered" style="margin-top: -21px;">1</span>
+
+                </div>
+                <div class="column medium-5  text-left" style="margin-left:-29px;">
+                    Bank balance: $80,000
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <div class="row expanded" style="height: 777px;">
+        <div class="column medium-8">
+            <div class="row" style=" height: 396px;">
+                <div class="column large-12 medium-12 small-12 foo-container chart_search">
+                    <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+                </div>
+            </div>
+        </div>
+        <div class="column medium-4 expanded bills-actions">
+            <br/>
+            <div>
+                <pre> </pre>
+            </div>
+            <br/>
+
+            <div *ngIf="reportasas" style="min-width: 400px;height: 400px; margin: 0 auto;margin-top:-11px;">
+                <high-chart #hChart1=highChart [options]="reportChartOptions"></high-chart>
+            </div>
+            </div>
+    </div>
+
+</div>

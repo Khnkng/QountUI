@@ -80,6 +80,91 @@ body {
   background: #fff;
   height: auto;
 }
+.chart_search .bighalf-footable .footable-filtering .footable-filtering {
+  right: 0px !important;
+}
+
+.icon .ion-close-circled{
+  color: #c0c0c0;
+  font-size: 30px;
+}
+.ion-close-circled:before{
+  color: #c0c0c0;
+  font-size: 30px;
+}
+
+.highcharts-container{
+  border:1px solid #C0C0C0;
+}
+
+
+
+#circle{ background: lightsteelblue; width: 128px; height: 128px; border-radius: 64px; }
+#circle div { position:relative; left: 19px; top: 19px; width: 90px; height: 90px; color: white; text-align:center; }
+.rect {
+  width: 100%;
+  height: 99px;
+  padding: 20px;
+  background-color: lightgreen;
+}
+.circle {
+  display: block;
+  width: 50%;
+  height: 100%;
+  //margin-left: 60px;
+  border-radius: 25%;
+  background-color: #b19cd9;
+  color: white;
+  text-align: center;
+  position:relative;
+  font-size: 10px;
+  margin-left: 72px;
+
+}
+.col-centered{
+  float: none;
+  margin: 0 auto;
+  padding: 55px 0 0 81px;
+}
+.medium-4{
+  text-align: center;
+}
+
+.payment-section-left{
+  width:70%;
+  float: left;
+
+}
+.form-section-right{
+  width:30%;
+  float: right;
+}
+.circletext{
+  margin-top:8px;}
+#moduleslist>div>ul>li:nth-of-type(odd){
+  background-color : #f1f1f1;
+}
+
+.bills-actions{
+  &--header{
+    padding: 10px 0;
+  }
+  &--type{
+    margin: 22px 0px;
+    .badge{
+      min-width: 31px;
+      border-radius: 336px;
+      line-height: 3;
+
+      &.entered{
+        background: lightgreen;
+      }
+    }
+    &--amount{
+      background: lightgreen;
+    }
+  }
+}
 #moduleslist>div>ul>li:nth-of-type(odd){
   background-color : #f1f1f1;
 }
