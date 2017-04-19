@@ -1,0 +1,37 @@
+<div class="row">
+    <div class="column small-12 medium-6">
+        <h5>Document</h5>
+    </div>
+    <div class="column small-12 medium-6 text-right">
+
+    </div>
+</div>
+<div class="row">
+    <div class="column medium-6">
+        <div class="row">
+            <div class="column medium-6 small-12">
+                <label>
+                    Name
+                    <input type="text" [(ngModel)]="doc.name"/>
+                </label>
+            </div>
+            <div class="column medium-6 small-12">
+                <label>
+                    Amount
+                    <input type="text" [(ngModel)]="doc.amount"/>
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column medium-12 small-12">
+                <label>
+                    Description
+                    <textarea type="text" [(ngModel)]="doc.description"></textarea>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="column medium-6">
+        <img [src]="doc.temporaryURL" style="width: 100%"/>
+    </div>
+</div>

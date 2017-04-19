@@ -118,26 +118,20 @@
             <div class="clear"></div>
             <div class="thumb-label">Lock</div>
         </div>
-        <div class="column tool-grid">
-            <div class="grid-icon chart-of-accounts"></div>
-            <span class="grid-qount" [hidden]="true"></span>
-            <div class="clear"></div>
-            <div class="thumb-label">Tool</div>
-        </div>
-        <div class="column tool-grid">
-            <div class="grid-icon rules"></div>
-            <span class="grid-qount" [hidden]="true">></span>
-            <div class="clear"></div>
-            <div class="thumb-label">Tool</div>
-        </div>
-
-    </div>
-    <div class="row tools-grids">
-        <div class="column medium-3 tool-grid" (click)="showPage('documents', $event)">
+        <div class="column tool-grid" (click)="showPage('documents', $event)">
             <div class="grid-icon chart-of-accounts"></div>
             <span class="grid-qount" [hidden]="true"></span>
             <div class="clear"></div>
             <div class="thumb-label">Documents</div>
         </div>
+        <div class="column tool-grid">
+            <div class="grid-icon chart-of-accounts"></div>
+            <span class="grid-qount" [hidden]="true"></span>
+            <div class="clear"></div>
+            <div class="thumb-label">Tool</div>
+        </div>
+
+
     </div>
+
 </div>

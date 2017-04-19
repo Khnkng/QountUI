@@ -139,15 +139,21 @@ export class DocumentsComponent {
         this.isLoading = false;
         this.receiptsTableData.search = true;
         this.receiptsTableData.columns = [
+            {"name": "id", "title": "", 'visible': false, 'filterable': false},
             {"name": "name", "title": "Name"},
-            {"name": "image", "title": "Image", "type": "html", "sortable": false, "filterable": false}
+            {"name": "description", "title": "Description"},
+            {"name": "image", "title": "Image", "type": "html", "sortable": false, "filterable": false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}
         ];
 
         this.receiptsTableData.rows = [];
         docs.forEach(function(doc){
             let row:any = {};
+            row['id'] = doc.id;
             row['name'] = doc.name;
-            row['image'] = "<img src='"+doc.temporaryURL+"' style='width:50px;height:50px;'/>"
+            row['description'] = doc.description;
+            row['image'] = "<img src='"+doc.temporaryURL+"' style='width:50px;height:50px;'/>";
+            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             base.receiptsTableData.rows.push(row);
         });
 
@@ -164,15 +170,21 @@ export class DocumentsComponent {
         this.isLoading = false;
         this.billsTableData.search = true;
         this.billsTableData.columns = [
+            {"name": "id", "title": "", 'visible': false, 'filterable': false},
             {"name": "name", "title": "Name"},
-            {"name": "image", "title": "Image", "type": "html", "sortable": false, "filterable": false}
+            {"name": "description", "title": "Description"},
+            {"name": "image", "title": "Image", "type": "html", "sortable": false, "filterable": false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}
         ];
 
         this.billsTableData.rows = [];
         docs.forEach(function(doc){
             let row:any = {};
+            row['id'] = doc.id;
             row['name'] = doc.name;
-            row['image'] = "<img src='"+doc.temporaryURL+"' style='width:50px;height:50px;'/>"
+            row['description'] = doc.description;
+            row['image'] = "<img src='"+doc.temporaryURL+"' style='width:50px;height:50px;'/>";
+            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             base.billsTableData.rows.push(row);
         });
 
@@ -189,15 +201,21 @@ export class DocumentsComponent {
         this.isLoading = false;
         this.refundsTableData.search = true;
         this.refundsTableData.columns = [
+            {"name": "id", "title": "", 'visible': false, 'filterable': false},
             {"name": "name", "title": "Name"},
-            {"name": "image", "title": "Image", "type": "html", "sortable": false, "filterable": false}
+            {"name": "description", "title": "Description"},
+            {"name": "image", "title": "Image", "type": "html", "sortable": false, "filterable": false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}
         ];
 
         this.refundsTableData.rows = [];
         docs.forEach(function(doc){
             let row:any = {};
+            row['id'] = doc.id;
             row['name'] = doc.name;
-            row['image'] = "<img src='"+doc.temporaryURL+"' style='width:50px;height:50px;'/>"
+            row['description'] = doc.description;
+            row['image'] = "<img src='"+doc.temporaryURL+"' style='width:50px;height:50px;'/>";
+            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             base.refundsTableData.rows.push(row);
         });
 
@@ -211,6 +229,19 @@ export class DocumentsComponent {
 
     ngOnInit() {
     }
+
+
+    handleAction($event){
+        let action = $event.action;
+        delete $event.action;
+        delete $event.actions;
+        let sourceTypes = ['receipt', 'bill', 'refund'];
+        if(action == 'edit'){
+            let link = ['document', sourceTypes[this.selectedTab], "unused"+sourceTypes[this.selectedTab], $event.id];
+            this._router.navigate(link);
+        }
+    }
+
 
     updateTabHeight(){
         let base = this;

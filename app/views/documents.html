@@ -31,7 +31,7 @@
                             </div>
                         </div>
 
-                        <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasReceipts" [data]="receiptsTableData" [options]="tableOptions"></foo-table>
+                        <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasReceipts" [data]="receiptsTableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
                         <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasReceipts">
                             <div class="woo-woo">Woot Woot!</div>
                             <p>There are no Receipts.</p>
@@ -46,7 +46,7 @@
                             <div class="foo-toolbar">
                             </div>
                         </div>
-                        <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasBills" [data]="billsTableData" [options]="tableOptions"></foo-table>
+                        <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasBills" [data]="billsTableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
                         <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasBills">
                             <div class="woo-woo">Woot Woot!</div>
                             <p>There are no Bills.</p>
@@ -61,7 +61,7 @@
                             <div class="foo-toolbar">
                             </div>
                         </div>
-                        <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasRefunds" [data]="refundsTableData" [options]="tableOptions"></foo-table>
+                        <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasRefunds" [data]="refundsTableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
                         <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasJournalEntries">
                             <div class="woo-woo">Woot Woot!</div>
                             <p>There are no Refunds.</p>

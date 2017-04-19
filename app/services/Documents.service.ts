@@ -21,7 +21,13 @@ export class DocumentService extends  QountServices {
     getDocumentBySource(sourceId: any): any {
         var url = this.interpolateUrl(PATH.SOURCES_SERVICE, null, {id: Session.getUser().id, sourceId: sourceId});
         return this.query(url, SOURCE_TYPE.DOCUMENT).map(res => <any>res.json())
-            .catch(this.handleError)
+            .catch(this.handleError);
+    }
+
+    getDocumentById(documentId: string, sourceId: string): any {
+        var url = this.interpolateUrl(PATH.SOURCES_DOCUMENT_SERVICE, null, {id: Session.getUser().id, sourceId: sourceId, documentId: documentId});
+        return this.query(url, SOURCE_TYPE.DOCUMENT).map(res => <any>res.json())
+            .catch(this.handleError);
     }
 
     private handleError (error: Response) {

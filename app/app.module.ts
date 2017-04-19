@@ -84,6 +84,7 @@ import {ReconcileForm} from "./forms/Reconsile.form";
 import {ReconcileService} from "./services/Reconsile.service";
 import {DocumentsComponent} from "./components/Documents.component";
 import {DocumentService} from "./services/Documents.service";
+import {DocumentComponent} from "./components/Document.component";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -284,6 +285,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             component: DocumentsComponent,
             canActivate: [LoggedInActivator]
         },
+        {
+            path: 'document/:sourceType/:sourceId/:documentId',
+            component: DocumentComponent,
+            canActivate: [LoggedInActivator]
+        }
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
@@ -291,7 +297,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
         ResetPasswordComponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
-        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent],
+        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent, DocumentComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
