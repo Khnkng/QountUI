@@ -1,7 +1,7 @@
 <div style="float: right">
     <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
                 <span aria-hidden="true">
-                  <i class="icon ion-close-circled"></i>
+                  <i class="icon ion-ios-close-empty"></i>
                 </span>
     </button>
 </div>
@@ -14,29 +14,28 @@
                 <div class="column medium-3 medium3">
                     <br/>
                         <div>
-                            <div class="firstdiv" (click)="payable()">
+                            <div class="firstdiv" style="background-color: skyblue" (click)="payable()">
                                 <span><pre style="font-size: 20px;">$22,000.00   </pre> Total Payable</span>
 
                             </div>
-                            <div class="seconddiv" (click)="payable()">
+                            <div class="seconddiv" style="background-color: deepskyblue" (click)="payable()">
                                <span><pre style="font-size: 20px;">$12,000.00   </pre>Past Due</span>
                             </div>
                         </div>
                     </div>
                 <div class="column medium-3 medium3">
                     <br/>
-                    <div class="divrect" style="background-color: greenyellow;" (click)="payable()">Avg Days To Pay
+                    <div class="divrect" style="background-color: skyblue;" (click)="payable()">Avg Days To Pay
                         <br/>36 Days</div>
-
                 </div>
                 <div class="column medium-3 medium3">
                     <br/>
 
                     <div>
-                        <div class="firstdiv" style="background: red;" (click)="payable()">
+                        <div class="firstdiv" style="background: lightgreen;" (click)="payable()">
                             <span><pre style="font-size: 20px">$6000.00   </pre>Approve 4 Bills</span>
                         </div>
-                        <div class="seconddiv" style="background: #f8a13f;" (click)="payable()">
+                        <div class="seconddiv" style="background: mediumspringgreen;" (click)="payable()">
                             <span><pre style="font-size: 20px">$8000.00   </pre>Current Month</span>
                         </div>
                     </div>
@@ -44,10 +43,10 @@
                 <div class="column medium-3 medium3">
                     <br/>
                     <div>
-                        <div class="firstdiv" style="background: red;" (click)="payable()">
+                        <div class="firstdiv" style="background: skyblue;" (click)="payable()">
                             <span><pre style="font-size: 20px">$324,000.00</pre>Book Balance</span>
                         </div>
-                        <div class="seconddiv" style="background: #f8a13f;" (click)="payable()">
+                        <div class="seconddiv" style="background: deepskyblue;" (click)="payable()">
                             <span><pre style="font-size: 20px">$ 456,000.00</pre>Bank Balance</span>
                         </div>
                     </div>

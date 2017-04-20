@@ -108,8 +108,8 @@ export class paymentdashboardComponent {
         //     colors: ['#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263',      '#6AF9C4']
         // });
         Highcharts.theme = {
-            colors: ['#4885ed', '#3cba54', '#f4c20d', '#00BFFF', '#db3236', '#64E572',
-                '#FF9655', '#FFF263', '#6AF9C4'],
+            colors: ['skyblue', 'deepskyblue', 'lightgreen', 'mediumspringgreen', 'skyblue', 'deepskyblue',
+                'lightgreen', 'mediumspringgreen'],
             title: {
                 style: {
                     color: '#003399',
@@ -175,8 +175,8 @@ export class paymentdashboardComponent {
                             color:'#003399'
                         },
                         text: 'Total Amount'
-                    },colors: ['#4885ed', '#3cba54', '#f4c20d', '#00BFFF', '#db3236', '#64E572',
-                        '#FF9655', '#FFF263', '#6AF9C4'],
+                    },colors: ['skyblue', 'deepskyblue', 'lightgreen', 'mediumspringgreen', 'skyblue', 'deepskyblue',
+                        'lightgreen', 'mediumspringgreen'],
                     stackLabels: {
                         enabled: true,
                         format: '${total}',
@@ -246,8 +246,8 @@ export class paymentdashboardComponent {
                         color:'#003399'
                     },
                     text: 'Total Amount'
-                },colors: ['#4885ed', '#3cba54', '#f4c20d', '#00BFFF', '#db3236', '#64E572',
-                    '#FF9655', '#FFF263', '#6AF9C4'],
+                },colors: ['skyblue', 'deepskyblue', 'lightgreen', 'mediumspringgreen', 'skyblue', 'deepskyblue',
+                    'lightgreen', 'mediumspringgreen'],
                 stackLabels: {
                     enabled: true,
                     format: '${total}',
