@@ -93,7 +93,8 @@ export class SideBarComponent {
       }
         break;
       case PAGES.PAYMENTS: {
-        let link = ['payments/dashboard', 'enter'];
+        //let link = ['payments/dashboard', 'enter'];
+        let link=['paymentdashboard'];
         this._router.navigate(link);
         this.isReports = true;
       }

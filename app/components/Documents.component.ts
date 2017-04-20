@@ -53,14 +53,17 @@ export class DocumentsComponent {
     receiptsTableData:any = {};
     billsTableData:any = {};
     refundsTableData:any = {};
+    companyCurrency:string;
+    companyId:string;
+
     constructor(private _router:Router,private _route: ActivatedRoute,
                 private toastService: ToastService,private switchBoard:SwitchBoard, private loadingService:LoadingService, private companiesService: CompaniesService, private documentsService:DocumentService) {
-        let companyId = Session.getCurrentCompany();
-
+        this.companyId = Session.getCurrentCompany();
+        this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.companiesService.companies().subscribe(companies => {
             this.allCompanies = companies;
-            if(companyId){
-                this.currentCompany = _.find(this.allCompanies, {id: companyId});
+            if(this.companyId){
+                this.currentCompany = _.find(this.allCompanies, {id: this.companyId});
             } else if(this.allCompanies.length> 0){
                 this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
             }
@@ -139,10 +142,13 @@ export class DocumentsComponent {
         this.isLoading = false;
         this.receiptsTableData.search = true;
         this.receiptsTableData.columns = [
-            {"name": "id", "title": "", 'visible': false, 'filterable': false},
             {"name": "name", "title": "Name"},
-            {"name": "description", "title": "Description"},
-            {"name": "image", "title": "Image", "type": "html", "sortable": false, "filterable": false},
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = amount? parseFloat(amount): 0;
+                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }},
+            {"name": "category", "title": "Category"},
+            {"name": "id", "title": "", 'visible': false, 'filterable': false},
             {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}
         ];
 
@@ -151,8 +157,8 @@ export class DocumentsComponent {
             let row:any = {};
             row['id'] = doc.id;
             row['name'] = doc.name;
-            row['description'] = doc.desc;
-            row['image'] = "<img src='"+doc.temporaryURL+"' style='width:50px;height:50px;'/>";
+            row['amount'] = doc.amount;
+            row['category'] = doc.category;
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             base.receiptsTableData.rows.push(row);
         });
@@ -170,10 +176,13 @@ export class DocumentsComponent {
         this.isLoading = false;
         this.billsTableData.search = true;
         this.billsTableData.columns = [
-            {"name": "id", "title": "", 'visible': false, 'filterable': false},
             {"name": "name", "title": "Name"},
-            {"name": "description", "title": "Description"},
-            {"name": "image", "title": "Image", "type": "html", "sortable": false, "filterable": false},
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = amount? parseFloat(amount): 0;
+                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }},
+            {"name": "category", "title": "Category"},
+            {"name": "id", "title": "", 'visible': false, 'filterable': false},
             {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}
         ];
 
@@ -201,10 +210,13 @@ export class DocumentsComponent {
         this.isLoading = false;
         this.refundsTableData.search = true;
         this.refundsTableData.columns = [
-            {"name": "id", "title": "", 'visible': false, 'filterable': false},
             {"name": "name", "title": "Name"},
-            {"name": "description", "title": "Description"},
-            {"name": "image", "title": "Image", "type": "html", "sortable": false, "filterable": false},
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = amount? parseFloat(amount): 0;
+                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }},
+            {"name": "category", "title": "Category"},
+            {"name": "id", "title": "", 'visible': false, 'filterable': false},
             {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}
         ];
 
@@ -237,7 +249,7 @@ export class DocumentsComponent {
         delete $event.actions;
         let sourceTypes = ['receipt', 'bill', 'refund'];
         if(action == 'edit'){
-            let link = ['document', sourceTypes[this.selectedTab], "unused"+sourceTypes[this.selectedTab], $event.id];
+            let link = ['document', sourceTypes[this.selectedTab], $event.id];
             this._router.navigate(link);
         }
     }

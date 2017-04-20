@@ -5,6 +5,7 @@
 
 import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {ShareModule} from "qCommon/app/share.module";
+import {paymentdashboardComponent} from "./components/paymentdashboard.component";
 import {ReportsModule} from "reportsUI/app/reports.module";
 import {LoggedInActivator} from "qCommon/app/services/CheckSessionActivator";
 import {AddCompanyComponent} from "qCommon/app/components/AddCompany.component";
@@ -147,6 +148,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             canActivate: [LoggedInActivator]
         },
         {
+            path: 'paymentdashboard',
+            component: paymentdashboardComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
             path: 'JournalEntry',
             component: JournalEntryComponent,
             canActivate: [LoggedInActivator]
@@ -286,7 +292,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'document/:sourceType/:sourceId/:documentId',
+            path: 'document/:type/:documentId',
             component: DocumentComponent,
             canActivate: [LoggedInActivator]
         }
@@ -296,7 +302,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         VendorComponent,TaxesComponent,VerificationComponent,ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
-        ResetPasswordComponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
+        ResetPasswordComponent,paymentdashboardComponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
         CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent, DocumentComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],

@@ -30,6 +30,12 @@ export class DocumentService extends  QountServices {
             .catch(this.handleError);
     }
 
+    updateDocument(companyId, document): Observable<any> {
+        var url = this.interpolateUrl(PATH.DOCUMENT_ID_SERVICE,null,{id: Session.getUser().id, companyId: companyId, documentId: document.id});
+        return this.update(url, document, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+            .catch(this.handleError);
+    }
+
     private handleError (error: Response) {
         return Observable.throw(error.text());
     }
