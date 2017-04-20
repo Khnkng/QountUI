@@ -37,7 +37,7 @@ export class DocumentComponent {
             this.documentId = params['documentId'];
             this.sourceId = params['sourceId'];
             this.sourceType = params['sourceType'];
-            this.documentsService.getDocumentById(this.documentId, this.sourceId).subscribe(doc => this.doc = doc, error => {
+            this.documentsService.getDocumentById(this.documentId, this.sourceId, this.sourceType).subscribe(doc => this.doc = doc, error => {
 
             });
         });

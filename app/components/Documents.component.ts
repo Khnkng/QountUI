@@ -84,21 +84,21 @@ export class DocumentsComponent {
 
 
     fetchReceipts(){
-        this.documentsService.getDocumentBySource("unusedreceipt").subscribe(docs => {
+        this.documentsService.getDocumentBySource("unusedreceipt", "receipt").subscribe(docs => {
             this.loadingService.triggerLoadingEvent(false);
             this.buildReceiptsTableData(docs);
         }, error => {});
     }
 
     fetchBills(){
-        this.documentsService.getDocumentBySource("unusedbill").subscribe(docs => {
+        this.documentsService.getDocumentBySource("unusedbill", "bill").subscribe(docs => {
             this.loadingService.triggerLoadingEvent(false);
             this.buildBillsTableData(docs);
         }, error => {});
     }
 
     fetchRefunds(){
-        this.documentsService.getDocumentBySource("unusedrefund").subscribe(docs => {
+        this.documentsService.getDocumentBySource("unusedrefund", "refund").subscribe(docs => {
             this.loadingService.triggerLoadingEvent(false);
             this.buildRefundsTableData(docs);
         }, error => {});
@@ -151,7 +151,7 @@ export class DocumentsComponent {
             let row:any = {};
             row['id'] = doc.id;
             row['name'] = doc.name;
-            row['description'] = doc.description;
+            row['description'] = doc.desc;
             row['image'] = "<img src='"+doc.temporaryURL+"' style='width:50px;height:50px;'/>";
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             base.receiptsTableData.rows.push(row);

@@ -54,6 +54,8 @@ export class FinancialAccountsComponent{
   companyCurrency:string='USD';
   showPaymentInfo:boolean = false;
 
+  selectedAccount:any;
+
 
   constructor(private _router:Router,private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard){
@@ -109,6 +111,7 @@ export class FinancialAccountsComponent{
     this.financialAccountsService.financialAccount(accountId, this.currentCompany)
         .subscribe(account => {
           account = account.account || {};
+          this.selectedAccount = account;
           this.showFlyout = true;
           this.loadingService.triggerLoadingEvent(false);
           this._financialAccountForm.updateForm(this.accountForm, account);
