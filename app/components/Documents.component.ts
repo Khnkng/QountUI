@@ -191,7 +191,7 @@ export class DocumentsComponent {
             let row:any = {};
             row['id'] = doc.id;
             row['name'] = doc.name;
-            row['description'] = doc.description;
+            row['description'] = doc.desc;
             row['image'] = "<img src='"+doc.temporaryURL+"' style='width:50px;height:50px;'/>";
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             base.billsTableData.rows.push(row);
@@ -225,7 +225,7 @@ export class DocumentsComponent {
             let row:any = {};
             row['id'] = doc.id;
             row['name'] = doc.name;
-            row['description'] = doc.description;
+            row['description'] = doc.desc;
             row['image'] = "<img src='"+doc.temporaryURL+"' style='width:50px;height:50px;'/>";
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             base.refundsTableData.rows.push(row);

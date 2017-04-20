@@ -51,7 +51,7 @@ export class DocumentComponent {
             this.documentId = params['documentId'];
             this.type = params['type'];
             this.loadingService.triggerLoadingEvent(true);
-            this.documentsService.getDocumentById(this.companyId, this.documentId)
+            this.documentsService.getDocumentById(this.documentId, "unused"+this.type, this.type)
                 .subscribe(doc => {
                     this.loadingService.triggerLoadingEvent(false);
                     this.doc = doc;
