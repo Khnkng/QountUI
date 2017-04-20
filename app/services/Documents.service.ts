@@ -18,15 +18,21 @@ export class DocumentService extends  QountServices {
         super(http);
     }
 
-    getDocumentBySource(sourceId: any): any {
-        var url = this.interpolateUrl(PATH.SOURCES_SERVICE, null, {id: Session.getUser().id, sourceId: sourceId});
-        return this.query(url, SOURCE_TYPE.DOCUMENT).map(res => <any>res.json())
+    getDocumentsByType(companyId:string, type: any): any {
+        var url = this.interpolateUrl(PATH.DOCUMENTS_SERVICE, null, {id: Session.getUser().id, companyId: companyId, type: type});
+        return this.query(url, SOURCE_TYPE.JAVA).map(res => <any>res.json())
             .catch(this.handleError);
     }
 
-    getDocumentById(documentId: string, sourceId: string): any {
-        var url = this.interpolateUrl(PATH.SOURCES_DOCUMENT_SERVICE, null, {id: Session.getUser().id, sourceId: sourceId, documentId: documentId});
-        return this.query(url, SOURCE_TYPE.DOCUMENT).map(res => <any>res.json())
+    getDocumentById(companyId:string, documentId: string): any {
+        var url = this.interpolateUrl(PATH.DOCUMENT_ID_SERVICE, null, {id: Session.getUser().id, companyId: companyId, documentId: documentId});
+        return this.query(url, SOURCE_TYPE.JAVA).map(res => <any>res.json())
+            .catch(this.handleError);
+    }
+
+    updateDocument(companyId, document): Observable<any> {
+        var url = this.interpolateUrl(PATH.DOCUMENT_ID_SERVICE,null,{id: Session.getUser().id, companyId: companyId, documentId: document.id});
+        return this.update(url, document, SOURCE_TYPE.JAVA).map(res => <any> res.json())
             .catch(this.handleError);
     }
 

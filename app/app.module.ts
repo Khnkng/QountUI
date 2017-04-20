@@ -292,7 +292,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'document/:sourceType/:sourceId/:documentId',
+            path: 'document/:type/:documentId',
             component: DocumentComponent,
             canActivate: [LoggedInActivator]
         }
