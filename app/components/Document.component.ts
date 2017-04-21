@@ -22,25 +22,64 @@ declare var _:any;
 })
 
 export class DocumentComponent {
-
     routeSub:any;
     documentId:string;
-    sourceId:string;
-    sourceType:any;
+    type:any;
     doc:any = {};
+    companyCurrency:string;
+    categories:Array<any> = [];
+    allCategories:any = {
+        "Expense": [{value: "auto", "name": "Auto"},
+            {value: "entertainment", "name": "Entertainment"},
+            {value: "shippingAndFreight", "name": "Shipping and Freight"},
+            {value: "travel", "name": "Travel"},
+            {value: "travelMeals", "name": "Travel Meals"}],
+        "Bill": [],
+        "Refund": [],
+        "Other": [],
+        "External": []
+    };
+    companyId: string;
 
     constructor(private _router:Router,private _route: ActivatedRoute,
                 private toastService: ToastService,private switchBoard:SwitchBoard,
                 private loadingService:LoadingService, private companiesService: CompaniesService,
                 private documentsService:DocumentService) {
+        this.companyId = Session.getCurrentCompany();
         this.routeSub = this._route.params.subscribe(params => {
+            this.companyCurrency = Session.getCurrentCompanyCurrency();
             this.documentId = params['documentId'];
-            this.sourceId = params['sourceId'];
-            this.sourceType = params['sourceType'];
-            this.documentsService.getDocumentById(this.documentId, this.sourceId).subscribe(doc => this.doc = doc, error => {
-
-            });
+            this.type = params['type'];
+            this.loadingService.triggerLoadingEvent(true);
+            this.documentsService.getDocumentById(this.documentId, "unused"+this.type, this.type)
+                .subscribe(doc => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.doc = doc;
+                }, error => {
+                    this.loadingService.triggerLoadingEvent(false);
+                });
         });
 
+    }
+
+    routeToToolsPage(){
+        let link = [Session.getLastVisitedUrl()];
+        this._router.navigate(link);
+    }
+
+    updateCategories(mapTo){
+        this.categories = mapTo? this.allCategories[mapTo]: [];
+    }
+
+    updateDocument(){
+        this.loadingService.triggerLoadingEvent(true);
+        this.documentsService.updateDocument(this.companyId, this.doc)
+            .subscribe(response => {
+                this.loadingService.triggerLoadingEvent(false);
+                this._router.navigate([Session.getLastVisitedUrl()]);
+            }, error =>{
+                this.loadingService.triggerLoadingEvent(false);
+                console.log(error);
+            });
     }
 }

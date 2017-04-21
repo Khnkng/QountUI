@@ -171,7 +171,7 @@
                                                     <label class="text-right">Starting Balance Date</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setBalanceDate($event)" formControlName="starting_balance_date" placeholder="Starting Balance Date"/>
+                                                    <input type="text" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setBalanceDate($event)" formControlName="starting_balance_date" placeholder="Starting Balance Date"/>
                                                     <div class="error" [hidden]="accountForm.controls.starting_balance_date.untouched || accountForm.controls.starting_balance_date.valid">Starting balance date is required.</div>
                                                 </div>
                                             </div>
@@ -220,8 +220,15 @@
                 </section>
             </div>
 
-                    <div style="position: relative;top:-75px;margin-left: 30px;width:150px;">
-                        <label style="display: inline;margin-right: 10px;">Auto Import</label><input type="checkbox" [(ngModel)]="showYodleeWidget"/>
+                    <div style="position: relative;top:-75px;margin-left: 30px;width:250px;">
+                        <label style="display: inline;margin-right: 10px;">Auto Import</label><input *ngIf="!selectedAccount?.yodlee_provider_id" type="checkbox" [(ngModel)]="showYodleeWidget"/>
+                        <span *ngIf="selectedAccount?.yodlee_provider_id">
+
+                           <a *ngIf="!toggleAutoImport" (click)="toggleAutoImport = !toggleAutoImport"><i class="ion ion-edit"></i></a>
+                           <a *ngIf="toggleAutoImport" style="font-size:0.875rem;margin-right:5px;">Unlink Account</a>
+                           <a *ngIf="toggleAutoImport" (click)="toggleAutoImport = !toggleAutoImport"><i class="ion ion-close"></i></a>
+
+                        </span>
                     </div>
 
                 </div>

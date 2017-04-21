@@ -80,19 +80,51 @@ body {
   background: #fff;
   height: auto;
 }
+.medium3{
+  margin-bottom: 30px;
+  width:15%;
+  cursor: hand;
+}
+.firstdiv{
+  float: left;
+  background: #154360;
+  display: inline-block;
+  width: 50%;
+  padding: 15px;
+  height: 78px;
+  color:white;
+  cursor: hand;
+}
+.seconddiv{
+  background: #5dade2;
+  color:white;
+  padding: 15px;
+  float: left;
+  display: inline-block;
+  width: 50%;
+  height: 78px;
+}
+.divrect{
+  background-color: greenyellow;
+  color:white;
+  height: 78px;
+  width:100%;
+  padding: 20px;
+  text-align: center;
+}
 .chart_search .bighalf-footable .footable-filtering .footable-filtering {
   right: 0px !important;
 }
-
-.icon .ion-close-circled{
-  color: #c0c0c0;
-  font-size: 30px;
-}
-.ion-close-circled:before{
-  color: #c0c0c0;
-  font-size: 30px;
+.chart_search  .bighalf-footable .footable-filtering  .footable-header{
+  background-color: skyblue;
 }
 
+.chart_search  .bighalf-footable.footable-header{
+  background-color: skyblue;
+}
+.payment-dashboard .ion-ios-close-empty{
+  font-size: 3em;
+}
 .highcharts-container{
   border:1px solid #C0C0C0;
 }
@@ -125,9 +157,6 @@ body {
   float: none;
   margin: 0 auto;
   padding: 55px 0 0 81px;
-}
-.medium-4{
-  text-align: center;
 }
 
 .payment-section-left{
@@ -3551,3 +3580,12 @@ dropdown-content.dropdown-content:before {
   background-color: $qount-brand-green;
 }
 
+.document-image-wrapper{
+  height: 80%;
+  overflow-y: auto;
+}
+
+.report-stats {
+  color: #FFF;
+  font-size: 16px;
+}
