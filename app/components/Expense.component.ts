@@ -84,7 +84,7 @@ export class ExpenseComponent{
             this.expenseID=params['expenseID'];
             if(!this.expenseID){
                 this.newExpense = true;
-                this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
+                this.defaultDate=moment(new Date()).format(this.dateFormat);
             }
         });
         this.accountsService.financialAccounts(this.currentCompanyId)
