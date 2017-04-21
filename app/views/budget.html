@@ -1,0 +1,125 @@
+<div class="row" foundation>
+    <div class="column small-12 medium-6">
+        <h5>Budget</h5>
+    </div>
+    <div class="columns small-6 small-offset-6 right">
+
+    </div>
+</div>
+<div class="row chart-of-accounts" foundation>
+    <div class="column large-12 medium-12 small-12 foo-container">
+        <div class="foo-toolbar">
+            <button class="button small" (click)="showAddBudget()"><i class="icon ion-plus-round"></i> Budget</button>
+        </div>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasBudget" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    </div>
+
+    <div class="qount-off-canvas-menu">
+        <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+            <section class="flyout-placeholder">
+                <header class="flyout-header">
+                    <h6> {{editMode ? "Update Budget" : "Create Budget"}}</h6>
+                </header>
+                <div class="flyout-body flyout-shadow-effect">
+                    <div class="create-vendor">
+                        <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="budgetForm">
+
+                            <section class="form-section clearfix">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <div class="form-section-left">
+                                            <header class="form-section-header">Basic Info</header>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Name</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="name" placeholder="Name*"/>
+                                                    <div class="error" [hidden]="budgetForm.controls.name.untouched || budgetForm.controls.name.valid">Name is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Description</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <textarea formControlName="description" rows="3" placeholder="Description"></textarea>
+                                                    <div class="error" [hidden]="budgetForm.controls.description.untouched || budgetForm.controls.description.valid">Description is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Category</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <select formControlName="category" placeholder="Category">
+                                                    </select>
+                                                    <div class="error" [hidden]="budgetForm.controls.category.untouched || budgetForm.controls.category.valid">Category is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Amount</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                                                    <div class="error" [hidden]="budgetForm.controls.amount.untouched || budgetForm.controls.amount.valid">Amount is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Frequency</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <select formControlName="frequency" placeholder="Frequency">
+                                                        <option [value]="'monthly'">Monthly</option>
+                                                        <option [value]="'quarterly'">Quarterly</option>
+                                                        <option [value]="'yearly'">Yearly</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="budgetForm.controls.frequency.untouched || budgetForm.controls.frequency.valid">Frequency is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row" *ngIf="budgetForm.controls.frequency.value == 'monthly' || budgetForm.controls.frequency.value == 'quarterly'">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Start Date</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" [mindate]="'past'" custom-datepicker [format]="MM/DD/YYYY" (valueChanged)="setStartDate($event)" formControlName="startDate" placeholder="Start Date*">
+                                                    <div class="error" [hidden]="budgetForm.controls.frequency.untouched || budgetForm.controls.frequency.valid">Start Date is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Roll Over</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <div class="switch">
+                                                        <input class="switch-input" formControlName="rollOver" id="rollOverSwitch" type="checkbox" name="exampleSwitch">
+                                                        <label class="switch-paddle" for="rollOverSwitch">
+                                                            <span class="show-for-sr">rollOver</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <button class="button small float-right" [disabled]="!budgetForm.valid" (click)="submit($event)">Save</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+                </div>
+                <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+                </button>
+            </section>
+        </div>
+    </div>
+</div>

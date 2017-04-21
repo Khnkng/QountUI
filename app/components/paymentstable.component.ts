@@ -15,15 +15,15 @@ import {FTable} from "qCommon/app/directives/footable.directive";
 declare var jQuery:any;
 declare var _:any;
 declare var Highcharts:any;
-
 @Component({
-    selector: 'paymentstable',
+    selector: 'bills',
     templateUrl: '/app/views/paymentstable.html'
 })
 export class paymenttableComponent {
     report:any={};
     tableData:any = {};
     tableOptions:any = {};
+    companyCurrency:string;
     hasItemCodes: boolean = false;
     reportChartOptionsStacked:any;
     @ViewChild('fooTableDir') fooTableDir:FTable;
@@ -33,7 +33,7 @@ export class paymenttableComponent {
     showFlyout:boolean = true;
     taxesList:any;
     tableData:any = {};
-    tableColumns:Array<string> = ['bill_id','bill_date','vendor_name', 'current_state', 'due_date', 'amount'];
+    tableColumns:Array<string> = ['bill_id','bill_date','vendor_name', 'due_date', 'amount'];
     tableOptions:any = {};
     ttt:any;
     todaysDate:any;
@@ -48,6 +48,7 @@ export class paymenttableComponent {
     constructor(private _router: Router,private _route: ActivatedRoute,private companyService: CompaniesService,
                 private loadingService:LoadingService,private reportService: ReportService) {
         this.companyId = Session.getCurrentCompany();
+        this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.routeSub = this._route.params.subscribe(params => {
             this.currentpayment = params['PaymentstableID'];
         });
@@ -69,6 +70,11 @@ export class paymenttableComponent {
             //this.navigateToJE($event.journalID);
         }
     }
+    hideFlyout(){
+        let link = ['paymentdashboard'];
+        this._router.navigate(link);
+    }
+
     buildTableData(paymenttabledata) {
         this.hasItemCodes = false;
         this.paymenttabledata = paymenttabledata;
@@ -79,9 +85,11 @@ export class paymenttableComponent {
             {"name":"bill_id","title":"Bill ID" ,"visible": false},
             {"name":"bill_date","title":"Bill Date"},
             {"name": "vendor_name", "title": "Vendor Name"},
-            {"name": "current_state", "title": "Current State"},
             {"name": "due_date", "title": "Due Date"},
-            {"name": "amount", "title": "Amount"},
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = parseFloat(amount);
+                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }}
             {"name": "actions", "title": ""}
         ];
 
@@ -89,7 +97,13 @@ export class paymenttableComponent {
         paymenttabledata.forEach(function(expense) {
             let row:any = {};
             _.each(base.tableColumns, function(key) {
-                row[key] = expense[key];
+                if(key == 'amount'){
+                    let amount = parseFloat(expense[key]);
+                    row[key] = amount.toFixed(2); // just to support regular number with .00
+                }
+                else {
+                    row[key] = expense[key];
+                }
                 row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             });
             base.tableData.rows.push(row);

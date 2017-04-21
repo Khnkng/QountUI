@@ -76,8 +76,11 @@ export class JournalEntryComponent{
     debitTotal:number = 0;
     focusedIdx = -1;
     @ViewChild('list') el:ElementRef;
+    jeDetails:any;
     dateFormat:string;
     serviceDateformat:string;
+    badgeText:string="B";
+    showBadge:boolean=false;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -731,6 +734,8 @@ export class JournalEntryComponent{
     }
 
     processJournalEntry(journalEntry){
+        this.jeDetails=journalEntry;
+        this.setBadge();
         journalEntry.journalLines = _.orderBy(journalEntry.journalLines, ['entryType'], ['desc']);
         journalEntry.date = this.dateFormater.formatDate(journalEntry.date,this.serviceDateformat,this.dateFormat);
         let base = this;
@@ -861,13 +866,65 @@ export class JournalEntryComponent{
     }
 
     goToPreviousPage(){
-        let link = [Session.getLastVisitedUrl()];
-        this._router.navigate(link);
+        if(Session.getLastVisitedUrl().indexOf("/payments/bill/")==0||Session.getLastVisitedUrl().indexOf("/expense/")==0||
+            Session.getLastVisitedUrl().indexOf("/deposit/")==0||Session.getLastVisitedUrl().indexOf("/payments/")==0){
+            let link = ['books', 'journalEntries'];
+            this._router.navigate(link);
+        }else{
+            let link = [Session.getLastVisitedUrl()];
+            this._router.navigate(link);
+        }
+
     }
 
     showRecurringOpts(){
         this.showAdvance = !this.showAdvance;
     }
 
+    jeDrilldown(){
+        let sourceID=this.jeDetails['sourceID'];
+        let sourceType=this.jeDetails['sourceType'];
+        let source=this.jeDetails['source'];
+        if(sourceID&&sourceType=='bill'&&source=='accountsPayable'){
+            let link = ['payments/bill',Session.getCurrentCompany(),sourceID,'enter'];
+            this._router.navigate(link);
+        }else if(sourceID&&sourceType=='credit'){
+            let link = ['payments/credit',Session.getCurrentCompany(),sourceID];
+            this._router.navigate(link);
+        }else if(sourceID&&sourceType=='deposit'&&source=='inflow'){
+            let link = ['/deposit', sourceID];
+            this._router.navigate(link);
+        }else if(sourceID&&sourceType=='expense'&&source=='outflow'){
+            let link = ['/expense',sourceID];
+            this._router.navigate(link);
+        }else if(sourceID&&sourceType=='payment'&&source=='accountsPayable'){
+            let link = ['/payments', sourceID];
+            this._router.navigate(link);
 
+        }
+    }
+
+    setBadge(){
+        let sourceID=this.jeDetails['sourceID'];
+        let sourceType=this.jeDetails['sourceType'];
+        let source=this.jeDetails['source'];
+        if(sourceID && source === 'accountsPayable'){
+            if(sourceType === 'payment'){
+                this.badgeText="P";
+                this.showBadge=true;
+            }else{
+                this.badgeText="B";
+                this.showBadge=true;
+            }
+        }else if(sourceID && source === 'outflow'){
+            this.badgeText="E";
+            this.showBadge=true;
+        }else if(sourceID && source === 'inflow'){
+            this.badgeText="D";
+            this.showBadge=true;
+        }else if(sourceID && sourceType === 'credit'){
+            this.badgeText="C";
+            this.showBadge=true;
+        }
+    }
 }
