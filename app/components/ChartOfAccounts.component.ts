@@ -44,18 +44,21 @@ export class ChartOfAccountsComponent{
   allCompanies:Array<any>;
   mappings:Array<any>;
   row:any;
-  coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'type', 'subType', 'desc', 'number'];
+  coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'type', 'subType', 'desc', 'number', 'balance'];
   combo:boolean = true;
   sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices", "loansTo"];
   hasParentOrChild: boolean = false;
   showFlyout:boolean = false;
   coaId:any;
   confirmSubscription:any;
+  companyCurrency:string;
+
   constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard,
               private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private toastService: ToastService, private companiesService: CompaniesService){
     this.coaForm = this._fb.group(_coaForm.getForm());
     let companyId = Session.getCurrentCompany();
+    this.companyCurrency = Session.getCurrentCompanyCurrency();
     this.loadingService.triggerLoadingEvent(true);
     this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteCOA(toast));
     this.companiesService.companies().subscribe(companies => {
@@ -324,6 +327,10 @@ export class ChartOfAccountsComponent{
       {"name": "categoryType", "title": "Type"},
       {"name": "subTypeCode", "title": "Sub Type"},
       {"name": "parentName", "title": "Parent"},
+      {"name": "balance", "title": "Balance", "type":"number", "formatter": (balance)=>{
+        balance = parseFloat(balance);
+        return balance.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }},
       {"name": "type", "title": "Type", "visible": false},
       {"name": "subType", "title": "Sub type", "visible": false},
       {"name": "desc", "title": "Description", "visible": false},

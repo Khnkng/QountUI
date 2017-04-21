@@ -58,6 +58,8 @@ export class FinancialAccountsComponent{
   dateFormat:string;
   serviceDateformat:string;
 
+  selectedAccount:any;
+
 
   constructor(private _router:Router,private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard,private dateFormater: DateFormater){
@@ -115,6 +117,7 @@ export class FinancialAccountsComponent{
     this.financialAccountsService.financialAccount(accountId, this.currentCompany)
         .subscribe(account => {
           account = account.account || {};
+          this.selectedAccount = account;
           this.showFlyout = true;
           this.loadingService.triggerLoadingEvent(false);
           account.starting_balance_date = base.dateFormater.formatDate(account.starting_balance_date,base.serviceDateformat,base.dateFormat);

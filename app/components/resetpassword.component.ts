@@ -1,12 +1,11 @@
 /**
  * Created by Nazia on 20-12-2016.
  */
+
 import {Component, ViewChild} from "@angular/core";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ToastService} from "qCommon/app/services/Toast.service";
-import {Session} from "qCommon/app/services/Session";
-import {LoadingService} from "qCommon/app/services/LoadingService";
-import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
+import {LoginService} from "qCommon/app/services/Login.service";
 import {Router,ActivatedRoute} from "@angular/router";
 
 declare var jQuery:any;
@@ -25,7 +24,7 @@ export class ResetPasswordComponent {
     routeSub:any;
     token:string;
     constructor(private _router: Router, private _toastService: ToastService,private _route:ActivatedRoute,
-                private CompanyUsersService:CompanyUsers) {
+                private loginService: LoginService) {
         this.routeSub = this._route.params.subscribe(params => {
             this.token = params['token'];
         });
@@ -40,12 +39,12 @@ export class ResetPasswordComponent {
     submit($event){
         $event && $event.preventDefault();
         if(this.checkPasswordsMatch()){
-            var data={
+            let data={
                 "action":"reset",
                 "password":this.password,
                 "token":this.token
             };
-            this.CompanyUsersService.updatePassword(data).subscribe(res => {
+            this.loginService.resetPassword(data).subscribe(res => {
                 if(res){
                     this._toastService.pop(TOAST_TYPE.error, "Password reset was successful");
                     this._router.navigate(['login']);
@@ -65,5 +64,4 @@ export class ResetPasswordComponent {
             return false;
         }
     }
-
 }
