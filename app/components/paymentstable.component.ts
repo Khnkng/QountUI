@@ -90,7 +90,7 @@ export class paymenttableComponent {
             let row:any = {};
             _.each(base.tableColumns, function(key) {
                 row[key] = expense[key];
-                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             });
             base.tableData.rows.push(row);
         });
