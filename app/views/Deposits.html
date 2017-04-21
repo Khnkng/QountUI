@@ -20,7 +20,7 @@
                                         </div>
                                         <div class="small-12 medium-2 columns">
                                             <label>Date
-                                                <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="date" placeholder="Date*">
+                                                <input type="text" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="date" placeholder="Date*">
                                                 <div class="error" [hidden]="depositForm.controls.date.untouched || depositForm.controls.date.valid">Date is required</div>
                                             </label>
                                         </div>

@@ -16,6 +16,7 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {CustomersService} from "qCommon/app/services/Customers.service";
 import {EmployeeService} from "qCommon/app/services/Employees.service";
 import {PaymentsService} from "qCommon/app/services/Payments.service";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
 
 declare let jQuery:any;
@@ -60,6 +61,8 @@ export class ExpenseComponent{
     selectedMappingID:string;
     expenseType:string;
     bankAccountID:string;
+    dateFormat:string;
+    serviceDateformat:string;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
    // @ViewChild("newCOAComboBoxDir") newCOAComboBox: ComboBox;
@@ -73,8 +76,10 @@ export class ExpenseComponent{
             private _expenseItemForm: ExpenseItemForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
             private vendorService: CompaniesService, private expenseService: ExpenseService, private toastService: ToastService,
             private loadingService: LoadingService, private dimensionService: DimensionService,private customerService:CustomersService,
-            private employeeService:EmployeeService,private paymentsService:PaymentsService){
+            private employeeService:EmployeeService,private paymentsService:PaymentsService,private dateFormater:DateFormater){
         this.currentCompanyId = Session.getCurrentCompany();
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
         this.routeSub = this._route.params.subscribe(params => {
             this.expenseID=params['expenseID'];
             if(!this.expenseID){
@@ -228,6 +233,7 @@ export class ExpenseComponent{
         let base = this;
         let itemsControl:any = this.expenseForm.controls['expense_items'];
         this.selectedMappingID=expense.mapping_id;
+        expense.due_date = this.dateFormater.formatDate(expense.due_date,this.serviceDateformat,this.dateFormat);
         this.loadEntities(expense.expense_type);
         _.each(expense.expense_items, function(expenseItem){
             expenseItem.amount = parseFloat(expenseItem.amount);
@@ -525,8 +531,9 @@ export class ExpenseComponent{
             this.toastService.pop(TOAST_TYPE.error, "Expense amount and Item total did not match.");
             return;
         }
-        data.expense_items = this.getExpenseLineData(this.expenseForm);
 
+        data.expense_items = this.getExpenseLineData(this.expenseForm);
+        data.due_date = this.dateFormater.formatDate(data.due_date,this.dateFormat,this.serviceDateformat);
         this.loadingService.triggerLoadingEvent(true);
         if(this.newExpense){
             this.expenseService.addExpense(data, this.currentCompanyId)

@@ -17,6 +17,8 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {Router, ActivatedRoute} from "@angular/router";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
+
 
 declare let _:any;
 declare let jQuery:any;
@@ -74,14 +76,18 @@ export class JournalEntryComponent{
     debitTotal:number = 0;
     focusedIdx = -1;
     @ViewChild('list') el:ElementRef;
+    dateFormat:string;
+    serviceDateformat:string;
 
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
             private companiesService: CompaniesService, private dimensionService: DimensionService, private loadingService: LoadingService,
-            private employeeService: EmployeeService, private customerService: CustomersService) {
+            private employeeService: EmployeeService, private customerService: CustomersService,private dateFormater:DateFormater) {
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
         this.companyId = Session.getCurrentCompany();
-        this.defaultDate=moment(new Date()).format("MM/DD/YYYY");
+        this.defaultDate=moment(new Date()).format(this.dateFormat);
         this.routeSub = this._route.params.subscribe(params => {
             this.journalID=params['journalID'];
             let tempReverse=params['reverse'];
@@ -628,6 +634,7 @@ export class JournalEntryComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
+        data.date = this.dateFormater.formatDate(data.date,this.dateFormat,this.serviceDateformat);
         data.journalLines = this.getJournalLineData(this.jeForm);
         this.updateJournalLinesData(data);
         if(this.validateLines(data.journalLines)){
@@ -725,6 +732,7 @@ export class JournalEntryComponent{
 
     processJournalEntry(journalEntry){
         journalEntry.journalLines = _.orderBy(journalEntry.journalLines, ['entryType'], ['desc']);
+        journalEntry.date = this.dateFormater.formatDate(journalEntry.date,this.serviceDateformat,this.dateFormat);
         let base = this;
         this.journalEntry = journalEntry;
         if(this.isReverse){

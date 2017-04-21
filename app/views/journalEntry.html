@@ -22,7 +22,7 @@
                                             </div>
                                             <div class="small-12 medium-3 columns">
                                                 <label>Date
-                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                                                    <input type="text" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
                                                     <input type="text" formControlName="date"  *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly>
                                                     <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
                                                 </label>

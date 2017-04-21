@@ -16,6 +16,8 @@ import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.s
 import {BadgeService} from "qCommon/app/services/Badge.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {ReconcileService} from "../services/Reconsile.service";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
+
 
 
 declare var _:any;
@@ -67,12 +69,17 @@ export class BooksComponent{
     DepositToDelete:any;
     journalToDelete:any;
     unreconciledCount:number;
+    dateFormat:string;
+    serviceDateformat:string;
     categoryData:any = {'depreciation':'Depreciation','payroll':'Payroll','apBalance':'AP balance','arBalance':'AR balance','inventory':'Inventory','credit':'Credit','bill':'Bill','billPayment':'Payment','deposit':'Deposit','expense':'Expense','amortization':'Amortization','openingEntry':'Opening Entry','creditMemo':'Credit Memo','cashApplication':'Cash Application','other':'Other'};
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
                 private toastService: ToastService,private switchBoard:SwitchBoard, private loadingService:LoadingService, private companiesService: CompaniesService,
                 private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService,
-                private badgesService: BadgeService, private reconcileService: ReconcileService) {
+                private badgesService: BadgeService, private reconcileService: ReconcileService,private dateFormater: DateFormater) {
         let companyId = Session.getCurrentCompany();
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
+
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => {
             switch (this.selectedTab) {
                 case 0:
@@ -342,17 +349,19 @@ export class BooksComponent{
                 } else if(key == 'amount'){
                     let amount = parseFloat(expense[key]);
                     row[key] = amount.toFixed(2); // just to support regular number with .00
+                }else if(key == 'due_date'){
+                    row[key] = base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat);
                 } else{
                     row[key] = expense[key];
                 }
                 /*else if(key == 'is_paid'){
-                    if(expense.is_paid || expense.paid_date){
-                        row['status']= "<button class='hollow button success'>Paid</button>";
-                    } else{
-                        row['status']= "<button class='hollow button alert'>Not Paid</button>";
-                    }
-                    row[key] = expense.is_paid? "PAID": "UNPAID";
-                }*/
+                 if(expense.is_paid || expense.paid_date){
+                 row['status']= "<button class='hollow button success'>Paid</button>";
+                 } else{
+                 row['status']= "<button class='hollow button alert'>Not Paid</button>";
+                 }
+                 row[key] = expense.is_paid? "PAID": "UNPAID";
+                 }*/
             });
             if(expense.journal_id){
                 row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
@@ -369,9 +378,9 @@ export class BooksComponent{
             this.isLoading=false;
         }
         /*this.hasExpenses = false;
-        setTimeout(function(){
-            base.hasExpenses = true;
-        });*/
+         setTimeout(function(){
+         base.hasExpenses = true;
+         });*/
         this.loadingService.triggerLoadingEvent(false);
     }
 
@@ -398,10 +407,11 @@ export class BooksComponent{
                     row[key] = base.getBankAccountName(expense[key]);
 
                 }  else if(key == 'amount'){
-                    console.log("expense[key]",expense[key]);
                     let amount = parseFloat(expense[key]);
                     //row[key] = amount.toLocaleString(base.companyCurrency, {currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 }) // just to support regular number with .00
                     row[key] = amount.toFixed(2);
+                }else if(key == 'date'){
+                    row[key] = base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat);
                 }else{
                     row[key] = expense[key];
                 }
@@ -421,9 +431,9 @@ export class BooksComponent{
             this.isLoading=false;
         }
         /*this.hasDeposits = false;
-        setTimeout(function(){
-            base.hasDeposits = true;
-        });*/
+         setTimeout(function(){
+         base.hasDeposits = true;
+         });*/
         base.loadingService.triggerLoadingEvent(false);
     }
     buildTableData(data){
@@ -455,19 +465,17 @@ export class BooksComponent{
             _.each(Object.keys(journalEntry), function (key) {
                 if(key == 'source'){
                     row['sourceValue']=base.getSourceName(journalEntry[key]);
-                }
-
-                if(key == 'category'){
+                }else if(key == 'category'){
                     row['categoryValue'] = base.categoryData[journalEntry[key]];
-
+                }else if(key == 'date'){
+                    row[key] = base.dateFormater.formatDate(journalEntry[key],base.serviceDateformat,base.dateFormat);
+                }else {
+                    row[key] = journalEntry[key];
                 }
-                row[key] = journalEntry[key];
-
-
             });
             let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             if(journalEntry['source'] === 'Manual'){
-               action= action+"<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+                action= action+"<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             }
             if(journalEntry['sourceID'] && journalEntry['source'] === 'accountsPayable'){
                 if(journalEntry['sourceType'] === 'payment'){
@@ -497,9 +505,9 @@ export class BooksComponent{
             this.isLoading=false;
         }
         /*this.hasJournalEntries = false;
-        setTimeout(function(){
-           base.hasJournalEntries = true;
-        });*/
+         setTimeout(function(){
+         base.hasJournalEntries = true;
+         });*/
         this.loadingService.triggerLoadingEvent(false);
     }
 
@@ -546,7 +554,7 @@ export class BooksComponent{
         this.depositService.removeDeposit(this.DepositToDelete, this.currentCompany.id)
             .subscribe(response=> {
                 this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
-               // this.fetchDeposits();
+                // this.fetchDeposits();
                 this.hasDeposits = false;
                 this.selectTab(0,"");
                 this.getBookBadges();
@@ -568,7 +576,7 @@ export class BooksComponent{
         this.expenseService.removeExpense(this.ruleToDelete, this.currentCompany.id)
             .subscribe(response=> {
                 this.toastService.pop(TOAST_TYPE.success, "Deleted expense successfully");
-               // this.fetchExpenses();
+                // this.fetchExpenses();
                 this.hasExpenses = false;
                 this.selectTab(1,"");
                 this.getBookBadges();
@@ -607,21 +615,21 @@ export class BooksComponent{
     }
 
     reRoutePage(tabId) {
-   if(tabId==0){
-    let link = ['books', 'deposits'];
-    this._router.navigate(link);
-    return;
-}
-       else if(tabId==1){
+        if(tabId==0){
+            let link = ['books', 'deposits'];
+            this._router.navigate(link);
+            return;
+        }
+        else if(tabId==1){
             let link = ['books', 'expenses'];
             this._router.navigate(link);
             return;
         }
         else{
-    let link = ['books', 'journalEntries'];
-    this._router.navigate(link);
-    return;
-}
+            let link = ['books', 'journalEntries'];
+            this._router.navigate(link);
+            return;
+        }
 
     }
 

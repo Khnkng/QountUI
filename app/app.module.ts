@@ -82,6 +82,7 @@ import {SearchResultsComponent} from "./components/SearchResults.component";
 import {ReconcileComponent} from "./components/Reconsile.component";
 import {ReconcileForm} from "./forms/Reconsile.form";
 import {ReconcileService} from "./services/Reconsile.service";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -289,7 +290,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
         TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm,
-        FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService],
+        FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService,DateFormater],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

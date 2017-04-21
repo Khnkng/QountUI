@@ -20,6 +20,7 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
 
 declare let jQuery:any;
@@ -68,23 +69,24 @@ export class RulesComponent {
     vendorsArray:Array<any>;
     customersArray:Array<any>;
     conparisionAmountArray:Array<any>;
+    dateFormat:string;
+    serviceDateformat:string;
+
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
     @ViewChild('selectedCOAComboBoxDir') selectedCOAComboBox: ComboBox;
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     constructor(private _router:Router, private customersService: CustomersService, private switchBoard:SwitchBoard,private companyService: CompaniesService,private _toastService: ToastService, private _fb: FormBuilder,private ruleservice:RulesService,private _ruleForm: RuleForm, private coaService: ChartOfAccountsService,
-        private dimensionService: DimensionService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,) {
+        private dimensionService: DimensionService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,private dateFormater: DateFormater) {
         this.companyId = Session.getCurrentCompany();
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.RuleDelete(toast));
         this.conparisionArray=['--None--','BEGINS_WITH','CONTAINS','EQUALS_TO'];
         this.conparisionAmountArray=['--None--','EQUALS_TO','LESS_THAN','BETWEEN','GREATER_THAN','GREATER_THAN_OR_EQUALS_TO','LESS_THAN_OR_EQUALS_TO'];
         this.vendorsArray=['EQUALS_TO'];
         this.customersArray=['EQUALS_TO'];
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        this.todaysDate= mm+"/"+dd+"/"+yyyy;
+        this.todaysDate= moment(new Date()).format(this.dateFormat);
         this.financialAccountsService.financialAccounts(this.companyId)
             .subscribe(response => {
                 this.loadingService.triggerLoadingEvent(false);
@@ -361,7 +363,7 @@ export class RulesComponent {
             if(coa) {
                 row['chartOfAccount'] = coa.name;
             }
-            row['effectiveDate']=RulesList.effectiveDate;
+            row['effectiveDate']=base.dateFormater.formatDate(RulesList.effectiveDate,base.serviceDateformat,base.dateFormat);
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.tableData.rows.push(row);
         });
@@ -438,6 +440,10 @@ export class RulesComponent {
         let base=this;
         this.ruleservice.rule(this.companyId,RuleID).subscribe(rule => {
             this.row = rule;
+            rule.effectiveDate = base.dateFormater.formatDate(rule.effectiveDate,base.serviceDateformat,base.dateFormat);
+            if(rule.endDate) {
+                rule.endDate = base.dateFormater.formatDate(rule.endDate, base.serviceDateformat, base.dateFormat);
+            }
             this.selectedDimensions=rule.actions;
             let selectedCOAControl:any = this.ruleForm.controls['sourceType'];
             selectedCOAControl.patchValue(rule.sourceType);
@@ -604,7 +610,10 @@ cleanData(data){
         }else{
             console.log("data.effectiveDate",data.effectiveDate);
         }
-
+        data.effectiveDate = this.dateFormater.formatDate(data.effectiveDate,this.dateFormat,this.serviceDateformat);
+        if(data.endDate) {
+            data.endDate = this.dateFormater.formatDate(data.endDate, this.dateFormat, this.serviceDateformat);
+        }
         if(this.editMode){
             data.conditions=[];
             var condition1={};
