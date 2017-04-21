@@ -64,7 +64,7 @@ export class paymentdashboardComponent {
         return _values;
     }
     payableclick(payableclick){
-        let link = ['Paymentstable', payableclick];
+        let link = ['bills', payableclick];
         this._router.navigate(link);
     }
 

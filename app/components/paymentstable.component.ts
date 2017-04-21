@@ -15,9 +15,8 @@ import {FTable} from "qCommon/app/directives/footable.directive";
 declare var jQuery:any;
 declare var _:any;
 declare var Highcharts:any;
-
 @Component({
-    selector: 'paymentstable',
+    selector: 'bills',
     templateUrl: '/app/views/paymentstable.html'
 })
 export class paymenttableComponent {
