@@ -12,6 +12,7 @@ import {AddCompanyComponent} from "qCommon/app/components/AddCompany.component";
 import {CompaniesComponent} from "qCommon/app/components/Companies.component";
 import {TaxesComponent} from "./components/taxes.component";
 import {VerificationComponent} from "./components/Verification.component";
+import {paymenttableComponent} from "./components/paymentstable.component";
 import {CompanyComponent} from "qCommon/app/components/Company.component";
 import {BrowserModule} from "@angular/platform-browser";
 import {AppComponent} from "./components/app.component";
@@ -140,6 +141,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         {
             path: 'Verification/:VerificationID',
             component: VerificationComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'Paymentstable/:PaymentstableID',
+            component: paymenttableComponent,
             canActivate: [LoggedInActivator]
         },
         {
@@ -299,7 +305,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
-        VendorComponent,TaxesComponent,VerificationComponent,ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
+        VendorComponent,TaxesComponent,VerificationComponent,paymenttableComponent,ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
         ResetPasswordComponent,paymentdashboardComponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,

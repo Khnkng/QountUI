@@ -26,22 +26,32 @@ export class paymentdashboardComponent {
     showFlyout:boolean = true;
     taxesList:any;
     tableData:any = {};
-    tableColumns:Array<string> = ['id','name', 'tin', 'visibleOnInvoices', 'taxAuthorityName', 'taxRate','coa_name','recoverableTax','compoundTax'];
+    tableColumns:Array<string> = ['bill_date','vendor_name', 'current_state', 'due_date', 'amount'];
     tableOptions:any = {};
     ttt:any;
     todaysDate:any;
     reportasas:boolean= false;
+    paymentcount:any;
+    payable:boolean=false;
+    tablelist:any;
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('createtaxes') createtaxes;
     constructor(private _router: Router,private companyService: CompaniesService,
                 private loadingService:LoadingService,private reportService: ReportService) {
         this.companyId = Session.getCurrentCompany();
         this.generateChart();
-        this.companyService.getTaxofCompany(this.companyId)
-            .subscribe(taxesList  => {
-                this.buildTableData(taxesList);
-                this.taxesList=taxesList;
-                console.log("taxesListtaxesList",taxesList);
+
+        this.companyService.getpaymentcount(this.companyId)
+            .subscribe(paymentcount  => {
+                this.paymentcount=paymentcount;
+                this.payable=true;
+            });
+
+        this.companyService.getcurrentpaymenttable(this.companyId)
+            .subscribe(tablelist  => {
+                this.tablelist=tablelist;
+                console.log("tablelist",tablelist);
+                this.buildTableData(tablelist);
                 // this.showMessage(true, success);
             }, error =>  console.log("error"));
     }
@@ -52,9 +62,11 @@ export class paymentdashboardComponent {
         });
         return _values;
     }
-    payable(){
-
+    payableclick(payableclick){
+        let link = ['Paymentstable', payableclick];
+        this._router.navigate(link);
     }
+
     hideFlyout(){
         let link = ['payments/dashboard', 'enter'];
         this._router.navigate(link);
@@ -290,36 +302,25 @@ export class paymentdashboardComponent {
         });
     }
 
-    buildTableData(taxesList) {
+    buildTableData(tablelist) {
        this.hasItemCodes = false;
-        this.taxesList = taxesList;
+        this.tablelist = tablelist;
         this.tableData.rows = [];
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
-            {"name":"id","title":"id","visible": false},
-            {"name": "name", "title": "Tax Name"},
-            {"name": "tin", "title": "Tax Number"},
-            {"name": "visibleOnInvoices", "title": "Display Invoices"},
-            {"name": "taxAuthorityName", "title": "Tax Authority Name"},
-            {"name": "taxRate", "title": "Tax Rate"},
-            {"name": "coa_name", "title": "COA"},
-
-            {"name": "recoverableTax", "title": "Recoverable Tax"},
-            {"name": "compoundTax", "title": "Compound Tax"},
-            {"name": "actions", "title": ""}
+            {"name": "bill_date", "title": "Bill Date"},
+            {"name": "vendor_name", "title": "Vendor Name"},
+            {"name": "current_state", "title": "Current State"},
+            {"name": "due_date", "title": "Due Date"},
+            {"name": "amount", "title": "Amount"}
         ];
         let base = this;
-        taxesList.forEach(function(expense) {
+        tablelist.forEach(function(expense) {
             let row:any = {};
             _.each(base.tableColumns, function(key) {
-                if(key == 'taxRate'){
-                    console.log("taxRate");
-                    row[key] = expense[key]+"%";
-                }  else{
                     row[key] = expense[key];
-                }
-                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+                // row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             });
             base.tableData.rows.push(row);
         });
@@ -330,6 +331,5 @@ export class paymentdashboardComponent {
         }, 0)
         this.loadingService.triggerLoadingEvent(false);
     }
-
 }
 
