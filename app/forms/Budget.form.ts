@@ -12,7 +12,7 @@ export class BudgetForm extends abstractForm{
         return {
             "name": [model ? model.name : '', Validators.required],
             "category": [model ? model.category : ''],
-            "coa": [model ? model.coa : ''],
+            "coa": [model ? model.coa : null],
             "amount": [model ? model.amount : '',Validators.required],
             "frequency": [model ? model.frequency : '',Validators.required],
             "rollOver": [model ? model.rollOver : false],

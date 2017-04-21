@@ -130,6 +130,9 @@ export class BudgetComponent{
         $event && $event.preventDefault();
         let data = this._budgetForm.getData(this.budgetForm);
         this.loadingService.triggerLoadingEvent(true);
+        if(data.frequency=='yearly'){
+            data.startDate=Session.getFiscalStartDate();
+        }
         if(this.editMode){
             this.budgetService.updateBudget(data,this.currentCompany)
                 .subscribe(budget => {
