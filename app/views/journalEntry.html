@@ -177,6 +177,9 @@
                                             <label class="float-right">
                                                 <b>Debit:</b> {{debitTotal| currency:companyCurrency:true:'1.2-2'}}
                                             </label>
+                                            <label *ngIf="showBadge" class="float-right" style="margin-top: 5px;margin-right: 10px">
+                                                <span class='icon badge je-badge float-right' style="cursor: pointer;" (click)="jeDrilldown()">{{badgeText}}</span>
+                                            </label>
                                         </div>
                                     </div>
                                     <table class="stack line-table" [hidden]="showAdvance">
