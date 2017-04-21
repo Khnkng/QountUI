@@ -33,7 +33,7 @@ export class paymenttableComponent {
     showFlyout:boolean = true;
     taxesList:any;
     tableData:any = {};
-    tableColumns:Array<string> = ['bill_date','vendor_name', 'current_state', 'due_date', 'amount'];
+    tableColumns:Array<string> = ['bill_id','bill_date','vendor_name', 'current_state', 'due_date', 'amount'];
     tableOptions:any = {};
     ttt:any;
     todaysDate:any;
@@ -57,6 +57,18 @@ export class paymenttableComponent {
                 this.buildTableData(this.paymenttabledata);
             }, error =>  console.log("error"));
     }
+    handleAction($event){
+        let action = $event.action;
+        delete $event.action;
+        delete $event.actions;
+        if(action == 'edit') {
+            let link = ['payments/bill',Session.getCurrentCompany(),$event.bill_id,$event.current_state];
+            this._router.navigate(link);
+            //this.getPaymentDetails($event.groupID)
+        }else {
+            //this.navigateToJE($event.journalID);
+        }
+    }
     buildTableData(paymenttabledata) {
         this.hasItemCodes = false;
         this.paymenttabledata = paymenttabledata;
@@ -64,11 +76,13 @@ export class paymenttableComponent {
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
+            {"name":"bill_id","title":"Bill ID" ,"visible": false},
             {"name":"bill_date","title":"Bill Date"},
             {"name": "vendor_name", "title": "Vendor Name"},
             {"name": "current_state", "title": "Current State"},
             {"name": "due_date", "title": "Due Date"},
-            {"name": "amount", "title": "Amount"}
+            {"name": "amount", "title": "Amount"},
+            {"name": "actions", "title": ""}
         ];
 
         let base = this;
@@ -76,7 +90,7 @@ export class paymenttableComponent {
             let row:any = {};
             _.each(base.tableColumns, function(key) {
                 row[key] = expense[key];
-                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             });
             base.tableData.rows.push(row);
         });
