@@ -9,11 +9,11 @@
     <header>
         <div class="header">
             <div class="row">
-                <div class="small-6"><h5>Payments Dashboard</h5></div>
+                <div class="small-6"><h5>Bills</h5></div>
             </div>
         </div>
     </header>
-    <div class="column large-12 medium-12 small-12 foo-container">
+    <div class="column large-12 medium-12 small-12 foo-container chart_search">
         <div class="foo-toolbar">
         </div>
         <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>

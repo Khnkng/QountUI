@@ -22,6 +22,7 @@ export class paymentdashboardComponent {
     reportChartOptionsStacked:any;
     reportChartOptions:any;
     hasItemCodes: boolean = false;
+    companyCurrency: string;
     companyId:string;
     showFlyout:boolean = true;
     taxesList:any;
@@ -40,7 +41,7 @@ export class paymentdashboardComponent {
                 private loadingService:LoadingService,private reportService: ReportService) {
         this.companyId = Session.getCurrentCompany();
         this.generateChart();
-
+        this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.companyService.getpaymentcount(this.companyId)
             .subscribe(paymentcount  => {
                 this.paymentcount=paymentcount;
@@ -63,7 +64,7 @@ export class paymentdashboardComponent {
         return _values;
     }
     payableclick(payableclick){
-        let link = ['Paymentstable', payableclick];
+        let link = ['bills', payableclick];
         this._router.navigate(link);
     }
 
@@ -313,13 +314,22 @@ export class paymentdashboardComponent {
             {"name": "vendor_name", "title": "Vendor Name"},
             {"name": "current_state", "title": "Current State"},
             {"name": "due_date", "title": "Due Date"},
-            {"name": "amount", "title": "Amount"}
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = parseFloat(amount);
+                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }}
         ];
         let base = this;
         tablelist.forEach(function(expense) {
             let row:any = {};
             _.each(base.tableColumns, function(key) {
+                if(key == 'amount'){
+                    let amount = parseFloat(expense[key]);
+                    row[key] = amount.toFixed(2); // just to support regular number with .00
+                }
+                else {
                     row[key] = expense[key];
+                }
                 // row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             });
             base.tableData.rows.push(row);
