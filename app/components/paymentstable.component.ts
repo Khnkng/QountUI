@@ -69,6 +69,11 @@ export class paymenttableComponent {
             //this.navigateToJE($event.journalID);
         }
     }
+    hideFlyout(){
+        let link = ['paymentdashboard'];
+        this._router.navigate(link);
+    }
+
     buildTableData(paymenttabledata) {
         this.hasItemCodes = false;
         this.paymenttabledata = paymenttabledata;
