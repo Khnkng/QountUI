@@ -116,7 +116,7 @@ body {
   right: 0px !important;
 }
 .chart_search  .bighalf-footable .footable-filtering  .footable-header{
-  background-color: skyblue;
+  //background-color: skyblue;
 }
 
 .chart_search  .bighalf-footable.footable-header{
@@ -3588,4 +3588,9 @@ dropdown-content.dropdown-content:before {
 .report-stats {
   color: #FFF;
   font-size: 16px;
+  margin:20px 0;
+}
+
+.report-stats-padding {
+  padding-right:0 !important;
 }
