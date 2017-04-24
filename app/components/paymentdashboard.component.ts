@@ -151,6 +151,9 @@ export class paymentdashboardComponent {
 
                 }
             },
+            credits: {
+                enabled: false
+            },
             subtitle: {
                 style: {
                     color: '#003399',
