@@ -126,7 +126,7 @@ body {
   font-size: 3em;
 }
 .highcharts-container{
-  border:1px solid #C0C0C0;
+  box-shadow: 0 3px 4px #ddd;
 }
 
 
@@ -3547,7 +3547,7 @@ dropdown-content.dropdown-content:before {
 
 .recon-pipe{
   line-height:1.3;
-  color: #CCCCCC;
+  color: $qount-brand-grey;
 }
 
 .recon-difference {
@@ -3586,11 +3586,26 @@ dropdown-content.dropdown-content:before {
 }
 
 .report-stats {
-  color: #FFF;
-  font-size: 16px;
+  color: #FAFAFA;
+  font-size: 14px;
   margin:20px 0;
 }
 
 .report-stats-padding {
   padding-right:0 !important;
+}
+
+.report-stats .pointer{
+&:hover {
+  transform: scale(1.1);
+  /*box-shadow: 0 3px 4px #ddd;
+  background-color: #E8F2FC !important;*/
+}
+&:active{
+ background-color: #E8F2FC;
+  box-shadow: 0 3px 4px #ddd;
+}
+}
+.chart-margin {
+  margin-top:15px;
 }
