@@ -866,8 +866,8 @@ export class JournalEntryComponent{
     }
 
     goToPreviousPage(){
-        if(Session.getLastVisitedUrl().indexOf("/payments/bill/")==0||Session.getLastVisitedUrl().indexOf("/expense/")==0||
-            Session.getLastVisitedUrl().indexOf("/deposit/")==0||Session.getLastVisitedUrl().indexOf("/payments/")==0){
+        if(Session.getLastVisitedUrl().indexOf("/expense/")==0||
+            Session.getLastVisitedUrl().indexOf("/deposit/")==0||(Session.getLastVisitedUrl().indexOf("/payments/")==0&&Session.getLastVisitedUrl().length==10)){
             let link = ['books', 'journalEntries'];
             this._router.navigate(link);
         }else{
