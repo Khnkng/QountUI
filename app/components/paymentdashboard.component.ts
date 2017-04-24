@@ -35,6 +35,11 @@ export class paymentdashboardComponent {
     paymentcount:any;
     payable:boolean=false;
     tablelist:any;
+    totalapproveamount:any;
+    totalpayamont:any;
+    totalPayableamount:any;
+    pastdue:any;
+    totalPayBillAmount:any;
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('createtaxes') createtaxes;
     constructor(private _router: Router,private companyService: CompaniesService,
@@ -45,6 +50,15 @@ export class paymentdashboardComponent {
         this.companyService.getpaymentcount(this.companyId)
             .subscribe(paymentcount  => {
                 this.paymentcount=paymentcount;
+                var t=paymentcount.totalApproveBillAmount;
+                this.totalapproveamount=t.toFixed(2);
+                var payableAmount=paymentcount.totalPayable;
+                this.totalPayableamount=payableAmount.toFixed(2);
+                var pastdueamount=paymentcount.pastDue;
+                this.pastdue=pastdueamount.toFixed(2);
+                this.totalpayamont=paymentcount.totalPayBillAmount;
+                var totalbillAmount=paymentcount.totalPayBillAmount;
+                this.totalPayBillAmount=totalbillAmount.toFixed(2);
                 this.payable=true;
             });
 
@@ -201,15 +215,10 @@ export class paymentdashboardComponent {
                     }
                 },
                 legend: {
-                    layout: 'vertical',
-                    align: 'right',
-                    verticalAlign: 'top',
-                    x: -40,
-                    y: 10,
-                    floating: true,
-                    borderWidth: 1,
-                    backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-                    shadow: true
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    x: 0,
+                    y: 0
                 },
                 tooltip: {
                     headerFormat: '<b>{point.x}</b><br/>',
@@ -272,15 +281,10 @@ export class paymentdashboardComponent {
                 }
             },
             legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'top',
-                x: -40,
-                y: 10,
-                floating: true,
-                borderWidth: 1,
-                backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-                shadow: true
+                align: 'center',
+                verticalAlign: 'bottom',
+                x: 0,
+                y: 0
             },
             tooltip: {
                 headerFormat: '<b>{point.x}</b><br/>',
