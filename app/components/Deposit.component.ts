@@ -718,9 +718,9 @@ export class DepositComponent{
 
     setDefaultDepositType(){
         let data = this._depositForm.getData(this.depositForm);
-        data.deposit_type = 'invoice';
+        data.deposit_type = 'other';
         this._depositForm.updateForm(this.depositForm, data);
-        this.loadEntities('invoice');
+        this.loadEntities('other');
     }
     /*mapping changes*/
     /*showMappingPage(){

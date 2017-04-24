@@ -711,9 +711,9 @@ export class ExpenseComponent{
 
     setDefaultExpenseType(){
         let data = this._expenseForm.getData(this.expenseForm);
-        data.expense_type = 'bill';
+        data.expense_type = 'other';
         this._expenseForm.updateForm(this.expenseForm, data);
-        this.loadEntities('bill');
+        this.loadEntities('other');
     }
 
     buildTableData(mappings) {
