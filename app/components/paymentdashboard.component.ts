@@ -9,6 +9,8 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {HighChart} from "reportsUI/app/directives/HighChart.directive";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ReportService} from "reportsUI/app/services/Reports.service";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
+
 declare var jQuery:any;
 declare var _:any;
 declare var Highcharts:any;
@@ -40,11 +42,15 @@ export class paymentdashboardComponent {
     totalPayableamount:any;
     pastdue:any;
     totalPayBillAmount:any;
+    dateFormat:string;
+    serviceDateformat:string;
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('createtaxes') createtaxes;
     constructor(private _router: Router,private companyService: CompaniesService,
-                private loadingService:LoadingService,private reportService: ReportService) {
+                private loadingService:LoadingService,private reportService: ReportService,private dateFormater:DateFormater) {
         this.companyId = Session.getCurrentCompany();
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
         this.generateChart();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.companyService.getpaymentcount(this.companyId)
@@ -65,7 +71,6 @@ export class paymentdashboardComponent {
         this.companyService.getcurrentpaymenttable(this.companyId)
             .subscribe(tablelist  => {
                 this.tablelist=tablelist;
-                console.log("tablelist",tablelist);
                 this.buildTableData(tablelist);
                 // this.showMessage(true, success);
             }, error =>  console.log("error"));
@@ -89,11 +94,7 @@ export class paymentdashboardComponent {
     }
 
     generateChart() {
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        this.todaysDate= mm+"/"+dd+"/"+yyyy;
+        this.todaysDate= moment(new Date()).format(this.dateFormat);
         this.ttt={
             "type": "aging",
             "companyID": this.companyId,
@@ -102,7 +103,7 @@ export class paymentdashboardComponent {
             "asOfDate": this.todaysDate,
             "daysPerAgingPeriod": "30",
             "numberOfPeriods": "5"
-        }
+        };
         this.reportService.generateReport(this.ttt).subscribe(report  => {
 
 
@@ -333,8 +334,9 @@ export class paymentdashboardComponent {
                 if(key == 'amount'){
                     let amount = parseFloat(expense[key]);
                     row[key] = amount.toFixed(2); // just to support regular number with .00
-                }
-                else {
+                }else if(key == 'due_date'){
+                    row[key] = base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat);
+                }else {
                     row[key] = expense[key];
                 }
                 // row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
