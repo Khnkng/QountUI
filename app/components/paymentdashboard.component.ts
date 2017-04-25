@@ -10,11 +10,11 @@ import {HighChart} from "reportsUI/app/directives/HighChart.directive";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ReportService} from "reportsUI/app/services/Reports.service";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
-
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 declare var jQuery:any;
 declare var _:any;
 declare var Highcharts:any;
-
+declare var numeral:any;
 @Component({
     selector: 'paymentdashboard',
     templateUrl: '/app/views/paymentdashboard.html'
@@ -47,7 +47,7 @@ export class paymentdashboardComponent {
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('createtaxes') createtaxes;
     constructor(private _router: Router,private companyService: CompaniesService,
-                private loadingService:LoadingService,private reportService: ReportService,private dateFormater:DateFormater) {
+                private loadingService:LoadingService,private reportService: ReportService,private dateFormater:DateFormater,private numeralService:NumeralService) {
         this.companyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
         this.serviceDateformat = dateFormater.getServiceDateformat();
@@ -77,8 +77,9 @@ export class paymentdashboardComponent {
     }
     removeCurrency(values) {
         let _values = [];
+        let base = this;
         values.forEach(function(value) {
-            _values.push(Number(value.substring(1, value. length)));
+            _values.push(base.numeralService.value(value));
         });
         return _values;
     }
@@ -309,11 +310,10 @@ export class paymentdashboardComponent {
                         }
                     }
                 },
-
                 tooltip: {
-                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
-                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>${point.y}</b> of total<br/>'
+                    pointFormat: '<span style="color:{point.color};font-size: 13px">TOTAL</span>: <b>${point.y}</b><br/>'
                 },
+
                 series: [{
                     colorByPoint: true,
                     data: seriesttt
