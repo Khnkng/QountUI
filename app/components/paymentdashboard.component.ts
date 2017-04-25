@@ -160,7 +160,7 @@ export class paymentdashboardComponent {
                     width:500
                 },
                 title: {
-                    text: 'Ap Aging Report',
+                    text: 'AP Aging Report',
                     style: {
                         fontSize:'17px',
                         color:'#666666',
@@ -246,7 +246,7 @@ export class paymentdashboardComponent {
                     type: 'column'
                 },
                 title: {
-                    text: 'Ap Aging Report',
+                    text: 'AP Aging Report',
                     style: {
                         fontSize:'17px',
                         color:'#666666',
