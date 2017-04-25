@@ -29,7 +29,7 @@ export class paymentdashboardComponent {
     showFlyout:boolean = true;
     taxesList:any;
     tableData:any = {};
-    tableColumns:Array<string> = ['bill_date','vendor_name', 'current_state', 'due_date', 'amount'];
+    tableColumns:Array<string> = ['bill_date','vendor_name', 'current_state', 'due_date', 'amount','daysToPay'];
     tableOptions:any = {};
     ttt:any;
     todaysDate:any;
@@ -334,24 +334,29 @@ export class paymentdashboardComponent {
             {"name": "vendor_name", "title": "Vendor Name"},
             {"name": "current_state", "title": "Current State"},
             {"name": "due_date", "title": "Due Date"},
+
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
                 amount = parseFloat(amount);
                 return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
-            }}
-            
+            }},
+            {"name": "daysToPay", "title": "Days to Pay"}
         ];
         let base = this;
         tablelist.forEach(function(expense) {
             let row:any = {};
             _.each(base.tableColumns, function(key) {
-                if(key == 'amount'){
+                if(key == 'amount') {
                     let amount = parseFloat(expense[key]);
                     row[key] = amount.toFixed(2); // just to support regular number with .00
-                }else if(key == 'due_date'){
-                    row[key] = base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat);
                 }else {
                     row[key] = expense[key];
                 }
+                let currentDate=moment(new Date()).format("YYYY-MM-DD");
+                let daysToPay =moment(expense['due_date'],"MM/DD/YYYY").diff(currentDate,'days');
+                if(daysToPay<=0){
+                    daysToPay='<span color="red" style="color: red">'+daysToPay+'</span>'
+                }
+                row['daysToPay']=daysToPay;
                 // row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             });
             base.tableData.rows.push(row);
