@@ -103,92 +103,83 @@ export class paymentdashboardComponent {
             "asOfDate": this.todaysDate,
             "daysPerAgingPeriod": "30",
             "numberOfPeriods": "5"
-        };
+        }
         this.reportService.generateReport(this.ttt).subscribe(report  => {
 
 
-        let _report = _.cloneDeep(report);
-        let columns = _report.columns || [];
-        columns.splice(_report.columns.length - 1, 1);
+            let _report = _.cloneDeep(report);
+            let columns = _report.columns || [];
+            columns.splice(_report.columns.length - 1, 1);
 
 
-        let keys=Object.keys(_report.data);
-        let series:any = [];
-        for (let key of keys) {
-            if(key!='TOTAL') {
-                let vendor = _report.data[key];
-                let vendorId = vendor['VendorID'];
-                delete vendor['TOTAL'];
-                delete vendor['VendorID'];
-                let values = Object.values(vendor);
-                values = this.removeCurrency(values);
-                let current = values.pop();
-                values.splice(0, 0, current);
-                series.push({
-                    name : vendorId,
-                    data : values
-                });
+            let keys=Object.keys(_report.data);
+            let series:any = [];
+            let seriesttt:any=[];
+            for (let key of keys) {
+                if(key!='TOTAL') {
+                    let vendor = _report.data[key];
+                    let vendorId = vendor['VendorID'];
+                    delete vendor['TOTAL'];
+                    delete vendor['VendorID'];
+                    let values = Object.values(vendor);
+                    values = this.removeCurrency(values);
+                    let current = values.pop();
+                    values.splice(0, 0, current);
+                    series.push({
+                        name : vendorId,
+                        data : values
+                    });
 
+                }
             }
-        }
-        console.log("series",series);
-        // Highcharts.setOptions({
-        //     colors: ['#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263',      '#6AF9C4']
-        // });
-        Highcharts.theme = {
-            colors: ['skyblue', 'deepskyblue', 'skyblue', 'deepskyblue', 'skyblue', 'deepskyblue',
-                'skyblue', 'deepskyblue'],
-            title: {
-                style: {
-                    color: '#003399',
-                    font: 'bold 14px #003399'
 
+            for (let key of keys) {
+                if(key=='TOTAL') {
+                    let vendor = _report.data[key];
+                    let vendorId = vendor['VendorID'];
+                    delete vendor['TOTAL'];
+                    delete vendor['VendorID'];
+                    let values = Object.values(vendor);
+                    let v=Object.keys(vendor);
+                    values = this.removeCurrency(values);
+                    let current = values.pop();
+                    values.splice(0, 0, current);
+                    for(var i=0;i<values.length;i++){
+                        seriesttt.push({
+                            name : v[i],
+                            y : values[i]
+                        });
+                    }
                 }
-            },
-            xAxis: {
-                style: {
-                    color: '##003399',
-                    font: 'bold 14px #003399'
+            }
 
-                }
-            },
-            credits: {
-                enabled: false
-            },
-            subtitle: {
-                style: {
-                    color: '#003399',
-                    font: 'bold 14px #003399',
-                }
-            },
-
-            // legend: {
-            //   itemStyle: {
-            //     font: '9pt Trebuchet MS, Verdana, sans-serif',
-            //     color: 'black'
-            //   },
-            //   itemHoverStyle:{
-            //     color: 'gray'
-            //   }
-            // }
-        };
-
-// Apply the theme
-        Highcharts.setOptions(Highcharts.theme);
             this.reportChartOptionsStacked = {
                 chart: {
                     type: 'column',
                     width:500
                 },
                 title: {
-                    text: 'AP Aging Report'
+                    text: 'Ap Aging Report',
+                    style: {
+                        fontSize:'17px',
+                        color:'#666666',
+                        fill:'#666666'
+
+                    }
+                },
+                credits: {
+                    enabled: false
                 },
                 xAxis: {
                     categories: columns,
                     labels: {
                         style: {
-                            fontWeight: 'bold',
-                            color:'#003399'
+                            fontSize:'13px',
+                            fontWeight:'bold',
+                            color:'#003399',
+                            fill:'#003399',
+                            textDecoration:'underline'
+
                         }
                     }
                 },
@@ -196,24 +187,25 @@ export class paymentdashboardComponent {
                     min: 0,
                     labels: {
                         style: {
-                            fontWeight: 'bold',
-                            color:'#003399'
+                            fontSize:'15px'
+
                         }
                     },
                     title: {
-                        style:{
-                            fontWeight: 'bold',
-                            color:'#003399'
-                        },
-                        text: 'Total Amount'
-                    },colors: ['skyblue', 'deepskyblue', 'skyblue', 'deepskyblue', 'skyblue', 'deepskyblue',
-                        'skyblue', 'deepskyblue'],
+                        text: 'Total Amount',
+                        style: {
+                            fontSize:'15px'
+
+                        }
+                    },
                     stackLabels: {
                         enabled: true,
                         format: '${total}',
                         style: {
-                            fontWeight: 'bold',
+                            fontSize:'13px',
+                            fontWeight:'bold',
                             color:'#003399',
+                            fill:'#003399'
                             // color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
                         }
                     }
@@ -234,79 +226,99 @@ export class paymentdashboardComponent {
                         dataLabels: {
                             enabled: true,
                             format: '${y}',
-                            color: '#003399'
+                            fontSize:'13px',
+                            color:'#003399',
+                            fill:'#003399',
+                            textDecoration:'underline',
+                            style: {
+                                fontSize:'13px'
+                            }
                             // color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
                         }
                     }
                 },
                 series: series
             }
-        this.reportChartOptions = {
-            chart: {
-                type: 'column',
-                width:500
-            },
-            title: {
-                text: 'AP Aging Report'
-            },
-            xAxis: {
-                categories: columns,
-                labels: {
-                    style: {
-                        fontWeight: 'bold',
-                        color:'#003399'
-                    }
-                }
-            },
-            yAxis: {
-                min: 0,
-                labels: {
-                    style: {
-                        fontWeight: 'bold',
-                        color:'#003399'
-                    }
+            this.reportChartOptions = {
+
+                chart: {
+                    type: 'column'
                 },
                 title: {
-                    style:{
-                        fontWeight: 'bold',
-                        color:'#003399'
-                    },
-                    text: 'Total Amount'
-                },colors: ['skyblue', 'deepskyblue', 'lightgreen', 'mediumspringgreen', 'skyblue', 'deepskyblue',
-                    'lightgreen', 'mediumspringgreen'],
-                stackLabels: {
-                    enabled: true,
-                    format: '${total}',
+                    text: 'Ap Aging Report',
                     style: {
-                        fontWeight: 'bold',
-                        color:'#003399',
-                        // color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                        fontSize:'17px',
+                        color:'#666666',
+                        fill:'#666666'
+
                     }
-                }
-            },
-            legend: {
-                align: 'center',
-                verticalAlign: 'bottom',
-                x: 0,
-                y: 0
-            },
-            tooltip: {
-                headerFormat: '<b>{point.x}</b><br/>',
-                pointFormat: '{series.name}: ${point.y}<br/>Total: ${point.stackTotal}'
-            },
-            plotOptions: {
-                column: {
-                    //stacking: 'normal',
-                    dataLabels: {
-                        enabled: true,
-                        format: '${y}',
-                        color: '#003399'
-                        // color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                },
+
+                subtitle: {
+                },
+                credits: {
+                    enabled: false
+                },
+                xAxis: {
+                    type: 'category',
+
+                    labels: {
+                        style: {
+                            fontSize:'13px',
+                            fontWeight:'bold',
+                            color:'#003399',
+                            fill:'#003399',
+                            textDecoration:'underline'
+
+                        }
                     }
-                }
-            },
-            series: series
-        }
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total Amount',
+                        style: {
+                            fontSize:'15px'
+
+                        }
+
+                    },
+                    labels: {
+                        style: {
+                            fontSize:'13px'
+
+                        }
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '${y}',
+                            fontSize:'13px',
+                            color:'#003399',
+                            fill:'#003399',
+                            textDecoration:'underline',
+                            style: {
+                                fontSize:'13px'
+                            }
+
+                        }
+                    }
+                },
+
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+                },
+                series: [{
+                    colorByPoint: true,
+                    data: seriesttt
+                }],
+            }
             this.reportasas=true;
         });
     }
@@ -326,6 +338,7 @@ export class paymentdashboardComponent {
                 amount = parseFloat(amount);
                 return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
             }}
+            
         ];
         let base = this;
         tablelist.forEach(function(expense) {
