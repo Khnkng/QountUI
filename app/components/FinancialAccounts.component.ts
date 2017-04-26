@@ -375,6 +375,7 @@ else{
 
     this.switchBoard.onYodleeTokenRecived.subscribe(recived => {
       var status = JSON.parse(Session.get("yodleeStatus"));
+        this.loadingService.triggerLoadingEvent(true);
         jQuery('#yodleewgt').foundation('close');
         this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
         this.yodActive = false;
@@ -383,6 +384,7 @@ else{
           self.yodActive = true;
           self.getFinancialAccounts(this.currentCompany);
           }, 100);
+          this.loadingService.triggerLoadingEvent(false);
       });
 
     });
