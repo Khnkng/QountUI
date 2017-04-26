@@ -382,14 +382,17 @@ else{
         setTimeout(() => {
           self.yodActive = true;
         }, 50);
+        this.getFinancialAccounts(this.currentCompany);
       });
 
     });
   }
 
   unlinkYodleeAccount() {
+    this.loadingService.triggerLoadingEvent(true);
     this.yodleeService.unlink(Session.getCurrentCompany(), this.selectedAccount.id, this.selectedAccount.yodlee_provider_id).subscribe(resp=> {
        this.selectedAccount.yodlee_provider_id = null;
+      this.loadingService.triggerLoadingEvent(false);
        this.toastService.pop(TOAST_TYPE.success, "Account unlinked successfully");
     });
   }
