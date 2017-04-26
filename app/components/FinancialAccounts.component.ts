@@ -367,24 +367,21 @@ else{
       this.rsession = resp.userSessionToken;
       this.token = resp.userAccessToken;
       this.callBackUrl = "http://dev-oneapp.qount.io"+"/yodleeToken";
-      let self = this;
       setTimeout(function(){
         jQuery("#yodleeForm").submit();
-        jQuery('#yodleewgt').foundation('close');
-        self.loadingService.triggerLoadingEvent(true);
       },100);
     }, error=>{});
 
 
-      this.switchBoard.onYodleeTokenRecived.subscribe(recived => {
-        var status = JSON.parse(Session.get("yodleeStatus"));
+    this.switchBoard.onYodleeTokenRecived.subscribe(recived => {
+      var status = JSON.parse(Session.get("yodleeStatus"));
+        jQuery('#yodleewgt').foundation('close');
         this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
-            this.loadingService.triggerLoadingEvent(false);
-            this.getFinancialAccounts(this.currentCompany);
-            this.yodActive = false;
-            let self = this;
-            setTimeout(() => {
-              self.yodActive = true;
+        this.yodActive = false;
+        let self = this;
+          setTimeout(() => {
+          self.yodActive = true;
+          self.getFinancialAccounts(this.currentCompany);
           }, 100);
       });
 
