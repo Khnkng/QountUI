@@ -15,6 +15,8 @@ import {FinancialAccountForm} from "../forms/FinancialAccount.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {YodleeService} from "../services/Yodlee.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
+
 import setTimeout = core.setTimeout;
 
 declare var jQuery:any;
@@ -54,15 +56,19 @@ export class FinancialAccountsComponent{
 
   companyCurrency:string='USD';
   showPaymentInfo:boolean = false;
+  dateFormat:string;
+  serviceDateformat:string;
 
   selectedAccount:any;
 
 
   constructor(private _router:Router,private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
-              private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard){
+              private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard,private dateFormater: DateFormater){
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
     this.companyCurrency=Session.getCurrentCompanyCurrency();
+    this.dateFormat = dateFormater.getFormat();
+    this.serviceDateformat = dateFormater.getServiceDateformat();
     if(this.currentCompany){
       this.loadingService.triggerLoadingEvent(true);
       this.coaService.chartOfAccounts(this.currentCompany)
@@ -115,6 +121,7 @@ export class FinancialAccountsComponent{
           this.selectedAccount = account;
           this.showFlyout = true;
           this.loadingService.triggerLoadingEvent(false);
+          account.starting_balance_date = base.dateFormater.formatDate(account.starting_balance_date,base.serviceDateformat,base.dateFormat);
           this._financialAccountForm.updateForm(this.accountForm, account);
           let coa = _.find(this.chartOfAccounts, {'id': account.chart_of_account_id});
           let transitCOA=_.find(this.chartOfAccounts, {'id': account.transit_chart_of_account_id});//
@@ -190,6 +197,7 @@ export class FinancialAccountsComponent{
     let base = this;
     $event && $event.preventDefault();
     let data = this._financialAccountForm.getData(this.accountForm);
+    data.starting_balance_date = this.dateFormater.formatDate(data.starting_balance_date,this.dateFormat,this.serviceDateformat);
     this.loadingService.triggerLoadingEvent(true);
     if(data.chart_of_account_id=='--None--'||data.chart_of_account_id==''){
       this.toastService.pop(TOAST_TYPE.warning, "Please select Chart of Account");
@@ -291,6 +299,9 @@ export class FinancialAccountsComponent{
         if(key=='current_balance'){
           let current_balance=account['current_balance']?Number(account['current_balance']):0;
           row['current_balance'] =current_balance.toLocaleString(Session.getCurrentCompanyCurrency(), { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        if(key == 'starting_balance_date'){
+          row[key] = base.dateFormater.formatDate(account[key],base.serviceDateformat,base.dateFormat);
         }
         let yodlee_action="";
         if(account.yodlee_provider_id){

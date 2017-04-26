@@ -12,6 +12,7 @@ import {AddCompanyComponent} from "qCommon/app/components/AddCompany.component";
 import {CompaniesComponent} from "qCommon/app/components/Companies.component";
 import {TaxesComponent} from "./components/taxes.component";
 import {VerificationComponent} from "./components/Verification.component";
+import {paymenttableComponent} from "./components/paymentstable.component";
 import {CompanyComponent} from "qCommon/app/components/Company.component";
 import {BrowserModule} from "@angular/platform-browser";
 import {AppComponent} from "./components/app.component";
@@ -86,6 +87,8 @@ import {ReconcileService} from "./services/Reconsile.service";
 import {DocumentsComponent} from "./components/Documents.component";
 import {DocumentService} from "./services/Documents.service";
 import {DocumentComponent} from "./components/Document.component";
+import {BudgetComponent} from "./components/Budget.component";
+import {BudgetForm} from "./forms/Budget.form";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -140,6 +143,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         {
             path: 'Verification/:VerificationID',
             component: VerificationComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'bills/:PaymentstableID',
+            component: paymenttableComponent,
             canActivate: [LoggedInActivator]
         },
         {
@@ -295,20 +303,26 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             path: 'document/:type/:documentId',
             component: DocumentComponent,
             canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'budget',
+            component: BudgetComponent,
+            canActivate: [LoggedInActivator]
         }
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
     declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
-        VendorComponent,TaxesComponent,VerificationComponent,ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
+        VendorComponent,TaxesComponent,VerificationComponent,paymenttableComponent,ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
         ResetPasswordComponent,paymentdashboardComponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
-        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent, DocumentComponent],
+        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent, DocumentComponent,BudgetComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
         TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm, DocumentService,
-        FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService],
+        FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService,
+        BudgetForm],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

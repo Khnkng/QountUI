@@ -91,6 +91,7 @@ export class LogInComponent implements OnInit {
         Session.setCurrentCompany(defaultCompany.id);
         Session.setCurrentCompanyName(defaultCompany.name);
         Session.setCurrentCompanyCurrency(defaultCompany.defaultCurrency);
+        Session.setFiscalStartDate(defaultCompany.fiscalStartDate?defaultCompany.fiscalStartDate:"");
       }
     } else{
       if(user.isAdmin){

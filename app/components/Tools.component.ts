@@ -151,6 +151,11 @@ export class ToolsComponent {
         this._router.navigate(link);
       }
         break;
+      case 'budget': {
+        let link = ['budget'];
+        this._router.navigate(link);
+      }
+        break;
       case 'lock': {
         let link = ['lock'];
         this._router.navigate(link);

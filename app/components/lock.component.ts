@@ -20,6 +20,7 @@ import {CompanyModel} from "../models/Company.model";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {Address} from "qCommon/app/directives/address.directive";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -66,20 +67,27 @@ export class lockComponent {
     haslockdate:boolean=false;
     hasnolockdate:boolean=true;
     currentlockdate:any;
+    dateFormat:string;
+    serviceDateformat:string;
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _lockform:LockForm,
                 private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
-                private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService) {
+                private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService,private dateFormater:DateFormater) {
         this.LockForm = this._fb.group(_lockform.getLock());
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
         this.companyId = Session.getCurrentCompany();this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteLock(toast));
         this.loadingService.triggerLoadingEvent(true);
         this.companyService.getLockofCompany(this.companyId)
             .subscribe(lockList  => {
                 this.buildTableData(lockList);
+
                 this.lockList=lockList;
                 for(var i=0;i<lockList.length;i++)
                 {
+
                     if(lockList[i].active_lock_date){
                         this.lockdate=lockList[i].active_lock_date;
+                        lockList.active_lock_date = this.dateFormater.formatDate(lockList.active_lock_date,this.serviceDateformat,this.dateFormat);
                     }
                 };
                 this.showFlyout = false;
@@ -87,18 +95,12 @@ export class lockComponent {
 
         this.companyService.getcurrentLock(this.companyId)
             .subscribe(currentlock  => {
-
+                currentlock.min_lock_date = this.dateFormater.formatDate(currentlock.min_lock_date,this.serviceDateformat,this.dateFormat);
                 this.currentlock=currentlock.min_lock_date;
                 console.log("this.currentlock",this.currentlock);
-                });
+            });
 
-
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        this.todaysDate= mm+"/"+dd+"/"+yyyy;
-
+        this.todaysDate=moment(new Date()).format(this.dateFormat);
     }
 
     buildTableData(lockList){
@@ -119,6 +121,9 @@ export class lockComponent {
             if(lockList.lock_date) {
                 let row: any = {};
                 row['id'] = lockList.id;
+                lockList.active_lock_date = base.dateFormater.formatDate(lockList.active_lock_date,base.serviceDateformat,base.dateFormat);
+                lockList.created_at = base.dateFormater.formatDate(lockList.created_at,base.serviceDateformat,base.dateFormat);
+                lockList.lock_date = base.dateFormater.formatDate(lockList.lock_date,base.serviceDateformat,base.dateFormat);
                 row['lock_date'] = lockList.lock_date;
                 row['created_at'] = lockList.created_at;
                 row['created_by'] = lockList.created_by;
@@ -142,7 +147,7 @@ export class lockComponent {
             this.loadingService.triggerLoadingEvent(true);
             this.companyService.lock(this.companyId,$event.id).subscribe(tax => {
                 this.row = tax;
-               this.locksrow=tax.shared_with;
+                this.locksrow=tax.shared_with;
                 this.haslockdate=true;
                 this.hasnolockdate=false;
                 this.showEditLock(this.row);
@@ -186,13 +191,14 @@ export class lockComponent {
     }
     getLockDetails(row){
         let base=this;
-           this.lockdate=row.lock_date;
-            let lock_created_at:any=this.LockForm.controls['lock_date'];
-            lock_created_at.patchValue(row.lock_date);
-            let key:any=this.LockForm.controls['key'];
-            key.patchValue(row.key);
-           // this.locksrow=tax.shared_with;
-            this._lockform.updateForm(this.LockForm, row);
+        row.lock_date = this.dateFormater.formatDate(row.lock_date,this.serviceDateformat,this.dateFormat);
+        this.lockdate=row.lock_date;
+        let lock_created_at:any=this.LockForm.controls['lock_date'];
+        lock_created_at.patchValue(row.lock_date);
+        let key:any=this.LockForm.controls['key'];
+        key.patchValue(row.key);
+        // this.locksrow=tax.shared_with;
+        this._lockform.updateForm(this.LockForm, row);
     }
     showCreateLock(){
 
@@ -210,14 +216,11 @@ export class lockComponent {
                 {
                     if(lockList[i].active_lock_date){
                         this.lockdate=lockList[i].active_lock_date;
+                        this.lockdate = this.dateFormater.formatDate(this.lockdate,this.serviceDateformat,this.dateFormat);
                     }
                 };
             }, error =>  this.handleError(error));
-        var today = new Date();
-        var dd = today.getDate();
-        var mm = today.getMonth()+1; //January is 0!
-        var yyyy = today.getFullYear();
-        this.todaysDate= mm+"/"+dd+"/"+yyyy;
+        this.todaysDate= moment(new Date()).format(this.dateFormat);
         this.showFlyout = true;
 
     }
@@ -231,14 +234,17 @@ export class lockComponent {
         }
         return false;
     }
-    
+
     submit($event) {
         let base = this;
         $event && $event.preventDefault();
         let data = this._lockform.getData(this.LockForm);
+        console.log(data);
         this.companyId = Session.getCurrentCompany();
         var Emailaddress=jQuery('#shared_with').tagit("assignedTags");
         data.shared_with=Emailaddress;
+        data.lock_date = this.dateFormater.formatDate(data.lock_date,this.dateFormat,this.serviceDateformat);
+        data.created_at = this.dateFormater.formatDate(data.created_at,this.dateFormat,this.serviceDateformat);
         this.loadingService.triggerLoadingEvent(true);
         if(this.editMode){
             data.id = this.row.id;
@@ -250,29 +256,30 @@ export class lockComponent {
                 }, error => this.showMessage(false, error));
         }
         else
-          {
-              delete data.created_at;
-              delete data.created_by;
-              var Emailaddress=jQuery('#shared_with').tagit("assignedTags");
-              data.shared_with=Emailaddress;
-    this.companyService.addLock(<VendorModel>data, this.companyId)
-        .subscribe(success => {
-            this.loadingService.triggerLoadingEvent(false);
-            this.showMessage(true, success);
-            this.companyService.getLockofCompany(this.companyId)
-                .subscribe(lockList  => {
-                    this.lockList=lockList;
-                    for(var i=0;i<lockList.length;i++)
-                    {
-                        if(lockList[i].active_lock_date){
-                            this.lockdate=lockList[i].active_lock_date;
-                        }
-                    };
-                    console.log("this.lockdatecreated",this.lockdate);
-                }, error =>  this.handleError(error));
-            this.showFlyout = false;
-        }, error => this.showMessage(false, error));
-}
+        {
+            delete data.created_at;
+            delete data.created_by;
+            var Emailaddress=jQuery('#shared_with').tagit("assignedTags");
+            data.shared_with=Emailaddress;
+            this.companyService.addLock(<VendorModel>data, this.companyId)
+                .subscribe(success => {
+                    this.loadingService.triggerLoadingEvent(false);
+                    this.showMessage(true, success);
+                    this.companyService.getLockofCompany(this.companyId)
+                        .subscribe(lockList  => {
+                            this.lockList=lockList;
+                            for(var i=0;i<lockList.length;i++)
+                            {
+                                if(lockList[i].active_lock_date){
+                                    this.lockdate=lockList[i].active_lock_date;
+                                    this.lockdate = this.dateFormater.formatDate(this.lockdate,this.serviceDateformat,this.dateFormat);
+                                }
+                            };
+                            console.log("this.lockdatecreated",this.lockdate);
+                        }, error =>  this.handleError(error));
+                    this.showFlyout = false;
+                }, error => this.showMessage(false, error));
+        }
     }
     setDate(date: string,lockdate){
         let jeDateControl:any = this.LockForm.controls['lock_date'];
@@ -295,6 +302,7 @@ export class lockComponent {
                         {
                             if(lockList[i].active_lock_date){
                                 this.lockdate=lockList[i].active_lock_date;
+                                this.lockdate = this.dateFormater.formatDate(this.lockdate,this.serviceDateformat,this.dateFormat);
                             }
                         };
                         this.buildTableData(lockList);

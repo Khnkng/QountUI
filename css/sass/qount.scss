@@ -116,17 +116,17 @@ body {
   right: 0px !important;
 }
 .chart_search  .bighalf-footable .footable-filtering  .footable-header{
-  background-color: skyblue;
+  //background-color: skyblue;
 }
 
 .chart_search  .bighalf-footable.footable-header{
   background-color: skyblue;
 }
-.ion-ios-close-empty{
+.payment-dashboard .ion-ios-close-empty{
   font-size: 3em;
 }
 .highcharts-container{
-  border:1px solid #C0C0C0;
+  box-shadow: 0 3px 4px #ddd;
 }
 
 
@@ -157,9 +157,6 @@ body {
   float: none;
   margin: 0 auto;
   padding: 55px 0 0 81px;
-}
-.medium-4{
-  text-align: center;
 }
 
 .payment-section-left{
@@ -3550,7 +3547,7 @@ dropdown-content.dropdown-content:before {
 
 .recon-pipe{
   line-height:1.3;
-  color: #CCCCCC;
+  color: $qount-brand-grey;
 }
 
 .recon-difference {
@@ -3588,6 +3585,25 @@ dropdown-content.dropdown-content:before {
   overflow-y: auto;
 }
 
+.report-stats {
+  color: #FAFAFA;
+  font-size: 14px;
+  margin:20px 0;
+}
+
+.report-stats-padding {
+  padding-right:0 !important;
+}
+
+.report-stats .pointer{
+&:hover {
+  transform: scale(1.1);
+}
+
+}
+.chart-margin {
+  margin-bottom:20px;
+}
 .finapp-html .actionIcons .closeIcon {
   display: none;
 }

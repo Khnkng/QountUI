@@ -22,7 +22,7 @@
                                             </div>
                                             <div class="small-12 medium-3 columns">
                                                 <label>Date
-                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                                                    <input type="text" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
                                                     <input type="text" formControlName="date"  *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly>
                                                     <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
                                                 </label>
@@ -82,6 +82,7 @@
                                                         <option value="Bill">Bill</option>
                                                         <option value="Payroll">Payroll</option>
                                                         <option value="Invoice">Invoice</option>
+                                                        <option value="Other">Other</option>
                                                     </select>
                                                     <select class="jeSelect" formControlName="jeType" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
                                                         <option value="Bill">Bill</option>
@@ -176,6 +177,9 @@
                                             </label>
                                             <label class="float-right">
                                                 <b>Debit:</b> {{debitTotal| currency:companyCurrency:true:'1.2-2'}}
+                                            </label>
+                                            <label *ngIf="showBadge" class="float-right" style="margin-top: 5px;margin-right: 10px">
+                                                <span class='icon badge je-badge float-right' style="cursor: pointer;" (click)="jeDrilldown()">{{badgeText}}</span>
                                             </label>
                                         </div>
                                     </div>
