@@ -17,6 +17,7 @@ import {YodleeService} from "../services/Yodlee.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
+import setTimeout = core.setTimeout;
 
 declare var jQuery:any;
 declare var _:any;
@@ -346,7 +347,20 @@ else{
     this.accountForm.reset();
   }
 
+  private yodActive:boolean = true;
+
   launchYodleeWidget() {
+    /*let self = this;
+    setTimeout(() => {
+      self.yodActive = true;*/
+      this.yodleeWidget();
+   /* }, 50);*/
+  }
+
+  yodleeWidget() {
+
+    jQuery('#output_frame').attr('src',"");
+
     jQuery('#yodleewgt').foundation('open');
 
     this.yodleeService.getAccessToken(Session.getCurrentCompany()).subscribe(resp=> {
@@ -363,8 +377,20 @@ else{
       var status = JSON.parse(Session.get("yodleeStatus"));
       this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
         jQuery('#yodleewgt').foundation('close');
+        this.yodActive = false;
+        let self = this;
+        setTimeout(() => {
+          self.yodActive = true;
+        }, 50);
       });
 
+    });
+  }
+
+  unlinkYodleeAccount() {
+    this.yodleeService.unlink(Session.getCurrentCompany(), this.selectedAccount.id).subscribe(resp=> {
+       this.selectedAccount.yodlee_provider_id = null;
+       this.toastService.pop(TOAST_TYPE.success, "Account unlinked successfully");
     });
   }
 
