@@ -388,7 +388,7 @@ else{
   }
 
   unlinkYodleeAccount() {
-    this.yodleeService.unlink(Session.getCurrentCompany(), this.selectedAccount.id).subscribe(resp=> {
+    this.yodleeService.unlink(Session.getCurrentCompany(), this.selectedAccount.id, this.selectedAccount.yodlee_provider_id).subscribe(resp=> {
        this.selectedAccount.yodlee_provider_id = null;
        this.toastService.pop(TOAST_TYPE.success, "Account unlinked successfully");
     });

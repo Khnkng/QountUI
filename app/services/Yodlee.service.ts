@@ -28,8 +28,8 @@ export class YodleeService extends  QountServices{
             .catch(this.handleError)
     }
 
-    unlink(companyId, accountId) : Observable<any> {
-        var url = this.interpolateUrl(PATH.YODLEE_SUBMIT_STATUS,null,{id: Session.getUser().id, companyID:companyId, accountID:accountId});
+    unlink(companyId, accountId, providerId) : Observable<any> {
+        var url = this.interpolateUrl(PATH.YODLEE_DELETE_STATUS,null,{id: Session.getUser().id, companyID:companyId, accountID:accountId, providerID:providerId});
         return this.delete(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
             .catch(this.handleError)
     }
