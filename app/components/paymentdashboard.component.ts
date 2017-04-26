@@ -219,13 +219,14 @@ export class paymentdashboardComponent {
                 },
                 tooltip: {
                     headerFormat: '<b>{point.x}</b><br/>',
-                    pointFormat: '{series.name}: ${point.y}<br/>Total: ${point.stackTotal}'
+                    pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y}</span><br/>',
+                    shared: true
                 },
                 plotOptions: {
                     column: {
                         stacking: 'normal',
                         dataLabels: {
-                            enabled: true,
+                            enabled: false,
                             format: '${y}',
                             fontSize:'13px',
                             color:'#003399',
