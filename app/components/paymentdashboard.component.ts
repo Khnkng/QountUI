@@ -56,15 +56,6 @@ export class paymentdashboardComponent {
         this.companyService.getpaymentcount(this.companyId)
             .subscribe(paymentcount  => {
                 this.paymentcount=paymentcount;
-                var t=paymentcount.totalApproveBillAmount;
-                this.totalapproveamount=t.toFixed(2);
-                var payableAmount=paymentcount.totalPayable;
-                this.totalPayableamount=payableAmount.toFixed(2);
-                var pastdueamount=paymentcount.pastDue;
-                this.pastdue=pastdueamount.toFixed(2);
-                this.totalpayamont=paymentcount.totalPayBillAmount;
-                var totalbillAmount=paymentcount.totalPayBillAmount;
-                this.totalPayBillAmount=totalbillAmount.toFixed(2);
                 this.payable=true;
             });
 
@@ -153,6 +144,11 @@ export class paymentdashboardComponent {
                     }
                 }
             }
+            Highcharts.setOptions({
+                lang: {
+                    thousandsSep: ','
+                }
+            });
 
             this.reportChartOptionsStacked = {
                 chart: {
@@ -178,8 +174,7 @@ export class paymentdashboardComponent {
                             fontSize:'13px',
                             fontWeight:'bold',
                             color:'#003399',
-                            fill:'#003399',
-                            textDecoration:'underline'
+                            fill:'#003399'
 
                         }
                     }
@@ -201,7 +196,9 @@ export class paymentdashboardComponent {
                     },
                     stackLabels: {
                         enabled: true,
-                        format: '${total}',
+                        formatter: function () {
+                            return '$'+Highcharts.numberFormat(this.total,2);
+                        },
                         style: {
                             fontSize:'13px',
                             fontWeight:'bold',
@@ -211,6 +208,7 @@ export class paymentdashboardComponent {
                         }
                     }
                 },
+
                 legend: {
                     align: 'center',
                     verticalAlign: 'bottom',
@@ -219,7 +217,7 @@ export class paymentdashboardComponent {
                 },
                 tooltip: {
                     headerFormat: '<b>{point.x}</b><br/>',
-                    pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y}</span><br/>',
+                    pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y:,.2f}</span><br/>',
                     shared: true
                 },
                 plotOptions: {
@@ -231,13 +229,13 @@ export class paymentdashboardComponent {
                             fontSize:'13px',
                             color:'#003399',
                             fill:'#003399',
-                            textDecoration:'underline',
                             style: {
                                 fontSize:'13px'
                             }
                             // color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
                         }
                     }
+
                 },
                 series: series
             }
@@ -269,8 +267,7 @@ export class paymentdashboardComponent {
                             fontSize:'13px',
                             fontWeight:'bold',
                             color:'#003399',
-                            fill:'#003399',
-                            textDecoration:'underline'
+                            fill:'#003399'
 
                         }
                     }
@@ -299,11 +296,13 @@ export class paymentdashboardComponent {
                         borderWidth: 0,
                         dataLabels: {
                             enabled: true,
-                            format: '${y}',
+                            formatter: function () {
+                                return '$'+Highcharts.numberFormat(this.y,2);
+                            },
+
                             fontSize:'13px',
                             color:'#003399',
                             fill:'#003399',
-                            textDecoration:'underline',
                             style: {
                                 fontSize:'13px'
                             }
@@ -312,9 +311,8 @@ export class paymentdashboardComponent {
                     }
                 },
                 tooltip: {
-                    pointFormat: '<span style="color:{point.color};font-size: 13px">TOTAL</span>: <b>${point.y}</b><br/>'
+                    pointFormat: '<span style="color:{point.color};font-size: 13px">TOTAL</span>: <b>${point.y:,.2f}</b><br/>'
                 },
-
                 series: [{
                     colorByPoint: true,
                     data: seriesttt
@@ -342,6 +340,7 @@ export class paymentdashboardComponent {
             }},
             {"name": "daysToPay", "title": "Days to Pay"}
         ];
+
         let base = this;
         tablelist.forEach(function(expense) {
             let row:any = {};
