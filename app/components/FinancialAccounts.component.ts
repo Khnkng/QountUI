@@ -17,6 +17,7 @@ import {YodleeService} from "../services/Yodlee.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
+import setTimeout = core.setTimeout;
 
 declare var jQuery:any;
 declare var _:any;
@@ -347,6 +348,9 @@ else{
   }
 
   launchYodleeWidget() {
+
+    jQuery('#output_frame').attr('src',"");
+
     jQuery('#yodleewgt').foundation('open');
 
     this.yodleeService.getAccessToken(Session.getCurrentCompany()).subscribe(resp=> {
@@ -361,10 +365,23 @@ else{
 
     this.switchBoard.onYodleeTokenRecived.subscribe(recived => {
       var status = JSON.parse(Session.get("yodleeStatus"));
-      this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
+        this.loadingService.triggerLoadingEvent(true);
         jQuery('#yodleewgt').foundation('close');
+        this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
+          this.toastService.pop(TOAST_TYPE.success, "Account linked successfully");
+          this.getFinancialAccounts(this.currentCompany);
+          this.loadingService.triggerLoadingEvent(false);
       });
 
+    });
+  }
+
+  unlinkYodleeAccount() {
+    this.loadingService.triggerLoadingEvent(true);
+    this.yodleeService.unlink(Session.getCurrentCompany(), this.selectedAccount.id, this.selectedAccount.yodlee_provider_id).subscribe(resp=> {
+       this.selectedAccount.yodlee_provider_id = null;
+      this.loadingService.triggerLoadingEvent(false);
+       this.toastService.pop(TOAST_TYPE.success, "Account unlinked successfully");
     });
   }
 

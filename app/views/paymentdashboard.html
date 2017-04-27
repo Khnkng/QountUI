@@ -5,7 +5,7 @@
                 <h6>Payments Dashboard</h6>
             </header>
             <div class="flyout-body flyout-shadow-effect">
-                <div class="payment-dashboard">
+                <div class="payment-dashboard" *ngIf="showFlyout">
                     <div class="row">
                         <div class="row expanded" foundation>
                             <div class="column medium-12">
@@ -32,7 +32,7 @@
                                                 <div>{{paymentcount.totalApproveBillAmount | currency:companyCurrency:true:'1.2-2'}}</div>
                                                 <div><span>Approve</span><span>&nbsp;{{paymentcount.totalApproveBillCount}}&nbsp;</span><span>Bills</span></div>
                                             </div>
-                                            <div class="column medium-5 pointer" style="background: #A3C821;" (click)="payableclick('payee')">
+                                            <div class="column medium-5 pointer" style="background: #A3C821;" (click)="payableclick('pay')">
                                                 <div>{{paymentcount.totalPayBillAmount | currency:companyCurrency:true:'1.2-2'}}</div>
                                                 <div><span>Pay</span><span>&nbsp;{{paymentcount.totalPayBillCount}}&nbsp;</span><span>Bills</span></div>
                                             </div>
@@ -54,29 +54,49 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row expanded">
+                        <div class="row chart-margin">
+                            <div class="column medium-12">
+                                <span class="text-right float-right" (click)="showOtherCharts()"><i class="icon ion-ios-pie-outline"></i><i class="icon ion-connection-bars"></i></span>
+                            </div>
+                        </div>
+                        <div class="row expanded chart-margin">
+                            <div class="column medium-12 expanded charts-main">
+                                <div *ngIf="reportasas" style="min-width: 300px;height: 400px;">
+                                    <high-chart #hChart2=highChart [options]="reportChartOptionsStacked"></high-chart>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row expanded chart-margin">
                             <div class="column medium-12 expanded charts-main">
                                 <div *ngIf="reportasas" style="min-width: 300px;height: 400px;">
                                     <high-chart #hChart1=highChart [options]="reportChartOptions"></high-chart>
                                 </div>
                             </div>
-
                         </div>
-                        <div class="row expanded chart-margin">
-                            <div class="column medium-12 expanded charts-main">
-                                <div *ngIf="reportasas" style="min-width: 300px;height: 400px;">
-                                    <high-chart #hChart1=highChart [options]="reportChartOptionsStacked"></high-chart>
+                        <!--<div class="row chart-margin">-->
+                            <!--<div class="column large-12 medium-12 small-12 foo-container chart_search">-->
+                                <!--<foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                        <div class="row chart-margin">
+                            <div class="column large-12 medium-12 small-12">
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="column large-12 medium-12 small-12 foo-container chart_search">
-                                <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
-                            </div>
+                    </div>
+                </div>
+                <div class="row chart-margin" *ngIf="showCharts">
+                    <div class="column medium-12 expanded charts-main">
+                        <div *ngIf="reportasas" style="min-width: 300px;height: 400px;">
+                            <high-chart #hChart3=highChart [options]="reportChartOptionspie"></high-chart>
                         </div>
                     </div>
                 </div>
-                <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="showFlyout" (click)="hideFlyout()">
+                    <span aria-hidden="true">
+                      <i class="ion-ios-close-empty"></i>
+                    </span>
+                </button>
+                <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="showCharts" (click)="showOtherCharts()">
                     <span aria-hidden="true">
                       <i class="ion-ios-close-empty"></i>
                     </span>
@@ -85,3 +105,4 @@
         </section>
     </div>
 </div>
+
