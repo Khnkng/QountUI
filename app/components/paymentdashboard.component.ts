@@ -1,7 +1,7 @@
 /**
  * Created by NAZIA on 11-04-2017.
  */
-import {Component, ViewChild} from "@angular/core";
+import {Component, HostListener, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {LoadingService} from "qCommon/app/services/LoadingService";
@@ -43,8 +43,23 @@ export class paymentdashboardComponent {
     totalPayBillAmount:any;
     dateFormat:string;
     serviceDateformat:string;
+    showCharts:boolean = false;
     @ViewChild('hChart1') hChart1:HighChart;
+    @ViewChild('hChart2') hChart2:HighChart;
+    @ViewChild('hChart3') hChart3:HighChart;
     @ViewChild('createtaxes') createtaxes;
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        let base = this;
+        if(base.showFlyout) {
+            base.hChart1.redraw();
+            base.hChart2.redraw();
+        }
+        if(base.showCharts) {
+            base.hChart3.redraw();
+        }
+    }
+
     constructor(private _router: Router,private companyService: CompaniesService,
                 private loadingService:LoadingService,private reportService: ReportService,private dateFormater:DateFormater,private numeralService:NumeralService) {
         this.companyId = Session.getCurrentCompany();
@@ -80,6 +95,10 @@ export class paymentdashboardComponent {
         let link = ['payments/dashboard', 'enter'];
         this._router.navigate(link);
         this.showFlyout = !this.showFlyout;
+    }
+    showOtherCharts(){
+        this.showFlyout = !this.showFlyout;
+        this.showCharts = !this.showCharts;
     }
     generateChart() {
         this.todaysDate= moment(new Date()).format(this.dateFormat);
@@ -338,6 +357,8 @@ export class paymentdashboardComponent {
             base.hasItemCodes = true;
         }, 0)
         this.loadingService.triggerLoadingEvent(false);
-    }
+    };
+
+
 }
 
