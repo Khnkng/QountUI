@@ -54,6 +54,11 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row chart-margin">
+                            <div class="column medium-12">
+                                <span class="text-right float-right"><i class="icon ion-ios-pie-outline"></i><i class="icon ion-connection-bars"></i></span>
+                            </div>
+                        </div>
                         <div class="row expanded chart-margin">
                             <div class="column medium-12 expanded charts-main">
                                 <div *ngIf="reportasas" style="min-width: 300px;height: 400px;">
@@ -65,7 +70,7 @@
                         <div class="row expanded chart-margin">
                             <div class="column medium-12 expanded charts-main">
                                 <div *ngIf="reportasas" style="min-width: 300px;height: 400px;">
-                                    <high-chart #hChart1=highChart [options]="reportChartOptionsStacked"></high-chart>
+                                    <high-chart #hChart2=highChart [options]="reportChartOptionsStacked"></high-chart>
                                 </div>
                             </div>
                         </div>

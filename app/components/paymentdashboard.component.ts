@@ -2,7 +2,7 @@
  * Created by NAZIA on 11-04-2017.
  */
 
-import {Component, ViewChild} from "@angular/core";
+import {Component, HostListener, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {LoadingService} from "qCommon/app/services/LoadingService";
@@ -45,7 +45,14 @@ export class paymentdashboardComponent {
     dateFormat:string;
     serviceDateformat:string;
     @ViewChild('hChart1') hChart1:HighChart;
+    @ViewChild('hChart2') hChart2:HighChart;
     @ViewChild('createtaxes') createtaxes;
+    @HostListener('window:resize', ['$event'])
+    onResize(event) {
+        let base = this;
+        base.hChart1.redraw();
+        base.hChart2.redraw();
+    }
     constructor(private _router: Router,private companyService: CompaniesService,
                 private loadingService:LoadingService,private reportService: ReportService,private dateFormater:DateFormater,private numeralService:NumeralService) {
         this.companyId = Session.getCurrentCompany();
