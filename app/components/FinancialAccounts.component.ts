@@ -347,17 +347,7 @@ else{
     this.accountForm.reset();
   }
 
-  private yodActive:boolean = true;
-
   launchYodleeWidget() {
-    /*let self = this;
-    setTimeout(() => {
-      self.yodActive = true;*/
-      this.yodleeWidget();
-   /* }, 50);*/
-  }
-
-  yodleeWidget() {
 
     jQuery('#output_frame').attr('src',"");
 
@@ -378,12 +368,8 @@ else{
         this.loadingService.triggerLoadingEvent(true);
         jQuery('#yodleewgt').foundation('close');
         this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
-        this.yodActive = false;
-        let self = this;
-          setTimeout(() => {
-          self.yodActive = true;
-          self.getFinancialAccounts(this.currentCompany);
-          }, 100);
+          this.toastService.pop(TOAST_TYPE.success, "Account linked successfully");
+          this.getFinancialAccounts(this.currentCompany);
           this.loadingService.triggerLoadingEvent(false);
       });
 

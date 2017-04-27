@@ -1,8 +1,7 @@
 /**
  * Created by NAZIA on 11-04-2017.
  */
-
-import {Component, HostListener, ViewChild} from "@angular/core";
+import {Component, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {LoadingService} from "qCommon/app/services/LoadingService";
@@ -45,14 +44,7 @@ export class paymentdashboardComponent {
     dateFormat:string;
     serviceDateformat:string;
     @ViewChild('hChart1') hChart1:HighChart;
-    @ViewChild('hChart2') hChart2:HighChart;
     @ViewChild('createtaxes') createtaxes;
-    @HostListener('window:resize', ['$event'])
-    onResize(event) {
-        let base = this;
-        base.hChart1.redraw();
-        base.hChart2.redraw();
-    }
     constructor(private _router: Router,private companyService: CompaniesService,
                 private loadingService:LoadingService,private reportService: ReportService,private dateFormater:DateFormater,private numeralService:NumeralService) {
         this.companyId = Session.getCurrentCompany();
@@ -65,7 +57,6 @@ export class paymentdashboardComponent {
                 this.paymentcount=paymentcount;
                 this.payable=true;
             });
-
         this.companyService.getcurrentpaymenttable(this.companyId)
             .subscribe(tablelist  => {
                 this.tablelist=tablelist;
@@ -85,13 +76,11 @@ export class paymentdashboardComponent {
         let link = ['bills', payableclick];
         this._router.navigate(link);
     }
-
     hideFlyout(){
         let link = ['payments/dashboard', 'enter'];
         this._router.navigate(link);
         this.showFlyout = !this.showFlyout;
     }
-
     generateChart() {
         this.todaysDate= moment(new Date()).format(this.dateFormat);
         this.ttt={
@@ -104,13 +93,9 @@ export class paymentdashboardComponent {
             "numberOfPeriods": "5"
         }
         this.reportService.generateReport(this.ttt).subscribe(report  => {
-
-
             let _report = _.cloneDeep(report);
             let columns = _report.columns || [];
             columns.splice(_report.columns.length - 1, 1);
-
-
             let keys=Object.keys(_report.data);
             let series:any = [];
             let seriesttt:any=[];
@@ -131,7 +116,6 @@ export class paymentdashboardComponent {
 
                 }
             }
-
             for (let key of keys) {
                 if(key=='TOTAL') {
                     let vendor = _report.data[key];
@@ -159,41 +143,21 @@ export class paymentdashboardComponent {
 
             this.reportChartOptionsStacked = {
                 chart: {
-                    type: 'column',
-                    width:500
+                    type: 'bar'
                 },
                 title: {
-                    text: 'AP Aging Report',
-                    style: {
-                        fontSize:'17px',
-                        color:'#666666',
-                        fill:'#666666'
-
-                    }
-                },
-                credits: {
-                    enabled: false
+                    text: 'Stacked bar chart'
                 },
                 xAxis: {
-                    categories: columns,
-                    labels: {
-                        style: {
-                            fontSize:'13px',
-                            fontWeight:'bold',
-                            color:'#003399',
-                            fill:'#003399'
-
-                        }
-                    }
+                    categories: columns
+                },
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y:,.2f}</span><br/>',
+                    shared: true
                 },
                 yAxis: {
                     min: 0,
-                    labels: {
-                        style: {
-                            fontSize:'15px'
-
-                        }
-                    },
                     title: {
                         text: 'Total Amount',
                         style: {
@@ -213,22 +177,23 @@ export class paymentdashboardComponent {
                             fill:'#003399'
                             // color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
                         }
+                    },
+                    labels: {
+                        style: {
+                            fontSize:'13px',
+                            fontWeight:'bold',
+                            color:'#003399',
+                            fill:'#003399'
+
+                        }
                     }
                 },
-
                 legend: {
-                    align: 'center',
-                    verticalAlign: 'bottom',
-                    x: 0,
-                    y: 0
-                },
-                tooltip: {
-                    headerFormat: '<b>{point.x}</b><br/>',
-                    pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y:,.2f}</span><br/>',
-                    shared: true
+                    reversed: true
                 },
                 plotOptions: {
-                    column: {
+                    enabled: true,
+                    series: {
                         stacking: 'normal',
                         dataLabels: {
                             enabled: false,
@@ -241,10 +206,10 @@ export class paymentdashboardComponent {
                             }
                             // color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
                         }
-                    }
+                    },
 
                 },
-                series: series
+                series:series
             }
             this.reportChartOptions = {
 
@@ -370,7 +335,6 @@ export class paymentdashboardComponent {
         });
         base.hasItemCodes = false;
         setTimeout(function(){
-
             base.hasItemCodes = true;
         }, 0)
         this.loadingService.triggerLoadingEvent(false);
