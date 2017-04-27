@@ -351,6 +351,7 @@ export class JournalEntryComponent{
         currentLineControl.controls['title'].patchValue(line.title);
         currentLineControl.controls['coa'].patchValue(line.coa);
         currentLineControl.controls['entity'].patchValue(line.entity);
+        currentLineControl.controls['entityType'].patchValue(line.entityType);
         currentLineControl.controls['creditAmount'].patchValue(line.creditAmount);
         currentLineControl.controls['debitAmount'].patchValue(line.debitAmount);
         currentLineControl.controls['dimensions'].patchValue(line.dimensions);
