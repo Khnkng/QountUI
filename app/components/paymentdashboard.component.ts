@@ -110,7 +110,7 @@ export class paymentdashboardComponent {
             "period": "Today",
             "asOfDate": this.todaysDate,
             "daysPerAgingPeriod": "30",
-            "numberOfPeriods": "5"
+            "numberOfPeriods": "3"
         }
         this.reportService.generateReport(this.ttt).subscribe(report  => {
             let _report = _.cloneDeep(report);
@@ -230,7 +230,7 @@ export class paymentdashboardComponent {
                 legend: {
                     reversed: true
                 },
-                
+
                 plotOptions: {
                     enabled: true,
                     series: {
