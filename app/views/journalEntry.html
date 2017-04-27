@@ -78,7 +78,7 @@
                                             </div>
                                             <div class="small-12 medium-3 columns">
                                                 <label>JE Type
-                                                    <select class="jeSelect" formControlName="jeType" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                                                    <select class="jeSelect" formControlName="jeType" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId" (change)="onJETypeSelect($event.target.value)">
                                                         <option value="Bill">Bill</option>
                                                         <option value="Payroll">Payroll</option>
                                                         <option value="Invoice">Invoice</option>
@@ -234,6 +234,11 @@
                                                         <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
                                                     </select>
                                                 </td>
+                                                <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Other')">
+                                                    <select id="entity-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Entity" [listObject]="allEntities" (valueChanged)="updateLineEntity($event, index)">
+                                                        <option *ngFor="let entity of allEntities" [value]="entity.id">{{entity.name}}</option>
+                                                    </select>
+                                                </td>
                                                 <td>
                                                     <i class="icon ion-edit" (click)="showFlyout($event, index)"></i>
                                                     <i class="icon ion-ios-trash-outline" *ngIf="getLineCount() > 2" (click)="deleteLine($event, index)"></i>
@@ -361,6 +366,11 @@
                                 <label *ngIf="!isSystemCreatedJE && !reversed && !haveSourceId && isJournalEntry('Invoice')">Entity
                                     <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Customer" [listObject]="customers" (valueChanged)="updateEntity($event)">
                                         <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
+                                    </select>
+                                </label>
+                                <label *ngIf="!isSystemCreatedJE && !reversed && !haveSourceId && isJournalEntry('Other')">Entity
+                                    <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Employee" [listObject]="allEntities" (valueChanged)="updateEntity($event)">
+                                        <option *ngFor="let entity of allEntities" [value]="entity.id">{{entity.name}}</option>
                                     </select>
                                 </label>
                                 <label *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)">Entity
