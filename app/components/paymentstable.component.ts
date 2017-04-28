@@ -43,6 +43,7 @@ export class paymenttableComponent {
     routeSub:any;
     currentpayment:any;
     paymenttabledata:any;
+    credits:any;
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('createtaxes') createtaxes;
     constructor(private _router: Router,private _route: ActivatedRoute,private companyService: CompaniesService,
@@ -52,11 +53,22 @@ export class paymenttableComponent {
         this.routeSub = this._route.params.subscribe(params => {
             this.currentpayment = params['PaymentstableID'];
         });
+        this.loadingService.triggerLoadingEvent(true);
+
         this.companyService.getpaymenttable(this.companyId,this.currentpayment)
-            .subscribe(paymenttabledata  => {
-                this.paymenttabledata=paymenttabledata;
-                this.buildTableData(this.paymenttabledata);
-            }, error =>  console.log("error"));
+            .subscribe(paymentTabledata  => {
+                this.paymenttabledata=paymentTabledata;
+                this.companyService.credits(this.companyId)
+                    .subscribe(credits => {
+                        this.credits = credits;
+                        this.buildTableData();
+                    }, error => {
+                        this.loadingService.triggerLoadingEvent(false);
+                    });
+            }, error =>{
+                this.loadingService.triggerLoadingEvent(false);
+            });
+
     }
     handleAction($event){
         let action = $event.action;
@@ -75,9 +87,8 @@ export class paymenttableComponent {
         this._router.navigate(link);
     }
 
-    buildTableData(paymenttabledata) {
+    buildTableData() {
         this.hasItemCodes = false;
-        this.paymenttabledata = paymenttabledata;
         this.tableData.rows = [];
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
@@ -93,9 +104,8 @@ export class paymenttableComponent {
             {"name": "daysToPay", "title": "Days to Pay"},
             {"name": "actions", "title": ""}
         ];
-
         let base = this;
-        paymenttabledata.forEach(function(expense) {
+        this.paymenttabledata.forEach(function(expense) {
             let row:any = {};
             _.each(base.tableColumns, function(key) {
                 if(key == 'amount'){
@@ -116,12 +126,22 @@ export class paymenttableComponent {
             });
             base.tableData.rows.push(row);
         });
+        this.credits.forEach(function(credit) {
+            let row:any = {};
+            let billAmount=credit['totalAmount']?credit['totalAmount']:0;
+            let currency=credit['currency']?credit['currency']:'USD';
+            row['bill_id'] = credit['customID'];
+            row['bill_date'] = credit['creditDate'];
+            row['vendor_name'] = credit['vendorName'];
+            row['amount'] ='-' + billAmount;
+            row['actions'] = "<a class='action' data-action='creditPayment'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='Enter' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            base.tableData.rows.push(row);
+        });
         base.hasItemCodes = false;
         setTimeout(function(){
-
             base.hasItemCodes = true;
         }, 0)
-       // this.loadingService.triggerLoadingEvent(false);
+        this.loadingService.triggerLoadingEvent(false);
     }
 
 }

@@ -52,13 +52,9 @@ export class paymentdashboardComponent {
     @HostListener('window:resize', ['$event'])
     onResize(event) {
         let base = this;
-        if(base.showFlyout) {
             base.hChart1.redraw();
             base.hChart2.redraw();
-        }
-        if(base.showCharts) {
             base.hChart3.redraw();
-        }
     }
 
     constructor(private _router: Router,private companyService: CompaniesService,
@@ -243,7 +239,7 @@ export class paymentdashboardComponent {
                             fill:'#003399',
                             style: {
                                 fontSize:'13px'
-                            }
+                            },
                             // color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
                         }
                     },
@@ -265,7 +261,7 @@ export class paymentdashboardComponent {
                     text: 'AP Aging Report'
                 },
                 tooltip: {
-                    pointFormat: '<span style="color:{series.color}"><b>{point.percentage:.2f}%</b></span><br/>'
+                    pointFormat: 'TOTAL: <b>${point.y:,.2f}</b> <br/>{point.percentage:,.2f}%',
                 },
                 plotOptions: {
                     pie: {
@@ -273,11 +269,13 @@ export class paymentdashboardComponent {
                         cursor: 'pointer',
                         dataLabels: {
                             enabled: true,
+                            distance: -30,
                             format: '<b>{point.name}</b>: {point.percentage:.1f} %',
                             style: {
                                 color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                             }
-                        }
+                        },
+                        size: 250
                     }
                 },
                 series:  [{

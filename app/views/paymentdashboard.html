@@ -60,9 +60,14 @@
                             </div>
                         </div>
                         <div class="row expanded chart-margin">
-                            <div class="column medium-12 expanded charts-main">
+                            <div class="column medium-6 expanded charts-main">
                                 <div *ngIf="reportasas" style="min-width: 300px;height: 400px;">
                                     <high-chart #hChart2=highChart [options]="reportChartOptionsStacked"></high-chart>
+                                </div>
+                            </div>
+                            <div class="column medium-6 expanded charts-main">
+                                <div *ngIf="reportasas" style="min-width: 300px;height: 400px;">
+                                    <high-chart #hChart3=highChart [options]="reportChartOptionspie"></high-chart>
                                 </div>
                             </div>
                         </div>
@@ -74,14 +79,14 @@
                             </div>
                         </div>
                         <!--<div class="row chart-margin">-->
-                            <!--<div class="column large-12 medium-12 small-12 foo-container chart_search">-->
-                                <!--<foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>-->
-                            <!--</div>-->
+                        <!--<div class="column large-12 medium-12 small-12 foo-container chart_search">-->
+                        <!--<foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>-->
+                        <!--</div>-->
                         <!--</div>-->
                         <div class="row chart-margin">
                             <div class="column large-12 medium-12 small-12">
-                                </div>
                             </div>
+                        </div>
                     </div>
                 </div>
                 <div class="row chart-margin" *ngIf="showCharts">
