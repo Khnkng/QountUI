@@ -52,13 +52,9 @@ export class paymentdashboardComponent {
     @HostListener('window:resize', ['$event'])
     onResize(event) {
         let base = this;
-        if(base.showFlyout) {
             base.hChart1.redraw();
             base.hChart2.redraw();
-        }
-        if(base.showCharts) {
             base.hChart3.redraw();
-        }
     }
 
     constructor(private _router: Router,private companyService: CompaniesService,
