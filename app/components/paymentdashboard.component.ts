@@ -261,7 +261,7 @@ export class paymentdashboardComponent {
                     text: 'AP Aging Report'
                 },
                 tooltip: {
-                    pointFormat: '<span style="color:{series.color}"><b>{point.percentage:.2f}%</b></span><br/>'
+                    pointFormat: 'TOTAL: <b>${point.y:,.2f}</b> <br/>{point.percentage:,.2f}%',
                 },
                 plotOptions: {
                     pie: {
