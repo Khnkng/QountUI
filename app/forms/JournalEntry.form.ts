@@ -57,7 +57,8 @@ export class JournalLineForm extends abstractForm{
       entity: [model? model.entity: ''],
       destroy: [model? model.destroy: false],
       id: [model? model.id: null],
-      dimensions: [model? model.dimensions: []]
+      dimensions: [model? model.dimensions: []],
+      entityType: [model? model.entityType: ''],
     };
   }
 

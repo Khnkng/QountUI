@@ -22,6 +22,7 @@ export class paymentdashboardComponent {
     report:any={};
     reportChartOptionsStacked:any;
     reportChartOptions:any;
+    reportChartOptionspie:any;
     hasItemCodes: boolean = false;
     companyCurrency: string;
     companyId:string;
@@ -109,32 +110,31 @@ export class paymentdashboardComponent {
             "period": "Today",
             "asOfDate": this.todaysDate,
             "daysPerAgingPeriod": "30",
-            "numberOfPeriods": "5"
+            "numberOfPeriods": "3"
         }
         this.reportService.generateReport(this.ttt).subscribe(report  => {
             let _report = _.cloneDeep(report);
             let columns = _report.columns || [];
             columns.splice(_report.columns.length - 1, 1);
             let keys=Object.keys(_report.data);
-            let series:any = [];
+            let serieskkk:any = [];
             let seriesttt:any=[];
+            let series:any = [];
             for (let key of keys) {
                 if(key!='TOTAL') {
                     let vendor = _report.data[key];
                     let vendorId = vendor['VendorID'];
-                    delete vendor['TOTAL'];
-                    delete vendor['VendorID'];
-                    let values = Object.values(vendor);
-                    values = this.removeCurrency(values);
-                    let current = values.pop();
-                    values.splice(0, 0, current);
-                    series.push({
+                    let q=_report.data[key];
+                    let values = q.TOTAL;
+                    let rtrtr=this.numeralService.value(values)
+                    serieskkk.push({
                         name : vendorId,
-                        data : values
+                        y : rtrtr
                     });
 
                 }
             }
+
             for (let key of keys) {
                 if(key=='TOTAL') {
                     let vendor = _report.data[key];
@@ -154,6 +154,23 @@ export class paymentdashboardComponent {
                     }
                 }
             }
+            for (let key of keys) {
+                if(key!='TOTAL') {
+                    let vendor = _report.data[key];
+                    let vendorId = vendor['VendorID'];
+                    delete vendor['TOTAL'];
+                    delete vendor['VendorID'];
+                    let values = Object.values(vendor);
+                    values = this.removeCurrency(values);
+                    let current = values.pop();
+                    values.splice(0, 0, current);
+                    series.push({
+                        name : vendorId,
+                        data : values
+                    });
+
+                }
+            }
             Highcharts.setOptions({
                 lang: {
                     thousandsSep: ','
@@ -165,7 +182,10 @@ export class paymentdashboardComponent {
                     type: 'bar'
                 },
                 title: {
-                    text: 'Stacked bar chart'
+                    text: 'Aging By Vendor'
+                },
+                credits: {
+                    enabled: false
                 },
                 xAxis: {
                     categories: columns
@@ -210,6 +230,7 @@ export class paymentdashboardComponent {
                 legend: {
                     reversed: true
                 },
+
                 plotOptions: {
                     enabled: true,
                     series: {
@@ -229,6 +250,40 @@ export class paymentdashboardComponent {
 
                 },
                 series:series
+            }
+            this.reportChartOptionspie = {
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: 'AP Aging Report'
+                },
+                tooltip: {
+                    pointFormat: '<span style="color:{series.color}"><b>{point.percentage:.2f}%</b></span><br/>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                series:  [{
+                    colorByPoint: true,
+                    data:serieskkk
+                }],
             }
             this.reportChartOptions = {
 
@@ -302,7 +357,7 @@ export class paymentdashboardComponent {
                     }
                 },
                 tooltip: {
-                    pointFormat: '<span style="color:{point.color};font-size: 13px">TOTAL</span>: <b>${point.y:,.2f}</b><br/>'
+                    pointFormat: '<span style="color:{point.color};font-size: 13px">TOTAL</span>: <b>${point.y:,.2f}</b><br/>',
                 },
                 series: [{
                     colorByPoint: true,

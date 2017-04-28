@@ -50,6 +50,7 @@ export class JournalEntryComponent{
     vendors:Array<any> = [];
     employees:Array<any> = [];
     customers:Array<any> = [];
+    allEntities:Array<any> = [];
 
     filteredChartOfAccounts:Array<any> = [];
     lines:Array<any> = [];
@@ -104,13 +105,27 @@ export class JournalEntryComponent{
             }
         });
         this.companiesService.vendors(this.companyId).subscribe(vendors => {
+            _.forEach(vendors, function(vendor) {
+                vendor['entityType']="vendor";
+            });
             this.vendors = vendors;
+           // this.allEntities=this.allEntities.concat(vendors);
         }, error => this.handleError(error));
         this.employeeService.employees(this.companyId).subscribe(employees => {
+            _.forEach(employees, function(employee) {
+                employee['entityType']="employee";
+            });
             this.employees = employees;
+           // this.allEntities=this.allEntities.concat(employees);
         }, error => this.handleError(error));
         this.customerService.customers(this.companyId).subscribe(customers => {
+            _.forEach(customers, function(customer) {
+                customer['id']=customer.customer_id;
+                customer['name']=customer.customer_name;
+                customer['entityType']="customer";
+            });
             this.customers = customers;
+            //this.allEntities=this.allEntities.concat(customers);
         }, error => this.handleError(error));
     }
 
@@ -283,6 +298,8 @@ export class JournalEntryComponent{
             entity = _.find(this.employees, {'id': lineData.entity});
         } else if(data.jeType == 'Invoice'){
             entity = _.find(this.customers, {'customer_id': lineData.entity});
+        } else if(data.jeType == 'Other'){
+            entity = _.find(this.allEntities, {'id': lineData.entity});
         }
         this.selectedDimensions = lineData.dimensions;
         setTimeout(function(){
@@ -334,6 +351,7 @@ export class JournalEntryComponent{
         currentLineControl.controls['title'].patchValue(line.title);
         currentLineControl.controls['coa'].patchValue(line.coa);
         currentLineControl.controls['entity'].patchValue(line.entity);
+        currentLineControl.controls['entityType'].patchValue(line.entityType);
         currentLineControl.controls['creditAmount'].patchValue(line.creditAmount);
         currentLineControl.controls['debitAmount'].patchValue(line.debitAmount);
         currentLineControl.controls['dimensions'].patchValue(line.dimensions);
@@ -380,6 +398,7 @@ export class JournalEntryComponent{
         jQuery('#vendor-'+index).siblings().children('input').val(this.getEntityName(controls));
         jQuery('#employee-'+index).siblings().children('input').val(this.getEntityName(controls));
         jQuery('#invoice-'+index).siblings().children('input').val(this.getEntityName(controls));
+        jQuery('#entity-'+index).siblings().children('input').val(this.getEntityName(controls));
         if(index == this.getLastActiveLineIndex(linesControl)){
             this.addDefaultLine(1);
         }
@@ -500,8 +519,10 @@ export class JournalEntryComponent{
         let lineData = this._lineListForm.getData(this.lineForm);
         if(entity && entity.id){
             lineData.entity = entity.id;
+            lineData.entityType=entity.entityType;
         } else if(entity && entity.customer_id){
             lineData.entity = entity.customer_id;
+            lineData.entityType=entity.entityType;
         } else if(!entity || entity=='--None--'){
             lineData.entity='--None--';
         }
@@ -542,6 +563,9 @@ export class JournalEntryComponent{
         } else if(data.jeType == 'Invoice'){
             let customer = _.find(this.customers, {'customer_id': controls.entity.value});
             return customer? customer.customer_name: '';
+        }else if(data.jeType == 'Other'){
+            let entity = _.find(this.allEntities, {'id': controls.entity.value});
+            return entity? entity.name: '';
         }
         return '';
     }
@@ -715,8 +739,10 @@ export class JournalEntryComponent{
         let currentLineData = this._lineListForm.getData(currentLineForm);
         if(entity && entity.id){
             currentLineData.entity = entity.id;
+            currentLineData.entityType=entity.entityType;
         } else if(entity && entity.customer_id){
             currentLineData.entity = entity.customer_id;
+            currentLineData.entityType=entity.entityType;
         } else if(!entity || entity=='--None--'){
             currentLineData.entity='--None--';
         }
@@ -735,6 +761,7 @@ export class JournalEntryComponent{
 
     processJournalEntry(journalEntry){
         this.jeDetails=journalEntry;
+        this.onJETypeSelect(this.jeDetails.jeType);
         this.setBadge();
         journalEntry.journalLines = _.orderBy(journalEntry.journalLines, ['entryType'], ['desc']);
         journalEntry.date = this.dateFormater.formatDate(journalEntry.date,this.serviceDateformat,this.dateFormat);
@@ -925,6 +952,13 @@ export class JournalEntryComponent{
         }else if(sourceID && sourceType === 'credit'){
             this.badgeText="C";
             this.showBadge=true;
+        }
+    }
+
+    onJETypeSelect(jeType){
+        if(jeType=="Other"){
+            let allArray=[];
+            this.allEntities=allArray.concat(this.vendors).concat(this.customers).concat(this.employees);
         }
     }
 }
