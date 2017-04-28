@@ -239,7 +239,7 @@ export class paymentdashboardComponent {
                             fill:'#003399',
                             style: {
                                 fontSize:'13px'
-                            }
+                            },
                             // color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
                         }
                     },
@@ -269,11 +269,13 @@ export class paymentdashboardComponent {
                         cursor: 'pointer',
                         dataLabels: {
                             enabled: true,
+                            distance: -30,
                             format: '<b>{point.name}</b>: {point.percentage:.1f} %',
                             style: {
                                 color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                             }
-                        }
+                        },
+                        size: 250
                     }
                 },
                 series:  [{
