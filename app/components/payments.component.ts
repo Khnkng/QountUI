@@ -7,6 +7,7 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {PaymentsService} from "qCommon/app/services/Payments.service";
 import {Router,ActivatedRoute} from "@angular/router";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -30,9 +31,10 @@ export class PaymentsComponent{
     bills:Array<any>=[];
     routeSub:any;
     fromPayments:boolean=false;
+    localeFortmat:string='en-US';
 
     constructor(private switchBoard: SwitchBoard, private toastService: ToastService, private loadingService:LoadingService
-                ,private paymentsService:PaymentsService,private _router:Router, private _route: ActivatedRoute,){
+                ,private paymentsService:PaymentsService,private _router:Router, private _route: ActivatedRoute,private numeralService:NumeralService){
         let companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.loadingService.triggerLoadingEvent(true);
@@ -102,8 +104,10 @@ export class PaymentsComponent{
         this.tableData.columns = [
             {"name": "groupID", "title": "Id","visible":false,"filterable": false},
             {"name": "title", "title": "Payment Title"},
-            {"name": "amount", "title": "Amount"},
-            {"name": "date", "title": "Date"},
+            {"name": "amount", "title": "Amount", "sortValue": function(value){
+                return base.numeralService.value(value);
+            }},
+            {"name": "date", "title": "Date","type":"date"},
             {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
             {"name": "vendorName", "title": "Vendor"},
             {name:"bankName","title":"Bank"},
@@ -116,7 +120,7 @@ export class PaymentsComponent{
                 row[key] = pyment[key];
                 if(key == 'amount'){
                     let amount = parseFloat(pyment[key]);
-                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    row[key] = amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 }
                 let action ="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
                 if(pyment.journalID){

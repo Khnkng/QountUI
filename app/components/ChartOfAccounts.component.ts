@@ -14,6 +14,7 @@ import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.servi
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -52,10 +53,11 @@ export class ChartOfAccountsComponent{
   coaId:any;
   confirmSubscription:any;
   companyCurrency:string;
+  localeFortmat:string='en-US';
 
   constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard,
               private coaService: ChartOfAccountsService, private loadingService:LoadingService,
-              private toastService: ToastService, private companiesService: CompaniesService){
+              private toastService: ToastService, private companiesService: CompaniesService,private numeralService:NumeralService){
     this.coaForm = this._fb.group(_coaForm.getForm());
     let companyId = Session.getCurrentCompany();
     this.companyCurrency = Session.getCurrentCompanyCurrency();
@@ -329,7 +331,9 @@ export class ChartOfAccountsComponent{
       {"name": "parentName", "title": "Parent"},
       {"name": "balance", "title": "Balance", "type":"number", "formatter": (balance)=>{
         balance = parseFloat(balance);
-        return balance.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return balance.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }, "sortValue": function(value){
+        return base.numeralService.value(value);
       }},
       {"name": "type", "title": "Type", "visible": false},
       {"name": "subType", "title": "Sub type", "visible": false},

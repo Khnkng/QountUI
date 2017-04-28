@@ -11,6 +11,7 @@ import {BudgetService} from "qCommon/app/services/Budget.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {BudgetForm} from "../forms/Budget.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -36,10 +37,11 @@ export class BudgetComponent{
     showFlyout:boolean = false;
     confirmSubscription:any;
     companyCurrency:string;
+    localeFortmat:string='en-US';
 
     constructor(private _fb: FormBuilder, private _budgetForm: BudgetForm, private switchBoard: SwitchBoard,
                 private budgetService: BudgetService, private toastService: ToastService, private loadingService:LoadingService,
-                private coaService: ChartOfAccountsService){
+                private coaService: ChartOfAccountsService,private numeralService:NumeralService){
         this.budgetForm = this._fb.group(_budgetForm.getForm());
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteBudgetCode(toast));
         this.companyCurrency = Session.getCurrentCompanyCurrency();
@@ -166,7 +168,9 @@ export class BudgetComponent{
         this.tableData.columns = [
             {"name": "name", "title": "Name"},
             {"name": "category", "title": "Category"},
-            {"name": "amount", "title": "Amount"},
+            {"name": "amount", "title": "Amount", "sortValue": function(value){
+                return base.numeralService.value(value);
+            }},
             {"name": "frequency", "title": "Frequency"},
             {"name": "id", "title": "Id", "visible": false},
             {"name": "actions", "title": ""}
@@ -177,7 +181,7 @@ export class BudgetComponent{
             _.each(base.tableColumns, function(key) {
                 row[key] = budget[key];
                 if(key=='amount'){
-                    row['amount'] =budget[key].toLocaleString(Session.getCurrentCompanyCurrency(), { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    row['amount'] =budget[key].toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 }
                 row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             });

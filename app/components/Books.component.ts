@@ -17,6 +17,7 @@ import {BadgeService} from "qCommon/app/services/Badge.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {ReconcileService} from "../services/Reconsile.service";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
 
 
@@ -71,11 +72,12 @@ export class BooksComponent{
     unreconciledCount:number;
     dateFormat:string;
     serviceDateformat:string;
+    localeFortmat:string='en-US';
     categoryData:any = {'depreciation':'Depreciation','payroll':'Payroll','apBalance':'AP balance','arBalance':'AR balance','inventory':'Inventory','credit':'Credit','bill':'Bill','billPayment':'Payment','deposit':'Deposit','expense':'Expense','amortization':'Amortization','openingEntry':'Opening Entry','creditMemo':'Credit Memo','cashApplication':'Cash Application','other':'Other'};
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
                 private toastService: ToastService,private switchBoard:SwitchBoard, private loadingService:LoadingService, private companiesService: CompaniesService,
                 private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService,
-                private badgesService: BadgeService, private reconcileService: ReconcileService,private dateFormater: DateFormater) {
+                private badgesService: BadgeService, private reconcileService: ReconcileService,private dateFormater: DateFormater,private numeralService:NumeralService) {
         let companyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
         this.serviceDateformat = dateFormater.getServiceDateformat();
@@ -329,11 +331,13 @@ export class BooksComponent{
             {"name": "title", "title": "Title"},
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
                 amount = parseFloat(amount);
-                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }, "sortValue": function(value){
+                return base.numeralService.value(value);
             }},
             //{"name": "status", "title": "Status", "type": "html", "sortable": false},
             //{"name": "paid_date", "title": "Paid Date"},
-            {"name": "due_date", "title": "Expense Date"},
+            {"name": "due_date", "title": "Expense Date","type":"date"},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
             {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
@@ -392,9 +396,11 @@ export class BooksComponent{
             {"name": "title", "title": "Title"},
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
                 amount = parseFloat(amount);
-                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }, "sortValue": function(value){
+                return base.numeralService.value(value);
             }},
-            {"name": "date", "title": "Date"},
+            {"name": "date", "title": "Date","type":"date"},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
             {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
@@ -441,7 +447,7 @@ export class BooksComponent{
         this.handleBadges(data.length, 2);
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
-            {"name": "date", "title": "Date"},
+            {"name": "date", "title": "Date","type":"date"},
             {"name": "type", "title": "Journal Type","visible":false, 'filterable': false},
             {"name": "categoryValue", "title": "Category"},
             {"name": "sourceValue", "title": "Source"},

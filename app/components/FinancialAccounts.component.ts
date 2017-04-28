@@ -16,6 +16,7 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {YodleeService} from "../services/Yodlee.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
 import setTimeout = core.setTimeout;
 
@@ -60,10 +61,11 @@ export class FinancialAccountsComponent{
   serviceDateformat:string;
 
   selectedAccount:any;
+  localeFortmat:string='en-US';
 
 
   constructor(private _router:Router,private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
-              private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard,private dateFormater: DateFormater){
+              private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard,private dateFormater: DateFormater,private numeralService:NumeralService){
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
     this.companyCurrency=Session.getCurrentCompanyCurrency();
@@ -275,9 +277,13 @@ export class FinancialAccountsComponent{
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
       {"name": "chart_of_account", "title": "Chart of Account"},
-      {"name": "starting_balance", "title": "Starting Balance"},
-      {"name": "starting_balance_date", "title": "Start Balance Date"},
-      {"name": "current_balance", "title": "Current Balance"},
+      {"name": "starting_balance", "title": "Starting Balance", "sortValue": function(value){
+        return base.numeralService.value(value);
+      }},
+      {"name": "starting_balance_date", "title": "Start Balance Date","type":"date"},
+      {"name": "current_balance", "title": "Current Balance", "sortValue": function(value){
+        return base.numeralService.value(value);
+      }},
       {"name": "id", "title": "Id", "visible": false},
       {"name": "yodlee_provider_id", "title": "Yodle_Provider", "visible": false},
       {"name": "actions", "title": ""}
@@ -294,11 +300,11 @@ export class FinancialAccountsComponent{
         }
         if(key=='starting_balance'){
           let starting_balance=account['starting_balance']?Number(account['starting_balance']):0;
-          row['starting_balance'] =starting_balance.toLocaleString(Session.getCurrentCompanyCurrency(), { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          row['starting_balance'] =starting_balance.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
         if(key=='current_balance'){
           let current_balance=account['current_balance']?Number(account['current_balance']):0;
-          row['current_balance'] =current_balance.toLocaleString(Session.getCurrentCompanyCurrency(), { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          row['current_balance'] =current_balance.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
         if(key == 'starting_balance_date'){
           row[key] = base.dateFormater.formatDate(account[key],base.serviceDateformat,base.dateFormat);
