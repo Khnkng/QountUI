@@ -9,6 +9,7 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {ExpenseService} from "qCommon/app/services/Expense.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
 declare let _:any;
 declare let jQuery:any;
@@ -27,9 +28,10 @@ export class CategorizationComponent{
     tableData:any = {};
     hasEntries:boolean = false;
     tableOptions:any = {search:false, pageSize:12};
+    localeFortmat:string='en-US';
 
     constructor(private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
-                private loadingService: LoadingService, private expenseService: ExpenseService, private accountsService: FinancialAccountsService) {
+                private loadingService: LoadingService, private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private numeralService:NumeralService) {
         this.companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.loadingService.triggerLoadingEvent(true);
@@ -100,7 +102,9 @@ export class CategorizationComponent{
         this.tableData.columns = [
             {"name": "type", "title": "Type"},
             {"name": "title", "title": "Title"},
-            {"name": "amount", "title": "Amount"},
+            {"name": "amount", "title": "Amount", "sortValue": function(value){
+                return base.numeralService.value(value);
+            }},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "Entry ID", "visible": false},
             {"name": "actions", "title": "", "type": "html", "sortable": false}];
@@ -112,7 +116,7 @@ export class CategorizationComponent{
                     row[key] = base.getBankAccountName(entry[key]);
                 } else if(key == 'amount'){
                     let amount = parseFloat(entry[key]);
-                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    row[key] = amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 } else{
                     row[key] = entry[key];
                 }
