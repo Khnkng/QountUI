@@ -3587,8 +3587,13 @@ dropdown-content.dropdown-content:before {
 
 .report-stats {
   color: #FAFAFA;
-  font-size: 14px;
+  font-size: 15px;
   margin:20px 0;
+}
+
+.report-stats .row .column {
+  padding-top:5px;
+  padding-bottom:5px;
 }
 
 .report-stats-padding {
@@ -3606,4 +3611,8 @@ dropdown-content.dropdown-content:before {
 }
 .finapp-html .actionIcons .closeIcon {
   display: none;
+}
+
+.word-wrap {
+  word-wrap: break-word;
 }
