@@ -337,7 +337,9 @@ export class BooksComponent{
             }},
             //{"name": "status", "title": "Status", "type": "html", "sortable": false},
             //{"name": "paid_date", "title": "Paid Date"},
-            {"name": "due_date", "title": "Expense Date","type":"date"},
+            {"name": "due_date", "title": "Expense Date","type":"date","sortValue": function(value){
+                return moment(value,"MM/DD/YYYY").valueOf();
+            }},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
             {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
@@ -400,7 +402,9 @@ export class BooksComponent{
             }, "sortValue": function(value){
                 return base.numeralService.value(value);
             }},
-            {"name": "date", "title": "Date","type":"date"},
+            {"name": "date", "title": "Date","type":"date","sortValue": function(value){
+                return moment(value,"MM/DD/YYYY").valueOf();
+            }},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
             {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
@@ -447,7 +451,9 @@ export class BooksComponent{
         this.handleBadges(data.length, 2);
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
-            {"name": "date", "title": "Date","type":"date"},
+            {"name": "date", "title": "Date","type":"date","sortValue": function(value){
+                return moment(value,"MM/DD/YYYY").valueOf();
+            }},
             {"name": "type", "title": "Journal Type","visible":false, 'filterable': false},
             {"name": "categoryValue", "title": "Category"},
             {"name": "sourceValue", "title": "Source"},

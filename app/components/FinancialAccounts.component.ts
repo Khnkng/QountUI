@@ -22,6 +22,7 @@ import setTimeout = core.setTimeout;
 
 declare var jQuery:any;
 declare var _:any;
+declare var moment:any;
 
 @Component({
   selector: 'financial-accounts',
@@ -280,7 +281,9 @@ export class FinancialAccountsComponent{
       {"name": "starting_balance", "title": "Starting Balance", "sortValue": function(value){
         return base.numeralService.value(value);
       }},
-      {"name": "starting_balance_date", "title": "Start Balance Date","type":"date"},
+      {"name": "starting_balance_date", "title": "Start Balance Date","type":"date","sortValue": function(value){
+        return moment(value,"MM/DD/YYYY").valueOf();
+      }},
       {"name": "current_balance", "title": "Current Balance", "sortValue": function(value){
         return base.numeralService.value(value);
       }},
@@ -328,8 +331,9 @@ else{
     });
     setTimeout(function(){
       base.hasAccounts = true;
+      base.loadingService.triggerLoadingEvent(false);
     }, 0)
-    this.loadingService.triggerLoadingEvent(false);
+
   }
 
   setImportType(type){
