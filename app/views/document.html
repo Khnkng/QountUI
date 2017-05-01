@@ -32,7 +32,6 @@
                         <option value="Bill">Bill</option>
                         <option value="Refund">Refund</option>
                         <option value="Other">Other</option>
-                        <option value="External">External</option>
                     </select>
                 </label>
             </div>
@@ -41,6 +40,13 @@
                     <select [(ngModel)]="doc.category">
                         <option *ngFor="let category of categories" value="{{category.value}}">{{category.name}}</option>
                     </select>
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="column medium-6 small-12">
+                <label>Date
+                    <input type="text" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setDate($event)" [(ngModel)]="doc.date" placeholder="Date">
                 </label>
             </div>
         </div>

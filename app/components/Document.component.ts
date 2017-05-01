@@ -33,11 +33,14 @@ export class DocumentComponent {
             {value: "entertainment", "name": "Entertainment"},
             {value: "shippingAndFreight", "name": "Shipping and Freight"},
             {value: "travel", "name": "Travel"},
-            {value: "travelMeals", "name": "Travel Meals"}],
+            {value: "travelMeals", "name": "Travel Meals"},
+            {value: "supplies", "name": "Supplies"},
+            {value: "utilities", "name": "Utilities"},
+            {value: "officeG&AExpenses", "name": "Office G&A Expenses"}
+        ],
         "Bill": [],
         "Refund": [],
-        "Other": [],
-        "External": []
+        "Other": []
     };
     companyId: string;
 
@@ -81,5 +84,9 @@ export class DocumentComponent {
                 this.loadingService.triggerLoadingEvent(false);
                 console.log(error);
             });
+    }
+
+    setDate(date){
+        this.doc.date=date;
     }
 }

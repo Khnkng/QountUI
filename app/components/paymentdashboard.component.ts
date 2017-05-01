@@ -257,7 +257,7 @@ var sliced=serieskkk[0];
                     type: 'pie'
                 },
                 title: {
-                    text: 'AP Aging Summary'
+                    text: 'Total Payables by Vendor'
                 },
 
                 tooltip: {
@@ -291,7 +291,7 @@ var sliced=serieskkk[0];
                     type: 'column'
                 },
                 title: {
-                    text: 'AP Aging Report',
+                    text: ' AP Aging Summary',
                     style: {
                         fontSize:'17px',
                         color:'#666666',
