@@ -130,7 +130,9 @@ export class paymentdashboardComponent {
 
                 }
             }
-
+var sliced=serieskkk[0];
+            sliced['sliced']=true;
+            sliced['selected']=true;
             for (let key of keys) {
                 if(key=='TOTAL') {
                     let vendor = _report.data[key];
@@ -254,31 +256,31 @@ export class paymentdashboardComponent {
                     plotShadow: false,
                     type: 'pie'
                 },
-                credits: {
-                    enabled: false
-                },
                 title: {
-                    text: 'AP Aging Report'
+                    text: 'Total Payables by Vendor'
                 },
+
                 tooltip: {
                     pointFormat: 'TOTAL: <b>${point.y:,.2f}</b> <br/>{point.percentage:,.2f}%',
                 },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: true,
-                            distance: -30,
-                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                            style: {
-                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                            }
+                credits: {
+                    enabled: false
+                },
+
+                pie: {
+                    dataLabels: {
+                        enabled: true,
+                        inside: true,
+                        formatter: function(){
+                            return this.y;
                         },
-                        size: 250
-                    }
+                        distance: -40,
+                        color: 'white'
+                    },
+                    showInLegend: true
                 },
                 series:  [{
+                    name: 'Brands',
                     colorByPoint: true,
                     data:serieskkk
                 }],
@@ -289,7 +291,7 @@ export class paymentdashboardComponent {
                     type: 'column'
                 },
                 title: {
-                    text: 'AP Aging Report',
+                    text: ' AP Aging Summary',
                     style: {
                         fontSize:'17px',
                         color:'#666666',
