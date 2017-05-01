@@ -123,11 +123,11 @@ export class ReconcileComponent{
 
 
     redirectToEntryPage($event){
-        if($event.type == 'Expense'){
+        if($event.type == 'expense'){
             let link = ['/expense', $event.id];
             this._router.navigate(link);
         }
-        if($event.type == 'Deposit'){
+        if($event.type == 'deposit'){
             let link = ['/deposit', $event.id];
             this._router.navigate(link);
         }
@@ -163,9 +163,9 @@ export class ReconcileComponent{
         this.selectedDepositRows = _.uniqBy(this.selectedDepositRows, 'id');
         _.remove(this.selectedDepositRows, {'tempIsSelected': false});
         _.each(this.selectedDepositRows,function(row){
-                base.selectedDepositsCount = base.selectedDepositsCount+1;
-                deposits.push(_.find(base.reconcileDataCopy.deposits, {id: row.id}));
-                base.inflow = base.inflow+parseFloat(_.find(base.reconcileDataCopy.deposits, {id: row.id}).amount);
+            base.selectedDepositsCount = base.selectedDepositsCount+1;
+            deposits.push(_.find(base.reconcileDataCopy.deposits, {id: row.id}));
+            base.inflow = base.inflow+parseFloat(_.find(base.reconcileDataCopy.deposits, {id: row.id}).amount);
         });
         this.calculateEndingBalance();
         this.calculateReconDifference();
@@ -181,9 +181,9 @@ export class ReconcileComponent{
         this.selectedExpenseRows = _.uniqBy(this.selectedExpenseRows, 'id');
         _.remove(this.selectedExpenseRows, {'tempIsSelected': false});
         _.each(this.selectedExpenseRows,function(row){
-                base.selectedExpensesCount = base.selectedExpensesCount+1;
-                expenses.push(_.find(base.reconcileDataCopy.expenses, {id: row.id}));
-                base.outflow = base.outflow+parseFloat(_.find(base.reconcileDataCopy.expenses, {id: row.id}).amount);
+            base.selectedExpensesCount = base.selectedExpensesCount+1;
+            expenses.push(_.find(base.reconcileDataCopy.expenses, {id: row.id}));
+            base.outflow = base.outflow+parseFloat(_.find(base.reconcileDataCopy.expenses, {id: row.id}).amount);
         });
         this.calculateEndingBalance();
         this.calculateReconDifference();
@@ -219,7 +219,6 @@ export class ReconcileComponent{
                 this.loadingService.triggerLoadingEvent(false);
             });
     }
-
 
     submit($event){
         $event && $event.preventDefault();
@@ -262,11 +261,11 @@ export class ReconcileComponent{
                 this.endingBalance = amount;
                 this.buildDepositsTableData();
                 this.buildExpensesTableData();
-                this.buildTableData();
+                //this.buildTableData();
                 this.selectTab(0,'');
                 this.reconcileForm.reset();
                 setTimeout(function(){
-                   //base.updateTabHeight();
+                    //base.updateTabHeight();
                 });
                 this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
@@ -279,21 +278,25 @@ export class ReconcileComponent{
     buildDepositsTableData(){
         let base = this;
         this.depositsTableData.columns = [
-            {"name": "type", "title": "Type"},
+            {"name": "type", "title": "Type","visible": false},
+            {"name": "title", "title": "Title"},
             {"name": "date", "title": "Date"},
             {"name": "amount", "title": "Amount"},
-            {"name": "id", "title": "Entry ID", "visible": false}];
+            {"name": "id", "title": "Entry ID", "visible": false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}];
+
         this.depositsTableData.rows = [];
         _.each(base.reconcileData.deposits, function(entry){
             let row:any = {};
             _.each(Object.keys(entry), function(key){
-               if(key == 'amount'){
+                if(key == 'amount'){
                     let amount = parseFloat(entry[key]);
                     row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 } else{
                     row[key] = entry[key];
                 }
             });
+            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             base.depositsTableData.rows.push(row);
         });
 
@@ -302,21 +305,25 @@ export class ReconcileComponent{
     buildExpensesTableData(){
         let base = this;
         this.expensesTableData.columns = [
-            {"name": "type", "title": "Type"},
+            {"name": "type", "title": "Type","visible": false},
+            {"name": "title", "title": "Title"},
             {"name": "due_date", "title": "Date"},
             {"name": "amount", "title": "Amount"},
-            {"name": "id", "title": "Entry ID", "visible": false}];
+            {"name": "id", "title": "Entry ID", "visible": false},
+            {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}];
+
         this.expensesTableData.rows = [];
         _.each(base.reconcileData.expenses, function(entry){
             let row:any = {};
             _.each(Object.keys(entry), function(key){
-               if(key == 'amount'){
+                if(key == 'amount'){
                     let amount = parseFloat(entry[key]);
                     row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 } else{
                     row[key] = entry[key];
                 }
             });
+            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             base.expensesTableData.rows.push(row);
         });
     };
@@ -333,13 +340,14 @@ export class ReconcileComponent{
         _.each(all, function(entry){
             let row:any = {};
             _.each(Object.keys(entry), function(key){
-               if(key == 'amount'){
+                if(key == 'amount'){
                     let amount = parseFloat(entry[key]);
                     row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 } else{
                     row[key] = entry[key];
                 }
             });
+            row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             base.tableData.rows.push(row);
         });
     };
