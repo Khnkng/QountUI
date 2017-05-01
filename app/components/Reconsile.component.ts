@@ -13,7 +13,7 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {ReconcileForm} from "../forms/Reconsile.form";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
-
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
 
 
@@ -77,9 +77,10 @@ export class ReconcileComponent{
     @ViewChild('depositsTable') el:ElementRef;
     @ViewChild('expensesTable') el1:ElementRef;
     editable:boolean = true;
+    localeFortmat:string='en-US';
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
-                private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService, private companyService: CompaniesService) {
+                private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService, private companyService: CompaniesService,private numeralService:NumeralService) {
         this.reconcileForm = _fb.group(_reconcileForm.getForm());
         this.companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
@@ -357,8 +358,15 @@ export class ReconcileComponent{
         this.reconActivityTableData.columns = [
             {"name": "company_id", "title": "company ID","visible":false},
             {"name": "bank_Account_id", "title": "Bank ID","visible":false},
-            {"name": "bank", "title": "Bank"},
+            {"name": "bank", "title": "Account"},
             {"name": "last_Recon_date", "title": "Recon Date"},
+            {"name": "ending_balance", "title": "Ending Balance", "formatter": (amount)=>{
+                amount = parseFloat(amount);
+                return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }, "sortValue": function(value){
+                return base.numeralService.value(value);
+            }},
+            {"name": "recon_done_date", "title": "Recon Completed On"},
             {"name": "id", "title": "Entry ID", "visible": false},
             {"name": "actions", "title": "", "type": "html", 'filterable': false}];
         this.reconActivityTableData.rows = [];
@@ -368,6 +376,8 @@ export class ReconcileComponent{
                 if(key == 'bank_Account_id'){
                     row[key] = entry[key];
                     row['bank'] = base.getBankAccountName(entry[key]);
+                }else if(key == 'recon_done_date'){
+                    row[key] = moment(entry[key]).format('MM/DD/YYYY');
                 }else {
                     row[key] = entry[key];
                 }
@@ -378,6 +388,7 @@ export class ReconcileComponent{
 
     submitReconcile(){
         let base = this;
+        this.hasData = false;
         if(base.selectedDepositRows.length>0 || base.selectedExpenseRows.length > 0) {
             this.loadingService.triggerLoadingEvent(true);
             let deposits = [];
