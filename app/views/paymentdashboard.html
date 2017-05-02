@@ -42,12 +42,12 @@
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="column medium-4 report-stats-padding" *ngIf="payable">
+                                    <div class="column medium-4 report-stats-padding" *ngIf="payableBalance">
                                         <div class="row">
                                             <div class="column medium-6 pointer" style="background: skyblue;">
-                                                <div>$324,000.00</div>
+                                                <div>{{bookcount.totalCurrentBalance | currency:companyCurrency:true:'1.2-2'}}</div>
                                                 <div>Book Balance</div>
+
                                             </div>
                                             <div class="column medium-6 pointer" style="background: deepskyblue;">
                                                 <div>$ 456,000.00</div>
