@@ -177,7 +177,8 @@ var sliced=serieskkk[0];
 
             this.reportChartOptionsStacked = {
                 chart: {
-                    type: 'bar'
+                    type: 'bar',
+                    marginRight: 50
                 },
                 title: {
                     text: 'Aging By Vendor'
