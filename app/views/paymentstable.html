@@ -9,7 +9,7 @@
     <header>
         <div class="header">
             <div class="row">
-                <div class="small-6"><h5>Bills</h5></div>
+                <div class="small-6" *ngIf="billstatus"><h5>{{billstate}}</h5></div>
             </div>
         </div>
     </header>

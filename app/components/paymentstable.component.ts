@@ -44,6 +44,8 @@ export class paymenttableComponent {
     currentpayment:any;
     paymenttabledata:any;
     credits:any;
+    billstate:any;
+    billstatus:boolean=false;
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('createtaxes') createtaxes;
     constructor(private _router: Router,private _route: ActivatedRoute,private companyService: CompaniesService,
@@ -52,6 +54,25 @@ export class paymenttableComponent {
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.routeSub = this._route.params.subscribe(params => {
             this.currentpayment = params['PaymentstableID'];
+            if(this.currentpayment=='totalpayable'){
+                this.billstate='Payables';
+                this.billstatus=true;
+            }
+            else if(this.currentpayment=='pastdue'){
+                this.billstate='Past Due';
+                    this.billstatus=true;
+            }
+            else if(this.currentpayment=='approve'){
+                this.billstate='Approve';
+                    this.billstatus=true;
+            }
+            else if(this.currentpayment=='pay'){
+                this.billstate='Pay';
+                    this.billstatus=true;
+            }
+            else{
+                console.log("error");
+            }
         });
         this.loadingService.triggerLoadingEvent(true);
 
@@ -86,7 +107,6 @@ export class paymenttableComponent {
         let link = ['paymentdashboard'];
         this._router.navigate(link);
     }
-
     buildTableData() {
         this.hasItemCodes = false;
         this.tableData.rows = [];
@@ -94,8 +114,8 @@ export class paymenttableComponent {
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
             {"name":"bill_id","title":"Bill ID" ,"visible": false},
-            {"name":"bill_date","title":"Bill Date"},
             {"name": "vendor_name", "title": "Vendor Name"},
+            {"name":"bill_date","title":"Bill Date"},
             {"name": "due_date", "title": "Due Date"},
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
                 amount = parseFloat(amount);
