@@ -165,6 +165,7 @@ export class paymentdashboardComponent {
                     let vendorId = vendor['VendorID'];
                     delete vendor['TOTAL'];
                     delete vendor['VendorID'];
+                    delete vendor['type'];
                     let values = Object.values(vendor);
                     values = this.removeCurrency(values);
                     let current = values.pop();
@@ -173,7 +174,6 @@ export class paymentdashboardComponent {
                         name : vendorId,
                         data : values
                     });
-
                 }
             }
             Highcharts.setOptions({
