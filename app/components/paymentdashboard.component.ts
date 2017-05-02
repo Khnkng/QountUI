@@ -234,7 +234,7 @@ export class paymentdashboardComponent {
                     }
                 },
                 legend: {
-                    reversed: true
+                    enabled: false
                 },
 
                 plotOptions: {
