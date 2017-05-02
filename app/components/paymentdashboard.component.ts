@@ -37,16 +37,16 @@ export class paymentdashboardComponent {
     paymentcount:any;
     payable:boolean=false;
     tablelist:any;
-    payableBalance:boolean=false;
     totalapproveamount:any;
     totalpayamont:any;
     totalPayableamount:any;
     pastdue:any;
     totalPayBillAmount:any;
     dateFormat:string;
-    bookcount:any;
     serviceDateformat:string;
     showCharts:boolean = false;
+    bookcount:any;
+    payableBalance:boolean=false;
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('hChart2') hChart2:HighChart;
     @ViewChild('hChart3') hChart3:HighChart;
@@ -54,9 +54,9 @@ export class paymentdashboardComponent {
     @HostListener('window:resize', ['$event'])
     onResize(event) {
         let base = this;
-            base.hChart1.redraw();
-            base.hChart2.redraw();
-            base.hChart3.redraw();
+        base.hChart1.redraw();
+        base.hChart2.redraw();
+        base.hChart3.redraw();
     }
 
     constructor(private _router: Router,private companyService: CompaniesService,
@@ -137,7 +137,7 @@ export class paymentdashboardComponent {
 
                 }
             }
-var sliced=serieskkk[0];
+            var sliced=serieskkk[0];
             sliced['sliced']=true;
             sliced['selected']=true;
             for (let key of keys) {
@@ -377,7 +377,7 @@ var sliced=serieskkk[0];
     }
 
     buildTableData(tablelist) {
-       this.hasItemCodes = false;
+        this.hasItemCodes = false;
         this.tablelist = tablelist;
         this.tableData.rows = [];
         this.tableOptions.search = true;
@@ -424,4 +424,3 @@ var sliced=serieskkk[0];
 
 
 }
-
