@@ -114,8 +114,8 @@ export class paymenttableComponent {
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
             {"name":"bill_id","title":"Bill ID" ,"visible": false},
-            {"name":"bill_date","title":"Bill Date"},
             {"name": "vendor_name", "title": "Vendor Name"},
+            {"name":"bill_date","title":"Bill Date"},
             {"name": "due_date", "title": "Due Date"},
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
                 amount = parseFloat(amount);
