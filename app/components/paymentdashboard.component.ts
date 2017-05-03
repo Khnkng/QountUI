@@ -235,7 +235,7 @@ this.reportChartOptionsStackedlegend={
     yAxis: {
         min: 0,
         title: {
-            text: 'Total Amount',
+            text: 'Payable Amount',
             style: {
                 fontSize:'15px'
 
@@ -312,7 +312,7 @@ this.reportChartOptionsStackedlegend={
                 yAxis: {
                     min: 0,
                     title: {
-                        text: 'Total Amount',
+                        text: 'Payable Amount',
                         style: {
                             fontSize:'15px'
 
