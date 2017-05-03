@@ -43,19 +43,23 @@
                                         </div>
                                     </div>
 
-                                    <div class="column medium-4 report-stats-padding" *ngIf="payableBalance">
+                                    <div class="column medium-2 pointer report-stats-padding" *ngIf="payableBalance">
                                         <div class="row">
-                                            <div class="column medium-6 pointer" style="background: skyblue;">
-                                                <div>{{bookcount.totalCurrentBalance | currency:companyCurrency:true:'1.2-2'}}</div>
+                                            <div class="column medium-12 report-stats-padding" style="background: skyblue;">
+                                                <div><span class="recon-selected-count">{{bookcount.totalCurrentBalance | currency:companyCurrency:true:'1.2-2'}}</span><span>Days</span></div>
                                                 <div>Book Balance</div>
                                             </div>
-                                            <div class="column medium-6 pointer" style="background: deepskyblue;">
-                                                <div>$ 456,000.00</div>
-                                                <div>Bank Balance</div>
+                                        </div>
+                                    </div>
+                                    <div class="column medium-2 pointer report-stats-padding" *ngIf="payable">
+                                        <div class="row">
+                                            <div class="column medium-12 report-stats-padding" style="background: deepskyblue;">
+                                                <div><span class="recon-selected-count">$400.09</span><span>Days</span></div>
+                                                <div>Paid in last 30 days</div>
                                             </div>
                                         </div>
-                                        
                                     </div>
+
                                 </div>
                             </div>
                         </div>

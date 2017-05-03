@@ -21,6 +21,8 @@ declare var numeral:any;
 export class paymentdashboardComponent {
     report:any={};
     reportChartOptionsStacked:any;
+    reportChartOptionsStackedlegend:any;
+    reportChartOptionspielegend:any;
     reportChartOptions:any;
     reportChartOptionspie:any;
     detailedReportChartOptions:any;
@@ -103,14 +105,15 @@ export class paymentdashboardComponent {
     }
     showOtherCharts(type){
         if(type=='stackedbar'){
-            this.detailedReportChartOptions = this.reportChartOptionsStacked;
+            this.detailedReportChartOptions = this.reportChartOptionsStackedlegend;
         }else if(type == 'pie'){
-            this.detailedReportChartOptions = this.reportChartOptionspie;
+            this.detailedReportChartOptions = this.reportChartOptionspielegend;
         }else if(type=="bar"){
             this.detailedReportChartOptions = this.reportChartOptions;
         }
         this.showFlyout = !this.showFlyout;
         this.showCharts = !this.showCharts;
+        this.generateChart();
     }
     generateChart() {
         this.todaysDate= moment(new Date()).format(this.dateFormat);
@@ -189,6 +192,83 @@ export class paymentdashboardComponent {
                     thousandsSep: ','
                 }
             });
+this.reportChartOptionsStackedlegend={
+
+    chart: {
+        type: 'bar',
+        marginRight: 50
+    },
+    title: {
+        text: 'Aging By Vendor'
+    },
+    credits: {
+        enabled: false
+    },
+    xAxis: {
+        categories: columns
+    },
+    tooltip: {
+        headerFormat: '<b>{point.x}</b><br/>',
+        pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y:,.2f}</span><br/>',
+        shared: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Total Amount',
+            style: {
+                fontSize:'15px'
+
+            }
+        },
+
+        stackLabels: {
+            enabled: true,
+            formatter: function () {
+                return '$'+Highcharts.numberFormat(this.total,2);
+            },
+            style: {
+                fontSize:'13px',
+                fontWeight:'bold',
+                color:'#003399',
+                fill:'#003399'
+                // color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+            }
+        },
+        labels: {
+            style: {
+                fontSize:'13px',
+                fontWeight:'bold',
+                color:'#003399',
+                fill:'#003399'
+
+            }
+        }
+    },
+    legend: {
+        enabled: true
+    },
+
+    plotOptions: {
+        enabled: true,
+        series: {
+            stacking: 'normal',
+            dataLabels: {
+                enabled: false,
+                format: '${y}',
+                fontSize:'13px',
+                color:'#003399',
+                fill:'#003399',
+                style: {
+                    fontSize:'13px'
+                },
+                // color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+            }
+        },
+
+    },
+    series:series
+}
 
             this.reportChartOptionsStacked = {
                 chart: {
@@ -265,6 +345,37 @@ export class paymentdashboardComponent {
                 },
                 series:series
             }
+            this.reportChartOptionspielegend={
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: 'Total Payables by Vendor'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: false
+                        },
+                        showInLegend: true
+                    }
+                },
+                series:  [{
+                    colorByPoint: true,
+                    data:serieskkk
+                }],
+            }
             this.reportChartOptionspie = {
                 chart: {
                     plotBackgroundColor: null,
@@ -296,7 +407,6 @@ export class paymentdashboardComponent {
                     showInLegend: true
                 },
                 series:  [{
-                    name: 'Brands',
                     colorByPoint: true,
                     data:serieskkk
                 }],
@@ -307,7 +417,7 @@ export class paymentdashboardComponent {
                     type: 'column'
                 },
                 title: {
-                    text: ' AP Aging Summary',
+                    text: 'AP Aging Summary',
                     style: {
                         fontSize:'17px',
                         color:'#666666',
