@@ -49,6 +49,9 @@ export class paymentdashboardComponent {
     serviceDateformat:string;
     showCharts:boolean = false;
     bookcount:any;
+    paycount:boolean=false;
+    paidcount:any;
+    payablecount:boolean=false;
     payableBalance:boolean=false;
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('hChart2') hChart2:HighChart;
@@ -72,7 +75,14 @@ export class paymentdashboardComponent {
         this.companyService.getpaymentcount(this.companyId)
             .subscribe(paymentcount  => {
                 this.paymentcount=paymentcount;
+                console.log("paymentcount",this.paymentcount);
                 this.payable=true;
+            });
+
+        this.companyService.getlastpaidcount(this.companyId)
+            .subscribe(paidcount  => {
+                this.paidcount=paidcount;
+                this.payablecount=true;
             });
         this.companyService.getbookcount(this.companyId)
             .subscribe(bookcount  => {
