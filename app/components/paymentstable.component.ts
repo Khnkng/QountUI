@@ -72,8 +72,8 @@ export class paymenttableComponent {
                 this.billstate='Pay';
                     this.billstatus=true;
             }
-
     else if(this.currentpayment=='30days'){
+                this.billstate='Paid Bills';
                 this.companyService.getpaidcounttable(this.companyId)
                     .subscribe(paiddata  => {
                         this.paiddata=paiddata;
