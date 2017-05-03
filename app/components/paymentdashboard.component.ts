@@ -23,6 +23,7 @@ export class paymentdashboardComponent {
     reportChartOptionsStacked:any;
     reportChartOptions:any;
     reportChartOptionspie:any;
+    detailedReportChartOptions:any;
     hasItemCodes: boolean = false;
     companyCurrency: string;
     companyId:string;
@@ -100,7 +101,14 @@ export class paymentdashboardComponent {
         this._router.navigate(link);
         this.showFlyout = !this.showFlyout;
     }
-    showOtherCharts(){
+    showOtherCharts(type){
+        if(type=='stackedbar'){
+            this.detailedReportChartOptions = this.reportChartOptionsStacked;
+        }else if(type == 'pie'){
+            this.detailedReportChartOptions = this.reportChartOptionspie;
+        }else if(type=="bar"){
+            this.detailedReportChartOptions = this.reportChartOptions;
+        }
         this.showFlyout = !this.showFlyout;
         this.showCharts = !this.showCharts;
     }
