@@ -45,6 +45,8 @@ export class paymentdashboardComponent {
     dateFormat:string;
     serviceDateformat:string;
     showCharts:boolean = false;
+    bookcount:any;
+    payableBalance:boolean=false;
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('hChart2') hChart2:HighChart;
     @ViewChild('hChart3') hChart3:HighChart;
@@ -52,9 +54,9 @@ export class paymentdashboardComponent {
     @HostListener('window:resize', ['$event'])
     onResize(event) {
         let base = this;
-            base.hChart1.redraw();
-            base.hChart2.redraw();
-            base.hChart3.redraw();
+        base.hChart1.redraw();
+        base.hChart2.redraw();
+        base.hChart3.redraw();
     }
 
     constructor(private _router: Router,private companyService: CompaniesService,
@@ -68,6 +70,11 @@ export class paymentdashboardComponent {
             .subscribe(paymentcount  => {
                 this.paymentcount=paymentcount;
                 this.payable=true;
+            });
+        this.companyService.getbookcount(this.companyId)
+            .subscribe(bookcount  => {
+                this.bookcount=bookcount;
+                this.payableBalance=true;
             });
         this.companyService.getcurrentpaymenttable(this.companyId)
             .subscribe(tablelist  => {
@@ -130,7 +137,7 @@ export class paymentdashboardComponent {
 
                 }
             }
-var sliced=serieskkk[0];
+            var sliced=serieskkk[0];
             sliced['sliced']=true;
             sliced['selected']=true;
             for (let key of keys) {
@@ -158,6 +165,7 @@ var sliced=serieskkk[0];
                     let vendorId = vendor['VendorID'];
                     delete vendor['TOTAL'];
                     delete vendor['VendorID'];
+                    delete vendor['type'];
                     let values = Object.values(vendor);
                     values = this.removeCurrency(values);
                     let current = values.pop();
@@ -166,7 +174,6 @@ var sliced=serieskkk[0];
                         name : vendorId,
                         data : values
                     });
-
                 }
             }
             Highcharts.setOptions({
@@ -227,7 +234,7 @@ var sliced=serieskkk[0];
                     }
                 },
                 legend: {
-                    reversed: true
+                    enabled: false
                 },
 
                 plotOptions: {
@@ -370,7 +377,7 @@ var sliced=serieskkk[0];
     }
 
     buildTableData(tablelist) {
-       this.hasItemCodes = false;
+        this.hasItemCodes = false;
         this.tablelist = tablelist;
         this.tableData.rows = [];
         this.tableOptions.search = true;
@@ -417,4 +424,3 @@ var sliced=serieskkk[0];
 
 
 }
-
