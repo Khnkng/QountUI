@@ -34,6 +34,7 @@ export class paymenttableComponent {
     taxesList:any;
     tableData:any = {};
     tableColumns:Array<string> = ['bill_id','bill_date','vendor_name', 'due_date', 'amount'];
+    tablecol:Array<string>=['vendorName','billID','billDate','dueDate','amount'];
     tableOptions:any = {};
     ttt:any;
     todaysDate:any;
@@ -42,6 +43,7 @@ export class paymenttableComponent {
     payable:boolean=false
     routeSub:any;
     currentpayment:any;
+    paiddata:any;
     paymenttabledata:any;
     credits:any;
     billstate:any;
@@ -70,11 +72,30 @@ export class paymenttableComponent {
                 this.billstate='Pay';
                     this.billstatus=true;
             }
+
+    else if(this.currentpayment=='30days'){
+                this.companyService.getpaidcounttable(this.companyId)
+                    .subscribe(paiddata  => {
+                        this.paiddata=paiddata;
+                        this.buildTableDataPaid(this.paiddata.bills);
+                    }, error =>{
+                        this.loadingService.triggerLoadingEvent(false);
+                    });
+
+            this.billstatus=true;
+        }
             else{
                 console.log("error");
             }
         });
         this.loadingService.triggerLoadingEvent(true);
+        this.companyService.getpaidcounttable(this.companyId)
+            .subscribe(paiddata  => {
+                this.paiddata=paiddata;
+                console.log("this.paiddata",this.paiddata);
+            }, error =>{
+                this.loadingService.triggerLoadingEvent(false);
+            });
 
         this.companyService.getpaymenttable(this.companyId,this.currentpayment)
             .subscribe(paymentTabledata  => {
@@ -163,6 +184,46 @@ export class paymenttableComponent {
         }, 0)
         this.loadingService.triggerLoadingEvent(false);
     }
+    buildTableDataPaid(paiddata){
+        this.hasItemCodes = false;
+        this.paiddata = paiddata;
+        this.tableData.rows = [];
+        this.tableOptions.search = true;
+        this.tableOptions.pageSize = 9;
+        this.tableData.columns = [
+            {"name":"bill_id","title":"Bill ID" ,"visible": false},
+            {"name": "vendorName", "title": "Vendor Name"},
+            {"name":"billDate","title":"Bill Date"},
+            {"name": "dueDate", "title": "Due Date"},
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = parseFloat(amount);
+                return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }},
+            {"name": "actions", "title": ""}
+        ];
 
+        let base = this;
+        paiddata.forEach(function(expense) {
+            let row:any = {};
+            _.each(base.tablecol, function(key) {
+                if(key == 'amount'){
+                    let amount = parseFloat(expense[key]);
+                    row[key] = amount.toFixed(2); // just to support regular number with .00
+                }
+                else {
+                    row[key] = expense[key];
+                }
+                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            });
+            base.tableData.rows.push(row);
+        });
+        base.hasItemCodes = false;
+        setTimeout(function(){
+
+            base.hasItemCodes = true;
+        }, 0)
+        this.loadingService.triggerLoadingEvent(false);
+
+    }
 }
 
