@@ -22,6 +22,7 @@ export class SideBarComponent {
   isInvoice:boolean = false;
   isPayments:boolean = false;
   isExpenses:boolean = false;
+  report:boolean=false;
   isPayrol:boolean = false;
   isTaxes:boolean = false;
   isTools:boolean = false;
@@ -51,7 +52,7 @@ export class SideBarComponent {
     this.isBooks = false;
     this.isPayments = false;
     this.isExpenses = false;
-    this.isPayrol = false;
+    this.report = false;
     this.isTaxes = false;
     this.isTools = false;
     this.isReports=false;
@@ -74,8 +75,8 @@ export class SideBarComponent {
         this.isBooks = true;
       }
       break;
-      case PAGES.PAYROL: {
-        let link = ['payrol'];
+      case PAGES.REPORT: {
+        let link = ['reports/dashboard'];
         this._router.navigate(link);
         this.isPayrol = true;
       }
