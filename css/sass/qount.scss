@@ -3616,3 +3616,14 @@ dropdown-content.dropdown-content:before {
 .word-wrap {
   word-wrap: break-word;
 }
+
+.global-checkbox {
+  margin:0 !important;
+}
+
+.detailed-chart-icons {
+  position: relative;
+  top: 20;
+  z-index: 1000;
+  right: 10;
+}
