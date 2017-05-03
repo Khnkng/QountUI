@@ -56,13 +56,23 @@ export class paymentdashboardComponent {
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('hChart2') hChart2:HighChart;
     @ViewChild('hChart3') hChart3:HighChart;
+    @ViewChild('hChart4') hChart4:HighChart;
     @ViewChild('createtaxes') createtaxes;
     @HostListener('window:resize', ['$event'])
     onResize(event) {
         let base = this;
-        base.hChart1.redraw();
-        base.hChart2.redraw();
-        base.hChart3.redraw();
+        if(this.showFlyout) {
+            base.hChart1.redraw();
+            base.hChart2.redraw();
+            base.hChart3.redraw();
+
+        }
+        else if(this.showCharts){
+            base.hChart4.redraw();
+        }
+        else{
+
+        }
     }
 
     constructor(private _router: Router,private companyService: CompaniesService,
