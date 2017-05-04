@@ -15,7 +15,7 @@ declare var jQuery:any;
 declare var _:any;
 declare var Highcharts:any;
 @Component({
-    selector: 'paidtable',
+    selector: 'paid',
     templateUrl: '/app/views/paidtable.html'
 })
 

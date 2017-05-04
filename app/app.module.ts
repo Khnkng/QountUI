@@ -162,7 +162,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             canActivate: [LoggedInActivator]
         },
         {
-            path: 'paidtable/:PaymentstableID',
+            path: 'paid',
             component: paidtablecomponent,
             canActivate: [LoggedInActivator]
         },

@@ -119,7 +119,7 @@ export class paymentdashboardComponent {
         this._router.navigate(link);
     }
     paidclick(payableclick){
-        let link = ['paidtable', payableclick];
+        let link = ['paid'];
         this._router.navigate(link);
     }
 
