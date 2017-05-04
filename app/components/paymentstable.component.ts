@@ -33,8 +33,7 @@ export class paymenttableComponent {
     showFlyout:boolean = true;
     taxesList:any;
     tableData:any = {};
-    tableColumns:Array<string> = ['bill_id','bill_date','vendor_name', 'due_date', 'amount'];
-    tablecol:Array<string>=['vendorName','billID','billDate','dueDate','amount'];
+    tableColumns:Array<string> = ['bill_id','vendor_name','current_state','bill_date', 'due_date', 'amount'];
     tableOptions:any = {};
     ttt:any;
     todaysDate:any;
@@ -60,6 +59,7 @@ export class paymenttableComponent {
                 this.billstate='Payables';
                 this.billstatus=true;
             }
+
             else if(this.currentpayment=='pastdue'){
                 this.billstate='Past Due';
                     this.billstatus=true;
@@ -190,9 +190,11 @@ export class paymenttableComponent {
         this.tableData.rows = [];
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
+
         this.tableData.columns = [
             {"name":"bill_id","title":"Bill ID" ,"visible": false},
             {"name": "vendorName", "title": "Vendor Name"},
+            {"name":"current_state","title":"Current State"},
             {"name":"billDate","title":"Bill Date"},
             {"name": "dueDate", "title": "Due Date"},
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
