@@ -119,7 +119,7 @@ export class paymentdashboardComponent {
         this._router.navigate(link);
     }
     paidclick(payableclick){
-        let link = ['paidtable', payableclick];
+        let link = ['paid'];
         this._router.navigate(link);
     }
 
@@ -315,6 +315,8 @@ this.reportChartOptionsStackedlegend={
                     shared: true
                 },
                 yAxis: {
+                    gridLineWidth: 0,
+                    minorGridLineWidth: 0,
                     min: 0,
                     title: {
                         text: 'Payable Amount',

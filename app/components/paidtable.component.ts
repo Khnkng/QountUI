@@ -15,7 +15,7 @@ declare var jQuery:any;
 declare var _:any;
 declare var Highcharts:any;
 @Component({
-    selector: 'paidtable',
+    selector: 'paid',
     templateUrl: '/app/views/paidtable.html'
 })
 
@@ -33,13 +33,13 @@ export class paidtablecomponent {
     showFlyout:boolean = true;
     taxesList:any;
     tableData:any = {};
-    tablecol:Array<string>=['vendorName','billID','currentState','billDate','dueDate','amount'];
+    tablecol:Array<string>=['vendorName','id','currentState','billDate','dueDate','amount'];
     tableOptions:any = {};
     ttt:any;
     todaysDate:any;
     reportasas:boolean= false;
     paymentcount:any;
-    payable:boolean=false
+    payable:boolean=false;
     routeSub:any;
     currentpayment:any;
     paiddata:any;
@@ -80,7 +80,7 @@ export class paidtablecomponent {
         delete $event.action;
         delete $event.actions;
         if(action == 'edit') {
-            let link = ['payments/bill',Session.getCurrentCompany(),$event.billID,$event.currentState];
+            let link = ['payments/bill',Session.getCurrentCompany(),$event.id,$event.currentState];
             this._router.navigate(link);
             //this.getPaymentDetails($event.groupID)
         }else {
@@ -99,7 +99,7 @@ export class paidtablecomponent {
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
-            {"name":"billID","title":"Bill ID" ,"visible": false},
+            {"name":"id","title":"Bill ID" ,"visible": false},
             {"name": "vendorName", "title": "Vendor Name"},
             {"name": "currentState", "title": "Current State"},
             {"name":"billDate","title":"Bill Date"},
