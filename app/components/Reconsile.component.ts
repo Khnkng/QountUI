@@ -73,6 +73,7 @@ export class ReconcileComponent{
     selectedTabColor:string = "#d45945";
     selectedTab:any='deposits';
     selectedColor:any='red-tab';
+    reconType:any='new';
     tabHeight:string;
     @ViewChild('depositsTable') el:ElementRef;
     @ViewChild('expensesTable') el1:ElementRef;
@@ -115,10 +116,6 @@ export class ReconcileComponent{
     }
 
     ngOnInit(){
-        //console.log(this.el2.nativeElement,"nativeelement");
-        /*jQuery(this.el2.nativeElement).on("click", "thead th .global-checkbox", function(e){
-         console.log("hi");
-         });*/
     }
 
 
@@ -228,11 +225,12 @@ export class ReconcileComponent{
                 this.buildDepositsTableData();
                 this.buildExpensesTableData();
                 setTimeout(function(){
-                    base.resetDepositsTab();
-                    base.resetExpensesTab();
+                    base.resetDepositsTab(true,'edit');
+                    base.resetExpensesTab(true,'edit');
                     //base.updateTabHeight();
                 },1000);
                 this.selectTab(0,'');
+                this.reconType = 'edit';
                 //this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile details");
@@ -246,6 +244,7 @@ export class ReconcileComponent{
         let data = this._reconcileForm.getData(this.reconcileForm);
         this.statementEndingBalance = data.statementEndingBalance;
         this.loadingService.triggerLoadingEvent(true);
+        this.reconType = 'new';
         this.reconcileService.getReconcileData(data)
             .subscribe(reconcileData  => {
                 this.reconcileData = reconcileData;
@@ -412,7 +411,7 @@ export class ReconcileComponent{
         let base = this;
         this.hasData = false;
         if(base.selectedDepositRows.length>0 || base.selectedExpenseRows.length > 0) {
-            this.loadingService.triggerLoadingEvent(true);
+            //this.loadingService.triggerLoadingEvent(true);
             let deposits = [];
             let expenses = [];
             let unreconciled_deposits = [];
@@ -492,6 +491,7 @@ export class ReconcileComponent{
         this.editable = true;
         this.reconDifference = null;
         this.tableOptions.selectable = true;
+        this.reconType = 'new';
     }
     getAccounts() {
         this.accountsService.financialAccounts(this.companyId)
@@ -553,38 +553,57 @@ export class ReconcileComponent{
         }
     }
 
-    resetDepositsTab(){
+    resetDepositsTab(state,type){
         let base =this;
-       // let selectedRows = [];
+        let selectedRows = [];
         jQuery(this.el.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
             let row = jQuery(cbox).closest('tr').data('__FooTableRow__');
             let obj = row.val();
-            jQuery(cbox).attr("disabled", true);
-            if(obj.recon == 1) {
-                jQuery(cbox).attr("checked", true);
-                //obj.tempIsSelected = true;
-                //selectedRows.push(obj);
+            if(type =='edit' && obj.recon == 1) {
+                jQuery(cbox).attr("disabled", state);
+                jQuery(cbox).prop("checked", state);
+            }else if(type == 'new'){
+                jQuery(cbox).removeAttr('checked');
+                jQuery(cbox).prop("checked", state);
+                obj.tempIsSelected = state;
+                selectedRows.push(obj);
             }
         });
-        //this.handleDepositsSelect(selectedRows);
+        if(type == 'new') {
+            this.handleDepositsSelect(selectedRows);
+        }
     }
 
-    resetExpensesTab() {
+    resetExpensesTab(state,type) {
         let base =this;
-        //let selectedRows = [];
+        let selectedRows = [];
         jQuery(this.el1.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
             let row = jQuery(cbox).closest('tr').data('__FooTableRow__');
             let obj = row.val();
-            jQuery(cbox).attr("disabled", true);
-            if(obj.recon == 1) {
-                jQuery(cbox).attr("checked", true);
-                //obj.tempIsSelected = true;
-                //selectedRows.push(obj);
+            if(type=='edit' && obj.recon == 1) {
+                jQuery(cbox).attr("disabled", state);
+                jQuery(cbox).prop("checked", state);
+            }else if(type == 'new'){
+                jQuery(cbox).removeAttr('checked');
+                jQuery(cbox).prop("checked", state);
+                obj.tempIsSelected = state;
+                selectedRows.push(obj);
             }
+
         });
-        //this.handleExpensesSelect(selectedRows);
+        if(type == 'new') {
+            this.handleExpensesSelect(selectedRows);
+        }
         this.loadingService.triggerLoadingEvent(false);
     };
+
+    selectAll(type,state){
+        if(type=='deposits'){
+            this.resetDepositsTab(state,'new');
+        }else{
+            this.resetExpensesTab(state,'new');
+        }
+    }
 
     ngAfterViewInit() {
         let base = this;
