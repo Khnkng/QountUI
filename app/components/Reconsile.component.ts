@@ -39,7 +39,7 @@ export class ReconcileComponent{
     reconActivityTableData:any = {};
     hasData:boolean = false;
     tableOptions:any = {search:false, pageSize:5,selectable:true};
-    unreconciledTableOptions:any = {search:false, pageSize:6};
+    unreconciledTableOptions:any = {search:true,pageSize:6,selectable:false};
     showForm:boolean = true;
     reconcileData:any = {};
     reconcileDataCopy:Array<any> = [];
@@ -76,6 +76,7 @@ export class ReconcileComponent{
     tabHeight:string;
     @ViewChild('depositsTable') el:ElementRef;
     @ViewChild('expensesTable') el1:ElementRef;
+    @ViewChild('global-checkbox') el2:ElementRef;
     editable:boolean = true;
     localeFortmat:string='en-US';
 
@@ -114,6 +115,10 @@ export class ReconcileComponent{
     }
 
     ngOnInit(){
+        //console.log(this.el2.nativeElement,"nativeelement");
+        /*jQuery(this.el2.nativeElement).on("click", "thead th .global-checkbox", function(e){
+         console.log("hi");
+         });*/
     }
 
 
@@ -198,7 +203,18 @@ export class ReconcileComponent{
             .subscribe(reconcileDetails => {
                 this.showForm = false;
                 this.reconcileData = reconcileDetails;
-                this.reconcileDataCopy = reconcileDetails;
+                this.selectedDepositsCount = reconcileDetails.deposits.length;
+                this.selectedExpensesCount = reconcileDetails.expenses.length;
+                if(this.reconcileData.unreconciled_deposits.length > 0){
+                    _.each(this.reconcileData.unreconciled_deposits,function(entry){
+                        base.reconcileData.deposits.push(entry);
+                    });
+                }
+                if(this.reconcileData.unreconciled_expense.length > 0){
+                    _.each(this.reconcileData.unreconciled_expense,function(entry){
+                        base.reconcileData.expenses.push(entry);
+                    });
+                }
                 this.selectedBankName = $event.bank;
                 let amount = reconcileDetails.ending_balance;
                 amount = parseFloat(amount);
@@ -207,12 +223,15 @@ export class ReconcileComponent{
                 this.inflow = reconcileDetails.sum_of_deposits;
                 this.outflow = reconcileDetails.sum_of_expenses;
                 this.statementEndingBalance = amount;
-                this.selectedDepositsCount = reconcileDetails.deposits.length;
-                this.selectedExpensesCount = reconcileDetails.expenses.length;
-                this.tableOptions.selectable = false;
+                this.tableOptions.selectable = true;
                 this.reconDifference = 0;
                 this.buildDepositsTableData();
                 this.buildExpensesTableData();
+                setTimeout(function(){
+                    base.resetDepositsTab();
+                    base.resetExpensesTab();
+                    //base.updateTabHeight();
+                },1000);
                 this.selectTab(0,'');
                 this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
@@ -284,6 +303,7 @@ export class ReconcileComponent{
             {"name": "date", "title": "Date"},
             {"name": "amount", "title": "Amount"},
             {"name": "id", "title": "Entry ID", "visible": false},
+            {"name": "recon", "title": "reconcile", "visible": false},
             {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}];
 
         this.depositsTableData.rows = [];
@@ -303,6 +323,7 @@ export class ReconcileComponent{
 
     };
 
+
     buildExpensesTableData(){
         let base = this;
         this.expensesTableData.columns = [
@@ -311,6 +332,7 @@ export class ReconcileComponent{
             {"name": "due_date", "title": "Date"},
             {"name": "amount", "title": "Amount"},
             {"name": "id", "title": "Entry ID", "visible": false},
+            {"name": "recon", "title": "reconcile", "visible": false},
             {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}];
 
         this.expensesTableData.rows = [];
@@ -356,8 +378,8 @@ export class ReconcileComponent{
     buildReconActivityTableData(){
         let base = this;
         this.reconActivityTableData.columns = [
-            {"name": "company_id", "title": "company ID","visible":false},
-            {"name": "bank_Account_id", "title": "Bank ID","visible":false},
+            {"name": "company_id", "title": "company ID","visible":false,'filterable': false},
+            {"name": "bank_Account_id", "title": "Bank ID","visible":false,'filterable': false},
             {"name": "bank", "title": "Account"},
             {"name": "last_Recon_date", "title": "Recon Date"},
             {"name": "ending_balance", "title": "Ending Balance", "formatter": (amount)=>{
@@ -367,7 +389,7 @@ export class ReconcileComponent{
                 return base.numeralService.value(value);
             }},
             {"name": "recon_done_date", "title": "Recon Completed On"},
-            {"name": "id", "title": "Entry ID", "visible": false},
+            {"name": "id", "title": "Entry ID", "visible": false,'filterable': false},
             {"name": "actions", "title": "", "type": "html", 'filterable': false}];
         this.reconActivityTableData.rows = [];
         _.each(base.reconActivity, function(entry){
@@ -393,7 +415,19 @@ export class ReconcileComponent{
             this.loadingService.triggerLoadingEvent(true);
             let deposits = [];
             let expenses = [];
+            let unreconciled_deposits = [];
+            let unreconciled_expenses = [];
             let selected = {};
+            _.each(this.reconcileDataCopy.deposits,function(deposit) {
+                if(!_.find(base.selectedDepositRows,{id:deposit.id})){
+                    unreconciled_deposits.push(deposit.id)
+                }
+            });
+            _.each(this.reconcileDataCopy.expenses,function(expense) {
+                if(!_.find(base.selectedExpenseRows,{id:expense.id})){
+                    unreconciled_expenses.push(expense.id)
+                }
+            });
             _.each(this.selectedDepositRows, function (row) {
                 deposits.push(row.id);
             });
@@ -402,6 +436,8 @@ export class ReconcileComponent{
             });
             selected["deposits"] = deposits;
             selected["expenses"] = expenses;
+            selected["unreconciled_deposits"] = unreconciled_deposits;
+            selected["unreconciled_expenses"] = unreconciled_expenses;
             selected["last_recon_ending_balance"] = this.endingBalance;
             selected["last_recon_date"] = this.reconcileDate;
             selected["starting_balance"] = this.startingBalance;
@@ -519,38 +555,39 @@ export class ReconcileComponent{
 
     resetDepositsTab(){
         let base =this;
-        let selectedRows = [];
+       // let selectedRows = [];
         jQuery(this.el.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
             let row = jQuery(cbox).closest('tr').data('__FooTableRow__');
             let obj = row.val();
-            jQuery(cbox).attr("checked", true);
-            obj.tempIsSelected = true;
-            selectedRows.push(obj);
+            if(obj.recon == 1) {
+                jQuery(cbox).attr("checked", true);
+                //obj.tempIsSelected = true;
+                //selectedRows.push(obj);
+            }
         });
-        this.handleDepositsSelect(selectedRows);
-
+        //this.handleDepositsSelect(selectedRows);
     }
 
     resetExpensesTab() {
         let base =this;
-        let selectedRows = [];
+        //let selectedRows = [];
         jQuery(this.el1.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
             let row = jQuery(cbox).closest('tr').data('__FooTableRow__');
             let obj = row.val();
-            jQuery(cbox).attr("checked", true);
-            obj.tempIsSelected = true;
-            selectedRows.push(obj);
+            if(obj.recon == 1) {
+                jQuery(cbox).attr("checked", true);
+                //obj.tempIsSelected = true;
+                //selectedRows.push(obj);
+            }
         });
-        this.handleExpensesSelect(selectedRows);
-        this.loadingService.triggerLoadingEvent(false);
+        //this.handleExpensesSelect(selectedRows);
+        //this.loadingService.triggerLoadingEvent(false);
+    };
 
-    }
     ngAfterViewInit() {
-        if(!this.showForm) {
-            let base = this;
-            jQuery(document).ready(function () {
-                //base.updateTabHeight();
-            });
-        }
+        let base = this;
+        jQuery(document).ready(function () {
+            //base.updateTabHeight();
+        });
     }
 }

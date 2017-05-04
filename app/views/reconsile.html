@@ -52,7 +52,7 @@
             </form>
             <div class="row" *ngIf="showForm">
                 <div class="column large-12 medium-12 small-12 foo-container">
-                    <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasData" [data]="reconActivityTableData" [options]="unreconciledTableOptions" (onRowClick)="handleReconActivity($event)"></foo-table>
+                    <foo-table class="bigpay-dashboard bighalf-footable search-right" *ngIf="hasData" [data]="reconActivityTableData" [options]="unreconciledTableOptions" (onRowClick)="handleReconActivity($event)"></foo-table>
                 </div>
             </div>
             <div class="row" *ngIf="!showForm">
