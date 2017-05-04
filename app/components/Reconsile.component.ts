@@ -233,7 +233,7 @@ export class ReconcileComponent{
                     //base.updateTabHeight();
                 },1000);
                 this.selectTab(0,'');
-                this.loadingService.triggerLoadingEvent(false);
+                //this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile details");
                 this.loadingService.triggerLoadingEvent(false);
@@ -559,6 +559,7 @@ export class ReconcileComponent{
         jQuery(this.el.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
             let row = jQuery(cbox).closest('tr').data('__FooTableRow__');
             let obj = row.val();
+            jQuery(cbox).attr("disabled", true);
             if(obj.recon == 1) {
                 jQuery(cbox).attr("checked", true);
                 //obj.tempIsSelected = true;
@@ -574,6 +575,7 @@ export class ReconcileComponent{
         jQuery(this.el1.nativeElement).find("tbody tr input.checkbox").each(function(idx,cbox){
             let row = jQuery(cbox).closest('tr').data('__FooTableRow__');
             let obj = row.val();
+            jQuery(cbox).attr("disabled", true);
             if(obj.recon == 1) {
                 jQuery(cbox).attr("checked", true);
                 //obj.tempIsSelected = true;
@@ -581,7 +583,7 @@ export class ReconcileComponent{
             }
         });
         //this.handleExpensesSelect(selectedRows);
-        //this.loadingService.triggerLoadingEvent(false);
+        this.loadingService.triggerLoadingEvent(false);
     };
 
     ngAfterViewInit() {
