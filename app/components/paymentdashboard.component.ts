@@ -118,6 +118,11 @@ export class paymentdashboardComponent {
         let link = ['bills', payableclick];
         this._router.navigate(link);
     }
+    paidclick(payableclick){
+        let link = ['paidtable', payableclick];
+        this._router.navigate(link);
+    }
+
     hideFlyout(){
         let link = ['payments/dashboard', 'enter'];
         this._router.navigate(link);

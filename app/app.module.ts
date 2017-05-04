@@ -5,6 +5,7 @@
 
 import {NgModule, CUSTOM_ELEMENTS_SCHEMA} from "@angular/core";
 import {ShareModule} from "qCommon/app/share.module";
+import {paidtablecomponent} from "./components/paidtable.component";
 import {paymentdashboardComponent} from "./components/paymentdashboard.component";
 import {ReportsModule} from "reportsUI/app/reports.module";
 import {LoggedInActivator} from "qCommon/app/services/CheckSessionActivator";
@@ -158,6 +159,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         {
             path: 'paymentdashboard',
             component: paymentdashboardComponent,
+            canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'paidtable/:PaymentstableID',
+            component: paidtablecomponent,
             canActivate: [LoggedInActivator]
         },
         {
@@ -315,7 +321,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         VendorComponent,TaxesComponent,VerificationComponent,paymenttableComponent,ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
-        ResetPasswordComponent,paymentdashboardComponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
+        ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
         CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent, DocumentComponent,BudgetComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],

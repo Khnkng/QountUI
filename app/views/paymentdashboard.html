@@ -44,7 +44,7 @@
                                     </div>
                                     <div class="column medium-2 pointer report-stats-padding" *ngIf="payablecount">
                                         <div class="row">
-                                            <div class="column medium-12 report-stats-padding" style="background: deepskyblue;" (click)="payableclick('30days')">
+                                            <div class="column medium-12 report-stats-padding" style="background: deepskyblue;" (click)="paidclick('paid')">
                                                 <div><span class="recon-selected-count">{{paidcount.totalPaidBillsAmountSum | currency:companyCurrency:true:'1.2-2'}}</span></div>
                                                 <div>Paid In Last 30 Days</div>
 
