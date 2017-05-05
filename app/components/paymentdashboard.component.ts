@@ -238,6 +238,9 @@ this.reportChartOptionsStackedlegend={
         shared: true
     },
     yAxis: {
+
+
+
         gridLineWidth: 0,
         minorGridLineWidth: 0,
         min: 0,
@@ -317,6 +320,9 @@ this.reportChartOptionsStackedlegend={
                     shared: true
                 },
                 yAxis: {
+
+
+                    
                     gridLineWidth: 0,
                     minorGridLineWidth: 0,
                     min: 0,
