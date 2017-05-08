@@ -82,6 +82,7 @@ export class paymentdashboardComponent {
         this.serviceDateformat = dateFormater.getServiceDateformat();
         this.generateChart();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+        this.loadingService.triggerLoadingEvent(true);
         this.companyService.getpaymentcount(this.companyId)
             .subscribe(paymentcount  => {
                 this.paymentcount=paymentcount;
