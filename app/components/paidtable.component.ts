@@ -107,7 +107,7 @@ export class paidtablecomponent {
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
                 amount = parseFloat(amount);
                 return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
-            }},
+            },"classes": "currency-align currency-padding"},
             {"name": "actions", "title": ""}
         ];
 
@@ -117,7 +117,13 @@ export class paidtablecomponent {
             _.each(base.tablecol, function(key) {
                 if(key == 'amount'){
                     let amount = parseFloat(expense[key]);
-                    row[key] = amount.toFixed(2); // just to support regular number with .00
+                    //row[key] = amount.toFixed(2); // just to support regular number with .00
+                    row[key] = {
+                        'options': {
+                            "classes": "text-right"
+                        },
+                        value : amount.toFixed(2)
+                    }
                 }
                 else {
                     row[key] = expense[key];

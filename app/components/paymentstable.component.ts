@@ -142,7 +142,7 @@ export class paymenttableComponent {
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
                 amount = parseFloat(amount);
                 return amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
-            }},
+            },"classes": "currency-align currency-padding"},
             {"name": "daysToPay", "title": "Days to Pay"},
             {"name": "actions", "title": ""}
         ];
@@ -152,7 +152,13 @@ export class paymenttableComponent {
             _.each(base.tableColumns, function(key) {
                 if(key == 'amount'){
                     let amount = parseFloat(expense[key]);
-                    row[key] = amount.toFixed(2); // just to support regular number with .00
+                    //row[key] = amount.toFixed(2); // just to support regular number with .00
+                    row[key] = {
+                        'options': {
+                            "classes": "text-right"
+                        },
+                        value : amount.toFixed(2)
+                    }
                 }
                 else {
                     row[key] = expense[key];
@@ -176,7 +182,12 @@ export class paymenttableComponent {
             row['bill_date'] = credit['creditDate'];
             row['vendor_name'] = credit['vendorName'];
             row['current_state'] = credit['current_state'];
-            row['amount'] ='-' + billAmount;
+            row['amount'] ={
+                'options': {
+                    "classes": "text-right"
+                },
+                value : '-' + billAmount
+            }
             row['actions'] = "<a class='action' data-action='creditPayment'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='Enter' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             base.tableData.rows.push(row);
         });
