@@ -300,7 +300,7 @@ export class ReconcileComponent{
             {"name": "type", "title": "Type","visible": false},
             {"name": "title", "title": "Title"},
             {"name": "date", "title": "Date"},
-            {"name": "amount", "title": "Amount"},
+            {"name": "amount", "title": "Amount","classes": "currency-align currency-padding"},
             {"name": "id", "title": "Entry ID", "visible": false},
             {"name": "recon", "title": "reconcile", "visible": false},
             {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}];
@@ -311,7 +311,13 @@ export class ReconcileComponent{
             _.each(Object.keys(entry), function(key){
                 if(key == 'amount'){
                     let amount = parseFloat(entry[key]);
-                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    //row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    row[key] = {
+                        'options': {
+                            "classes": "text-right"
+                        },
+                        value : amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                    }
                 } else{
                     row[key] = entry[key];
                 }
@@ -329,7 +335,7 @@ export class ReconcileComponent{
             {"name": "type", "title": "Type","visible": false},
             {"name": "title", "title": "Title"},
             {"name": "due_date", "title": "Date"},
-            {"name": "amount", "title": "Amount"},
+            {"name": "amount", "title": "Amount","classes": "currency-align currency-padding"},
             {"name": "id", "title": "Entry ID", "visible": false},
             {"name": "recon", "title": "reconcile", "visible": false},
             {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}];
@@ -340,7 +346,13 @@ export class ReconcileComponent{
             _.each(Object.keys(entry), function(key){
                 if(key == 'amount'){
                     let amount = parseFloat(entry[key]);
-                    row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    //row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    row[key] = {
+                        'options': {
+                            "classes": "text-right"
+                        },
+                        value : amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                    }
                 } else{
                     row[key] = entry[key];
                 }
@@ -381,14 +393,14 @@ export class ReconcileComponent{
             {"name": "bank_Account_id", "title": "Bank ID","visible":false,'filterable': false},
             {"name": "bank", "title": "Account"},
             {"name": "last_Recon_date", "title": "Recon Date"},
+            {"name": "recon_done_date", "title": "Recon Completed On"},
+            {"name": "id", "title": "Entry ID", "visible": false,'filterable': false},
             {"name": "ending_balance", "title": "Ending Balance", "formatter": (amount)=>{
                 amount = parseFloat(amount);
                 return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
             }, "sortValue": function(value){
                 return base.numeralService.value(value);
-            }},
-            {"name": "recon_done_date", "title": "Recon Completed On"},
-            {"name": "id", "title": "Entry ID", "visible": false,'filterable': false},
+            },"classes": "currency-align currency-padding"},
             {"name": "actions", "title": "", "type": "html", 'filterable': false}];
         this.reconActivityTableData.rows = [];
         _.each(base.reconActivity, function(entry){
@@ -399,6 +411,13 @@ export class ReconcileComponent{
                     row['bank'] = base.getBankAccountName(entry[key]);
                 }else if(key == 'recon_done_date'){
                     row[key] = moment(entry[key]).format('MM/DD/YYYY');
+                }else if(key == 'ending_balance'){
+                    row[key] = {
+                        'options': {
+                            "classes": "text-right"
+                        },
+                        value : entry[key]
+                    }
                 }else {
                     row[key] = entry[key];
                 }

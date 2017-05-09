@@ -83,9 +83,9 @@ export class FinancialAccountsComponent{
             this.toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
           });
       /*this.financialAccountsService.financialInstitutions()
-          .subscribe(banks => {
-            this.banks = banks;
-          }, error => this.handleError(error));*/
+       .subscribe(banks => {
+       this.banks = banks;
+       }, error => this.handleError(error));*/
     } else{
       this.toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
     }
@@ -278,21 +278,21 @@ export class FinancialAccountsComponent{
     this.tableData.columns = [
       {"name": "name", "title": "Name"},
       {"name": "chart_of_account", "title": "Chart of Account"},
-      {"name": "starting_balance", "title": "Starting Balance", "sortValue": function(value){
-        return base.numeralService.value(value);
-      }},
       {"name": "starting_balance_date", "title": "Start Balance Date","type":"date","sortValue": function(value){
         return moment(value,"MM/DD/YYYY").valueOf();
       }},
+      {"name": "starting_balance", "title": "Starting Balance", "sortValue": function(value){
+        return base.numeralService.value(value);
+      },"classes": "currency-align"},
       {"name": "current_balance", "title": "Current Balance", "sortValue": function(value){
         return base.numeralService.value(value);
-      }},
+      },"classes": "currency-align"},
       {"name": "id", "title": "Id", "visible": false},
       {"name": "yodlee_provider_id", "title": "Yodle_Provider", "visible": false},
       {"name": "actions", "title": ""}
     ];
     let base = this;
-      _.each(accounts, function(account) {
+    _.each(accounts, function(account) {
       let row:any = {};
       _.each(base.tableColumns, function(key) {
         row[key] = account[key];
@@ -303,11 +303,23 @@ export class FinancialAccountsComponent{
         }
         if(key=='starting_balance'){
           let starting_balance=account['starting_balance']?Number(account['starting_balance']):0;
-          row['starting_balance'] =starting_balance.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          //row['starting_balance'] =starting_balance.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          row[key] = {
+            'options': {
+              "classes": "text-right currency-padding"
+            },
+            value : starting_balance.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          }
         }
         if(key=='current_balance'){
           let current_balance=account['current_balance']?Number(account['current_balance']):0;
-          row['current_balance'] =current_balance.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          //row['current_balance'] =current_balance.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          row[key] = {
+            'options': {
+              "classes": "text-right currency-padding"
+            },
+            value : current_balance.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          }
         }
         if(key == 'starting_balance_date'){
           row[key] = base.dateFormater.formatDate(account[key],base.serviceDateformat,base.dateFormat);
@@ -317,13 +329,13 @@ export class FinancialAccountsComponent{
           yodlee_action = "<a class='action'><i class='icon ion-reply'></i></a>";
         }
 
-if(account.drop_verified==false) {
-  let verify = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>V</span></a>"
-  row['actions'] = yodlee_action + verify + "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
-}
-else{
-  row['actions'] = yodlee_action + "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
-}
+        if(account.drop_verified==false) {
+          let verify = "<a class='action' data-action='Navigation'><span class='icon badge je-badge'>V</span></a>"
+          row['actions'] = yodlee_action + verify + "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        }
+        else{
+          row['actions'] = yodlee_action + "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        }
 
 
       });
@@ -375,12 +387,12 @@ else{
 
     this.switchBoard.onYodleeTokenRecived.subscribe(recived => {
       var status = JSON.parse(Session.get("yodleeStatus"));
-        this.loadingService.triggerLoadingEvent(true);
-        jQuery('#yodleewgt').foundation('close');
-        this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
-          this.toastService.pop(TOAST_TYPE.success, "Account linked successfully");
-          this.getFinancialAccounts(this.currentCompany);
-          this.loadingService.triggerLoadingEvent(false);
+      this.loadingService.triggerLoadingEvent(true);
+      jQuery('#yodleewgt').foundation('close');
+      this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
+        this.toastService.pop(TOAST_TYPE.success, "Account linked successfully");
+        this.getFinancialAccounts(this.currentCompany);
+        this.loadingService.triggerLoadingEvent(false);
       });
 
     });
@@ -389,9 +401,9 @@ else{
   unlinkYodleeAccount() {
     this.loadingService.triggerLoadingEvent(true);
     this.yodleeService.unlink(Session.getCurrentCompany(), this.selectedAccount.id, this.selectedAccount.yodlee_provider_id).subscribe(resp=> {
-       this.selectedAccount.yodlee_provider_id = null;
+      this.selectedAccount.yodlee_provider_id = null;
       this.loadingService.triggerLoadingEvent(false);
-       this.toastService.pop(TOAST_TYPE.success, "Account unlinked successfully");
+      this.toastService.pop(TOAST_TYPE.success, "Account unlinked successfully");
     });
   }
 

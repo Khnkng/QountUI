@@ -329,12 +329,7 @@ export class BooksComponent{
         this.handleBadges(data.length, 1);
         this.expensesTableData.columns = [
             {"name": "title", "title": "Title"},
-            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
-                amount = parseFloat(amount);
-                return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
-            }, "sortValue": function(value){
-                return base.numeralService.value(value);
-            }},
+
             //{"name": "status", "title": "Status", "type": "html", "sortable": false},
             //{"name": "paid_date", "title": "Paid Date"},
             {"name": "due_date", "title": "Expense Date","type":"date","sortValue": function(value){
@@ -343,8 +338,17 @@ export class BooksComponent{
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
             {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = parseFloat(amount);
+                return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }, "sortValue": function(value){
+                return base.numeralService.value(value);
+            },
+                "classes": "currency-align currency-padding"
+            },
             {"name": "actions", "title": "", "type": "html", "sortable": false, "filterable": false}];
         this.expensesTableData.rows = [];
+
         data.forEach(function(expense){
 
 
@@ -354,7 +358,13 @@ export class BooksComponent{
                     row[key] = base.getBankAccountName(expense[key]);
                 } else if(key == 'amount'){
                     let amount = parseFloat(expense[key]);
-                    row[key] = amount.toFixed(2); // just to support regular number with .00
+                    //row[key] = amount.toFixed(2); // just to support regular number with .00
+                    row[key] = {
+                        'options': {
+                            "classes": "text-right"
+                        },
+                        value : amount.toFixed(2)
+                    }
                 }else if(key == 'due_date'){
                     row[key] = base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat);
                 } else{
@@ -396,18 +406,20 @@ export class BooksComponent{
         this.depositsTableData.search = true;
         this.depositsTableData.columns = [
             {"name": "title", "title": "Title"},
-            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
-                amount = parseFloat(amount);
-                return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
-            }, "sortValue": function(value){
-                return base.numeralService.value(value);
-            }},
             {"name": "date", "title": "Date","type":"date","sortValue": function(value){
                 return moment(value,"MM/DD/YYYY").valueOf();
             }},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
             {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
+            {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
+                amount = parseFloat(amount);
+                return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            }, "sortValue": function(value){
+                return base.numeralService.value(value);
+            },
+                "classes": "currency-align currency-padding"
+            },
             {"name": "actions", "title": "", "type": "html", "sortable": false, 'filterable': false}];
         this.depositsTableData.rows = [];
         data.forEach(function(expense){
@@ -419,7 +431,13 @@ export class BooksComponent{
                 }  else if(key == 'amount'){
                     let amount = parseFloat(expense[key]);
                     //row[key] = amount.toLocaleString(base.companyCurrency, {currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 }) // just to support regular number with .00
-                    row[key] = amount.toFixed(2);
+                    //row[key] = amount.toFixed(2);
+                    row[key] = {
+                        'options': {
+                            "classes": "currency-align"
+                        },
+                        value : amount.toFixed(2)
+                    }
                 }else if(key == 'date'){
                     row[key] = base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat);
                 }else{

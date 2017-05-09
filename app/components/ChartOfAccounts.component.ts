@@ -274,7 +274,7 @@ export class ChartOfAccountsComponent{
       this.coaService.updateCOA(data.id, data, this.currentCompany.id)
           .subscribe(coa => {
             base.showFlyout = false;
-          //  base.loadingService.triggerLoadingEvent(false);
+            //  base.loadingService.triggerLoadingEvent(false);
             base.row = {};
             base.toastService.pop(TOAST_TYPE.success, "Chart of Account updated successfully");
             this.fetchChartOfAccountData();
@@ -334,7 +334,8 @@ export class ChartOfAccountsComponent{
         return balance.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }, "sortValue": function(value){
         return base.numeralService.value(value);
-      }},
+      },"classes": "currency-align currency-padding"
+      },
       {"name": "type", "title": "Type", "visible": false},
       {"name": "subType", "title": "Sub type", "visible": false},
       {"name": "desc", "title": "Description", "visible": false},
@@ -377,7 +378,14 @@ export class ChartOfAccountsComponent{
           } else{
             row[key] = coa[key];
           }
-        } else{
+        }else if(key == 'balance'){
+          row[key] = {
+            'options': {
+              "classes": "text-right"
+            },
+            value : coa[key]
+          }
+        }else{
           row[key] = coa[key];
         }
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
