@@ -22,11 +22,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="column medium-2 pointer report-stats-padding" *ngIf="payable">
+                                    <div class="column medium-2 pointer report-stats-padding" *ngIf="isTransit">
                                         <div class="row">
                                             <div class="column medium-12 report-stats-padding" style="background-color:#6A8BAB;">
-                                                <div><span class="recon-selected-count">{{paymentcount.averagePayDate}}</span><span>Days</span></div>
-                                                <div>Avg Days To Pay</div>
+                                                <div><span class="recon-selected-count">{{paymentsInTransit.totalAmount| currency:companyCurrency:true:'1.2-2'}}</span></div>
+                                                <div><span>{{paymentsInTransit.unmappedPaymentsCount}}</span><span>Payments In Transit</span></div>
                                             </div>
                                         </div>
                                     </div>

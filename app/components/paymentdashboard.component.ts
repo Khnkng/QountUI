@@ -39,6 +39,7 @@ export class paymentdashboardComponent {
     reportasas:boolean= false;
     paymentcount:any;
     payable:boolean=false;
+    isTransit:boolean=false;
     tablelist:any;
     totalapproveamount:any;
     totalpayamont:any;
@@ -53,6 +54,7 @@ export class paymentdashboardComponent {
     paidcount:any;
     payablecount:boolean=false;
     payableBalance:boolean=false;
+    paymentsInTransit:any;
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('hChart2') hChart2:HighChart;
     @ViewChild('hChart3') hChart3:HighChart;
@@ -105,6 +107,11 @@ export class paymentdashboardComponent {
                 this.tablelist=tablelist;
                 this.buildTableData(tablelist);
                 // this.showMessage(true, success);
+            }, error =>  console.log("error"));
+        this.companyService.getPaymentsInTransit(this.companyId)
+            .subscribe(paymentsTransit  => {
+                this.paymentsInTransit=paymentsTransit;
+                this.isTransit = true;
             }, error =>  console.log("error"));
     }
     removeCurrency(values) {
@@ -218,88 +225,88 @@ export class paymentdashboardComponent {
                     thousandsSep: ','
                 }
             });
-this.reportChartOptionsStackedlegend={
+            this.reportChartOptionsStackedlegend={
 
-    chart: {
-        type: 'bar',
-        marginRight: 50
-    },
-    title: {
-        text: 'Aging By Vendor'
-    },
-    credits: {
-        enabled: false
-    },
-    xAxis: {
-        categories: columns
-    },
-    tooltip: {
-        headerFormat: '<b>{point.x}</b><br/>',
-        pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y:,.2f}</span><br/>',
-        shared: true
-    },
-    yAxis: {
-
-
-
-        gridLineWidth: 0,
-        minorGridLineWidth: 0,
-        min: 0,
-        title: {
-            text: 'Payable Amount',
-            style: {
-                fontSize:'15px'
-
-            }
-        },
-
-        stackLabels: {
-            enabled: true,
-            formatter: function () {
-                return '$'+Highcharts.numberFormat(this.total,2);
-            },
-            style: {
-                fontSize:'13px',
-                fontWeight:'bold',
-                color:'#003399',
-                fill:'#003399'
-                // color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-            }
-        },
-        labels: {
-            style: {
-                fontSize:'13px',
-                fontWeight:'bold',
-                color:'#003399',
-                fill:'#003399'
-
-            }
-        }
-    },
-    legend: {
-        enabled: true
-    },
-
-    plotOptions: {
-        enabled: true,
-        series: {
-            stacking: 'normal',
-            dataLabels: {
-                enabled: false,
-                format: '${y}',
-                fontSize:'13px',
-                color:'#003399',
-                fill:'#003399',
-                style: {
-                    fontSize:'13px'
+                chart: {
+                    type: 'bar',
+                    marginRight: 50
                 },
-                // color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
-            }
-        },
+                title: {
+                    text: 'Aging By Vendor'
+                },
+                credits: {
+                    enabled: false
+                },
+                xAxis: {
+                    categories: columns
+                },
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y:,.2f}</span><br/>',
+                    shared: true
+                },
+                yAxis: {
 
-    },
-    series:series
-}
+
+
+                    gridLineWidth: 0,
+                    minorGridLineWidth: 0,
+                    min: 0,
+                    title: {
+                        text: 'Payable Amount',
+                        style: {
+                            fontSize:'15px'
+
+                        }
+                    },
+
+                    stackLabels: {
+                        enabled: true,
+                        formatter: function () {
+                            return '$'+Highcharts.numberFormat(this.total,2);
+                        },
+                        style: {
+                            fontSize:'13px',
+                            fontWeight:'bold',
+                            color:'#003399',
+                            fill:'#003399'
+                            // color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            fontSize:'13px',
+                            fontWeight:'bold',
+                            color:'#003399',
+                            fill:'#003399'
+
+                        }
+                    }
+                },
+                legend: {
+                    enabled: true
+                },
+
+                plotOptions: {
+                    enabled: true,
+                    series: {
+                        stacking: 'normal',
+                        dataLabels: {
+                            enabled: false,
+                            format: '${y}',
+                            fontSize:'13px',
+                            color:'#003399',
+                            fill:'#003399',
+                            style: {
+                                fontSize:'13px'
+                            },
+                            // color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                        }
+                    },
+
+                },
+                series:series
+            }
 
             this.reportChartOptionsStacked = {
                 chart: {
@@ -323,7 +330,7 @@ this.reportChartOptionsStackedlegend={
                 yAxis: {
 
 
-                    
+
                     gridLineWidth: 0,
                     minorGridLineWidth: 0,
                     min: 0,
