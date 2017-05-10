@@ -14,7 +14,7 @@ export class DepositsForm extends abstractForm{
             "title": ['', Validators.required],
             "amount": [''],
             "date": [''],
-            "bank_account_id": [''],
+            "bank_account_id": ['',Validators.required],
             "notes": [''],
             "id": [''],
             "deposit_type":['']

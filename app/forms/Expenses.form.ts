@@ -18,7 +18,7 @@ export class ExpenseForm extends abstractForm{
             "is_paid": [false],
             "paid_date": [''],
             "due_date": [''],
-            "bank_account_id": [''],
+            "bank_account_id": ['',Validators.required],
             "id": [''],
             "type":[''],
             "reference_number":[''],
