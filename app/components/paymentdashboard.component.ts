@@ -246,11 +246,6 @@ export class paymentdashboardComponent {
                     shared: true
                 },
                 yAxis: {
-
-
-
-                    gridLineWidth: 0,
-                    minorGridLineWidth: 0,
                     min: 0,
                     title: {
                         text: 'Payable Amount',
@@ -328,11 +323,6 @@ export class paymentdashboardComponent {
                     shared: true
                 },
                 yAxis: {
-
-
-
-                    gridLineWidth: 0,
-                    minorGridLineWidth: 0,
                     min: 0,
                     title: {
                         text: 'Payable Amount',
