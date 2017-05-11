@@ -22,11 +22,11 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="column medium-2 pointer report-stats-padding" *ngIf="isTransit">
+                                    <div class="column medium-2 pointer report-stats-padding" *ngIf="isTransit" (click)="paidclick('all')">
                                         <div class="row">
                                             <div class="column medium-12 report-stats-padding" style="background-color:#6A8BAB;">
                                                 <div><span class="recon-selected-count">{{paymentsInTransit.totalAmount| currency:companyCurrency:true:'1.2-2'}}</span></div>
-                                                <div><span>{{paymentsInTransit.unmappedPaymentsCount}}</span><span>Payments In Transit</span></div>
+                                                <div><span>{{paymentsInTransit.unmappedPaymentsCount}} </span><span>Payments In Transit</span></div>
                                             </div>
                                         </div>
                                     </div>
@@ -44,7 +44,7 @@
                                     </div>
                                     <div class="column medium-2 pointer report-stats-padding" *ngIf="payablecount">
                                         <div class="row">
-                                            <div class="column medium-12 report-stats-padding" style="background: deepskyblue;" (click)="paidclick('paid')">
+                                            <div class="column medium-12 report-stats-padding" style="background: deepskyblue;" (click)="paidclick('30days')">
                                                 <div><span class="recon-selected-count">{{paidcount.totalPaidBillsAmountSum | currency:companyCurrency:true:'1.2-2'}}</span></div>
                                                 <div>{{paidcount.bills_count}}  Paid In Last 30 Days</div>
 

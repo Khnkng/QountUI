@@ -58,21 +58,24 @@ export class paidtablecomponent {
 
         });
         this.loadingService.triggerLoadingEvent(true);
-        this.companyService.getpaidcounttable(this.companyId)
-            .subscribe(paiddata  => {
-                this.paiddata=paiddata;
-                console.log("this.paiddata",this.paiddata);
-            }, error =>{
-                this.loadingService.triggerLoadingEvent(false);
-            });
 
-        this.companyService.getpaidcounttable(this.companyId)
-            .subscribe(paiddata  => {
-                this.paiddata=paiddata;
-                this.buildTableDataPaid(this.paiddata.bills);
-            }, error =>{
-                this.loadingService.triggerLoadingEvent(false);
-            });
+        if(this.currentpayment == '30days') {
+            this.companyService.getpaidcounttable(this.companyId)
+                .subscribe(paiddata => {
+                    this.paiddata = paiddata;
+                    this.buildTableDataPaid(this.paiddata.bills);
+                }, error => {
+                    this.loadingService.triggerLoadingEvent(false);
+                });
+        }else{
+            this.companyService.getpaidTransits(this.companyId)
+                .subscribe(paiddata  => {
+                    this.paiddata=paiddata;
+                    this.buildTableDataPaid(this.paiddata);
+                }, error =>{
+                    this.loadingService.triggerLoadingEvent(false);
+                });
+        }
 
     }
     handleAction($event){

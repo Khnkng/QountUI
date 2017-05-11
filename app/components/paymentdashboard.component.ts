@@ -127,8 +127,13 @@ export class paymentdashboardComponent {
         this._router.navigate(link);
     }
     paidclick(payableclick){
-        let link = ['paid'];
+        let link;
+        link = ['paid',payableclick]
         this._router.navigate(link);
+        /*if(payableclick == '30days') {
+            link = ['paid'];
+        }else{
+        }*/
     }
 
     hideFlyout(){
