@@ -75,7 +75,13 @@
 
 @include motion-ui-transitions;
 @include motion-ui-animations;
-
+.reportflyout{
+  position: absolute;
+  top:51px;
+  right: 0px;
+  width:calc(100% - 55px);
+  background-color: #ebeff2;
+}
 
 body {
   background: #fff;
@@ -907,7 +913,28 @@ ul.side-nav a {
   }
 }
 
+.button{
+  &.text-buttons{
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    background: none;
+    color: $qount-text;
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    margin-top: 5px;
+    transition: background-color 0.3s ease;
+    &:hover{
+      background: $qount-table-border;
+    }
+    i{
+      font-size: 2.5rem;
+    }
 
+  }
+}
 .report-wrapper {
   margin-top: 50px;
   @media #{$medium-up} {
