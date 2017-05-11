@@ -18,8 +18,6 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 
-import setTimeout = core.setTimeout;
-
 declare var jQuery:any;
 declare var _:any;
 declare var moment:any;
@@ -82,10 +80,6 @@ export class FinancialAccountsComponent{
             this.loadingService.triggerLoadingEvent(false);
             this.toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
           });
-      /*this.financialAccountsService.financialInstitutions()
-       .subscribe(banks => {
-       this.banks = banks;
-       }, error => this.handleError(error));*/
     } else{
       this.toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
     }
@@ -246,9 +240,6 @@ export class FinancialAccountsComponent{
             this.showFlyout = false;
           });
     }
-
-    //this.buildTableData(this.accounts);
-    //this.showFlyout = false;
   }
 
   handleAccount(newAccount){
@@ -292,7 +283,7 @@ export class FinancialAccountsComponent{
       {"name": "actions", "title": ""}
     ];
     let base = this;
-    _.each(accounts, function(account) {
+    this.accounts.forEach(function(account) {
       let row:any = {};
       _.each(base.tableColumns, function(key) {
         row[key] = account[key];
@@ -336,14 +327,12 @@ export class FinancialAccountsComponent{
         else{
           row['actions'] = yodlee_action + "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
         }
-
-
       });
       base.tableData.rows.push(row);
     });
     setTimeout(function(){
       base.hasAccounts = true;
-      base.loadingService.triggerLoadingEvent(false);
+    base.loadingService.triggerLoadingEvent(false);
     }, 0)
 
   }
