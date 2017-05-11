@@ -33,7 +33,7 @@ export class paidtablecomponent {
     showFlyout:boolean = true;
     taxesList:any;
     tableData:any = {};
-    tablecol:Array<string>=['vendorName','id','currentState','billDate','dueDate','amount'];
+    tablecol:Array<string>=['vendorName','id','paidDate','billDate','dueDate','amount'];
     tableOptions:any = {};
     ttt:any;
     todaysDate:any;
@@ -104,7 +104,7 @@ export class paidtablecomponent {
         this.tableData.columns = [
             {"name":"id","title":"Bill ID" ,"visible": false},
             {"name": "vendorName", "title": "Vendor Name"},
-            {"name": "currentState", "title": "Current State"},
+            {"name": "paidDate", "title": "Paid Date"},
             {"name":"billDate","title":"Bill Date"},
             {"name": "dueDate", "title": "Due Date"},
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
