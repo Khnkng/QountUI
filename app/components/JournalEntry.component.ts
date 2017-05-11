@@ -18,7 +18,7 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {Router, ActivatedRoute} from "@angular/router";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
-
+import {StateService} from "qCommon/app/services/StateService";
 
 declare let _:any;
 declare let jQuery:any;
@@ -86,7 +86,8 @@ export class JournalEntryComponent{
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
             private companiesService: CompaniesService, private dimensionService: DimensionService, private loadingService: LoadingService,
-            private employeeService: EmployeeService, private customerService: CustomersService,private dateFormater:DateFormater) {
+            private employeeService: EmployeeService, private customerService: CustomersService,private dateFormater:DateFormater,
+            private stateService: StateService) {
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.dateFormat = dateFormater.getFormat();
         this.serviceDateformat = dateFormater.getServiceDateformat();
@@ -893,7 +894,10 @@ export class JournalEntryComponent{
     }
 
     goToPreviousPage(){
-        if(Session.getLastVisitedUrl().indexOf("/expense/")==0||
+        if(this.stateService.states.length != 0){
+            let state = this.stateService.getNextState();
+            this._router.navigate([state.url]);
+        } else if(Session.getLastVisitedUrl().indexOf("/expense/")==0||
             Session.getLastVisitedUrl().indexOf("/deposit/")==0||(Session.getLastVisitedUrl().indexOf("/payments/")==0&&Session.getLastVisitedUrl().length==10)){
             let link = ['books', 'journalEntries'];
             this._router.navigate(link);

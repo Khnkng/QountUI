@@ -14,6 +14,8 @@ import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.s
 import {ReconcileForm} from "../forms/Reconsile.form";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
+import {StateService} from "qCommon/app/services/StateService";
+import {State} from "qCommon/app/models/State";
 
 
 
@@ -82,7 +84,8 @@ export class ReconcileComponent{
     localeFortmat:string='en-US';
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
-                private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService, private companyService: CompaniesService,private numeralService:NumeralService) {
+                private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService,
+                private companyService: CompaniesService,private numeralService:NumeralService, private stateService: StateService) {
         this.reconcileForm = _fb.group(_reconcileForm.getForm());
         this.companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
@@ -94,7 +97,10 @@ export class ReconcileComponent{
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
             });
-
+        if(this.stateService.states.length != 0){
+            let state = this.stateService.prev();
+            this.fetchReconActivity(state.data, state.selectedId);
+        }
     }
 
     fetchReconActivityData(){
@@ -126,14 +132,18 @@ export class ReconcileComponent{
 
 
     redirectToEntryPage($event){
+        let state = this.stateService.prev();
         if($event.type == 'expense'){
+            state.selectedId = 1;
             let link = ['/expense', $event.id];
             this._router.navigate(link);
         }
         if($event.type == 'deposit'){
+            state.selectedId = 0;
             let link = ['/deposit', $event.id];
             this._router.navigate(link);
         }
+        this.stateService.addState(state);
     }
 
     setDueDate(date){
@@ -192,9 +202,8 @@ export class ReconcileComponent{
         this.calculateReconDifference();
     }
 
-    handleReconActivity($event) {
+    fetchReconActivity($event, selectedTab){
         let base = this;
-        this.editable = false;
         this.loadingService.triggerLoadingEvent(true);
         this.reconcileService.getReconDetails($event)
             .subscribe(reconcileDetails => {
@@ -227,15 +236,20 @@ export class ReconcileComponent{
                 setTimeout(function(){
                     base.resetDepositsTab(true,'edit');
                     base.resetExpensesTab(true,'edit');
-                    //base.updateTabHeight();
                 },1000);
-                this.selectTab(0,'');
+                this.selectTab(selectedTab,'');
                 this.reconType = 'edit';
-                //this.loadingService.triggerLoadingEvent(false);
             }, error =>  {
                 base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile details");
                 this.loadingService.triggerLoadingEvent(false);
             });
+    }
+
+    handleReconActivity($event) {
+        this.editable = false;
+        let state = new State("RECON_SELECTED", this._router.url, $event, null);
+        this.stateService.addState(state);
+        this.fetchReconActivity($event, 0);
     }
 
     submit($event){

@@ -519,20 +519,12 @@ export class ExpenseComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._expenseForm.getData(this.expenseForm);
-        if(data.amount <= 0){
-            this.toastService.pop(TOAST_TYPE.error, "expense amount must be greater than zero.");
-            return;
-        }
         data.expense_items = this.getExpenseItemData(this.expenseForm.controls['expense_items']);
-        let itemTotal = _.sumBy(data.expense_items, function(expense){
-            return expense.destroy? 0 : expense.amount;
-        });
-        if(itemTotal != data.amount){
-            this.toastService.pop(TOAST_TYPE.error, "Expense amount and Item total did not match.");
+        data.expense_items=this.getExpenseLineData(this.expenseForm);
+        this.updateExpenseLinesData(data);
+        if(!this.validateData(data)){
             return;
         }
-
-        data.expense_items = this.getExpenseLineData(this.expenseForm);
         data.due_date = this.dateFormater.formatDate(data.due_date,this.dateFormat,this.serviceDateformat);
         this.loadingService.triggerLoadingEvent(true);
         if(this.newExpense){
@@ -758,6 +750,51 @@ export class ExpenseComponent{
         data.mapping_id = this.selectedMappingID;
         this._expenseForm.updateForm(this.expenseForm, data);
         this.mappingFlyoutCSS="collapsed";
+    }
+
+    validateData(data){
+        let base = this;
+        let result=true;
+        if(data.bank_account_id=="--None--"||data.bank_account_id==""){
+            this.toastService.pop(TOAST_TYPE.error, "Please select valid bank account");
+            return false;
+        }
+
+        if(data.amount <= 0){
+            this.toastService.pop(TOAST_TYPE.error, "Expense amount must be greater than zero.");
+            return false;
+        }
+
+        let itemTotal = _.sumBy(data.expense_items, function(expense){
+            return expense.destroy? 0 : expense.amount;
+        });
+        if(itemTotal != data.amount){
+            this.toastService.pop(TOAST_TYPE.error, "Expense amount and Item total did not match.");
+            return false;
+        }
+
+        _.each(data.expense_items, function(line){
+            if(!line.destroy){
+                if(!line.chart_of_account_id){
+                    base.toastService.pop(TOAST_TYPE.error, "Chat of Account is not selected for line");
+                    result=false;
+                    return false;
+                }
+            }
+        });
+
+        return result;
+    }
+
+    updateExpenseLinesData(data){
+        _.each(data.expense_items, function(line){
+            if(line.chart_of_account_id=='--None--'||line.chart_of_account_id==''){
+                line.chart_of_account_id=null;
+            }
+            if(line.entity_id=='--None--'||line.entity_id==''){
+                line.entity_id=null;
+            }
+        });
     }
 
 }

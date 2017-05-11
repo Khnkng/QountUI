@@ -531,20 +531,12 @@ export class DepositComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._depositForm.getData(this.depositForm);
-        if(data.amount <= 0){
-            this.toastService.pop(TOAST_TYPE.error, "Deposit amount must be greater than zero.");
-            return;
-        }
         data.payments = this.getDepositItemData(this.depositForm.controls['payments']);
-        let itemTotal = _.sumBy(data.payments, function(payment){
-            return payment.destroy? 0 : payment.amount;
-        });
-        if(itemTotal != data.amount){
-            this.toastService.pop(TOAST_TYPE.error, "Deposit amount and Item total did not match.");
+        data.payments=this.getDepositLineData(this.depositForm);
+        this.updateDepositLinesData(data);
+        if(!this.validateData(data)){
             return;
         }
-
-        data.payments = this.getExpenseLineData(this.depositForm);
         data.date = this.dateFormater.formatDate(data.date,this.dateFormat,this.serviceDateformat);
         this.loadingService.triggerLoadingEvent(true);
         if(this.newDeposit){
@@ -683,7 +675,7 @@ export class DepositComponent{
         return result;
     }
 
-    getExpenseLineData(depositForm) {
+    getDepositLineData(depositForm) {
         let base = this;
         let data = [];
         let linesControl = depositForm.controls['payments'];
@@ -722,6 +714,53 @@ export class DepositComponent{
         this._depositForm.updateForm(this.depositForm, data);
         this.loadEntities('other');
     }
+
+    validateData(data){
+        let base = this;
+        let result=true;
+        if(data.bank_account_id=="--None--"||data.bank_account_id==""){
+            this.toastService.pop(TOAST_TYPE.error, "Please select valid bank account");
+            return false;
+        }
+
+        if(data.amount <= 0){
+            this.toastService.pop(TOAST_TYPE.error, "Deposit amount must be greater than zero.");
+            return false;
+        }
+
+        let itemTotal = _.sumBy(data.payments, function(payment){
+            return payment.destroy? 0 : payment.amount;
+        });
+        if(itemTotal != data.amount){
+            this.toastService.pop(TOAST_TYPE.error, "Deposit amount and Item total did not match.");
+            return false;
+        }
+
+        _.each(data.payments, function(line){
+            if(!line.destroy){
+                if(!line.chart_of_account_id){
+                    base.toastService.pop(TOAST_TYPE.error, "Chat of Account is not selected for line");
+                    result=false;
+                    return false;
+                }
+            }
+        });
+
+        return result;
+    }
+
+    updateDepositLinesData(data){
+        _.each(data.payments, function(line){
+            if(line.chart_of_account_id=='--None--'||line.chart_of_account_id==''){
+                line.chart_of_account_id=null;
+            }
+            if(line.entity_id=='--None--'||line.entity_id==''){
+                line.entity_id=null;
+            }
+        });
+    }
+
+
     /*mapping changes*/
     /*showMappingPage(){
      if(this.selectedMappingID){

@@ -243,6 +243,8 @@ export class paymentdashboardComponent {
                     enabled: false
                 },
                 xAxis: {
+                    gridLineWidth: 0,
+                    minorGridLineWidth: 0,
                     categories: columns
                 },
                 tooltip: {
@@ -251,9 +253,6 @@ export class paymentdashboardComponent {
                     shared: true
                 },
                 yAxis: {
-
-
-
                     gridLineWidth: 0,
                     minorGridLineWidth: 0,
                     min: 0,
@@ -333,9 +332,6 @@ export class paymentdashboardComponent {
                     shared: true
                 },
                 yAxis: {
-
-
-
                     gridLineWidth: 0,
                     minorGridLineWidth: 0,
                     min: 0,

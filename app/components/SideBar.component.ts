@@ -7,6 +7,7 @@ import {Router} from "@angular/router";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {PAGES} from "qCommon/app/constants/Qount.constants";
+import {StateService} from "qCommon/app/services/StateService";
 
 declare var jQuery:any;
 declare var _:any;
@@ -36,7 +37,7 @@ export class SideBarComponent {
 
   @Input() isExpanded:boolean;
 
-  constructor(private switchBoard:SwitchBoard, private _router:Router) {
+  constructor(private switchBoard:SwitchBoard, private _router:Router, private stateService: StateService) {
     console.info('QountApp sidebar Component Mounted Successfully7');
   }
 
@@ -56,6 +57,7 @@ export class SideBarComponent {
     this.isTaxes = false;
     this.isTools = false;
     this.isReports=false;
+    this.stateService.clearAllStates();
     switch (page) {
       case PAGES.DASHBOARD: {
         let link = [''];
@@ -94,7 +96,6 @@ export class SideBarComponent {
       }
         break;
       case PAGES.PAYMENTS: {
-        //let link = ['payments/dashboard', 'enter'];
         let link=['paymentdashboard'];
         this._router.navigate(link);
         this.isReports = true;
