@@ -1,0 +1,141 @@
+/**
+ * Created by yvadugu on 10-05-2016.
+ */
+
+// standard colors are defined as variables below, please only use below variables where ever needed
+// ---------
+
+
+//  Brand colors
+// -------------
+
+$qount-brand-green: #0FB45A;
+$qount-brand-blue: #00B0F0;
+$qount-brand-red: #ff0019;
+$qount-brand-yellow: #F5C319;
+
+$qount-brand-icon: #6f7f8f;
+
+$qount-brand-grey: #CCCCCC;
+$qount-brand-grey-light: #EEEEEE;
+
+$qount-brand-primary-light: rgba(75,150,250,.1);
+$qount-brand-primary-medium: rgba(75,150,250,.5);
+
+$qount-brand-blue-light: rgba(0,176,240,.1);
+$qount-brand-blue-medium: rgba(0,176,240,.5);
+
+$qount-brand-yellow-light: rgba(245,195,25,.1);
+$qount-brand-yellow-medium: rgba(245,195,25,.5);
+
+$qount-brand-green-light: rgba(15,180,90,.1);
+$qount-brand-green-medium: rgba(15,180,90,.5);
+
+$qount-brand-red-light: rgba(255,50,25,.1);
+$qount-brand-red-medium: rgba(255,50,25,.5);
+$qount-brand-red-pastel: #ff3219;
+
+// Text default color
+$qount-text: #696E73;
+
+// Button colors
+// -------------
+
+$qount-btn-primary: #4B96FA;
+$qount-btn-hover: #77AFFA;
+$qount-btn-bg: #7985CB;
+
+// Tab colors
+// ----------
+
+$qount-tab-bg: rgb(54, 64, 74);
+$qount-tab-bg-medium: rgba(54, 64, 74,.9);
+
+
+//#36404A;
+
+// Links
+// -----
+
+$qount-anchor-blue: #219AE1;
+
+// Forms
+// -----
+
+$qount-form-border: #CACACA;
+$qount-form-border-hover: #B9B9B9;
+$qount-form-ele-border:$qount-btn-primary;
+$qount-form-ele-border-focus:$qount-form-border-hover;
+$qount-form-ele-border-error: $qount-brand-red;
+$qount-form-background-grey: #ebeff2;
+
+
+// Table colors
+// ------------
+
+$qount-table-thead-bg: #E5E5E5;
+$qount-table-tr-hover: #F1F1F1;
+$qount-table-border: #DCDEDD;
+
+
+//sidebar colors
+$qount-sidebar-bg: #00B1A9;
+$qount-add-btn-hover: #4554A4;
+
+
+ table{
+  //border: 1px solid $qount-table-border;
+  thead{
+    background: $qount-table-thead-bg;
+    border: none;
+    background-color: #E5E5E5;
+    color: #878787;
+    font-family: NiveauGroteskRegular;
+    font-weight: normal;
+    color: #878787;
+    tr{
+      border: 1px solid $qount-table-border !important;
+      th{
+        font-size: 1.05em;
+        border: none !important;
+        color: #878787;
+      }
+    }
+
+  }
+  tbody{
+    tr{
+      border: 1px solid $qount-table-border;
+      td{
+        color: #878787;
+        font-size: 1.05em;
+        font-family: NiveauGroteskRegular;
+        //border: 1px solid $qount-table-border;
+      }
+      &:hover{
+        background: $qount-table-tr-hover !important;
+      }
+    }
+  }
+  tfoot{
+    background: #ffffff !important;
+    border: none !important;
+  }
+
+}
+
+@mixin disable-select() {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+
+
+
+
+
+
+
+

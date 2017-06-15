@@ -1,0 +1,59 @@
+@import "qount-variables";
+@import "settings";
+
+.switchCompanyModal{
+  position: relative;
+  button{
+    &.close-button{
+      width: 50px;
+      height: 50px;
+      border-radius: 25px;
+      margin-top: 50px;
+      transition: background-color 0.3s ease;
+      &:hover{
+        background: $qount-table-border;
+      }
+      i{
+        font-size: 1.5em;
+      }
+    }
+  }
+  .switchCompany-modal-name{
+    color: $qount-brand-icon;
+    padding: .5em 1em;
+    outline: none !important;
+    display: inline-block;
+    vertical-align: top;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: .85em;
+    font-weight: 600;
+    cursor: pointer;
+  }
+}
+
+.SwitchCompany-reveal{
+  .bighalf-footable{
+    .switch-company-label{
+      .label{
+        background-color: $qount-text;
+        &:hover{
+          cursor: pointer !important;
+        }
+      }
+    }
+    .footable-filtering{
+      .footable-filtering{
+      }
+    }
+  }
+  .close-button {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    margin-top: 10px;
+    transition: background-color .3s ease;
+    right:5rem !important;
+  }
+}

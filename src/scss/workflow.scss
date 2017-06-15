@@ -1,0 +1,256 @@
+@import "qount-variables";
+@import "settings";
+
+@mixin allHeaders ($param: #696E73) {
+  h1,h2,h3,h4,h5,h6{
+    color: $param;
+  }
+}
+
+.qount-payment-workflow{
+  @include allHeaders($qount-text);
+  .workflow-save-button{
+    button{
+      position: fixed;
+      right:10px;
+      top:60px;
+      z-index: 5;
+    }
+  }
+
+  .workflow-form{
+    padding-top: 60px;
+    @include breakpoint(medium up) {
+      padding-top: 0px;
+      .payer-part{
+        border-left: 1px solid $qount-form-border;
+      }
+    }
+
+
+    .no-padding{
+      padding: 0;
+    }
+    margin-top: 1em;
+
+    select{
+      margin-bottom: 0;
+    }
+    .Approval-flow-form{
+      margin-bottom: 20px;
+    }
+    .divider{
+      margin: 10px 0 ;
+      border-bottom: .5px solid $qount-form-border;
+    }
+    header{
+      padding-top: 10px;
+      div.column{
+        padding: 0;
+      }
+      label.title{
+        font-weight: 600;
+      }
+    }
+    .user-grid{
+      // margin-top: 10px;
+      border: 1px solid $qount-form-border;
+      border-radius: 3px;
+      padding: 3px;
+      label{
+        border-bottom: 1px solid $qount-form-border;
+        text-align: left;
+        padding: 5px;
+      }
+      .user-grid-empty{
+        padding: 25px;
+        font-weight: 600;
+        font-style: italic;
+        color: $qount-brand-yellow;
+      }
+      .user-grid-list{
+        ul{
+          margin: 0;
+          color: $qount-text;
+          min-height: 100px;
+          max-height: 150px;
+          overflow-y: auto;
+          list-style: none;
+          li{
+            padding: 10px;
+            &:hover{
+              background: $qount-table-tr-hover;
+              a{
+                i{
+                  display: inline-block;
+                }
+              }
+            }
+            a{
+              i{
+                display: none;
+                color: $qount-text;
+              }
+            }
+
+          }
+
+        }
+      }
+    }
+
+    table{
+      margin-top: 20px;
+      @include breakpoint(medium up) {
+        margin-top: 5px;
+      }
+      //border: 1px solid $qount-table-border;
+      /*thead{
+        background: $qount-table-thead-bg;
+        th{
+          border: 1px solid $qount-table-border;
+        }
+      }*/
+      tbody{
+        tr{
+          .icon {
+            color: $qount-text;
+            font-size: 1em;
+            margin-left: .25em;
+            visibility: hidden;
+          }
+          td{
+            &:first-child, &:last-child{
+              text-align: center;
+            }
+            //border: 1px solid $qount-table-border;
+            /*.userListItem, .checkListItem{
+              border-radius: 5px;
+              padding:5px;
+              margin: 2px;
+              background: #d47e47;
+              color:#ffffff;
+              display: inline-block;
+            }
+            .checkListItem {
+              background: #3dc36f;
+            }*/
+          }
+          &:hover{
+            //background: $qount-table-tr-hover;
+            .icon {
+              visibility: visible;
+            }
+          }
+        }
+      }
+    }
+
+  }
+
+
+
+
+
+
+  .workflow-tabs{
+    .workflow-tabs-header{
+      padding-top: 60px;
+      @include breakpoint(medium up) {
+        padding-top: 0px;
+      }
+      margin-top: 1em;
+      div.column{
+        padding: 0;
+      }
+      select{
+        margin-bottom: 0;
+      }
+    }
+
+    .tabs{
+      border: none;
+    }
+    .tabs-title{
+      a{
+        color: $qount-text;
+        font-size: 1em;
+        padding: .5em;
+        margin-right: 1em;
+        &[aria-selected="true"]{
+          border-bottom: 3px solid $qount-btn-primary;
+          background-color: #fff;
+          font-weight: 600;
+        }
+      }
+    }
+    .tabs-content{
+      border: none;
+      .user-grid{
+        margin-top: 20px;
+        border: 1px solid $qount-form-border;
+        border-radius: 3px;
+        padding: 10px;
+        label{
+          border-bottom: 1px solid $qount-form-border;
+          text-align: left;
+          padding: 5px;
+          font-weight: 600;
+        }
+        .user-grid-empty{
+          padding: 50px 25px;
+          font-weight: 600;
+          font-style: italic;
+          color: $qount-brand-yellow;
+        }
+        .user-grid-list{
+          ul{
+            margin: 0;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            list-style: none;
+            li{
+              padding: 10px 5px;
+              &:hover{
+
+                background: $qount-table-tr-hover;
+              }
+            }
+
+          }
+        }
+      }
+      .approval-grid{
+        margin-top: 20px;
+        border: 1px solid $qount-form-border;
+        border-radius: 3px;
+        padding: 10px;
+        label{
+          border-bottom: 1px solid $qount-form-border;
+          text-align: left;
+          padding: 5px;
+          font-weight: 600;
+        }
+        .approval-grid-empty{
+          padding: 50px 25px;
+          font-weight: 600;
+          font-style: italic;
+          color: $qount-brand-yellow;
+        }
+        .approval-grid-list{
+
+        }
+      }
+
+    }
+    .tabs-panel{
+      padding: 1em 0;
+    }
+    .divider{
+      margin: 10px 0 0 0 ;
+      border-bottom: .5px solid $qount-form-border;
+    }
+  }
+
+}

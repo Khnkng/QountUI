@@ -1,0 +1,72 @@
+<div>
+  <header>
+    <div class="header">
+    </div>
+  </header>
+
+  <div class="tab-container" foundation>
+    <div class="row tabber ">
+      <div class="column tab red-tab" (click)="reRoutePage(0)" [ngClass]="{'selected': tabDisplay[0].display == 'block'}">
+        <label>Receipts</label>
+        <span class="badge">{{receiptsTableData.rows?.length}}</span>
+      </div>
+      <div class="column tab orange-tab" (click)="reRoutePage(1)" [ngClass]="{'selected': tabDisplay[1].display == 'block'}">
+        <label>Bills</label>
+        <span class="badge">{{billsTableData.rows?.length}}</span>
+      </div>
+      <div class="column tab blue-tab" (click)="reRoutePage(2)" [ngClass]="{'selected': tabDisplay[2].display == 'block'}">
+        <label>Refunds</label>
+        <span class="badge">{{refundsTableData.rows?.length}}</span>
+      </div>
+    </div>
+    <div class="row collapse tab-content ">
+      <div *ngIf="tabDisplay[0].display == 'block'" class="column small-12 medium-12 large-12" id="receipts">
+        <div class="row">
+          <div class="column foo-container">
+            <div class="row">
+              <div class="foo-toolbar">
+              </div>
+            </div>
+
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasReceipts" [data]="receiptsTableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasReceipts">
+              <div class="woo-woo">Woot Woot!</div>
+              <p>There are no Receipts.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="tabDisplay[1].display == 'block'" class="column small-12 medium-12 large-12" id="bills">
+        <div class="row">
+          <div class="column foo-container">
+            <div class="row">
+              <div class="foo-toolbar">
+              </div>
+            </div>
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasBills" [data]="billsTableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasBills">
+              <div class="woo-woo">Woot Woot!</div>
+              <p>There are no Bills.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="tabDisplay[2].display == 'block'" class="column small-12 medium-12 large-12" id="refunds">
+        <div class="row">
+          <div class="column foo-container">
+            <div class="row">
+              <div class="foo-toolbar">
+              </div>
+            </div>
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasRefunds" [data]="refundsTableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <div class=" callout text-center" [hidden]="isLoading" *ngIf="!hasJournalEntries">
+              <div class="woo-woo">Woot Woot!</div>
+              <p>There are no Refunds.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,134 @@
+
+<div class="row" foundation>
+  <div class="columns small-6 small-offset-6 right">
+
+  </div>
+</div>
+<div class="row chart-of-accounts" foundation>
+  <div class="column large-12 medium-12 small-12 foo-container">
+    <div class="row add-share-buttons add-share-adjust">
+      <div class="column medium-12 text-right">
+            <span class="pointer" (click)="showAddCOA()">
+                <i class="icon ion-ios-plus-outline"></i>
+                <span>COA</span>
+            </span>
+      </div>
+    </div>
+    <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCOAList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+  </div>
+  <div class="qount-off-canvas-menu chart-of-accounts">
+    <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+      <section class="flyout-placeholder">
+        <div class="flyout-body flyout-shadow-effect">
+          <!--here comes actual flyout code-->
+          <div #createVendor id="createVendor" class="create-vendor">
+            <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="coaForm">
+
+              <section class="form-section clearfix">
+                <div class="row">
+                  <div class="small-12 medium-12 columns">
+                    <div class="form-section-left">
+                      <header class="form-section-header">Basic Info</header>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Name</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="name" placeholder="Name*"/>
+                          <div class="error" [hidden]="coaForm.controls.name.untouched || coaForm.controls.name.valid">Name is required.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Number</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="number" placeholder="Number*"/>
+                          <div class="error" [hidden]="coaForm.controls.number.untouched || coaForm.controls.number.valid">Number is required.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">
+                            Type
+                            <i foundation class="icon ion-ios-information-outline type-info" data-tooltip aria-haspopup="true"
+                               data-click-open="false" data-disable-hover="false" title="You can't change the type and subtype untill it has a parent."></i>
+                          </label>
+                        </div>
+                        <div class="small-6 columns">
+                          <select formControlName="type" placeholder="Category type" *ngIf="!hasParentOrChild" (change)="populateSubtypes($event)">
+                            <option *ngFor="let category of categoryTypes" [value]="category.value">{{category.name}}</option>
+                          </select>
+                          <select formControlName="type" disabled *ngIf="hasParentOrChild">
+                            <option *ngFor="let category of categoryTypes" [value]="category.value">{{category.name}}</option>
+                          </select>
+                          <div class="error" [hidden]="coaForm.controls.type.untouched || coaForm.controls.type.valid">Category type is required.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-12 columns description" [innerHTML]="description">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-section-left">
+                      <header class="form-section-header">&nbsp;</header>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Description</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <textarea formControlName="desc" rows="3" placeholder="Description"></textarea>
+                          <div class="error" [hidden]="coaForm.controls.desc.untouched || coaForm.controls.desc.valid">Description is required.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Sub Type</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <select formControlName="subType" placeholder="Sub type" *ngIf="!hasParentOrChild" (change)="selectSubtype($event)">
+                            <option value="{{subtype.value}}" *ngFor="let subtype of displaySubtypes">{{subtype.name}}</option>
+                          </select>
+                          <select formControlName="subType" disabled *ngIf="hasParentOrChild">
+                            <option value="{{subtype.value}}" *ngFor="let subtype of displaySubtypes">{{subtype.name}}</option>
+                          </select>
+                          <div class="error" [hidden]="coaForm.controls.subType.untouched || coaForm.controls.subType.valid">Sub type is required.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                        </div>
+                        <div class="small-6 columns">
+                          <div class="subaccount-wrapper">
+                            <input type="checkbox" formControlName="subAccount" (change)="changeStatus()"/>
+                            <label class="text-right">Sub Account</label>
+                          </div>
+                          <div [hidden]="!subAccount">
+                            <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentID" [listObject]="parentAccounts" (valueChanged)="updateParent($event)">
+                              <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.id">{{parentAccount.number}} - {{parentAccount.name}}</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="small-12 medium-12 columns">
+                    <button class="button create small float-right" [disabled]="!coaForm.valid" (click)="saveCOA($event)">Save</button>
+                  </div>
+                </div>
+              </section>
+            </form>
+          </div>
+        </div>
+        <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+        </button>
+      </section>
+    </div>
+  </div>
+</div>

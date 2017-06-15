@@ -1,0 +1,33 @@
+<ul class="side-nav vertical menu" data-accordion-menu>
+  <!--<li>
+    <a ripple (click)="toggleMenu()">
+      <i class="icon ion-navicon-round"></i>
+      <div class="name">Menu</div>
+    </a>
+  </li>-->
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isDashboard}" (click)="showPage('dashboard')"><i class="icon ion-ios-keypad has-tip right" [ngClass]="{'iconColor': isDashboard}" data-tooltip  data-click-open="false" data-disable-hover="false" title="Dashboard"></i><div class="name">Dashboard</div></a>
+  </li>
+
+  <li>
+      <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isBooks}" (click)="showPage('books')"><i class="icon glyphicon glyphicon-book has-tip right" [ngClass]="{'iconColor': isBooks}" data-tooltip  data-click-open="false" data-disable-hover="false" title="Books"></i><div class="name">Books</div></a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isInvoice}" (click)="showPage('invoice')"><i class="icon fa fa-file-text has-tip right" [ngClass]="{'iconColor': isInvoice}" data-tooltip  data-click-open="false" data-disable-hover="false" title="Invoices"></i><div class="name">Invoices</div></a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isPayments}" (click)="showPage('payments')"><i class="icon fa fa-credit-card has-tip right" [ngClass]="{'iconColor': isPayments}" data-tooltip  data-click-open="false" data-disable-hover="false" title="Payments"></i><div class="name">Payments</div></a>
+  </li>
+  <!--<li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isExpenses}" (click)="showPage('expenses')"><i class="icon fa fa-money has-tip right" [ngClass]="{'iconColor': isExpenses}" data-tooltip  data-click-open="false" data-disable-hover="false" title="Expenses"></i><div class="name">Expenses</div></a>
+  </li>-->
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isTaxes}" (click)="showPage('taxes')"><i class="icon fa fa-calendar has-tip right" [ngClass]="{'iconColor': isTaxes}" data-tooltip  data-click-open="false" data-disable-hover="false" title="Tax"></i><div class="name">Tax</div></a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isReports}" (click)="showPage('report')"><i class="icon glyphicon glyphicon-signal has-tip right" [ngClass]="{'iconColor': isReports}" data-tooltip  data-click-open="false" data-disable-hover="false" title="Report"></i><div class="name">Report</div></a>
+  </li>
+  <li>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isTools}" (click)="showPage('tools')"><i class="icon glyphicon glyphicon-cog has-tip right" [ngClass]="{'iconColor': isTools}" data-tooltip  data-click-open="false" data-disable-hover="false" title="Tools"></i><div class="name">Tools</div></a>
+  </li>
+</ul>

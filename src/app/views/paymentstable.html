@@ -1,0 +1,19 @@
+<div class="qount-off-canvas-menu" foundation>
+  <div class="flyout expanded" [ngClass]="{'expanded':true}">
+    <section class="flyout-placeholder flyout-table-alignment">
+      <!--<header class="flyout-header">
+          <div class="small-6" *ngIf="billstatus"><h6>{{billstate}}</h6></div>
+      </header>-->
+      <div class="column large-12 medium-12 small-12 foo-container chart_search">
+        <div class="foo-toolbar">
+        </div>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+      </div>
+      <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+      </button>
+    </section>
+  </div>
+</div>

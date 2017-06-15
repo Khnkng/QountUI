@@ -1,0 +1,126 @@
+<div class="qount-off-canvas-menu">
+    <div class="flyout expanded">
+        <section class="flyout-placeholder">
+            <header class="flyout-header">
+                <h6>Payments Dashboard</h6>
+            </header>
+            <div class="flyout-body flyout-shadow-effect">
+                <div class="payment-dashboard" *ngIf="showFlyout">
+                    <div class="row">
+                        <div class="row expanded" foundation>
+                            <div class="column medium-12">
+                                <div class="row report-stats word-wrap">
+                                    <div class="column medium-3 small-12" style="padding-left:0;" *ngIf="payable">
+                                        <div class="row">
+                                            <div class="column medium-6 pointer report-stats-padding" style="background-color: #4D5C87" (click)="payableclick('totalpayable')">
+                                                <div>{{paymentcount.totalPayable | currency:companyCurrency:true:'1.2-2'}}</div>
+                                                <div>Total Payable</div>
+                                            </div>
+                                            <div class="column medium-6 pointer" style="background-color: #C45134" (click)="payableclick('pastdue')">
+                                                <div>{{paymentcount.pastDue | currency:companyCurrency:true:'1.2-2'}}</div>
+                                                <div>Past Due</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column medium-2 small-12 pointer report-stats-padding" style="background-color:#6A8BAB;" *ngIf="isTransit" (click)="paidclick('all')">
+                                        <div><span class="recon-selected-count">{{paymentsInTransit.totalAmount| currency:companyCurrency:true:'1.2-2'}}</span></div>
+                                        <div><span>{{paymentsInTransit.unmappedPaymentsCount}} </span><span>Payments In Transit</span></div>
+                                    </div>
+                                    <div class="column medium-3 small-12" *ngIf="payable">
+                                        <div class="row">
+                                            <div class="column medium-7 pointer report-stats-padding" style="background: #EAB538;" (click)="payableclick('approve')">
+                                                <div>{{paymentcount.totalApproveBillAmount | currency:companyCurrency:true:'1.2-2'}}</div>
+                                                <div><span>Approve</span><span>&nbsp;{{paymentcount.totalApproveBillCount}}&nbsp;</span><span>Bills</span></div>
+                                            </div>
+                                            <div class="column medium-5 pointer" style="background: #A3C821;" (click)="payableclick('pay')">
+                                                <div>{{paymentcount.totalPayBillAmount | currency:companyCurrency:true:'1.2-2'}}</div>
+                                                <div><span>Pay</span><span>&nbsp;{{paymentcount.totalPayBillCount}}&nbsp;</span><span>Bills</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column medium-2 small-12 pointer report-stats-padding" style="background: deepskyblue;" *ngIf="payablecount" (click)="paidclick('30days')">
+                                        <div><span class="recon-selected-count">{{paidcount.totalPaidBillsAmountSum | currency:companyCurrency:true:'1.2-2'}}</span></div>
+                                        <div>{{paidcount.bills_count}}  Paid In Last 30 Days</div>
+                                    </div>
+                                    <div class="column medium-2 small-12 pointer report-stats-padding" *ngIf="payableBalance">
+                                        <div class="row">
+                                            <div class="column medium-12 report-stats-padding" style="background: skyblue;">
+                                                <div><span class="recon-selected-count">{{bookcount.totalCurrentBalance | currency:companyCurrency:true:'1.2-2'}}</span></div>
+                                                <div>Book Balance</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column medium-6 detailed-chart-icons">
+                                <span class="text-right float-right" (click)="showOtherCharts('pie')"><i class="icon ion-ios-pie-outline" [ngClass]="detailedChartIcons"></i></span>
+                            </div>
+                            <div class="column medium-6 detailed-chart-icons">
+                                <span class="text-right float-right" (click)="showOtherCharts('stackedbar')"><i class="icon ion-connection-bars" [ngClass]="detailedChartIcons"></i></span>
+                            </div>
+
+                        </div>
+                        <div class="row expanded chart-margin">
+                            <div class="column medium-6 expanded charts-main">
+                                <div *ngIf="reportasas" style="min-width: 300px;height:400px;">
+                                    <high-chart #hChart3=highChart [options]="reportChartOptionspie"></high-chart>
+                                </div>
+                            </div>
+                            <div class="column medium-6 expanded charts-main">
+                                <div *ngIf="reportasas" style="min-width: 300px;height:400px;">
+                                    <high-chart #hChart2=highChart [options]="reportChartOptionsStacked"></high-chart>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column medium-12 detailed-chart-icons">
+                                <span class="text-right float-right" (click)="showOtherCharts('bar')"><i class="icon ion-connection-bars" [ngClass]="detailedChartIcons"></i></span>
+                            </div>
+                        </div>
+                        <div class="row expanded chart-margin">
+                            <div class="column medium-12 expanded charts-main">
+                                <div *ngIf="reportasas" style="min-width: 300px;height:400px;">
+                                    <high-chart #hChart1=highChart [options]="reportChartOptions"></high-chart>
+                                </div>
+                            </div>
+                        </div>
+                        <!--<div class="row chart-margin">-->
+                        <!--<div class="column large-12 medium-12 small-12 foo-container chart_search">-->
+                        <!--<foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>-->
+                        <!--</div>-->
+                        <!--</div>-->
+                        <div class="row chart-margin">
+                            <div class="column large-12 medium-12 small-12">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row chart-margin" *ngIf="showCharts">
+                    <!--<div class="row chart-margin">
+                        <div class="column medium-12">
+                            <span class="text-right float-right" (click)="showOtherCharts()"><i class="icon ion-connection-bars"></i></span>
+                        </div>
+                    </div>-->
+                    <div class="column medium-12 expanded charts-main">
+                        <div *ngIf="reportasas" style="min-width: 300px;height: calc(100vh - 150px);">
+                            <high-chart #hChart4=highChart [options]="detailedReportChartOptions"></high-chart>
+                        </div>
+                    </div>
+
+                </div>
+                <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="showFlyout" (click)="hideFlyout()">
+                    <span aria-hidden="true">
+                      <i class="ion-ios-close-empty"></i>
+                    </span>
+                </button>
+                <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="showCharts" (click)="showOtherCharts()">
+                    <span aria-hidden="true">
+                      <i class="ion-ios-close-empty"></i>
+                    </span>
+                </button>
+            </div>
+        </section>
+    </div>
+</div>

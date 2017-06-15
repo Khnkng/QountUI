@@ -1,0 +1,81 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "project": {
+    "name": "qount-ui"
+  },
+  "apps": [
+    {
+      "root": "src",
+      "outDir": "dist",
+      "assets": [
+        "assets",
+        "favicon.ico",
+        "images",
+        "fonts"
+      ],
+      "index": "index.html",
+      "main": "main.ts",
+      "polyfills": "polyfills.ts",
+      "test": "test.ts",
+      "tsconfig": "tsconfig.app.json",
+      "testTsconfig": "tsconfig.spec.json",
+      "prefix": "app",
+      "styles": [
+        "scss/qount.scss"
+      ],
+      "scripts": [
+        "../node_modules/jquery/dist/jquery.js",
+        "../node_modules/jquery-ui-dist/jquery-ui.js",
+        "../node_modules/lodash/lodash.min.js",
+        "../node_modules/numeral/numeral.js",
+        "../node_modules/moment/moment.js",
+        "../node_modules/pikaday/pikaday.js",
+        "../node_modules/what-input/what-input.js",
+        "../node_modules/motion-ui/motion-ui.js",
+        "../node_modules/foundation-sites/dist/js/foundation.js",
+        "../node_modules/highcharts/highcharts.js",
+        "assets/footable-standalone/js/footable.js",
+        "assets/jquery-combo.js",
+        "assets/ripple.js",
+        "../node_modules/socket.io-client/dist/socket.io.slim.js",
+        "../node_modules/tag-it/js/tag-it.js"
+      ],
+      "environmentSource": "environments/environment.ts",
+      "environments": {
+        "dev": "environments/environment.ts",
+        "prod": "environments/environment.prod.ts"
+      }
+    }
+  ],
+  "e2e": {
+    "protractor": {
+      "config": "./protractor.conf.js"
+    }
+  },
+  "lint": [
+    {
+      "project": "src/tsconfig.app.json"
+    },
+    {
+      "project": "src/tsconfig.spec.json"
+    },
+    {
+      "project": "e2e/tsconfig.e2e.json"
+    }
+  ],
+  "test": {
+    "karma": {
+      "config": "./karma.conf.js"
+    }
+  },
+  "defaults": {
+    "styleExt": "scss",
+    "component": {
+    },
+    "serve": {
+      "port": 4200,
+      "host": "local.qount.io"
+    }
+  }
+
+}

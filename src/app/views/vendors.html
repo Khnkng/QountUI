@@ -1,0 +1,296 @@
+
+<div class="row" foundation>
+  <div class="columns small-6 small-offset-6  medium-offset-0 medium-6 right">
+
+  </div>
+</div>
+<div class="row" foundation>
+  <div class="column large-12 medium-12 small-12 foo-container">
+    <div class="row add-share-buttons add-share-adjust">
+      <div class="column medium-12 small-12 text-right">
+        <span class="pointer recon-selected-count" (click)="inviteVendor()"><i class="icon ion-ios-redo-outline"></i><span class="recon-selected-count">Invite</span></span>
+        <span class="pointer" (click)="showCreateVendor()"><i class="icon ion-ios-plus-outline"></i><span>Vendor</span></span>
+      </div>
+    </div>
+    <foo-table #fooTableDir="fooTable" class="bills-footable" *ngIf="hasVendorsList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+  </div>
+  <div class="qount-off-canvas-menu">
+    <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+      <section class="flyout-placeholder">
+        <div class="flyout-body flyout-shadow-effect">
+          <!--here comes actual flyout code-->
+          <div #createVendor id="createVendor" class="create-vendor">
+            <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="vendorForm">
+              <section class="form-section clearfix">
+                <div [hidden]="!showFirstStep" class="row">
+                  <div class="small-12 medium-12 columns">
+                    <div class="form-section-left">
+                      <header class="form-section-header">Basic Info</header>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Country</label>
+                        </div>
+                        <div class="small-6 columns custom-qount-form-field">
+                          <select combo-box #vendorCountryComboBoxDir="comboBox" title="" data-placeholder="Enter Country" formControlName="country" [listObject]="countries" (valueChanged)="showVendorProvince($event)">
+                            <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
+                          </select>
+                          <div class="error" [hidden]="vendorForm.controls.country.untouched || vendorForm.controls.country.valid">Country is required</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Vendor Type</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <select formControlName="type" (change)="setVendorType($event.target.value)">
+                            <option value="Business">Business</option>
+                            <option value="Individual">Individual</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Legal Name</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="name" placeholder="Legal Name*">
+                          <div class="error" [hidden]="vendorForm.controls.name.untouched || vendorForm.controls.name.valid">Vendor Name is required</div>
+                        </div>
+                      </div>
+                      <div class="row" *ngIf="isVendorCompany(vendorForm)">
+                        <div class="small-4 columns">
+                          <label class="text-right">EIN</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="ein" placeholder="EIN*" pattern="[0-9]{9}$">
+                          <div class="error" *ngIf="vendorForm.controls.ein.touched && vendorForm.controls.ein.hasError('required')">Vendor EIN is required</div>
+                          <div class="error" *ngIf="vendorForm.controls.ein.touched && vendorForm.controls.ein.hasError('pattern')">EIN should have 9 digits only</div>
+                        </div>
+                      </div>
+                      <div class="row" *ngIf="!isVendorCompany(vendorForm)">
+                        <div class="small-4 columns">
+                          <label class="text-right">SSN</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="ssn" placeholder="SSN*" pattern="[0-9]{9}$">
+                          <div class="error" *ngIf="vendorForm.controls.ssn.touched && vendorForm.controls.ssn.hasError('required')">Vendor SSN is required</div>
+                          <div class="error" *ngIf="vendorForm.controls.ssn.touched && vendorForm.controls.ssn.hasError('pattern')">SSN should have 9 digits only</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">COA</label>
+                        </div>
+                        <div class="small-6 columns custom-qount-form-field">
+                          <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="coa" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
+                            <option *ngFor="let coa of chartOfAccounts" [value]="coa.name">{{coa.number}} - {{coa.name}}</option>
+                          </select>
+                          <div class="error" [hidden]="vendorForm.controls.coa.untouched || vendorForm.controls.coa.valid">COA is required</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Reference Number(s)</label>
+                        </div>
+                        <div class="small-6 columns custom-qount-form-field">
+                          <custom-tag [_list]="getAccountNumbers()" [controlName]="'accountNumbers'" [group]="vendorForm" [inputType]="'text'"
+                                      [height]="'80px'" [placeholder]="'Enter number and hit enter'">loading</custom-tag>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Default Payment method</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <select placeholder="Default Payment Method" formControlName="paymentMethod">
+                            <option [value]="'ach'">ACH</option>
+                            <option [value]="'digitalCheque'">Digital Check</option>
+                            <option [value]="'mailCheque'">Physical Check</option>
+                          </select>
+                          <div class="error" [hidden]="vendorForm.controls.paymentMethod.untouched || vendorForm.controls.paymentMethod.valid">Payment method required</div>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right"></label>
+                        </div>
+                        <div class="small-6 columns custom-qount-form-field">
+                          <input type="checkbox" formControlName="has1099" /> 1099 Reportable
+                          <div class="error" [hidden]="vendorForm.controls.has1099.untouched || vendorForm.controls.has1099.valid">Eligible for 1099 is required</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-section-left">
+                      <header class="form-section-header">Contact Info</header>
+                      <div class="row">
+                        <div class="small-3 columns">
+                          <label class="float-right">First Name</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="contact_first_name" placeholder="First Name">
+
+                          <div class="error" [hidden]="vendorForm.controls.contact_first_name.untouched || vendorForm.controls.contact_first_name.valid">Contact Name is required</div>
+
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-3 columns">
+                          <label class="float-right">Last Name</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="contact_last_name" placeholder="Last Name">
+                          <div class="error" [hidden]="vendorForm.controls.contact_last_name.untouched || vendorForm.controls.contact_last_name.valid">Contact LName is required</div>
+                        </div>
+                      </div>
+                      <Address [code]="countryCode" #addressDir="address"></Address>
+                      <div class="row">
+                        <div class="small-3 columns">
+                          <label class="text-right">Email</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="email" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
+                          <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('required')">Vendor email is required</div>
+                          <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('pattern')">Please check email format</div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div [hidden]="!showSecondStep" class="row">
+                  <div class="small-12 medium-12 columns">
+                    <div class="form-section-left">
+                      <header class="form-section-header">Bank Info</header>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Account Holder Type</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <select formControlName="bank_account_holder_type" placeholder="Account Holder Type">
+                            <option value="company">Company</option>
+                            <option value="individual">Individual</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Type</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <select formControlName="bank_account_type" placeholder="Account Holder Type">
+                            <option value="paypal">Paypal</option>
+                            <option value="stripe">Stripe</option>
+                            <option value="credit">Credit</option>
+                            <option value="checking">Checking</option>
+                            <option value="savings">Savings</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Name on Account</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="name_on_bank_account" placeholder="Name On Account*"/>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Routing Number</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="bank_account_routing_number" placeholder="Routing Number*" pattern="[0-9]{9}$"/>
+
+                          <div class="error" *ngIf="vendorForm.controls.bank_account_routing_number.touched && vendorForm.controls.bank_account_routing_number.hasError('required')">Routing Number  is required</div>
+                          <div class="error" *ngIf="vendorForm.controls.bank_account_routing_number.touched && vendorForm.controls.bank_account_routing_number.hasError('pattern')">Routing Number should have 9 digits only</div>
+                        </div>
+                      </div>
+                      <div class="row" >
+                        <div class="small-4 columns">
+                          <label class="text-right">Account Number</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="bank_account_number" placeholder="Account Number*"/>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row" [hidden]="!showFirstStep">
+                  <div class="small-12 medium-12 columns">
+                    <button class="button create small float-right" [disabled]="!isValid(vendorForm) || !addressValid()" type="submit" (click)="nextStep($event)" data-close>Next</button>
+                  </div>
+                </div>
+                <div class="row" [hidden]="!showSecondStep">
+                  <div class="small-12 medium-12 columns">
+                    <button class="button create small float-right" [disabled]="!isValid(vendorForm) || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Create"}}</button>
+                    <button class="button create small float-right" style="margin-right: 10px;" [disabled]="!isValid(vendorForm) || !addressValid()" type="submit" (click)="submit($event)" data-close>{{editMode?"Skip & Update":"Skip & Create"}}</button>
+                  </div>
+                </div>
+              </section>
+
+            </form>
+          </div>
+        </div>
+        <button class="close-flyout" aria-label="Close modal" type="button" [hidden]="!showFirstStep" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+        </button>
+        <button class="close-flyout" aria-label="Close modal" type="button" [hidden]="!showSecondStep" (click)="hideSecondStep()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+        </button>
+      </section>
+    </div>
+    <div class="flyout expanded" [ngClass]="{'expanded':showMailFlyout}">
+      <section class="flyout-placeholder">
+        <header class="flyout-header">
+          <h6>Invite Vendor</h6>
+        </header>
+        <div class="flyout-body flyout-shadow-effect">
+          <!--here comes actual flyout code-->
+          <section class="form-section clearfix">
+            <div class="form-selection-left" style="width:50%">
+              <div class="row">
+                <div class="small-4 columns">
+                  <label class="float-right">Email</label>
+                </div>
+                <div class="small-6 columns">
+                  <input type="text" [(ngModel)]="mailID">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="small-12 medium-12 columns">
+                <button class="button small float-right" [disabled]="!checkValidation()" (click)="saveInvitedVendor()" data-close>Submit</button>
+              </div>
+            </div>
+          </section>
+        </div>
+        <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideMailFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+        </button>
+      </section>
+    </div>
+  </div>
+  <!--<div class="reveal tiny bill-modal-container" id="invite-vendor" data-reveal foundation  data-close-on-click="false">
+    <div class="row" style="margin-top: 15px;">
+      <div class="small-2 columns">
+        <label class="middle">email</label>
+      </div>
+      <div class="small-10 columns">
+        <input type="text" [(ngModel)]="mailID">
+      </div>
+    </div>
+    <div class="text-right">
+      <button class="button small" [disabled]="!checkValidation()" (click)="saveInvitedVendor()" data-close>Confirm</button>
+      <button class="button small" (click)="closeVendor()">Cancel</button>
+    </div>
+  </div>-->
+
+</div>

@@ -1,0 +1,425 @@
+<div class="qount-off-canvas-menu">
+  <div class="flyout expanded" [ngClass]="{'expanded':true}">
+    <section class="flyout-placeholder">
+      <!--<header class="flyout-header">
+          <h6> {{newJournalEntry ? "Create Journal Entry" : "Update Journal Entry"}}</h6>
+      </header>-->
+      <div class="flyout-body flyout-shadow-effect">
+        <form *ngIf="active" (ngSubmit)="submit($event)" novalidate [formGroup]="jeForm">
+          <section class="form-section clearfix">
+            <div class="row">
+              <div class="small-12 medium-12 columns">
+                <div class="form-section-left expense-row">
+                  <div class="row">
+                    <div class="small-12 medium-12 columns" [hidden]="showAdvance">
+                      <div class="small-12 medium-3 columns">
+                        <label>Number
+                          <input type="text" formControlName="number" placeholder="Journal Number*" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                          <input type="text" formControlName="number" placeholder="Journal Number*" readonly *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)">
+                          <div class="error" [hidden]="jeForm.controls.number.untouched || jeForm.controls.number.valid"><small>Journal Number is required.</small></div>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-3 columns">
+                        <label>Date
+                          <input type="text" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setJournalDate($event)" formControlName="date" placeholder="Journal Date*" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                          <input type="text" formControlName="date"  *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly>
+                          <div class="error" [hidden]="jeForm.controls.date.untouched || jeForm.controls.date.valid"><small>Enter Journal date.</small></div>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-3 columns">
+                        <label>Category
+                          <select class="jeSelect" formControlName="category" placeholder="Category" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                            <option value="amortization">Amortization</option>
+                            <option value="bill">Bill</option>
+                            <option value="billPayment">Bill Payment</option>
+                            <option value="cashApplication">Cash Application</option>
+                            <option value="credit">Credit</option>
+                            <option value="creditMemo">Credit Memo</option>
+                            <option value="deposit">Deposit</option>
+                            <option value="depreciation">Depreciation</option>
+                            <option value="expense">Expense</option>
+                            <option value="inventory">Inventory</option>
+                            <option value="openingEntry">Opening Entry</option>
+                            <option value="payroll">Payroll</option>
+                            <option value="other">Other</option>
+                          </select>
+                          <select class="jeSelect" formControlName="category" placeholder="Category" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
+                            <option value="amortization">Amortization</option>
+                            <option value="bill">Bill</option>
+                            <option value="billPayment">Bill Payment</option>
+                            <option value="cashApplication">Cash Application</option>
+                            <option value="credit">Credit</option>
+                            <option value="creditMemo">Credit Memo</option>
+                            <option value="deposit">Deposit</option>
+                            <option value="depreciation">Depreciation</option>
+                            <option value="expense">Expense</option>
+                            <option value="inventory">Inventory</option>
+                            <option value="openingEntry">Opening Entry</option>
+                            <option value="payroll">Payroll</option>
+                            <option value="other">Other</option>
+
+                          </select>
+                          <div class="error" [hidden]="jeForm.controls.category.untouched || jeForm.controls.category.valid"><small>Please select category.</small></div>
+                        </label>
+                      </div>
+
+                      <div class="small-12 medium-3 columns">
+                        <label>Basis
+                          <select class="jeSelect" formControlName="basis" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">
+                            <option value="Cash">Cash</option>
+                            <option value="Accrual">Accrual</option>
+                          </select>
+                          <select class="jeSelect" formControlName="basis" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
+                            <option value="Cash">Cash</option>
+                            <option value="Accrual">Accrual</option>
+                            <option value="Cash Only">Cash Only</option>
+                          </select>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-3 columns">
+                        <label>JE Type
+                          <select class="jeSelect" formControlName="jeType" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId" (change)="onJETypeSelect($event.target.value)">
+                            <option value="Bill">Bill</option>
+                            <option value="Payroll">Payroll</option>
+                            <option value="Invoice">Invoice</option>
+                            <option value="Other">Other</option>
+                          </select>
+                          <select class="jeSelect" formControlName="jeType" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
+                            <option value="Bill">Bill</option>
+                            <option value="Payroll">Payroll</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-9 columns" [hidden]="showAdvance">
+                        <label>Description
+                          <textarea formControlName="desc" style="height: 50px;" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId"></textarea>
+                          <textarea formControlName="desc" style="height: 50px;" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly></textarea>
+                          <div class="error" [hidden]="jeForm.controls.desc.untouched || jeForm.controls.desc.valid"><small>Please enter Description.</small></div>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-3 columns float-left advanceLink" (click)="showRecurringOpts()"><a href="javascript:void(0)"><U>More</U></a></div>
+                    </div>
+                    <div class="small-12 medium-12 columns" [hidden]="!showAdvance">
+                      <div class="small-12 medium-3 columns">
+                        <!--<div class="small-4 medium-3 columns">
+                            <label>Auto Reverse
+                                <div class="switch tiny">
+                                    <input class="switch-input" id="auto-reverse" type="checkbox" formControlName="autoReverse" (click)="toggleAutoReverse($event)"/>
+                                    <label class="switch-paddle" for="auto-reverse">
+                                        <span class="show-for-sr">Auto Reverse switch</span>
+                                    </label>
+                                </div>
+                                <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select auto reverse.</small></div>
+                            </label>
+                        </div>
+                        <div class="small-8 medium-9 columns">
+                        </div>-->
+                        <label>Reversal Date
+                          <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setReversalDate($event)" formControlName="reversalDate" placeholder="Reversal Date*" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId"/>
+                          <input type="text" formControlName="reversalDate" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly>
+                          <div class="error" [hidden]="jeForm.controls.autoReverse.untouched || jeForm.controls.autoReverse.valid"><small>Please select Reversal Date.</small></div>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-1 columns">
+                        <label>Recurring
+                          <div class="switch tiny">
+                            <input class="switch-input" id="recurring" type="checkbox" formControlName="recurring" (change)="toggleRecurring($event)" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId"/>
+                            <input class="switch-input" type="checkbox" formControlName="recurring"  *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled/>
+                            <label class="switch-paddle" for="recurring">
+                              <span class="show-for-sr">Recurring switch</span>
+                            </label>
+                          </div>
+                          <div class="error" [hidden]="jeForm.controls.recurring.untouched || jeForm.controls.recurring.valid"><small>Recurring is required.</small></div>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-3 columns">
+                        <label [hidden]="disableRecurring">Next JE Date
+                          <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setNextJEDate($event)" formControlName="nextJEDate" placeholder="Next JE Date*">
+                          <div class="error" [hidden]="jeForm.controls.nextJEDate.untouched || jeForm.controls.nextJEDate.valid"><small>Next JE Date is required.</small></div>
+                        </label>
+                        <label [hidden]="!disableRecurring">Next JE Date
+                          <input type="text" disabled placeholder="Next JE Date*"/>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-3 columns ">
+                        <label [hidden]="disableRecurring">End Date
+                          <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setEndDate($event)" formControlName="endDate" placeholder="End Date*">
+                          <div class="error" [hidden]="jeForm.controls.endDate.untouched || jeForm.controls.endDate.valid"><small>End Date is required.</small></div>
+                        </label>
+                        <label [hidden]="!disableRecurring">End Date
+                          <input type="text" disabled placeholder="End Date*"/>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-2 columns float-left">
+                        <label [hidden]="disableRecurring">Frequency
+                          <select class="jeSelect" formControlName="recurringFrequency">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                            <option value="quarterly">Quarterly</option>
+                            <option value="yearly">Yearly</option>
+                          </select>
+                          <div class="error" [hidden]="jeForm.controls.recurringFrequency.untouched || jeForm.controls.recurringFrequency.valid"><small>Please select Frequency.</small></div>
+                        </label>
+                        <label [hidden]="!disableRecurring">Frequency
+                          <select disabled>
+                            <option value=""></option>
+                          </select>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" [hidden]="showAdvance">
+                    <div class="columns">
+                      <label class="float-right" style="margin-left: 10px;">
+                        <b>Credit:</b> {{creditTotal| currency:companyCurrency:true:'1.2-2'}}
+                      </label>
+                      <label class="float-right">
+                        <b>Debit:</b> {{debitTotal| currency:companyCurrency:true:'1.2-2'}}
+                      </label>
+                      <label *ngIf="showBadge" class="float-right" style="margin-top: 5px;margin-right: 10px">
+                        <span class='icon badge je-badge float-right' style="cursor: pointer;" (click)="jeDrilldown()">{{badgeText}}</span>
+                      </label>
+                    </div>
+                  </div>
+                  <table class="stack line-table" [hidden]="showAdvance">
+                    <thead>
+                    <tr>
+                      <th width="10%">COA</th>
+                      <th width="5%">Debits</th>
+                      <th width="5%">Credits</th>
+                      <th width="20%">Notes</th>
+                      <th width="10%">Entity</th>
+                      <th width="3%"></th>
+                    </tr>
+                    </thead>
+                    <tbody *ngIf="getLineCount() != 0 && !isSystemCreatedJE" #list>
+                    <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index=index;" [hidden]="lineListItem.controls.destroy.value" (click)="editLine(lineListItem, index)"  (keydown.ArrowDown)="handleKeyEvent( $event,index,'Arrow Down')" (keydown.ArrowUp)="handleKeyEvent( $event,index,'Arrow Up' )">
+                      <td class="truncate" [hidden]="lineListItem.editable">{{getCOAName(lineListItem.controls.coa.value)}}</td>
+                      <td [hidden]="!lineListItem.editable">
+                        <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" (valueChanged)="updateLineCOA($event, index)">
+                          <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                        </select>
+                      </td>
+                      <td [hidden]="lineListItem.editable">
+                        {{lineListItem.controls.debitAmount.value?(lineListItem.controls.debitAmount.value| currency:companyCurrency:true:'1.2-2'):null}}
+                      </td>
+                      <td [hidden]="!lineListItem.editable">
+                        <input type="text" [formControl]="lineListItem.controls.debitAmount" placeholder="Debit" numeral [format]="'$0,0.00'" [locale]="companyCurrency" (change)="updateLineTotal()"/>
+                      </td>
+                      <td [hidden]="lineListItem.editable">
+                        {{lineListItem.controls.creditAmount.value?(lineListItem.controls.creditAmount.value| currency:companyCurrency:true:'1.2-2'):null}}
+                      </td>
+                      <td [hidden]="!lineListItem.editable">
+                        <input type="text" [formControl]="lineListItem.controls.creditAmount" placeholder="Credit" numeral [format]="'$0,0.00'" [locale]="companyCurrency" (change)="updateLineTotal()"/>
+                      </td>
+                      <td class="truncate" [hidden]="lineListItem.editable">{{lineListItem.controls.notes.value}}</td>
+                      <td [hidden]="!lineListItem.editable">
+                        <input type="text" [formControl]="lineListItem.controls.notes" placeholder="Notes"/>
+                      </td>
+                      <td class="truncate" [hidden]="lineListItem.editable">{{getEntityName(lineListItem.controls)}}</td>
+                      <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Bill')">
+                        <select id="vendor-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors" (valueChanged)="updateLineEntity($event, index)">
+                          <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
+                        </select>
+                      </td>
+                      <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Payroll')">
+                        <select id="employee-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Employee" [listObject]="employees" (valueChanged)="updateLineEntity($event, index)">
+                          <option *ngFor="let employee of employees" [value]="employee.id">{{employee.name}}</option>
+                        </select>
+                      </td>
+                      <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Invoice')">
+                        <select id="invoice-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Customer" [listObject]="customers" (valueChanged)="updateLineEntity($event, index)">
+                          <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
+                        </select>
+                      </td>
+                      <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Other')">
+                        <select id="entity-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Entity" [listObject]="allEntities" (valueChanged)="updateLineEntity($event, index)">
+                          <option *ngFor="let entity of allEntities" [value]="entity.id">{{entity.name}}</option>
+                        </select>
+                      </td>
+                      <td>
+                        <i class="icon ion-edit" (click)="showFlyout($event, index)"></i>
+                        <i class="icon ion-ios-trash-outline" *ngIf="getLineCount() > 2" (click)="deleteLine($event, index)"></i>
+                      </td>
+                    </tr>
+                    </tbody>
+                    <tbody *ngIf="isSystemCreatedJE">
+                    <tr *ngFor="let lineListItem of jeForm.controls.journalLines.controls;let index = index;">
+                      <td>{{getCOAName(lineListItem.controls.coa.value)}}</td>
+                      <td>{{lineListItem.controls.debitAmount.value?(lineListItem.controls.debitAmount.value|number : '1.2-2'):null}}</td>
+                      <td>{{lineListItem.controls.creditAmount.value?(lineListItem.controls.creditAmount.value|number : '1.2-2'):null}}</td>
+                      <td>{{lineListItem.controls.notes.value}}</td>
+                      <td>{{getEntityName(lineListItem.controls)}}</td>
+                      <td>
+                        <i class="icon ion-edit" (click)="showFlyout($event, index)"></i>
+                      </td>
+                    </tr>
+                    </tbody>
+                    <tbody *ngIf="getLineCount() == 0">
+                    <tr>
+                      <td colspan="6" class="text-center">No lines found</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <div class="row" *ngIf="!newJournalEntry&&!isSystemCreatedJE&& !showAdvance&&!reversed&&!haveSourceId">
+                    <div class="columns">
+                      <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)"><i class="icon ion-edit"></i>Update</button>
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="isSystemCreatedJE && !showAdvance|| (!isSystemCreatedJE&&reversed && !showAdvance)|| (!isSystemCreatedJE&&haveSourceId&& !showAdvance)">
+                    <div class="columns">
+                      <span class="label float-right vew-only"  ><i class="icon ion-edit"></i>View Only</span>
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="newJournalEntry && !showAdvance">
+                    <div class="columns">
+                      <button type="submit" class="button small float-right" [disabled]="!jeForm.valid" (click)="submit($event)">Create</button>
+                      <button type="submit" class="button small float-right" style="margin-right:10px;" [disabled]="!jeForm.valid" (click)="submit($event);stayFlyout = true">Create and New</button>
+                    </div>
+                  </div>
+                  <div class="row" *ngIf="showAdvance&&!isSystemCreatedJE">
+                    <div class="columns">
+                      <button type="submit" class="button small float-right" (click)="showRecurringOpts()">Save</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </form>
+        <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="!showAdvance" (click)="goToPreviousPage()">
+                    <span aria-hidden="true">
+                      <i class="ion-ios-close-empty"></i>
+                    </span>
+        </button>
+        <button class="close-flyout" aria-label="Close modal" type="button" *ngIf="showAdvance" (click)="showRecurringOpts()">
+                    <span aria-hidden="true">
+                      <i class="ion-ios-close-empty"></i>
+                    </span>
+        </button>
+      </div>
+    </section>
+  </div>
+</div>
+<div class="report-wrapper journal-flyout">
+  <div class="sidenav customization-panel" [ngClass]="dimensionFlyoutCSS" foundation>
+    <button class="close-button " data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">
+              <i class="ion-ios-close-empty" (click)="hideFlyout()"></i>
+            </span>
+    </button>
+    <div class="row collapse dimension-flyout">
+      <div class="row">
+        <div class="small-12 medium-12 small-centered column">
+          <h5>Line Details</h5>
+        </div>
+      </div>
+    </div>
+    <form *ngIf="lineActive" novalidate [formGroup]="lineForm">
+      <div class="row collapse dimension-flyout">
+        <div class="row">
+          <div class="small-12 medium-6 columns">
+            <div class="row">
+              <div class="small-12 medium-6 column">
+                <label>Title
+                  <input type="text" formControlName="title" placeholder="Title" readonly *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)"/>
+                  <input type="text" formControlName="title" placeholder="Title" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId"/>
+                </label>
+              </div>
+              <div class="small-12 medium-6 column">
+                <label *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId">Chart of Account
+                  <select combo-box #newCoaComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts"  formControlName="coa" (valueChanged)="updateChartOfAccount($event)">
+                    <option *ngFor="let chartOfAccount of chartOfAccounts" [value]="chartOfAccount.id">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
+                  </select>
+                </label>
+                <label *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)">Chart of Account
+                  <input type="text" placeholder="Chart of account" readonly value="{{getCOAName(lineForm.controls.coa.value)}}"/>
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="small-12 medium-3 column">
+                <label>Credit
+                  <input type="text" placeholder="Credit" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId" formControlName="creditAmount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                  <input type="text" placeholder="Credit" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly formControlName="creditAmount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                </label>
+              </div>
+              <div class="small-12 medium-3 column">
+                <label>Debit
+                  <input type="text" placeholder="Debit" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId" formControlName="debitAmount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                  <input type="text" placeholder="Debit" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly formControlName="debitAmount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                </label>
+              </div>
+              <div class="small-12 medium-6 column">
+                <label *ngIf="!isSystemCreatedJE && !reversed && !haveSourceId && isJournalEntry('Bill')">Entity
+                  <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Vendor" [listObject]="vendors" (valueChanged)="updateEntity($event)">
+                    <option *ngFor="let vendor of vendors" [value]="vendor.id">{{vendor.name}}</option>
+                  </select>
+                </label>
+                <label *ngIf="!isSystemCreatedJE && !reversed && !haveSourceId && isJournalEntry('Payroll')">Entity
+                  <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Employee" [listObject]="employees" (valueChanged)="updateEntity($event)">
+                    <option *ngFor="let employee of employees" [value]="employee.id">{{employee.name}}</option>
+                  </select>
+                </label>
+                <label *ngIf="!isSystemCreatedJE && !reversed && !haveSourceId && isJournalEntry('Invoice')">Entity
+                  <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Customer" [listObject]="customers" (valueChanged)="updateEntity($event)">
+                    <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
+                  </select>
+                </label>
+                <label *ngIf="!isSystemCreatedJE && !reversed && !haveSourceId && isJournalEntry('Other')">Entity
+                  <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Employee" [listObject]="allEntities" (valueChanged)="updateEntity($event)">
+                    <option *ngFor="let entity of allEntities" [value]="entity.id">{{entity.name}}</option>
+                  </select>
+                </label>
+                <label *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)">Entity
+                  <input type="text" placeholder="Entity" readonly value="{{getEntityName(lineForm.controls)}}"/>
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <div class="small-12 medium-12 column">
+                <label>Notes
+                  <textarea formControlName="notes" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" readonly></textarea>
+                  <textarea formControlName="notes" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId"></textarea>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="small-12 medium-6 columns">
+            <label>Dimensions
+              <div class="row dimension-grids" (click)="doNothing($event)">
+                <div class="small-12 medium-4 columns dimension-grid" *ngFor="let dimension of dimensions">
+                  <div class="dimension-header">
+                    <div>
+                      <span class="float-left">{{dimension.name}}</span>
+                      <span class="float-right">
+                                                <i class="icon ion-checkmark-circled" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"
+                                                   (click)="selectDimension($event, dimension.name)"></i>
+                                            </span>
+                    </div>
+                    <div class="bottom" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"></div>
+                  </div>
+                  <div class="dimension-values" [ngClass]="{'selected': isDimensionSelected(dimension.name)}">
+                    <div class="dimension-value" *ngFor="let value of dimension.values; let index = index;">
+                      <label (click)="selectValue($event, dimension, value)">
+                        <input type="checkbox" [checked]="isValueSelected(dimension, value)"/>{{value}}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-12 medium-12 columns">
+            <input *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId" type="button" class="button small float-right" value="Update" (click)="saveLine()"/>
+            <span *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" class="label float-right vew-only">View Only</span>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

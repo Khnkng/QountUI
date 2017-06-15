@@ -1,0 +1,306 @@
+@import "qount-variables";
+@import "settings";
+.qount-off-canvas-menu-buttom{
+  i{
+     font-size: 2em;
+     color: $qount-brand-icon;
+      margin-left: .25em;
+      margin-right: .25em;
+  }
+}
+.qount-off-canvas-menu{
+  .flyout{
+    $left-margin-for-menu: 55px;
+    background: #ffffff;
+    height: 100%;
+    position: fixed;
+    width: 100%;
+    @include breakpoint(large up) {
+      width: calc(100% - 55px);
+    }
+    top:50px;
+    left:-100%;
+    -webkit-transition : all 0.5s;
+    -moz-transition : all 0.5s;
+    -o-transition : all 0.5s;
+    transition : all 0.5s;
+    z-index: 100;
+    overflow-x: hidden;
+    overflow-y: auto;
+    &.expanded{
+      left: 0px;
+      @include breakpoint(large up) {
+        left: 55px;
+      }
+      button{
+        &.close-flyout{
+          position: absolute;
+          //background: #fff;
+          top:-5px;
+          right: 25px;
+          width: 50px;
+          height: 50px;
+          border-radius: 25px;
+          margin-top: 10px;
+          transition: background-color 0.3s ease;
+          &:hover{
+            background: $qount-table-border;
+          }
+          i{
+            font-size: 3em;
+          }
+        }
+      }
+    }
+
+    &.qount-mobile-menu{
+      z-index: 1000;
+      .side-nav{
+        margin: 0;
+        list-style: none;
+        display: block;
+        li{
+          &:first-child{
+            display: none;
+          }
+          border-bottom: 1px solid $qount-form-border;
+          display: block;
+          list-style: none;
+          height: 55px;
+          a {
+            color: $qount-text;
+            display: block;
+            font-size: 1rem;
+            padding: 1em 0.5em;
+            .icon {
+              display: inline-block;
+              width: 30px;
+              text-align: right;
+              margin-right: 20px;
+              font-size: 1.3em;
+            }
+            .name{
+              display: inline-block;
+              font-weight: 600;
+            }
+          }
+          &:hover{
+            background: $qount-table-tr-hover;
+          }
+        }
+      }
+
+    }
+    .flyout-placeholder{
+      //padding: 20px 20px 20px 20px;
+      min-height: calc(100vh - 50px);
+      background: #ffffff;
+
+      .flyout-header{
+        padding-left: 5px;
+        background: transparent;
+        color: $qount-text;
+        height: 30px;
+        text-transform: uppercase;
+        h1,h2,h3,h4,h5,h6{
+          color: $qount-text;
+          font-weight: 700;
+        }
+      }
+      .flyout-body{
+        min-height: calc(100vh - 80px);
+        //padding: 40px 0;
+        .form-section{
+          .address-component{
+            border: none !important;
+          }
+          div.error{
+            font-size: 0.9em;
+          }
+          .ng-dirty.ng-invalid, .ng-touched.ng-invalid {
+            margin-bottom: 0px;
+          }
+          background: #FFF;
+          padding: 30px 15px 30px 15px;
+          //border: 1px solid $qount-brand-grey;
+          border-radius: 5px;
+          margin-bottom: 15px;
+
+          &.search-reveal{
+            padding: 15px;
+          }
+
+          .form-section-header{
+            font-weight: 700;
+            font-size: 1em;
+            color: $qount-text;
+            margin: 4px 0;
+            padding-left: 14px;
+          }
+          .form-section-left{
+            @include breakpoint(medium up) {
+              width: 50%;
+              float: left;
+            }
+            &.expense-row{
+              width: 100%;
+              .combo-box-field{
+                input, a{
+                  margin-top: -15px;
+                }
+              }
+            }
+          }
+          .custom-qount-form-field{
+            margin-bottom: 18px;
+          }
+
+          .custom-qount-form-submit{
+            position: absolute;
+            right: 30px;
+            bottom: 80px;
+          }
+
+        }
+        .form-section:last-child{
+          margin-bottom: 5px !important;
+        }
+
+      }
+
+
+
+      .flyout-shadow-effect
+      {
+      /*  position:relative;
+        -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        &:before, &:after{
+          content:"";
+          position:absolute;
+          z-index:-1;
+          -webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);
+          -moz-box-shadow:0 0 20px rgba(0,0,0,0.8);
+          box-shadow:0 0 20px rgba(0,0,0,0.8);
+          top:10px;
+          bottom:10px;
+          left:0;
+          right:0;
+          -moz-border-radius:100px / 10px;
+          border-radius:100px / 10px;
+        }
+
+        &:after{
+          right:10px;
+          left:auto;
+          -webkit-transform:skew(8deg) rotate(3deg);
+          -moz-transform:skew(8deg) rotate(3deg);
+          -ms-transform:skew(8deg) rotate(3deg);
+          -o-transform:skew(8deg) rotate(3deg);
+          transform:skew(8deg) rotate(3deg);
+        }*/
+      }
+
+      .dimension-values{
+        display: inline-flex;
+        margin-bottom: 10px;
+
+        .label{
+          background: $qount-brand-grey-light;
+        }
+
+        .dimension-value-wrapper{
+          margin-left: 15px;
+          margin-top: 10px;
+          display: inline-flex;
+          padding: 0.33333rem 0.1rem;
+
+          .icon{
+            font-size: 0.8rem;
+          }
+
+          .edit-wrapper{
+            float: right;
+            margin-left: 9px;
+          }
+
+          .dimension-value, .edit-wrapper{
+            padding: 5px;
+          }
+
+          input{
+            height: 20px;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+  }
+
+  &.chart-of-accounts{
+    .description{
+      font-size: 12px;
+    }
+  }
+}
+
+/*TODO need to move to different scss file, it donnt belong here */
+.create-vendor{
+  .create-vendor-separator{
+    @include breakpoint(medium up) {
+      border-left: 1px solid $qount-form-border;
+    }
+  }
+
+}
+
+.qount-page-icon-bar{
+   position: absolute;
+   right: 25px;
+   .button{
+     border-radius: 25px;
+     margin-left: 10px !important;
+     &:before{
+
+     }
+   }
+}
+
+.rule-flyout{
+  .rule-row, .action-row{
+    label, select, input{
+      float: left;
+      width: auto;
+      margin: 0px 5px;
+    }
+  }
+  .action-row{
+    margin-top: 10px;
+  }
+  input{
+    width: auto;
+  }
+  select, input{
+    font-size: 12px;
+  }
+  .actions-form{
+    border: none !important;
+  }
+  label.combo-box{
+    width: 175px;
+  }
+  .date-wrapper{
+    margin-left: 5px;
+    .button{
+      border-radius: 3px 0px 0px 3px;
+    }
+    input{
+      border-radius: 0px 3px 3px 0px;
+      height: 34px;
+    }
+  }
+  .add-action{
+    margin: 10px 0px;
+  }
+}
