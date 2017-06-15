@@ -167,7 +167,11 @@ export class ReconcileComponent{
             data.bankAccountId = account.id;
             this.selectedBank = account.id;
             this.selectedBankName = account.name;
-            this.isCreditAccount = account.is_credit_account;
+            if(account.type == "credit") {
+              this.isCreditAccount = true;
+            }else{
+              this.isCreditAccount = false;
+            }
         }else if(!account||account=='--None--'){
             data.bankAccountId='--None--';
         }
@@ -250,7 +254,14 @@ export class ReconcileComponent{
                         base.reconcileData.expenses.push(entry);
                     });
                 }
-                this.selectedBankName = $event.bank;
+              let account = _.find(this.accounts, {'id': reconcileDetails.bank_Account_id});
+                if(account.type == 'credit'){
+                  this.isCreditAccount = true;
+                }else{
+                  this.isCreditAccount = false;
+                }
+
+              this.selectedBankName = $event.bank;
                 let amount = reconcileDetails.ending_balance;
                 amount = parseFloat(amount);
                 this.endingBalance = amount;
