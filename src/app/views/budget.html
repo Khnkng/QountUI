@@ -33,6 +33,16 @@
                         </label>
                       </div>
                     </div>
+                    <div class="row">
+                      <div class="columns">
+                        <label class="float-right" style="margin-left: 10px;">
+                          <b>Gross Profit:</b> {{(incomeTotal-cogsTotal)| currency:companyCurrency:true:'1.2-2'}}
+                        </label>
+                        <label class="float-right">
+                          <b>Net Profit:</b> {{(incomeTotal-(cogsTotal+expenseTotal))| currency:companyCurrency:true:'1.2-2'}}
+                        </label>
+                      </div>
+                    </div>
                     <div style="margin-top: 12px;">
                       <table>
                         <thead>
@@ -57,11 +67,11 @@
                           <template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
                             <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.controls[month].value? (itemForm.controls[month].value| currency:companyCurrency:true:'1.2-2'):null}}</td>
                             <td *ngIf="itemForm.editable&&month!='total'">
-                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm)"/>
+                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm,'income')"/>
                             </td>
                             <td *ngIf="!itemForm.editable&&month=='total'">{{itemForm.controls[month].value? (itemForm.controls[month].value| currency:companyCurrency:true:'1.2-2'):null}}</td>
                             <td *ngIf="itemForm.editable&&month=='total'">
-                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm)"/>
+                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm,'income')"/>
                             </td>
                           </template>
                           <td>
@@ -84,11 +94,11 @@
                           <template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
                             <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.controls[month].value? (itemForm.controls[month].value| currency:companyCurrency:true:'1.2-2'):null}}</td>
                             <td *ngIf="itemForm.editable&&month!='total'">
-                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm)"/>
+                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm,'costOfGoodsSold')"/>
                             </td>
                             <td *ngIf="!itemForm.editable&&month=='total'">{{itemForm.controls[month].value? (itemForm.controls[month].value| currency:companyCurrency:true:'1.2-2'):null}}</td>
                             <td *ngIf="itemForm.editable&&month=='total'">
-                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm)"/>
+                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm,'costOfGoodsSold')"/>
                             </td>
                           </template>
                           <td>
@@ -111,11 +121,11 @@
                           <template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
                             <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.controls[month].value? (itemForm.controls[month].value| currency:companyCurrency:true:'1.2-2'):null}}</td>
                             <td *ngIf="itemForm.editable&&month!='total'">
-                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm)"/>
+                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm,'expenses')"/>
                             </td>
                             <td *ngIf="!itemForm.editable&&month=='total'">{{itemForm.controls[month].value? (itemForm.controls[month].value| currency:companyCurrency:true:'1.2-2'):null}}</td>
                             <td *ngIf="itemForm.editable&&month=='total'">
-                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm)"/>
+                              <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm,'expenses')"/>
                             </td>
                           </template>
                           <td>

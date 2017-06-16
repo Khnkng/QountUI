@@ -51,6 +51,9 @@ export class BudgetComponent{
     dimensionFlyoutCSS:any;
     editItemIndex:number;
     orderedMonths:Array<string>=[];
+    incomeTotal:number=0;
+    cogsTotal:number=0;
+    expenseTotal:number=0;
     constructor(private _fb: FormBuilder, private _budgetForm: BudgetForm, private switchBoard: SwitchBoard,
                 private budgetService: BudgetService, private toastService: ToastService, private loadingService:LoadingService,
                 private coaService: ChartOfAccountsService,private numeralService:NumeralService,private _budgetItemForm: BudgetItemForm,private titleService:pageTitleService){
@@ -66,11 +69,14 @@ export class BudgetComponent{
             .subscribe(chartOfAccounts=> {
                 this.chartOfAccounts = chartOfAccounts;
                 this.revenueCOA = _.filter(chartOfAccounts, {'category': 'Revenue'});
+                _.sortBy(this.revenueCOA, ['name']);
                 this.expenseCOA =_.filter(chartOfAccounts, function(coa) {
                     return coa.category=='Expenses'&&coa.type!='costOfGoodsSold';
                 });
+                this.expenseCOA=_.sortBy(this.expenseCOA, ['name']);
                 _.filter(chartOfAccounts, {'category': 'Expenses'});
                 this.cogsCOA = _.filter(chartOfAccounts, {'type': 'costOfGoodsSold'});
+                this.cogsCOA=_.sortBy(this.cogsCOA, ['name']);
             }, error => {
 
             });
@@ -136,14 +142,17 @@ export class BudgetComponent{
         var base=this;
         let revenueItemsControl:any = this.budgetForm.controls['income'];
         _.each(budget.budget.income, function(revenueItem){
+            base.incomeTotal=base.incomeTotal+revenueItem.total;
             revenueItemsControl.controls.push(base._fb.group(base._budgetItemForm.getForm(revenueItem)));
         });
         let cogsItemsControl:any = this.budgetForm.controls['costOfGoodsSold'];
         _.each(budget.budget.costOfGoodsSold, function(cogsItem){
+            base.cogsTotal=base.cogsTotal+cogsItem.total;
             cogsItemsControl.controls.push(base._fb.group(base._budgetItemForm.getForm(cogsItem)));
         });
         let expenseItemsControl:any = this.budgetForm.controls['expenses'];
         _.each(budget.budget.expenses, function(expenseItem){
+            base.expenseTotal=base.expenseTotal+expenseItem.total;
             expenseItemsControl.controls.push(base._fb.group(base._budgetItemForm.getForm(expenseItem)));
         });
         this._budgetForm.updateForm(this.budgetForm, budget);
@@ -207,6 +216,8 @@ export class BudgetComponent{
         /*if(data.frequency=='yearly'){
             data.startDate=Session.getFiscalStartDate();
         }*/
+        data.netProfit=this.incomeTotal-(this.cogsTotal+this.expenseTotal);
+        data.grossProfit=this.incomeTotal-this.cogsTotal;
         delete data.income;
         delete data.costOfGoodsSold;
         delete data.expenses;
@@ -279,6 +290,9 @@ export class BudgetComponent{
         _form['costOfGoodsSold'] = new FormArray([]);
         _form['expenses'] = new FormArray([]);
         this.budgetForm = this._fb.group(_form);
+        this.cogsTotal=0;
+        this.incomeTotal=0;
+        this.expenseTotal=0;
     }
 
 
@@ -308,17 +322,6 @@ export class BudgetComponent{
             let lineForm = this._fb.group(this._budgetItemForm.getForm());
             expenseLinesControl.controls.push(lineForm);
         }
-    }
-
-    getLineCount(){
-        let linesControl:any = this.budgetForm.controls['income'];
-        let activeLines = [];
-        _.each(linesControl.controls, function(lineControl){
-            if(!lineControl.controls['destroy'].value){
-                activeLines.push(lineControl);
-            }
-        });
-        return activeLines.length;
     }
 
     resetAllLinesFromEditing(linesControl){
@@ -355,6 +358,10 @@ export class BudgetComponent{
         let data = [];
         _.each(expenseForm.controls, function(expenseItemControl){
             let itemData = base._budgetItemForm.getData(expenseItemControl);
+            for(var i=0;i<base.lineItemNames.length;i++){
+                var val=base.lineItemNames[i];
+                itemData[val]=base.roundOffValue(itemData[val]);
+            }
             data.push(itemData);
         });
         return data;
@@ -411,19 +418,23 @@ export class BudgetComponent{
         for(var i=0;i<this.lineItemNames.length;i++){
             var val=this.lineItemNames[i];
             itemControl.controls[val].patchValue(item[val]);
+            if(val=='total'){
+                this.updateTotals(item[val],this.selectedGroup)
+            }
         }
     }
 
-    updateTotalAmount(_val,form){
+    updateTotalAmount(val,form,type){
        let total=0;
         for(var i=0;i<this.lineItemNames.length-1;i++){
             var val=this.lineItemNames[i];
             total=total+this.checkNumber(form.controls[val].value)
         }
         form.controls['total'].patchValue(total);
+        this.updateTotals(total,type);
     }
 
-    updateBudgetLineAmount(_val,form){
+    updateBudgetLineAmount(val,form,type){
         let total=this.checkNumber(form.controls['total'].value);
         if(total){
             let avgVal=Math.round((total/12) * 100) / 100;
@@ -431,6 +442,25 @@ export class BudgetComponent{
                 var val=this.lineItemNames[i];
                 form.controls[val].patchValue(avgVal);
             }
+            this.updateTotals(total,type);
+        }
+    }
+
+    updateTotals(total,type){
+        let total=0;
+        if(type){
+            let formControls=this.budgetForm.controls[type]['controls'];
+            for(var i=0;i<formControls.length;i++){
+                total=total+Number(formControls[i].controls.total.value);
+            }
+        }
+
+        if(type=='income'){
+            this.incomeTotal=total;
+        }else if(type=='costOfGoodsSold'){
+            this.cogsTotal=total;
+        }else {
+            this.expenseTotal=total;
         }
     }
 
@@ -441,7 +471,7 @@ export class BudgetComponent{
                 var val=this.lineItemNames[i];
                 form.controls[val].patchValue(janValue);
             }
-            this.updateTotalAmount(null,form);
+            this.updateTotalAmount(null,form,this.selectedGroup);
         }else {
             this.toastService.pop(TOAST_TYPE.error, "Please fill Jan month for duplication");
         }
@@ -451,7 +481,7 @@ export class BudgetComponent{
     checkNumber(val) {
         if((val || val == 0) && !isNaN(val)) {
             let _val = parseFloat(val);
-            return _val;
+            return this.roundOffValue(_val);
         }
         return null;
     }
@@ -474,4 +504,9 @@ export class BudgetComponent{
         }
         this.orderedMonths.push('total');
     }
+
+    roundOffValue(num){
+        return Math.round(num * 100) / 100
+    }
+
 }
