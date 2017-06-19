@@ -437,7 +437,7 @@ export class BudgetComponent{
     updateTotalAmount(val,form,type){
        let total=0;
         for(var i=0;i<this.lineItemNames.length-1;i++){
-            var val=this.lineItemNames[i];
+            var val:any=this.lineItemNames[i];
             total=total+this.checkNumber(form.controls[val].value)
         }
         form.controls['total'].patchValue(total);
@@ -449,7 +449,7 @@ export class BudgetComponent{
         if(total){
             let avgVal=Math.round((total/12) * 100) / 100;
             for(var i=0;i<this.lineItemNames.length-1;i++){
-                var val=this.lineItemNames[i];
+                var val:any=this.lineItemNames[i];
                 form.controls[val].patchValue(avgVal);
             }
             this.updateTotals(total,type);
@@ -457,20 +457,20 @@ export class BudgetComponent{
     }
 
     updateTotals(total,type){
-        let total=0;
+        let latestTotal=0;
         if(type){
             let formControls=this.budgetForm.controls[type]['controls'];
             for(var i=0;i<formControls.length;i++){
-                total=total+Number(formControls[i].controls.total.value);
+              latestTotal=latestTotal+Number(formControls[i].controls.total.value);
             }
         }
 
         if(type=='income'){
-            this.incomeTotal=total;
+            this.incomeTotal=latestTotal;
         }else if(type=='costOfGoodsSold'){
-            this.cogsTotal=total;
+            this.cogsTotal=latestTotal;
         }else {
-            this.expenseTotal=total;
+            this.expenseTotal=latestTotal;
         }
     }
 

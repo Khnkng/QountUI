@@ -326,6 +326,8 @@ export class ReconcileComponent{
     };
 
     calculateReconDifference(){
+      this.statementEndingBalance = parseFloat(this.statementEndingBalance);
+      this.endingBalance = parseFloat(this.endingBalance);
         this.reconDifference = Math.abs(this.statementEndingBalance.toFixed(2) - this.endingBalance.toFixed(2));
     }
 
