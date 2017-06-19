@@ -190,15 +190,22 @@
 }
 
 .box-notifiers-alignment {
- padding: 5px 15px;
+  padding: 5px 15px;
   & >span {
     margin-right:20px;
   }
 }
 
-table thead tr th {
-  font-size: 0.9em !important;
+table {
+  border-collapse: collapse;
+  thead tr th {
+    font-size: 0.9em !important;
+  }
+   tr:nth-of-type(even) {
+    background-color: transparent !important;
+  }
 }
+
 
 .hide-pagination{
   tfoot{
