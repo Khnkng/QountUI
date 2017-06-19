@@ -34,7 +34,7 @@ export class BudgetComponent{
     editMode:boolean = false;
     currentCompany:any;
     budgetId:any;
-    tableColumns:Array<string> = ['name', 'id', 'total'];
+    tableColumns:Array<string> = ['name', 'id', 'total','grossProfit','netProfit'];
     combo:boolean = true;
     allCOAList:Array<any> = [];
     showFlyout:boolean = false;
@@ -248,7 +248,10 @@ export class BudgetComponent{
         this.tableOptions.pageSize = 9;
         this.tableData.columns = [
             {"name": "name", "title": "Name"},
-            {"name": "total", "title": "Amount", "sortValue": function(value){
+            {"name": "grossProfit", "title": "Gross Profit", "sortValue": function(value){
+                return base.numeralService.value(value);
+            }},
+            {"name": "netProfit", "title": "Net Profit", "sortValue": function(value){
                 return base.numeralService.value(value);
             }},
             {"name": "id", "title": "Id", "visible": false},
@@ -259,15 +262,22 @@ export class BudgetComponent{
             let row:any = {};
             _.each(base.tableColumns, function(key) {
                 row[key] = budget[key];
-                if(key=='total'){
+                if(key=='grossProfit'){
                     if(budget[key]){
                         let total=parseFloat(budget[key]);
-                        row['total'] =total.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                        row['grossProfit'] =total.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     }else {
                         let total=0.00;
-                        row['total'] =total.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                        row['grossProfit'] =total.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     }
-
+                }else if(key=='netProfit'){
+                    if(budget[key]){
+                        let total=parseFloat(budget[key]);
+                        row['netProfit'] =total.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    }else {
+                        let total=0.00;
+                        row['netProfit'] =total.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    }
                 }
                 row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             });
