@@ -2546,6 +2546,27 @@ table.footable-editing-right tr.footable-editing td {
   text-shadow: 0 -1px 0 #9d4600;
 }
 
+.tabber {
+  .tab {
+    &.selected:hover {
+      label {
+        color: #CCCCCC !important;
+        background: #00B1A9 !important;
+        span {
+          background: #fff !important;
+        }
+      }
+
+      color: #CCCCCC;
+      background: #00B1A9;
+    }
+    :hover {
+      background: #fff !important;
+      color: #CCCCCC;
+    }
+  }
+}
+
 .reports {
   &.tabs-content {
     border: none;

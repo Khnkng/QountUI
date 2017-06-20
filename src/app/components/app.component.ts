@@ -157,10 +157,6 @@ export class AppComponent  implements OnInit, AfterViewInit {
             window.parent.recivedYodleeToken();
         }
 
-        this.zone.runOutsideAngular(() => {
-          jQuery(document).foundation();
-        });
-
     }
 
     ngOnInit() {

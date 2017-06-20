@@ -708,8 +708,8 @@ export class BooksComponent{
     }
 
     ngOnDestroy(){
-        this.routeSub.unsubscribe();
-        this.confirmSubscription.unsubscribe();
+      this.routeSub && this.routeSub.unsubscribe();
+      this.confirmSubscription && this.confirmSubscription.unsubscribe();
         jQuery('#password-conformation').remove();
     }
 

@@ -6,11 +6,11 @@
     </a>
   </li>-->
   <li>
-    <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isDashboard}" (click)="showPage('dashboard')"><i class="icon ion-ios-keypad has-tip right" [ngClass]="{'iconColor': isDashboard}" data-tooltip  data-click-open="false" data-disable-hover="false" title="Dashboard"></i><div class="name">Dashboard</div></a>
+    <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isDashboard}" (click)="showPage('dashboard')"><i class="icon ion-ios-keypad has-tip right" [ngClass]="{'iconColor': isDashboard}" data-tooltip aria-describedby="dashboard"  data-click-open="false" data-disable-hover="false" title="Dashboard"></i><div class="name">Dashboard</div></a>
   </li>
 
   <li>
-      <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isBooks}" (click)="showPage('books')"><i class="icon glyphicon glyphicon-book has-tip right" [ngClass]="{'iconColor': isBooks}" data-tooltip  data-click-open="false" data-disable-hover="false" title="Books"></i><div class="name">Books</div></a>
+      <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isBooks}" (click)="showPage('books')"><i class="icon glyphicon glyphicon-book has-tip right" [ngClass]="{'iconColor': isBooks}" data-tooltip aria-describedby="books"  data-click-open="false" data-disable-hover="false" title="Books"></i><div class="name">Books</div></a>
   </li>
   <li>
     <a ripple [ngClass]="{'collapsed': !expanded, 'selectedNav': isInvoice}" (click)="showPage('invoice')"><i class="icon fa fa-file-text has-tip right" [ngClass]="{'iconColor': isInvoice}" data-tooltip  data-click-open="false" data-disable-hover="false" title="Invoices"></i><div class="name">Invoices</div></a>
