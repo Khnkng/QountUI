@@ -20,6 +20,8 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {Address} from "qCommon/app/directives/address.directive";
 import {Router, ActivatedRoute} from "@angular/router";
+import {pageTitleService} from "qCommon/app/services/PageTitle";
+
 
 declare var jQuery:any;
 declare var _:any;
@@ -42,7 +44,6 @@ export class VerificationComponent {
     countries: Array<any> = PROVINCES.COUNTRIES;
     @ViewChild('fooTableDir') fooTableDir: FTable;
     message: string;
-    companyId: string;
     companies: Array<CompanyModel> = [];
     currentCompany: any = {};
     chartOfAccounts: any;
@@ -54,17 +55,35 @@ export class VerificationComponent {
     taxId: any;
     confirmSubscription: any;
     routeSub:any;
-currentverificationId:any;
+  currentverificationId:any;
+  companyId:any;
+  routeSubscribe:any;
 
     constructor(private _fb: FormBuilder,private _route: ActivatedRoute, private companyService: CompaniesService, private _VerifyForm: VerifyForm,
                 private _router: Router, private loadingService: LoadingService, private vendorService: CompaniesService,
-                private _toastService: ToastService, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService) {
+                private _toastService: ToastService, private switchBoard: SwitchBoard, private coaService: ChartOfAccountsService,private titleService:pageTitleService) {
+  this.titleService.setPageTitle("Verify Account");
          this.companyId = Session.getCurrentCompany();
         this.routeSub = this._route.params.subscribe(params => {
              this.currentverificationId = params['VerificationID'];
         });
-        this.VerifyForm = this._fb.group(_VerifyForm.getVerified());
+      this.VerifyForm = this._fb.group(_VerifyForm.getVerified());
+      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+        if(this.showFlyout){
+          this.hideFlyout();
+        }else {
+          this.toolsRedirect();
+        }
+      });
     }
+  toolsRedirect(){
+    let link = ['tools'];
+    this._router.navigate(link);
+  }
+
+  ngOnDestroy(){
+    this.routeSubscribe.unsubscribe();
+  }
 
     hideFlyout() {
         let link = ['financialAccounts'];

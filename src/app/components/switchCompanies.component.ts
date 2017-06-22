@@ -32,6 +32,7 @@ export class SwitchCompanyComponent{
     subscription:any;
     compSubscription:any;
     hasCompanyList:boolean;
+    routeSubscribe:any;
 
     constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
                 private companiesService: CompaniesService, private loadingService: LoadingService, private userProfileService: UserProfileService,private titleService:pageTitleService) {
@@ -41,6 +42,12 @@ export class SwitchCompanyComponent{
         this.compSubscription = this.switchBoard.onCompanyAddOrDelete.subscribe(msg => this.fetchCompanies());
         this.fetchCompanies();
         this.titleService.setPageTitle("Switch Company");
+      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title =>
+        {
+          let link = ['/dashboard'];
+          this._router.navigate(link);
+        }
+      );
     }
 
     fetchCompanies(){
@@ -60,6 +67,7 @@ export class SwitchCompanyComponent{
     }
 
     ngOnDestroy(){
+      this.routeSubscribe.unsubscribe();
     }
 
     handleError(error){

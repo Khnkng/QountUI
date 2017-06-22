@@ -19,6 +19,7 @@ import {PaymentsService} from "qCommon/app/services/Payments.service";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {StateService} from "qCommon/app/services/StateService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 
 declare let jQuery: any;
 declare let _: any;
@@ -58,7 +59,7 @@ export class DepositComponent{
     validateLockDate:boolean=false;
     tempData:any;
     lineTotal:number=0;
-
+    routeSubscribe:any;
     /*mapping changes*/
     /*mappingFlyoutCSS:any;
      tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName'];
@@ -83,7 +84,7 @@ export class DepositComponent{
                 private depositService: DepositService, private toastService: ToastService,
                 private loadingService: LoadingService, private dimensionService: DimensionService,private customersService: CustomersService,
                 private invoiceService:InvoicesService,private vendorService: CompaniesService,private paymentsService:PaymentsService,
-                private dateFormater:DateFormater, private stateService: StateService,private titleService:pageTitleService){
+                private dateFormater:DateFormater, private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard){
         this.currentCompanyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
         this.serviceDateformat = dateFormater.getServiceDateformat();
@@ -102,6 +103,13 @@ export class DepositComponent{
 
             });
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+      this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => {
+        if(this.itemActive){
+          this.hideFlyout();
+        }else {
+          this.showDepositsPage()
+        }
+      });
     }
 
     showDepositsPage(bankID?){
@@ -568,6 +576,7 @@ export class DepositComponent{
 
     ngOnDestroy(){
         jQuery('#deposit-password-conformation').remove();
+      this.routeSubscribe.unsubscribe();
     }
 
     updateDepositDetails(){

@@ -57,10 +57,12 @@ export class TaxesComponent {
     showFlyout:boolean = false;
     taxId:any;
     confirmSubscription:any;
+    routeSubscribe:any;
 
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _taxesForm:TaxesForm,
                 private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
                 private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService,private titleService:pageTitleService) {
+        this.titleService.setPageTitle("Taxes");
         this.TaxesForm = this._fb.group(_taxesForm.getTax());
         this.companyId = Session.getCurrentCompany();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteTax(toast));
@@ -91,8 +93,21 @@ export class TaxesComponent {
                 // this.showMessage(true, success);
                 this.showFlyout = false;
             }, error =>  this.handleError(error));
+      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+        if(this.showFlyout){
+          this.hideFlyout();
+        }else {
+          this.toolsRedirect();
+        }
+      });
     }
-    buildTableData(taxesList) {
+
+  toolsRedirect(){
+    let link = ['tools'];
+    this._router.navigate(link);
+  }
+
+  buildTableData(taxesList) {
         this.hasItemCodes = false;
         this.taxesList = taxesList;
         this.tableData.rows = [];
@@ -206,6 +221,7 @@ export class TaxesComponent {
         this.getTaxDetails(row.id);
     }
     ngOnDestroy(){
+      this.routeSubscribe.unsubscribe();
         this.confirmSubscription.unsubscribe();
     }
     submit($event) {

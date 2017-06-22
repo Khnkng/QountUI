@@ -224,5 +224,7 @@ export class AppComponent  implements OnInit, AfterViewInit {
     updatePageTitle(title){
         this.pageTitle = title;
     }
-
+  showPrevious(){
+    this.switchBoard.onClickPrev.next({});
+  }
 }

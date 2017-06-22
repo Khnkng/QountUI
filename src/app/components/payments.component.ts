@@ -9,6 +9,7 @@ import {Router,ActivatedRoute} from "@angular/router";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {StateService} from "qCommon/app/services/StateService";
 import {State} from "qCommon/app/models/State";
+import {pageTitleService} from "qCommon/app/services/PageTitle";
 
 declare let jQuery:any;
 declare let _:any;
@@ -33,10 +34,11 @@ export class PaymentsComponent{
     routeSub:any;
     fromPayments:boolean=false;
     localeFortmat:string='en-US';
-
+    routeSubscribe:any;
     constructor(private switchBoard: SwitchBoard, private toastService: ToastService, private loadingService:LoadingService,
                 private paymentsService:PaymentsService,private _router:Router, private _route: ActivatedRoute,
-                private numeralService:NumeralService, private stateService: StateService){
+                private numeralService:NumeralService, private stateService: StateService,private titleService:pageTitleService){
+      this.titleService.setPageTitle("Payments");
         let companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.loadingService.triggerLoadingEvent(true);
@@ -50,10 +52,13 @@ export class PaymentsComponent{
                     }, error => this.handleError(error));
             }
         });
+      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => this.hideFlyout());
     }
 
-    ngOnDestroy(){
-    }
+  ngOnDestroy(){
+    this.routeSubscribe.unsubscribe();
+  }
+
 
     handleError(error){
         this.loadingService.triggerLoadingEvent(false);

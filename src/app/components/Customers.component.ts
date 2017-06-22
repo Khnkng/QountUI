@@ -62,7 +62,7 @@ export class CustomersComponent {
     last4:string;
     cardName:string;
     isCardDeleted:boolean;
-
+  routeSubscribe:any;
     constructor(private _fb: FormBuilder, private customersService: CustomersService,
                 private _customersForm:CustomersForm, private _router: Router, private _toastService: ToastService,
                 private switchBoard: SwitchBoard, private loadingService:LoadingService,private coaService: ChartOfAccountsService,private titleService:pageTitleService) {
@@ -84,11 +84,23 @@ export class CustomersComponent {
             this.loadingService.triggerLoadingEvent(false);
             this._toastService.pop(TOAST_TYPE.error, "Please add company first");
         }
+      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+        if(this.showFlyout){
+          this.hideFlyout();
+        }else {
+          this.toolsRedirect();
+        }
+      });
     }
 
-    ngOnDestroy(){
-        this.confirmSubscription.unsubscribe();
-    }
+  toolsRedirect(){
+    let link = ['tools'];
+    this._router.navigate(link);
+  }
+  ngOnDestroy(){
+    this.confirmSubscription.unsubscribe();
+    this.routeSubscribe.unsubscribe();
+  }
 
     buildTableData(customers) {
         this.customers = customers;

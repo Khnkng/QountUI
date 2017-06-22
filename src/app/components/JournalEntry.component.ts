@@ -21,6 +21,7 @@ import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {StateService} from "qCommon/app/services/StateService";
 import {State} from "qCommon/app/models/State";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 
 declare let _:any;
 declare let jQuery:any;
@@ -84,12 +85,12 @@ export class JournalEntryComponent{
     serviceDateformat:string;
     badgeText:string="B";
     showBadge:boolean=false;
-
+    routeSubscribe:any;
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
             private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
             private companiesService: CompaniesService, private dimensionService: DimensionService, private loadingService: LoadingService,
             private employeeService: EmployeeService, private customerService: CustomersService,private dateFormater:DateFormater,
-            private stateService: StateService,private titleService:pageTitleService) {
+            private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard) {
         this.titleService.setPageTitle("CREATE JOURNAL ENTRY");
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.dateFormat = dateFormater.getFormat();
@@ -130,6 +131,15 @@ export class JournalEntryComponent{
             });
             this.customers = customers;
         }, error => this.handleError(error));
+      this.routeSubscribe  = _switchBoard.onClickPrev.subscribe(title => {
+        if(this.dimensionFlyoutCSS == "expanded"){
+          this.hideFlyout();
+        }else if(this.showAdvance){
+          this.showRecurringOpts();
+        }else{
+          this.goToPreviousPage();
+        }
+      });
     }
 
     toggleReverseJournal(type, reversedFrom){
@@ -841,6 +851,7 @@ export class JournalEntryComponent{
         jQuery('.pika-single').remove();
         jQuery('.ui-helper-hidden-accessible').remove();
         jQuery('.ui-menu').remove();
+      this.routeSubscribe.unsubscribe();
     }
 
     addDefaultLine(count){

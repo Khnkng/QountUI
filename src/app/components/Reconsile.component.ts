@@ -17,6 +17,8 @@ import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {StateService} from "qCommon/app/services/StateService";
 import {State} from "qCommon/app/models/State";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+
 
 declare let _:any;
 declare let jQuery:any;
@@ -74,6 +76,8 @@ export class ReconcileComponent{
     selectedColor:any='red-tab';
     reconType:any='new';
     tabHeight:string;
+    switchPage:string;
+    routeSubscribe:any;
     @ViewChild('depositsTable') el:ElementRef;
     @ViewChild('expensesTable') el1:ElementRef;
     @ViewChild('global-checkbox') el2:ElementRef;
@@ -83,7 +87,7 @@ export class ReconcileComponent{
 
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
                 private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService,
-                private companyService: CompaniesService,private numeralService:NumeralService, private stateService: StateService,private titleService:pageTitleService) {
+                private companyService: CompaniesService,private numeralService:NumeralService, private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard) {
         this.titleService.setPageTitle("Reconcile");
         this.reconcileForm = _fb.group(_reconcileForm.getForm());
         this.companyId = Session.getCurrentCompany();
@@ -101,8 +105,21 @@ export class ReconcileComponent{
             let state = this.stateService.pop();
             this.fetchReconActivity(state.data, state.selectedId || 0);
         }
+      this.routeSubscribe =  _switchBoard.onClickPrev.subscribe(title => this.gotoPrevious());
     }
-
+  gotoPrevious(){
+    switch (this.switchPage) {
+      case 'Books':
+        this.showPreviousPage();
+        break;
+      case 'reconcile':
+        this.resetReconcileForm();
+        break;
+      default:
+        this.showPreviousPage();
+        break;
+    }
+  }
     fetchReconActivityData(){
         this.reconcileService.getReconActivityRecords()
             .subscribe(reconActivityData  => {
@@ -128,7 +145,9 @@ export class ReconcileComponent{
 
     ngOnInit(){
     }
-
+  ngOnDestroy(){
+    this.routeSubscribe.unsubscribe();
+  }
 
     getBankAccountName(accountId){
         let account = _.find(this.accounts, {'id': accountId});

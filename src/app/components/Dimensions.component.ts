@@ -13,6 +13,7 @@ import {DimensionForm} from "../forms/Dimension.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {Router} from "@angular/router";
 
 declare let jQuery:any;
 declare let _:any;
@@ -38,10 +39,10 @@ export class DimensionsComponent{
   values:Array<any> = [];
   dimensionName:any;
   tableColumns:Array<string> = ['name', 'id', 'values', 'desc'];
-
+  routeSubscribe:any;
   constructor(private _fb: FormBuilder, private _dimensionForm: DimensionForm, private dimensionService: DimensionService,
                private loadingService:LoadingService,private switchBoard: SwitchBoard,
-        private toastService: ToastService, private companiesService: CompaniesService,private titleService:pageTitleService){
+        private toastService: ToastService, private companiesService: CompaniesService,private titleService:pageTitleService,private _router: Router){
     this.titleService.setPageTitle("Dimensions");
     this.dimensionForm = this._fb.group(_dimensionForm.getForm());
     let companyId = Session.getCurrentCompany();
@@ -59,8 +60,22 @@ export class DimensionsComponent{
             this.buildTableData(dimensions);
           }, error => this.handleError(error));
     }, error => this.handleError(error));
+    this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+      if(this.showFlyout){
+        this.hideFlyout();
+      }else {
+        this.toolsRedirect();
+      }
+    });
   }
+
+  toolsRedirect(){
+    let link = ['tools'];
+    this._router.navigate(link);
+  }
+
   ngOnDestroy(){
+    this.routeSubscribe.unsubscribe();
     this.confirmSubscription.unsubscribe();
   }
   handleError(error){

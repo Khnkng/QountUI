@@ -64,9 +64,10 @@ export class FinancialAccountsComponent{
   localeFortmat:string='en-US';
   bankCoa:Array<any>=[];
   creditCoa:Array<any>=[];
-
+  routeSubscribe:any;
   constructor(private _router:Router,private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
-              private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard,private dateFormater: DateFormater,private numeralService:NumeralService,private titleService:pageTitleService){
+              private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard,
+              private dateFormater: DateFormater,private numeralService:NumeralService,private titleService:pageTitleService){
     this.titleService.setPageTitle("Financial Accounts");
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
@@ -88,8 +89,18 @@ export class FinancialAccountsComponent{
     } else{
       this.toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
     }
+    this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+      if(this.showFlyout){
+        this.hideFlyout();
+      }else {
+        this.toolsRedirect();
+      }
+    });
   }
-
+  toolsRedirect(){
+    let link = ['tools'];
+    this._router.navigate(link);
+  }
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
     this.row = {};
@@ -162,7 +173,9 @@ export class FinancialAccountsComponent{
   ngOnInit(){
 
   }
-
+  ngOnDestroy(){
+    this.routeSubscribe.unsubscribe();
+  }
   updateChartOfAccount(coa){
     let data = this._financialAccountForm.getData(this.accountForm);
     if(coa && coa.id){
