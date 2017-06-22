@@ -72,7 +72,18 @@
 @include foundation-flex-classes;
 @include motion-ui-transitions;
 @include motion-ui-animations;
-
+.close-button{
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  transition: background-color 0.3s ease;
+  &:hover{
+    background: $qount-table-border;
+  }
+  i{
+    font-size: 1.5em;
+  }
+}
 .highcharts-data-label text{
   color:#878787 !important;
   fill:#878787 !important;
@@ -427,14 +438,17 @@ body {
   .bold td{
     font-weight: 700 !important;
     color: $qount-sidebar-bg !important;
+    -webkit-print-color-adjust: exact;
   }
   .tableclass {
     tr {
       &:last-child {
         td {
+
           border-top: 2px solid #0a4b3e;
           border-bottom: 2px solid #0a4b3e;
           font-weight: bold;
+          -webkit-print-color-adjust: exact;
           /*&:last-child {
             border-top: 1px solid #0a4b3e;
           }*/
@@ -445,29 +459,35 @@ body {
   .headclass{
     //background: rgb(229, 229, 229);
     background-color: rgb(229, 229, 229) !important;
+    -webkit-print-color-adjust: exact;
   }
   .tablehead{
     font-size: 1.05em !important;
     border: none !important;
     color: #878787 !important;
+    -webkit-print-color-adjust: exact;
   }
   .tablerow{
     background: transparent;
+    -webkit-print-color-adjust: exact;
   }
   .tableclass{
     width: 100% !important;
     margin-bottom: 1rem !important;
     border-radius: 3px !important;
+    -webkit-print-color-adjust: exact;
   }
   .tabledata{
     color: #878787 !important;
     font-size: 1.05em !important;
     font-family: NiveauGroteskRegular !important;
+    -webkit-print-color-adjust: exact;
 
   }
   .nz {
     color: #282895 !important;
     font-weight:700 !important;
+    -webkit-print-color-adjust: exact;
   }
 
 
@@ -2544,6 +2564,27 @@ table.footable-editing-right tr.footable-editing td {
   background: -webkit-linear-gradient(top, #ff8d05, #ff5c03);
   background: linear-gradient(to bottom, #ff8d05, #ff5c03);
   text-shadow: 0 -1px 0 #9d4600;
+}
+
+.tabber {
+  .tab {
+    &.selected:hover {
+      label {
+        color: #CCCCCC !important;
+        background: #00B1A9 !important;
+        span {
+          background: #fff !important;
+        }
+      }
+
+      color: #CCCCCC;
+      background: #00B1A9;
+    }
+    :hover {
+      background: #fff !important;
+      color: #CCCCCC;
+    }
+  }
 }
 
 .reports {

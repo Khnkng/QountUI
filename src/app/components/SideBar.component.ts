@@ -2,7 +2,7 @@
  * Created by seshu on 27-02-2016.
  */
 
-import {Component, Input, ViewChild} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, Input, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
@@ -19,7 +19,7 @@ declare var _:any;
   templateUrl: '../views/sideBar.html'
 })
 
-export class SideBarComponent {
+export class SideBarComponent implements AfterViewInit{
   isDashboard:boolean = true;
   isBooks:boolean = false;
   isInvoice:boolean = false;
@@ -39,7 +39,7 @@ export class SideBarComponent {
 
   @Input() isExpanded:boolean;
 
-  constructor(private switchBoard:SwitchBoard, private _router:Router, private stateService: StateService,private titleService:pageTitleService) {
+  constructor(private el:ElementRef, private switchBoard:SwitchBoard, private _router:Router, private stateService: StateService,private titleService:pageTitleService) {
     console.info('QountApp sidebar Component Mounted Successfully7');
   }
 
@@ -105,6 +105,16 @@ export class SideBarComponent {
         base.isPayments = true;
       }
         break;
+    }
+  }
+
+  static loadedFoundation = false;
+
+  ngAfterViewInit() {
+    if(!SideBarComponent.loadedFoundation) {
+      const elem = jQuery(this.el.nativeElement);
+      elem.foundation();
+      SideBarComponent.loadedFoundation = true;
     }
   }
 
