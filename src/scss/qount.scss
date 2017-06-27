@@ -702,8 +702,13 @@ a:focus .je-badge{
   .top-nav-arrows {
     i {
       vertical-align: -webkit-baseline-middle;
-      margin: 0 10px;
+      margin: 0 5px;
       font-size: 1.5em;
+      padding: 5px 5px 0 5px;
+    }
+    .ion-ios-arrow-left:hover{
+      color: #ffffff;
+      background-color: $qount-sidebar-bg;
     }
   }
 
