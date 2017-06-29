@@ -19,6 +19,7 @@ import {PaymentsService} from "qCommon/app/services/Payments.service";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {StateService} from "qCommon/app/services/StateService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 
 declare let jQuery:any;
 declare let _:any;
@@ -68,7 +69,7 @@ export class ExpenseComponent{
     validateLockDate:boolean=false;
     tempData:any;
     lineTotal:number=0;
-
+    routeSubscribe:any;
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
     @ViewChild("editEntityComboBoxDir") editEntityComboBox: ComboBox;
@@ -80,7 +81,7 @@ export class ExpenseComponent{
             private vendorService: CompaniesService, private expenseService: ExpenseService, private toastService: ToastService,
             private loadingService: LoadingService, private dimensionService: DimensionService,private customerService:CustomersService,
             private employeeService:EmployeeService,private paymentsService:PaymentsService,private dateFormater:DateFormater,
-            private stateService: StateService,private titleService:pageTitleService){
+            private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard){
         this.currentCompanyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
         this.serviceDateformat = dateFormater.getServiceDateformat();
@@ -99,6 +100,15 @@ export class ExpenseComponent{
 
             });
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+      this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => {
+        if(this.itemActive){
+          this.hideFlyout();
+        }else if(this.mappingFlyoutCSS == "expanded"){
+          this.hideMappingPage();
+        }else{
+          this.showExpensesPage();
+        }
+      });
     }
 
     showMappingPage(){
@@ -111,6 +121,7 @@ export class ExpenseComponent{
                 return
             }
             this.mappingFlyoutCSS="expanded";
+          this.titleService.setPageTitle("Payments");
             this.loadingService.triggerLoadingEvent(true);
             this.paymentsService.mappings(this.currentCompanyId,this.expenseType,"false",this.bankAccountID)
                 .subscribe(mappings => {
@@ -569,6 +580,7 @@ export class ExpenseComponent{
     }
 
     ngOnDestroy(){
+      this.routeSubscribe.unsubscribe();
         jQuery('#expense-password-conformation').remove();
     }
 

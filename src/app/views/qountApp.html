@@ -10,7 +10,7 @@
       <img src="./images/logo.png" style="cursor: pointer;" (click)="goToDefaultPage()" [hidden]="isSideMenuExpanded"/>
     </span>
       <span class="top-nav-arrows">
-          <span><i class="icon ion-ios-arrow-left"></i> <i class="icon ion-ios-arrow-right"></i></span>
+          <span><i class="icon ion-ios-arrow-left" (click)="showPrevious()"></i><i class="icon ion-ios-arrow-right item-disabled" disabled></i></span>
           <span class="top-nav-name">{{pageTitle}}</span>
       </span>
     </div>

@@ -72,6 +72,7 @@ export class RulesComponent {
     conparisionAmountArray:Array<any>;
     dateFormat:string;
     serviceDateformat:string;
+    routeSubscribe:any;
 
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
@@ -141,10 +142,24 @@ export class RulesComponent {
                     this.depositAarraylist.push(key);
                 }
             }, error =>  this.handleError(error));
+      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+        if(this.showFlyout){
+          this.hideFlyout();
+        }else {
+          this.toolsRedirect();
+        }
+      });
     }
-    ngOnDestroy(){
-        this.confirmSubscription.unsubscribe();
-    }
+
+  toolsRedirect(){
+    let link = ['tools'];
+    this._router.navigate(link);
+  }
+
+  ngOnDestroy(){
+    this.routeSubscribe.unsubscribe();
+    this.confirmSubscription.unsubscribe();
+  }
     handleError(error) {
         this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }

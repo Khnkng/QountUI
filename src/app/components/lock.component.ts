@@ -71,6 +71,7 @@ export class lockComponent {
     currentlockdate:any;
     dateFormat:string;
     serviceDateformat:string;
+    routeSubscribe:any;
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _lockform:LockForm,
                 private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
                 private _toastService: ToastService,private titleService:pageTitleService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService,private dateFormater:DateFormater) {
@@ -104,7 +105,19 @@ export class lockComponent {
             });
 
         this.todaysDate=moment(new Date()).format(this.dateFormat);
+      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+        if(this.showFlyout){
+          this.hideFlyout();
+        }else {
+          this.toolsRedirect();
+        }
+      });
     }
+
+  toolsRedirect(){
+    let link = ['tools'];
+    this._router.navigate(link);
+  }
 
     buildTableData(lockList){
         this.hasItemCodes = false;
@@ -191,6 +204,7 @@ export class lockComponent {
         //     }, error =>  this.handleError(error));
     }
     ngOnDestroy(){
+      this.routeSubscribe.unsubscribe();
         this.confirmSubscription.unsubscribe();
     }
     getLockDetails(row){

@@ -64,7 +64,7 @@ export class VendorComponent {
   mailID:string;
   showFirstStep:boolean = true;
   showSecondStep:boolean = false;
-
+  routeSubscribe:any;
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
               private _router: Router, private loadingService:LoadingService,
               private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService,
@@ -90,8 +90,26 @@ export class VendorComponent {
           this.chartOfAccounts=chartOfAccounts?_.filter(chartOfAccounts, {'type': 'accountsPayable'}):[];
           _.sortBy(this.chartOfAccounts, ['number', 'name']);
         }, error=> this.handleError(error));
+    this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+      if(this.showMailFlyout){
+        this.hideMailFlyout();
+      }else if(this.showFlyout){
+        if(this.showFirstStep){
+          this.hideFlyout();
+        }else if(this.showSecondStep){
+          this.hideSecondStep();
+        }
+      }else{
+        this.toolsRedirect();
+      }
+    });
+  }
+  toolsRedirect(){
+    let link = ['tools'];
+    this._router.navigate(link);
   }
   ngOnDestroy(){
+    this.routeSubscribe.unsubscribe();
     this.confirmSubscription.unsubscribe();
     jQuery('.ui-autocomplete').remove();
     jQuery('#invite-vendor').remove();

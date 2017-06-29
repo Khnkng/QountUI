@@ -15,7 +15,7 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ItemCodeForm} from "../forms/ItemCode.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
-
+import {Router} from "@angular/router";
 declare let jQuery:any;
 declare let _:any;
 
@@ -47,8 +47,8 @@ export class ItemCodesComponent{
   showFlyout:boolean = false;
   confirmSubscription:any;
   companyCurrency:string;
-
-  constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard,
+  routeSubscribe:any;
+  constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard,private _router: Router,
               private codeService: CodesService, private toastService: ToastService, private loadingService:LoadingService,
         private coaService: ChartOfAccountsService, private companiesService: CompaniesService,private titleService:pageTitleService){
     this.titleService.setPageTitle("Item Codes");
@@ -69,8 +69,20 @@ export class ItemCodesComponent{
             this.filterChartOfAccounts(chartOfAccounts);
           }, error=> this.handleError(error));
     }, error => this.handleError(error));
+    this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+      if(this.showFlyout){
+        this.hideFlyout();
+      }else {
+        this.toolsRedirect();
+      }
+    });
+  }
+  toolsRedirect(){
+    let link = ['tools'];
+    this._router.navigate(link);
   }
   ngOnDestroy(){
+    this.routeSubscribe.unsubscribe();
     this.confirmSubscription.unsubscribe();
   }
 

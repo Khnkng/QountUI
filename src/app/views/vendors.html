@@ -233,23 +233,11 @@
             </form>
           </div>
         </div>
-        <button class="close-flyout" aria-label="Close modal" type="button" [hidden]="!showFirstStep" (click)="hideFlyout()">
-                <span aria-hidden="true">
-                  <i class="ion-ios-close-empty"></i>
-                </span>
-        </button>
-        <button class="close-flyout" aria-label="Close modal" type="button" [hidden]="!showSecondStep" (click)="hideSecondStep()">
-                <span aria-hidden="true">
-                  <i class="ion-ios-close-empty"></i>
-                </span>
-        </button>
       </section>
     </div>
     <div class="flyout expanded" [ngClass]="{'expanded':showMailFlyout}">
       <section class="flyout-placeholder">
-        <header class="flyout-header">
-          <h6>Invite Vendor</h6>
-        </header>
+
         <div class="flyout-body flyout-shadow-effect">
           <!--here comes actual flyout code-->
           <section class="form-section clearfix">

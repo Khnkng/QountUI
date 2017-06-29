@@ -50,7 +50,7 @@ export class ExpensesCodesComponent {
   showFlyout:boolean = false;
   itemCodeId:any;
   confirmSubscription:any;
-
+  routeSubscribe:any;
   constructor(private _fb: FormBuilder, private _expensesForm: ExpenseCodesForm, private switchBoard: SwitchBoard,
               private codeService: CodesService, private toastService: ToastService, private _router:Router,
               private coaService: ChartOfAccountsService, private expensesSerice:ExpensesService,
@@ -72,9 +72,17 @@ export class ExpensesCodesComponent {
             this.filterChartOfAccounts(chartOfAccounts);
           }, error=> this.handleError(error));
     }, error => this.handleError(error));
+    this.routeSubscribe =  switchBoard.onClickPrev.subscribe(title => {
+      if(!this.showFlyout){
+        this.routeToToolsPage();
+      }else{
+        this.hideFlyout();
+      }
+    });
   }
   ngOnDestroy(){
     this.confirmSubscription.unsubscribe();
+    this.routeSubscribe.unsubscribe();
   }
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
@@ -256,6 +264,6 @@ deleteExpense(toast){
   hideFlyout(){
     this.titleService.setPageTitle("Expense Codes");
     this.row = {};
-    this.showFlyout = !this.showFlyout;
+    this.showFlyout = false;
   }
 }

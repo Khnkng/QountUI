@@ -12,6 +12,7 @@ import {FTable} from "qCommon/app/directives/footable.directive";
 import {StateService} from "qCommon/app/services/StateService";
 import {State} from "qCommon/app/models/State";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 
 declare let jQuery:any;
 declare let _:any;
@@ -47,10 +48,12 @@ export class paidtablecomponent {
     credits:any;
     billstate:any;
     billstatus:boolean=false;
-    @ViewChild('hChart1') hChart1:HighChart;
+    routeSubscribe:any;
+
+  @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('createtaxes') createtaxes;
     constructor(private _router: Router,private _route: ActivatedRoute,private companyService: CompaniesService,
-                private loadingService:LoadingService,private stateService: StateService,private titleService:pageTitleService) {
+                private loadingService:LoadingService,private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard) {
         this.companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.routeSub = this._route.params.subscribe(params => {
@@ -77,6 +80,7 @@ export class paidtablecomponent {
                 });
         }
         this.titleService.setPageTitle("paid");
+      this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => this.hideFlyout());
     }
     handleAction($event){
         let action = $event.action;
@@ -139,6 +143,9 @@ export class paidtablecomponent {
         this.loadingService.triggerLoadingEvent(false);
 
     }
+  ngOnDestroy(){
+    this.routeSubscribe.unsubscribe();
+  }
 }
 
 

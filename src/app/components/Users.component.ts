@@ -3,6 +3,7 @@ import {FormGroup, FormBuilder} from "@angular/forms";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {FTable} from "qCommon/app/directives/footable.directive";
 import {Router} from "@angular/router";
+import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
@@ -10,7 +11,6 @@ import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
 import {UsersModel} from "qCommon/app/models/Users.model";
 import {UsersForm} from "../forms/Users.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
-import {ToastService} from "qCommon/app/services/Toast.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 declare var jQuery:any;
 declare var _:any;
@@ -39,9 +39,11 @@ export class UsersComponent {
     showFlyout:boolean = false;
     confirmSubscription:any;
     userId:any;
+  routeSubscribe:any;
     constructor(private _fb: FormBuilder, private usersService: CompanyUsers, private _usersForm:UsersForm,
                 private _router: Router, private _toastService: ToastService, private loadingService:LoadingService,
                 private switchBoard: SwitchBoard,private toastService: ToastService,private titleService:pageTitleService) {
+      this.titleService.setPageTitle("Users");
         this.userForm = this._fb.group(_usersForm.getForm());
         this.companyId = Session.getCurrentCompany();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteUser(toast));
@@ -62,13 +64,27 @@ export class UsersComponent {
                 this.buildTableData(users)
             }, error => this.handleError(error));
         }
+      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+        if(this.showFlyout){
+          this.hideFlyout();
+        }else {
+          this.toolsRedirect();
+        }
+      });
     }
 
-    ngOnDestroy(){
-        this.confirmSubscription.unsubscribe();
-    }
+  toolsRedirect(){
+    let link = ['tools'];
+    this._router.navigate(link);
+  }
 
-    buildTableData(users) {
+  ngOnDestroy(){
+    this.routeSubscribe.unsubscribe();
+    this.confirmSubscription.unsubscribe();
+  }
+
+
+  buildTableData(users) {
         this.users = users;
         this.hasUsersList = false;
         this.tableOptions.search = true;
