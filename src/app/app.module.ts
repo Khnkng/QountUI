@@ -92,6 +92,8 @@ import {DocumentComponent} from "./components/Document.component";
 import {BudgetComponent} from "./components/Budget.component";
 import {BudgetForm,BudgetItemForm} from "./forms/Budget.form";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {PaymentsPlanComponent} from "./components/PaymentsPlanComponent";
+import {PaymentsPlan}from"./forms/PaymentsPlan.form";
 
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
@@ -321,6 +323,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
             path: 'switchCompany',
             component: SwitchCompanyComponent,
             canActivate: [LoggedInActivator]
+        },
+        {
+            path: 'plans',
+            component: PaymentsPlanComponent,
+            canActivate: [LoggedInActivator]
         }
     ]), PaymentsModule, ReportsModule, InvoicesModule
     ],
@@ -329,13 +336,13 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent,CurrentCompanyComponent, FinancialAccountsComponent,
         OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
         ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
-        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent, DocumentComponent,BudgetComponent],
+        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent, DocumentComponent,BudgetComponent,PaymentsPlanComponent],
     exports: [RouterModule],
     bootstrap: [ AppComponent ],
     providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
         TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm, DocumentService,
         FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService,
-        BudgetForm,BudgetItemForm,pageTitleService],
+        BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan],
     schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
