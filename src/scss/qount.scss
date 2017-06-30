@@ -702,9 +702,8 @@ a:focus .je-badge{
   .top-nav-arrows {
     i {
       vertical-align: -webkit-baseline-middle;
-      margin: 0 5px;
       font-size: 1.5em;
-      padding: 5px 5px 0 5px;
+      padding: 5px 5px 0 10px;
     }
     .ion-ios-arrow-left:hover{
       color: #ffffff;
@@ -2712,20 +2711,8 @@ table.footable-editing-right tr.footable-editing td {
   color: $qount-add-btn-hover;
 }
 .report-table {
-
   thead{
     background: $qount-brand-grey-light !important;
-  }
-  tbody{
-    tr{
-      &:last-child, &:nth-last-child(2){
-        border-bottom: 2px solid $qount-text;
-      }
-      td[colspan='5']{
-        color: #808CC5 !important;
-        font-weight: 700;
-      }
-    }
   }
   margin-bottom: 10px;
   margin-top: 10px !important;
