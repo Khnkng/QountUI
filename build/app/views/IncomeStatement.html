@@ -1,0 +1,322 @@
+<style>
+    @media print {
+        #report-tabs{
+            display: none !important;
+        }
+    }
+    table{
+        margin-top: 30px;
+        border: 1px solid #f1f1f1;
+        width: 100%;
+    }
+    thead{
+        background: none;
+    }
+    th{
+        color: #878787;
+        font-size: 15px;
+    }
+    tr{
+        height: 36px;
+    }
+    td, th{
+        border-bottom: 1px solid #DCDEDD;
+    }
+    .header{
+        color: #282895;
+        text-align: center;
+    }
+    .company-name{
+        font-weight: 800;
+        font-size: 20px;
+    }
+    .report-name{
+        font-size: 18px;
+    }
+    .criteria{
+        font-size: 16px;
+    }
+    .text-left{
+        text-align: left;
+    }
+    .text-center{
+        text-align: center;
+    }
+    .text-right{
+        text-align: right;
+        padding-right: 10px;
+    }
+    .heading-color{
+        color: #808CC5;
+        font-weight: 800;
+    }
+    .total-color{
+        color: #00B1A9;
+        font-weight: 800;
+    }
+    .padding-30{
+        padding-left: 30px;
+    }
+</style>
+<div foundation class="income-statement">
+
+    <div class="report-wrapper" id="WrappedDetails" [hidden]="!allSections.showReportForm">
+        <report-search-criteria [reportName]="'Income Statement'" [reportDesc]="'Income Statement.'"
+                                [hideReportForm]="!allSections.showReportForm" [setReportType]="'incomeStatement'"></report-search-criteria>
+    </div>
+
+    <div class="reports" *ngIf="allSections.showTabber">
+        <ul class="reports tabs" data-tabs id="report-tabs">
+            <li class="reports tabs-title" [ngClass]="{'is-active': isTabActive('summary')==true}"><a id="a-summary"(click)="setActiveTab('summary')" aria-selected="true"><h6>Dashboard</h6></a></li>
+            <li class="reports tabs-title" [ngClass]="{'is-active': isTabActive('detailReport')==true}"><a id="a-detailReport" (click)="setActiveTab('detailReport')"><h6>Detail Report</h6></a></li>
+        </ul>
+        <div class="reports tabs-content" data-tabs-content="report-tabs">
+            <div class="reports tabs-panel is-active" *ngIf="isTabActive('summary')" id="summary">
+                <div class="row income-charts">
+                    <div class="column medium-8 small-12" style="padding-left: 0">
+                        <div class="row chart-margin">
+                            <div class="column medium-3 small-6 report-stats-padding" style="padding-left: 0">
+                                <div class="text-center income-stats" [ngStyle]="{'background-color': incomeStatsColors[0]}">
+                                    <div>GROSS PROFIT MARGIN</div>
+                                    <div>{{result.margins.grossProfitMargin}}</div>
+                                </div>
+                            </div>
+                            <div class="column medium-3 small-6 report-stats-padding">
+                                <div class="text-center income-stats" [ngStyle]="{'background-color': incomeStatsColors[1]}">
+                                    <div>OPEX RATIO</div>
+                                    <div>{{result.margins.opexMargin}}</div>
+                                </div>
+                            </div>
+                            <div class="column medium-3 small-6 report-stats-padding">
+                                <div class="text-center income-stats" [ngStyle]="{'background-color': incomeStatsColors[2]}">
+                                    <div>EBITDA MARGIN</div>
+                                    <div>{{result.margins.ebitdaMargin}}</div>
+                                </div>
+                            </div>
+                            <div class="column medium-3 small-6 report-stats-padding">
+                                <div class="text-center income-stats" [ngStyle]="{'background-color': incomeStatsColors[3]}">
+                                    <div>NET PROFIT MARGIN</div>
+                                    <div>{{result.margins.netProfitMargin}}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row chart-margin">
+                            <div class="column medium-12 small-12 charts-main report-stats-padding" style="min-width: 300px;height:300px;">
+                                <template [ngIf]="hasRevenueData">
+                                    <high-chart #hChart1=highChart [options]="revenueChartOptions"></high-chart>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column medium-12 detailed-chart-icons">
+                                <template [ngIf]="hasRevenueData">
+                                    <span class="text-right float-right" (click)="showOtherCharts('combinationalChart')"><i class="icon icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i></span>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="row chart-margin" style="border-top:1px solid #e1e1e1;">
+                            <div class="column medium-6 charts-main report-stats-padding" style="min-width: 300px;height:300px; border-right:1px solid #e1e1e1;padding-top:20px;">
+                                <template [ngIf]="hasOpexData">
+                                    <high-chart #hChart2=highChart [options]="opexChartOptions"></high-chart>
+                                </template>
+                            </div>
+                            <div class="column medium-6 charts-main report-stats-padding" style="min-width: 300px;height:300px;padding-top:20px;">
+                                <template [ngIf]="hasEbitdaData">
+                                    <high-chart #hChart3=highChart [options]="ebitdaChartOptions"></high-chart>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column medium-6 detailed-chart-icons">
+                                <template [ngIf]="hasOpexData">
+                                    <span class="text-right float-right" (click)="showOtherCharts('stacketChart')"><i class="icon icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i></span>
+                                </template>
+                            </div>
+                            <div class="column medium-6 detailed-chart-icons">
+                                <template [ngIf]="hasEbitdaData">
+                                    <span class="text-right float-right" (click)="showOtherCharts('ebitdaChartOptions')"><i class="icon icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i></span>
+                                </template>
+                            </div>
+                        </div>
+
+                        <div class="row chart-margin" style="border-top:1px solid #e1e1e1;">
+                            <div class="column medium-12 small-12 charts-main report-stats-padding" style="min-width: 300px;height:300px;padding-top:20px">
+                                <template [ngIf]="hasProfitTrendData">
+                                    <high-chart #hChart1=highChart [options]="profitTrendChartOptions"></high-chart>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="column medium-12 detailed-chart-icons">
+                                <template [ngIf]="hasProfitTrendData">
+                                    <span class="text-right float-right" (click)="showOtherCharts('profitTrendChart')"><i class="icon icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i></span>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column medium-4 small-12 chart-margin income-statement-stats">
+                        <div class="text-center">Income Statement</div>
+                        <div><span>Revenue</span><span class="float-right"><span (click)="showDetailTable('revenue', 'revenue')"><a href="javascript:void(0)">{{getTotal(result.revenue, 'revenue', 'total')}}</a></span></span></div>
+                        <div><span>COGS</span><span class="float-right"><span (click)="showDetailTable('cogs', 'cogs')"><a href="javascript:void(0)">{{getTotal(result.cogs, 'cogs', 'total')}}</a></span></span></div>
+                        <hr class="incomeSeparator">
+                        <div class="income-totals"><span>GROSS PROFIT</span><span class="float-right"><span>{{getTotal(result.cogs, 'cogs', 'grossProfit')}}</span></span></div>
+                        <div><span>OPEX</span><span class="float-right"><span (click)="showDetailTable('expenses', 'opex')"><a href="javascript:void(0)">{{getTotal(result.expenses, 'opex', 'total')}}</a></span></span></div>
+                        <div class="row income-opex">
+                            <div class="column medium-12 report-stats-padding" *ngFor="let opexTotal of getOpexTotals(result)">
+                                <span>{{opexTotal.displayName}}</span><span class="float-right"><span>{{opexTotal.value}}</span></span>
+                            </div>
+                        </div>
+                        <div>
+                            <span>OTHER INCOME</span><span class="float-right"><span (click)="showDetailTable('expenses', 'otherIncome')"><a href="javascript:void(0)">{{getTotal(result.expenses, 'otherIncome', 'total')}}</a></span></span>
+                        </div>
+                        <div>
+                            <span>OTHER EXPENSES</span><span class="float-right"><span (click)="showDetailTable('expenses', 'otherExpense')"><a href="javascript:void(0)">{{getTotal(result.expenses, 'otherExpense', 'total')}}</a></span></span>
+                        </div>
+                        <hr class="incomeSeparator">
+                        <div class="income-totals"><span>EBITDA</span><span class="float-right"><span>{{getTotal(result.expenses, 'otherExpense', 'ebitda')}}</span></span></div>
+                        <div class="row income-opex">
+                            <div class="column medium-12 report-stats-padding">
+                                <span>Amortization</span><span class="float-right"><span (click)="showDetailTable('expenses', 'amortization')"><a href="javascript:void(0)">{{getTotal(result.expenses, 'amortization', 'total')}}</a></span></span>
+                            </div>
+                            <div class="column medium-12 report-stats-padding">
+                                <span>Depreciation</span><span class="float-right"><span (click)="showDetailTable('expenses', 'depriciation')"><a href="javascript:void(0)">{{getTotal(result.expenses, 'depriciation', 'total')}}</a></span></span>
+                            </div>
+                        </div>
+                        <hr class="incomeSeparator">
+                        <div class="income-totals"><span>EBIT</span><span class="float-right"><span>{{getTotal(result.expenses, 'amortization', 'ebit')}}</span></span></div>
+                        <div class="row income-opex">
+                            <div class="column medium-12 report-stats-padding"><span>Interest</span><span class="float-right"><span (click)="showDetailTable('expenses', 'interest')"><a href="javascript:void(0)">{{getTotal(result.expenses, 'interest', 'total')}}</a></span></span></div>
+                            <div class="column medium-12 report-stats-padding"><span>Income Tax</span><span class="float-right"><span (click)="showDetailTable('expenses', 'incomeTax')"><a href="javascript:void(0)">{{getTotal(result.expenses, 'incomeTax', 'total')}}</a></span></span></div>
+                        </div>
+                        <hr class="incomeSeparator">
+                        <div class="income-totals"><span>NET PROFIT</span><span class="float-right"><span>{{getTotal(result.expenses, 'incomeTax', 'netProfit')}}</span></span></div>
+                        <hr class="incomeSeparator">
+                    </div>
+                </div>
+            </div>
+            <div class="reports tabs-panel is-active" *ngIf="isTabActive('detailReport')" id="detailReport">
+                <div class="float-right icons report-icon-header">
+                    <i class="icon ion-ios-email-outline" (click)="openemail()"></i>
+                    <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
+                    <div class="dropdown-pane bottom" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation>
+                        <div (click)="exportToExcel()" class="export-option">Export To Excel</div>
+                        <div (click)="exportToPDF()" class="export-option">Export To PDF</div>
+                    </div>
+                    <i class="icon ion-ios-printer-outline" (click)="printDiv()"></i>
+                </div>
+                <div id="numeric">
+                    <div class="display-report applyBackground" *ngIf="isSuccess">
+                        <div [ngClass]="customObj.customizations.headerAlignment" class="print-mode">
+                            <div class="header company-name">{{companyName}}</div>
+                            <div class="header report-name">{{reportName}}</div>
+                            <div class="header criteria" *ngIf="customObj.customizations.includeReportPeriod">
+                                As of {{reportPeriod}}
+                            </div>
+                        </div>
+                        <table class="highlight-last-row report-table">
+                            <thead>
+                            <tr class="income-report-header">
+                                <th colspan="2" class="text-center">COA Number</th>
+                                <th colspan="2" class="text-center">COA Name</th>
+                                <th class="text-center">Amount</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <template ngFor [ngForOf]="rows" let-row="$implicit">
+                                <tr>
+                                    <td colspan="5" class="heading-color">{{result[row].displayName}}</td>
+                                </tr>
+                                <template ngFor [ngForOf]="result[row].displayOrder" let-key="$implicit">
+                                    <tr class="pointer" *ngFor="let dataRow of getChartOfAccounts(result[row],key)" (click)="filterJournals(dataRow['Coa ID'])">
+                                        <td colspan="2" class="text-left padding-30">{{dataRow["COA Number"]}}</td>
+                                        <td colspan="2" class="text-left">{{dataRow["COA Name"]}}</td>
+                                        <td class="text-right">{{getFormattedAmount(dataRow["Amount"])}}</td>
+                                    </tr>
+                                    <tr *ngFor="let total of getTotals(result[row], key)">
+                                        <td colspan="2"></td>
+                                        <td colspan="2" class="text-left total-color">{{total.displayName}}</td>
+                                        <td class="text-right total-color">{{getFormattedAmount(total.value)}}</td>
+                                    </tr>
+                                </template>
+                            </template>
+                            </tbody>
+                        </table>
+                        <footer [ngClass]="customObj.customizations.footerAlignment">
+                            <span *ngIf="customObj.customizations.includeDatePrepared">{{datePrepared}}</span>
+                            <span *ngIf="customObj.customizations.includeTimePrepared">{{timePrepared}}</span>
+                        </footer>
+                    </div>
+                    <div class="report-failure" *ngIf="isFailure">
+                        <div style="text-align: center;padding-top: 10px;">
+                            <div class="failure-text">This report does not contain any data.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div foundation class="column large-12 medium-12 small-12 foo-container chart_search" *ngIf="allSections.showDetailedIncome">
+        <foo-table #fooTableDir="fooTable" *ngIf="hasDetailedData" class="bighalf-footable" [data]="detailedtableData" [options]="detailedtableDataOptions" (onRowClick)="handleSelectActivity($event)"></foo-table>
+    </div>
+
+    <div class="row expanded chart-margin" *ngIf="allSections.showExpandChart">
+        <div class="column medium-12 expanded charts-main">
+            <div style="min-width: 600px;height: calc(100vh - 150px);">
+                <high-chart  *ngIf="showDetailedChart" #hChart4=highChart [options]="detailedReportChartOptions"></high-chart>
+            </div>
+        </div>
+    </div>
+
+    <div foundation class="column large-12 medium-12 small-12 foo-container chart_search chart-margin income-journals" *ngIf="allSections.showJournals">
+        <foo-table #fooTableDir="fooTable" *ngIf="hasJornalDetailedData" class="bighalf-footable hide-pagination" [data]="JournaldetailedtableData" [options]="detailedtableDataOptions" (onRowClick)="goToJournalEntry($event)"></foo-table>
+    </div>
+
+    <div class="reveal medium bill-modal-container" #reportMail id="EmailModal" style="width: 900px;height:700px;" data-reveal data-close-on-click="false" data-animation-in="ease-in" data-animation-out="ease-out">
+        <form (ngSubmit)="doEmail($event)" novalidate [formGroup]="emailForm">
+            <div class="row">
+                <div style="font-size: larger;font-weight: 800">Email Report</div>
+            </div>
+            <div class="row">
+                <pre><label for="ToAddress" style="font-weight: 700;margin-top: 20px;">To    </label><br /></pre>
+                <div class="small-16 columns" style="margin-top: 20px;">
+                    <input formControlName="Toaddress" id="Toaddress" [tagsList]="[]" class="bighalf-tags,input, empty" name="name" type="text" value="" size="30" custom-tags /><br />
+                </div>
+            </div>
+            <div class="row" *ngIf="showEmail">
+                <pre><label for="cc" style="font-weight: 700">CC    </label><br /></pre>
+                <div class="small-16 columns">
+                    <input formControlName="cc" id="cc" [tagsList]="emailAddress"  class="bighalf-tags,input, empty" name="email" type="text" size="30" custom-tags /><br />
+                </div>
+            </div>
+            <div class="row">
+                <pre><label for="Emailsubject" style="font-weight: 700">Subject</label><br /></pre>
+                <div class="small-16 columns">
+                    <input formControlName="Emailsubject" id="Emailsubject" class="input" name="email" type="text" value="Your+'reportName" size="30" /><br />
+                </div>
+            </div>
+            <div class="row">
+                <pre><label style="font-weight: 700">Body   </label><br /></pre>
+                <div class="small-16 columns">
+                    <textarea formControlName="EmailBody" rows="7" cols="50"  id="EmailBody">
+                        Hello, &#13;&#10;
+                        Attached is {{reportName}} &#13;&#10;
+                        Regards,&#13;&#10;
+                        {{user.first_name}} {{user.last_name}}
+                    </textarea><br />
+                </div>
+            </div>
+            <div class="row">
+                <pre><label for="report" style="font-weight:bold;">Report </label><br /></pre>
+                <div class="small-16 columns">
+                    <input id="report" class="input" name="Report" type="text" value="{{reportName}} report" size="30" /><br />
+                </div>
+            </div>
+            <button class="button" style="float: right;" type="submit" data-close>Send</button>
+        </form>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+</div>

@@ -20,14 +20,16 @@ import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {StateService} from "qCommon/app/services/StateService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
-declare let jQuery: any;
-declare let _: any;
-declare let moment: any;
+declare let jQuery:any;
+declare let _:any;
+declare let moment:any;
 
 @Component({
-  selector: 'deposit',
-  templateUrl: '../views/Deposits.html',
+    selector: 'deposit',
+    templateUrl: '../views/Deposits.html',
 })
 
 export class DepositComponent{
@@ -60,16 +62,21 @@ export class DepositComponent{
     tempData:any;
     lineTotal:number=0;
     routeSubscribe:any;
+    formattedLineTotal:string;
+    localeFormat:string='en-US';
+
+
     /*mapping changes*/
-    /*mappingFlyoutCSS:any;
-     tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName'];
+    mappingFlyoutCSS:any;
+     tableColumns:Array<string> = [ 'id', 'amountPaid', 'paymentDate','customerName'];
      mappings = [];
      hasMappings: boolean = false;
      tableData:any = {};
      tableOptions:any = {};
      row:any;
      selectedMappingID:string;
-     expenseType:string;*/
+     expenseType:string;
+     bankAccountID:string;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
@@ -78,15 +85,15 @@ export class DepositComponent{
     @ViewChild('list') el:ElementRef;
 
 
-
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _depositForm: DepositsForm,
                 private _depositLineForm: DepositsLineForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
                 private depositService: DepositService, private toastService: ToastService,
                 private loadingService: LoadingService, private dimensionService: DimensionService,private customersService: CustomersService,
                 private invoiceService:InvoicesService,private vendorService: CompaniesService,private paymentsService:PaymentsService,
-                private dateFormater:DateFormater, private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard){
+                private dateFormater:DateFormater, private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService){
         this.currentCompanyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
+        this.localeFormat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
         this.serviceDateformat = dateFormater.getServiceDateformat();
         this.routeSub = this._route.params.subscribe(params => {
             this.depositID=params['depositID'];
@@ -103,14 +110,17 @@ export class DepositComponent{
 
             });
         this.companyCurrency = Session.getCurrentCompanyCurrency();
-      this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => {
-        if(this.itemActive){
-          this.hideFlyout();
-        }else {
-          this.showDepositsPage()
-        }
-      });
+        this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => {
+            if(this.itemActive){
+                this.hideFlyout();
+            }else if(this.mappingFlyoutCSS == "expanded"){
+                this.hideMappingPage();
+            }else {
+                this.showDepositsPage()
+            }
+        });
     }
+
 
     showDepositsPage(bankID?){
         if(this.stayFlyout){
@@ -204,6 +214,7 @@ export class DepositComponent{
     setBankAccount(account){
         let data = this._depositForm.getData(this.depositForm);
         if(account && account.id){
+            this.bankAccountID=account.id;
             data.bank_account_id = account.id;
         }else if(!account||account=='--None--'){
             data.bank_account_id='--None--';
@@ -220,6 +231,7 @@ export class DepositComponent{
     processDeposits(deposits){
         let base = this;
         let itemsControl:any = this.depositForm.controls['payments'];
+        this.selectedMappingID=deposits.mapping_id;
         deposits.date = this.dateFormater.formatDate(deposits.date,this.serviceDateformat,this.dateFormat);
         this.loadEntities(deposits.deposit_type);
         _.each(deposits.payments, function(depositItem){
@@ -254,7 +266,18 @@ export class DepositComponent{
 
     }
 
-    handleKeyEvent(event: Event,index,key){
+    enableLines(){
+        let payments: any = this.depositForm.controls.payments;
+        let lines = payments.controls;
+        if(lines && lines.length > 0){
+            this.editItem(0, lines[0]);
+        } else{
+            this.addDefaultLine(1);
+            this.editItem(0, lines[0]);
+        }
+    }
+
+    handleKeyEvent(event: Event, index, key){
         let current_ele = jQuery(this.el.nativeElement).find("tr")[index].closest('tr');
         let focusedIndex;
         jQuery(current_ele).find("td input").each(function(id,field) {
@@ -270,7 +293,7 @@ export class DepositComponent{
             setTimeout(function(){
                 let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
                 jQuery(elem).find("td input").each(function(id,field) {
-                    if(id == focusedIndex) {
+                    if(id == 0) {
                         jQuery(field).focus();
                     }
                 });
@@ -281,7 +304,7 @@ export class DepositComponent{
             setTimeout(function(){
                 let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
                 jQuery(elem).find("td input").each(function(id,field) {
-                    if(id == focusedIndex) {
+                    if(id == 0) {
                         jQuery(field).focus();
                     }
                 });
@@ -545,8 +568,8 @@ export class DepositComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._depositForm.getData(this.depositForm);
-        data.payments = this.getDepositItemData(this.depositForm.controls['payments']);
-        data.payments=this.getDepositLineData(this.depositForm);
+       // data.payments = this.getDepositItemData(this.depositForm.controls['payments']);
+            data.payments=this.getDepositLineData(this.depositForm);
         data.amount=this.roundOffValue(data.amount);
         this.updateDepositLinesData(data);
         if(!this.validateData(data)){
@@ -576,7 +599,7 @@ export class DepositComponent{
 
     ngOnDestroy(){
         jQuery('#deposit-password-conformation').remove();
-      this.routeSubscribe.unsubscribe();
+        this.routeSubscribe.unsubscribe();
     }
 
     updateDepositDetails(){
@@ -594,6 +617,7 @@ export class DepositComponent{
 
 
     initialize(){
+        let state;
         let _form = this._depositForm.getForm();
         _form['payments'] = new FormArray([]); //this.depositItemsArray;
         this.depositForm = this._fb.group(_form);
@@ -604,7 +628,6 @@ export class DepositComponent{
         if(this.newDeposit){
             this.addDefaultLine(2);
         }
-
         this.currentCompanyId = Session.getCurrentCompany();
         this.loadingService.triggerLoadingEvent(true);
         this.dimensionService.dimensions(this.currentCompanyId)
@@ -622,9 +645,9 @@ export class DepositComponent{
             }, error => {
 
             });
-        this.invoiceService.invoices("unpaid")
+        this.invoiceService.invoices(state)
             .subscribe(invoices=> {
-                this.invoices = invoices;
+                this.invoices = invoices.invoices || [];
             }, error => {
 
             });
@@ -711,9 +734,13 @@ export class DepositComponent{
             let lineData = base._depositLineForm.getData(jeLineControl);
             if(!_.isEqual(lineData, defaultLine)){
                 if(!base.newDeposit){
-                    data.push(lineData);
+                    if(lineData.amount){
+                        data.push(lineData);
+                    }
                 } else if(!lineData.destroy){
-                    data.push(lineData);
+                    if(lineData.amount){
+                        data.push(lineData);
+                    }
                 }
             }
         });
@@ -751,20 +778,18 @@ export class DepositComponent{
             this.toastService.pop(TOAST_TYPE.error, "Please select valid bank account");
             return false;
         }
-
         if(data.amount <= 0){
             this.toastService.pop(TOAST_TYPE.error, "Deposit amount must be greater than zero.");
             return false;
         }
-
         let itemTotal = _.sumBy(data.payments, function(payment){
             return payment.destroy? 0 : payment.amount;
         });
+        itemTotal = this.roundOffValue(itemTotal);
         if(itemTotal != data.amount){
             this.toastService.pop(TOAST_TYPE.error, "Deposit amount and Item total did not match.");
             return false;
         }
-
         /*_.each(data.payments, function(line){
             if(!line.destroy){
                 if(!line.chart_of_account_id){
@@ -795,17 +820,21 @@ export class DepositComponent{
 
 
     /*mapping changes*/
-    /*showMappingPage(){
+    showMappingPage(){
      if(this.selectedMappingID){
-     let link = ['/payments', this.selectedMappingID];
+     let link = ['payments/edit', this.selectedMappingID];
      this._router.navigate(link);
      }else {
+         if(!this.bankAccountID){
+             this.toastService.pop(TOAST_TYPE.error, "Please select bank account.");
+             return
+         }
      this.mappingFlyoutCSS="expanded";
      this.loadingService.triggerLoadingEvent(true);
-     this.paymentsService.mappings(this.currentCompanyId,"bill","false")
+     this.depositService.unMappedInvoices(this.currentCompanyId,"false",this.bankAccountID)
      .subscribe(mappings => {
-     let mappings=mappings?mappings:[];
-     this.buildTableData(mappings);
+     let _mappings=mappings?mappings:[];
+     this.buildTableData(_mappings);
      }, error => {
      this.loadingService.triggerLoadingEvent(false);
      });
@@ -823,21 +852,20 @@ export class DepositComponent{
      this.tableOptions.singleSelectable = true;
      this.tableOptions.pageSize = 9;
      this.tableData.columns = [
-     {"name": "groupID", "title": "Id","visible":false,"filterable": false},
-     {"name": "title", "title": "Payment Title"},
-     {"name": "amount", "title": "Amount"},
-     {"name": "date", "title": "Date"},
+     {"name": "id", "title": "Id","visible":false,"filterable": false},
+     {"name": "amountPaid", "title": "Amount"},
+     {"name": "paymentDate", "title": "Date"},
      {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
-     {"name": "vendorName", "title": "Vendor"}
+     {"name": "customerName", "title": "Customer"}
      ];
      let base = this;
-     mappings.forEach(function(pyment) {
+     mappings.forEach(function(payment) {
      let row:any = {};
      _.each(base.tableColumns, function(key) {
-     row[key] = pyment[key];
-     if(key == 'amount'){
-     let amount = parseFloat(pyment[key]);
-     row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+     row[key] = payment[key];
+     if(key == 'amountPaid'){
+     let amount = parseFloat(payment[key]);
+     row[key] = amount.toLocaleString(base.localeFormat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
      }
      });
      base.tableData.rows.push(row);
@@ -849,7 +877,7 @@ export class DepositComponent{
      }
      handleSelect(event:any) {
      if(event&&event[0])
-     this.selectedMappingID=event[0]['groupID'];
+     this.selectedMappingID=event[0]['id'];
      }
 
      saveMappingID(){
@@ -857,7 +885,7 @@ export class DepositComponent{
      data.mapping_id = this.selectedMappingID;
      this._depositForm.updateForm(this.depositForm, data);
      this.mappingFlyoutCSS="collapsed";
-     }*/
+     }
 
 
     checkLockDate(){
@@ -914,10 +942,15 @@ export class DepositComponent{
                 base.lineTotal += line.amount? base.roundOffValue(parseFloat(line.amount)): 0;
             }
         });
+        this.formattedLineTotal=this.formatAmount(this.lineTotal);
     }
 
     roundOffValue(num){
         return Math.round(num * 100) / 100
+    }
+
+    formatAmount(value){
+        return this.numeralService.format('$0,0.00', value)
     }
 
 }

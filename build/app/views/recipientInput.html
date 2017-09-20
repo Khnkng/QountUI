@@ -1,0 +1,6 @@
+<div class="recipient-box row">
+  <span *ngFor="let recipient of recipients" class="recipient">{{recipient.id}} <a (click)="removeRecipient(recipient,$event)"><i class="icon ion-ios-close-empty"></i></a></span>
+  <div class="column">
+    <input type="text" (keyup)="onKey($event)"/>
+  </div>
+</div>

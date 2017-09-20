@@ -59,6 +59,7 @@ export class TaxesComponent {
     confirmSubscription:any;
     routeSubscribe:any;
 
+
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _taxesForm:TaxesForm,
                 private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
                 private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService,private titleService:pageTitleService) {
@@ -93,21 +94,22 @@ export class TaxesComponent {
                 // this.showMessage(true, success);
                 this.showFlyout = false;
             }, error =>  this.handleError(error));
-      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
-        if(this.showFlyout){
-          this.hideFlyout();
-        }else {
-          this.toolsRedirect();
-        }
-      });
+
+        this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+            if(this.showFlyout){
+                this.hideFlyout();
+            }else {
+                this.toolsRedirect();
+            }
+        });
     }
 
-  toolsRedirect(){
-    let link = ['tools'];
-    this._router.navigate(link);
-  }
+    toolsRedirect(){
+        let link = ['tools'];
+        this._router.navigate(link);
+    }
 
-  buildTableData(taxesList) {
+    buildTableData(taxesList) {
         this.hasItemCodes = false;
         this.taxesList = taxesList;
         this.tableData.rows = [];
@@ -221,7 +223,7 @@ export class TaxesComponent {
         this.getTaxDetails(row.id);
     }
     ngOnDestroy(){
-      this.routeSubscribe.unsubscribe();
+        this.routeSubscribe.unsubscribe();
         this.confirmSubscription.unsubscribe();
     }
     submit($event) {
@@ -240,7 +242,7 @@ export class TaxesComponent {
                 var res=data.taxRate.split('%')
                 data.taxRate=res[0];
             }
-            this.companyService.updateTax(<VendorModel>data, this.companyId, this.companyId, this.row.id)
+            this.companyService.updateTax(<VendorModel>data, this.companyId, this.companyId, null)
                 .subscribe(success  => {
                     this.showMessage(true, success);
                     this.showFlyout = false;

@@ -21,7 +21,7 @@ export class SignUpService extends  QountServices{
   }
 
   signUp(signUpModel: SignUpModel): Observable<any> {
-    return this.create(PATH.SIGNUP_SERVICE, signUpModel, SOURCE_TYPE.NODE)
+    return this.create(PATH.SIGNUP_SERVICE, signUpModel, SOURCE_TYPE.JAVA)
       .map(res => <any> res.text())
       .catch(this.handleError)
   }

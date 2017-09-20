@@ -15,6 +15,8 @@ export class BudgetForm extends abstractForm{
             "frequency": [model ? model.frequency : '',Validators.required],*/
             "description": [model ? model.description : ''],
             id: [model ? model.id : ''],
+            "year": [model ? model.year : '',Validators.required],
+            "defaultBudget":[model ? model.defaultBudget : false,Validators.required]
         }
     }
 

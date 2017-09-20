@@ -3,8 +3,8 @@ import {FormGroup, FormBuilder} from "@angular/forms";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {FTable} from "qCommon/app/directives/footable.directive";
 import {Router} from "@angular/router";
-import {ToastService} from "qCommon/app/services/Toast.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
@@ -39,52 +39,55 @@ export class UsersComponent {
     showFlyout:boolean = false;
     confirmSubscription:any;
     userId:any;
-  routeSubscribe:any;
+    routeSubscribe:any;
+
     constructor(private _fb: FormBuilder, private usersService: CompanyUsers, private _usersForm:UsersForm,
                 private _router: Router, private _toastService: ToastService, private loadingService:LoadingService,
                 private switchBoard: SwitchBoard,private toastService: ToastService,private titleService:pageTitleService) {
-      this.titleService.setPageTitle("Users");
+        this.titleService.setPageTitle("Users");
         this.userForm = this._fb.group(_usersForm.getForm());
         this.companyId = Session.getCurrentCompany();
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteUser(toast));
         let defaultCompany:any = Session.getUser().default_company || {};
         if(!_.isEmpty(defaultCompany)){
             let roles = defaultCompany.roles;
-            if(roles.indexOf('Owner') != -1 || roles.indexOf('Account Manager') != -1 || roles.indexOf('Admin') != -1){
+            if(roles.indexOf('Owner') != -1 || roles.indexOf('Account Manager') != -1 || roles.indexOf('Admin') != -1 || roles.indexOf('Yoda') != -1){
                 this.canAddUsers = true;
             }
         }
         this.usersService.roles().subscribe(roles => {
             _.remove(roles, {'id':'Admin'});
+            _.remove(roles, {'id':'Yoda'});
             this.roles=roles;
         }, error => this.handleError(error));
         if(this.companyId){
             this.loadingService.triggerLoadingEvent(true);
             this.usersService.users(this.companyId).subscribe(users => {
-                this.buildTableData(users)
+                let usersList=_.filter(users, function(user) { return user.roleID!='Yoda'; });
+                this.buildTableData(usersList);
             }, error => this.handleError(error));
         }
-      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
-        if(this.showFlyout){
-          this.hideFlyout();
-        }else {
-          this.toolsRedirect();
-        }
-      });
+
+        this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+            if(this.showFlyout){
+                this.hideFlyout();
+            }else {
+                this.toolsRedirect();
+            }
+        });
     }
 
-  toolsRedirect(){
-    let link = ['tools'];
-    this._router.navigate(link);
-  }
+    toolsRedirect(){
+        let link = ['tools'];
+        this._router.navigate(link);
+    }
 
-  ngOnDestroy(){
-    this.routeSubscribe.unsubscribe();
-    this.confirmSubscription.unsubscribe();
-  }
+    ngOnDestroy(){
+        this.routeSubscribe.unsubscribe();
+        this.confirmSubscription.unsubscribe();
+    }
 
-
-  buildTableData(users) {
+    buildTableData(users) {
         this.users = users;
         this.hasUsersList = false;
         this.tableOptions.search = true;

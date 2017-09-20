@@ -195,9 +195,7 @@ export class paymentdashboardComponent {
                     let vendorId = vendor['VendorID'];
                     delete vendor['TOTAL'];
                     delete vendor['VendorID'];
-                    let values = Object.keys(vendor).map(function(_key:any) {
-                      return vendor[_key];
-                    });
+                    let values = Object.keys(vendor).map(k => vendor[k]);
                     let v=Object.keys(vendor);
                     values = this.removeCurrency(values);
                     let current = values.pop();
@@ -217,9 +215,7 @@ export class paymentdashboardComponent {
                     delete vendor['TOTAL'];
                     delete vendor['VendorID'];
                     delete vendor['type'];
-                    let values = Object.keys(vendor).map(function(_key:any) {
-                      return vendor[_key];
-                    });
+                    let values = Object.keys(vendor).map(k => vendor[k]);
                     values = this.removeCurrency(values);
                     let current = values.pop();
                     values.splice(0, 0, current);

@@ -72,17 +72,17 @@ export class ToolsComponent {
         let link = ['companies'];
         this._router.navigate(link);
       }
-      break;
+        break;
       case 'vendors': {
         let link = ['vendors'];
         this._router.navigate(link);
       }
-      break;
+        break;
       case 'chartofaccounts': {
         let link = ['chartOfAccounts'];
         this._router.navigate(link);
       }
-      break;
+        break;
       case 'dimensions': {
         let link = ['dimensions'];
         this._router.navigate(link);
@@ -102,27 +102,27 @@ export class ToolsComponent {
         let link = ['payments/workflow'];
         this._router.navigate(link);
       }
-      break;
+        break;
       case 'invoice_settings': {
         let link = ['invoices/invoiceSettings'];
         this._router.navigate(link);
       }
-      break;
+        break;
       case 'items': {
         let link = ['itemCodes'];
         this._router.navigate(link);
       }
-      break;
+        break;
       case 'expensecode': {
         let link = ['expensecode'];
         this._router.navigate(link);
       }
-      break;
+        break;
       case 'customers': {
         let link = ['customers'];
         this._router.navigate(link);
       }
-      break;
+        break;
       case 'users': {
         let link = ['users'];
         this._router.navigate(link);
@@ -132,17 +132,17 @@ export class ToolsComponent {
         let link = ['taxes'];
         this._router.navigate(link);
       }
-      break;
+        break;
       case 'modules': {
         let link = ['modules'];
         this._router.navigate(link);
       }
-      break;
+        break;
       case 'rules': {
         let link = ['rules'];
         this._router.navigate(link);
       }
-      break;
+        break;
       case 'employees': {
         let link = ['employees'];
         this._router.navigate(link);
@@ -165,6 +165,11 @@ export class ToolsComponent {
         break;
       case 'plans': {
         let link = ['plans'];
+        this._router.navigate(link);
+      }
+        break;
+      case 'metrics': {
+        let link = ['metrics'];
         this._router.navigate(link);
       }
     }

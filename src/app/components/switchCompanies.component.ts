@@ -11,10 +11,11 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {UserProfileService} from "qCommon/app/services/UserProfile.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
-declare var _:any;
-declare var jQuery:any;
-declare var moment:any;
+declare let _:any;
+declare let jQuery:any;
+declare let moment:any;
 
 @Component({
     selector: 'switch-company',
@@ -35,19 +36,20 @@ export class SwitchCompanyComponent{
     routeSubscribe:any;
 
     constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
-                private companiesService: CompaniesService, private loadingService: LoadingService, private userProfileService: UserProfileService,private titleService:pageTitleService) {
+                private companiesService: CompaniesService, private loadingService: LoadingService, private userProfileService: UserProfileService,
+                private titleService:pageTitleService, private numeralService: NumeralService) {
         this.loadingService.triggerLoadingEvent(true);
         this.currentCompanyId = Session.getCurrentCompany();
         this.currentCompanyName = Session.getCurrentCompanyName();
         this.compSubscription = this.switchBoard.onCompanyAddOrDelete.subscribe(msg => this.fetchCompanies());
         this.fetchCompanies();
         this.titleService.setPageTitle("Switch Company");
-      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title =>
-        {
-          let link = ['/dashboard'];
-          this._router.navigate(link);
-        }
-      );
+        this.routeSubscribe = switchBoard.onClickPrev.subscribe(title =>
+            {
+                let link = ['/dashboard'];
+                this._router.navigate(link);
+            }
+        );
     }
 
     fetchCompanies(){
@@ -67,7 +69,7 @@ export class SwitchCompanyComponent{
     }
 
     ngOnDestroy(){
-      this.routeSubscribe.unsubscribe();
+        this.routeSubscribe.unsubscribe();
     }
 
     handleError(error){
@@ -98,6 +100,7 @@ export class SwitchCompanyComponent{
             {"name": "owner", "title": "Owner"},
             {"name": "accountManager", "title": "Account Manager"},
             {"name": "defaultCurrency", "title": "Currency","visible": false},
+            {"name": "fiscalStartDate", "title": "Fiscal Date","visible": false},
             {"name": "lockDate", "title": "Lock Date","visible": false},
             {"name": "actions", "title": "", "type": "html", "filterable": false}
         ];
@@ -122,7 +125,7 @@ export class SwitchCompanyComponent{
             row.accountManager=company.accountManager;
             row.defaultCurrency=company.defaultCurrency;
             row.lockDate=company.lock_date;
-
+            row.fiscalStartDate = company.fiscalStartDate;
             if(row.id != base.currentCompanyId){
                 row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Hop</span></a>";
             }
@@ -158,7 +161,9 @@ export class SwitchCompanyComponent{
     changeCompany(company){
         Session.setCurrentCompany(company.id);
         Session.setCurrentCompanyName(company.name);
+        Session.setFiscalStartDate(company.fiscalStartDate);
         Session.setCurrentCompanyCurrency(company.defaultCurrency);
+        this.numeralService.switchLocale(company.defaultCurrency);
         Session.setLockDate(company.lockDate);
         this.switchBoard.onSwitchCompany.next({});
         this.currentCompanyName = company.name;

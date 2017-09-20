@@ -1,0 +1,67 @@
+
+<div [ngClass]="{'signup-bg': !hasLoggedIn}">
+  <div class="top-bar" data-sticky-container [hidden]="!hasLoggedIn">
+    <div class="top-bar-title">
+    <span class="qount-off-canvas-menu-buttom hide-for-large" (click)="toggleOffCanvasMenu()">
+      <i [ngClass]="{'ion-navicon-round':!isOffCanvasMenuExpanded, 'ion-close-round':isOffCanvasMenuExpanded}"></i>
+    </span>
+      <span class="icon">
+      <img src="./images/logo_withtext.png" style="width: 100px;cursor: pointer;" (click)="goToDefaultPage()" [hidden]="!isSideMenuExpanded"/>
+      <img src="./images/logo.png" style="cursor: pointer;" (click)="goToDefaultPage()" [hidden]="isSideMenuExpanded"/>
+    </span>
+      <span class="top-nav-arrows">
+          <span><i class="icon ion-ios-arrow-left" (click)="showPrevious()"></i><i class="icon ion-ios-arrow-right item-disabled" disabled></i></span>
+          <span class="top-nav-name">{{pageTitle}}</span>
+      </span>
+    </div>
+    <div id="responsive-menu">
+      <qount-header *ngIf="hasLoggedIn" (togglemenu)="togglemenu($event)" (redirect)="redirectToPage($event)"></qount-header>
+    </div>
+  </div>
+  <offcanvas-menu></offcanvas-menu>
+  <div class="expanded row"  [ngClass]="{'signup-container' : !hasLoggedIn}">
+    <div [ngClass]="sMenuCss" class="show-for-large" *ngIf="hasLoggedIn">
+      <side-bar [isExpanded]="isSideMenuExpanded">
+      </side-bar>
+    </div>
+    <div class="columns" [ngClass]="mainCanvasCss">
+      <router-outlet>
+      </router-outlet>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" [ngClass]="confirmClass">
+  <div class="toast-wrapper" *ngFor="let toast of toasts">
+    <div class="toast" [ngClass]="toast.toastClass" *ngIf="toast.toastClass != 'toast-confirm'">
+      <div class='toast-title' >{{toast.title}}</div>
+      <div class='toast-message' >{{toast.message}}
+      </div>
+    </div>
+    <div class="toast toast-confirm row" style="background-color: #EFEDE8" *ngIf="toast.toastClass == 'toast-confirm'">
+      <!--<div class="medium-1 column align-right confirm-icon">-->
+      <!--<i class="icon ion-help"></i>-->
+      <!--</div>-->
+      <div class="medium-7 columns">
+        <div class='toast-title' style="color:#33AEBD">{{toast.message}}</div>
+      </div>
+      <div class="medium-5 columns btn-wrapper">
+        <a class="button success" style="background-color: #2CB1BF;font-color:#fefefe" (click)="confirm(toast)">Yes</a>
+        <a class="button alert" style="background-color: #F9534C;font-color:#fefefe" (click)="cancel(toast)">No</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!--<loading-wheel [isOverlay]="true"></loading-wheel>-->
+<div class="qount-overlay" *ngIf="isOverlay && isLoading"></div>
+<div class="qount-loading-wheel">
+  <div align="center" class="fond" [hidden]="!isLoading">
+    <div class="contener_general">
+      <div class="contener_mixte"><div class="ballcolor ball_4">&nbsp;</div></div>
+      <div class="contener_mixte"><div class="ballcolor ball_3">&nbsp;</div></div>
+      <div class="contener_mixte"><div class="ballcolor ball_2">&nbsp;</div></div>
+      <div class="contener_mixte"><div class="ballcolor ball_1">&nbsp;</div></div>
+    </div>
+  </div>
+</div>
+

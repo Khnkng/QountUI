@@ -51,6 +51,7 @@ export class ExpensesCodesComponent {
   itemCodeId:any;
   confirmSubscription:any;
   routeSubscribe:any;
+
   constructor(private _fb: FormBuilder, private _expensesForm: ExpenseCodesForm, private switchBoard: SwitchBoard,
               private codeService: CodesService, private toastService: ToastService, private _router:Router,
               private coaService: ChartOfAccountsService, private expensesSerice:ExpensesService,
@@ -80,6 +81,7 @@ export class ExpensesCodesComponent {
       }
     });
   }
+
   ngOnDestroy(){
     this.confirmSubscription.unsubscribe();
     this.routeSubscribe.unsubscribe();
@@ -123,19 +125,19 @@ export class ExpensesCodesComponent {
     this._expensesForm.updateForm(this.expensesForm, row);
     this.showFlyout = true;
   }
-deleteExpense(toast){
+  deleteExpense(toast){
 
-  this.loadingService.triggerLoadingEvent(true);
-  this.expensesSerice.removeExpense(this.currentCompany.id,this.itemCodeId)
-      .subscribe(coa => {
-     //   this.loadingService.triggerLoadingEvent(false);
-        this.expensesSerice.getAllExpenses(this.currentCompany.id)
-            .subscribe(expenseCodes => this.buildTableData(expenseCodes), error=> this.handleError(error));
-        this.toastService.pop(TOAST_TYPE.success, "Expense code deleted successfully");
-      }, error => this.handleError(error));
-}
+    this.loadingService.triggerLoadingEvent(true);
+    this.expensesSerice.removeExpense(this.currentCompany.id,this.itemCodeId)
+        .subscribe(coa => {
+          //   this.loadingService.triggerLoadingEvent(false);
+          this.expensesSerice.getAllExpenses(this.currentCompany.id)
+              .subscribe(expenseCodes => this.buildTableData(expenseCodes), error=> this.handleError(error));
+          this.toastService.pop(TOAST_TYPE.success, "Expense code deleted successfully");
+        }, error => this.handleError(error));
+  }
   removeExpense(row: any){
-     this.itemCodeId = row.id;
+    this.itemCodeId = row.id;
     this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
   }
 
@@ -197,7 +199,7 @@ deleteExpense(toast){
       //data.companyID = this.currentCompany.id;
       this.expensesSerice.addExpense(data,this.currentCompany.id)
           .subscribe(newItemcode => {
-           // this.loadingService.triggerLoadingEvent(false);
+            // this.loadingService.triggerLoadingEvent(false);
             this.handleExpense(newItemcode);
             this.showFlyout = false;
           }, error => this.handleError(error));

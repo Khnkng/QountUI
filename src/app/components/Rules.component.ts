@@ -142,24 +142,24 @@ export class RulesComponent {
                     this.depositAarraylist.push(key);
                 }
             }, error =>  this.handleError(error));
-      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
-        if(this.showFlyout){
-          this.hideFlyout();
-        }else {
-          this.toolsRedirect();
-        }
-      });
+        this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+            if(this.showFlyout){
+                this.hideFlyout();
+            }else {
+                this.toolsRedirect();
+            }
+        });
     }
 
-  toolsRedirect(){
-    let link = ['tools'];
-    this._router.navigate(link);
-  }
+    toolsRedirect(){
+        let link = ['tools'];
+        this._router.navigate(link);
+    }
 
-  ngOnDestroy(){
-    this.routeSubscribe.unsubscribe();
-    this.confirmSubscription.unsubscribe();
-  }
+    ngOnDestroy(){
+        this.routeSubscribe.unsubscribe();
+        this.confirmSubscription.unsubscribe();
+    }
     handleError(error) {
         this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }

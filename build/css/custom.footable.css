@@ -1,0 +1,320 @@
+/**
+ * Created by yvadugu on 10-05-2016.
+ */
+table thead {
+  background: #E5E5E5;
+  border: none;
+  background-color: #E5E5E5;
+  color: #878787;
+  font-family: NiveauGroteskRegular;
+  font-weight: normal;
+  color: #878787;
+}
+
+table thead tr {
+  border: 1px solid #DCDEDD !important;
+}
+
+table thead tr th {
+  font-size: 1.05em;
+  border: none !important;
+  color: #878787;
+}
+
+table tbody tr {
+  border: 1px solid #DCDEDD;
+}
+
+table tbody tr td {
+  color: #878787;
+  font-size: 1.05em;
+  font-family: NiveauGroteskRegular;
+}
+
+table tbody tr:hover {
+  background: #F1F1F1 !important;
+}
+
+table tfoot {
+  background: #ffffff !important;
+  border: none !important;
+}
+
+@font-face {
+  font-family: 'open sans';
+  src: url("../fonts/OpenSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  src: url("../fonts/NotoSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url("../fonts/SourceSansPro-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskMedium';
+  src: url("../fonts/NiveauGrotesk-Medium.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskLight';
+  src: url("../fonts/NiveauGrotesk-light.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskRegular';
+  src: url("../fonts/NiveauGrotesk-regular.ttf");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.eot");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.svg");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.ttf");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.woff");
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/MaterialIcons-Regular.eot");
+  /* For IE6-8 */
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("../fonts/MaterialIcons-Regular.woff2") format("woff2"), url("../fonts/MaterialIcons-Regular.woff") format("woff"), url("../fonts/MaterialIcons-Regular.ttf") format("truetype");
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+[data-whatinput='mouse'] select {
+  outline: 0;
+}
+
+.foo-container {
+  min-height: 250px;
+  position: relative;
+}
+
+.foo-container .foo-toolbar {
+  position: absolute;
+  right: 15px;
+  top: -3px;
+}
+
+.foo-container .foo-toolbar .button.small {
+  min-width: 125px;
+  font-weight: 600;
+}
+
+.foo-container .vendor-foo-toolbar {
+  position: absolute;
+  right: 22px;
+  font-size: .9rem;
+  font-weight: 500;
+  color: #696E73;
+  padding: 5px 0;
+}
+
+.foo-container .vendor-foo-toolbar .button.small {
+  min-width: 125px;
+  font-weight: 600;
+  margin-top: -9px;
+}
+
+.foo-container .vendor-foo-toolbar span:hover {
+  color: #77affa;
+}
+
+.foo-container .bighalf-footable .footable-filtering .footable-filtering {
+  right: 125px;
+}
+
+.foo-container .bighalf-footable.search-right .footable-filtering .footable-filtering {
+  right: 0px;
+}
+
+.foo-container .footable .open > .dropdown-menu {
+  display: block;
+  max-height: 130px;
+  overflow: auto;
+}
+
+.footable thead {
+  border: none;
+  background-color: #E5E5E5;
+  color: #878787;
+  font-family: NiveauGroteskRegular;
+  font-weight: normal;
+}
+
+.footable thead .footable-filtering {
+  background-color: #FFFFFF !important;
+  margin: 0 !important;
+  border: none;
+}
+
+.footable thead .footable-filtering th {
+  font-size: 1.05em !important;
+  padding: 0 !important;
+}
+
+.footable tbody {
+  font-size: 1.05em;
+  font-family: NiveauGroteskRegular;
+}
+
+.footable tbody tr td {
+  color: #878787 !important;
+}
+
+.footable tbody tr:hover {
+  background-color: #F1F1F1 !important;
+}
+
+.footable.footable-filtering {
+  margin-top: 50px;
+}
+
+.footable .footable-filtering {
+  position: absolute;
+  top: -50px;
+  right: 0px;
+  border: none !important;
+}
+
+.footable .footable-filtering .footable-filtering-search input.form-control {
+  border-right: none !important;
+}
+
+.footable .footable-filtering .footable-filtering-search input.form-control:focus {
+  box-shadow: none;
+}
+
+.footable .footable-filtering .footable-filtering-search input.form-control:focus + .input-group-btn .btn-primary {
+  color: #4B96FA;
+}
+
+.footable .footable-filtering .footable-filtering-search button.btn-primary {
+  z-index: 2;
+  color: #696E73;
+  border: 1px solid #CCCCCC;
+  border-left: none !important;
+  background: #fff;
+}
+
+.footable .footable-filtering .footable-filtering-search button.btn-default.dropdown-toggle:hover {
+  background: #EEEEEE;
+}
+
+.footable.footable-paging {
+  position: relative;
+}
+
+.footable.footable-paging .footable-paging span.label {
+  display: none !important;
+}
+
+.footable.footable-paging td ul {
+  color: #696E73;
+}
+
+.footable.footable-paging td ul.pagination {
+  position: relative;
+  right: -10px;
+}
+
+.footable.footable-paging td ul.pagination li.active a {
+  color: #696E73;
+  background: #E5E5E5;
+  border: 1px solid #DCDEDD;
+}
+
+.footable.footable-paging td ul.pagination li.active a:focus {
+  background: #CCCCCC;
+  border-color: #DCDEDD;
+  color: #696E73;
+}
+
+.footable.footable-paging td ul.pagination li.active a:hover {
+  background: #E5E5E5;
+  border-color: #CCCCCC;
+  color: #696E73;
+}
+
+.footable.footable-paging td ul.pagination li a {
+  color: #696E73;
+  font-size: .8em;
+}
+
+.footable.footable-paging td ul.pagination li:last-child a {
+  border-radius: 3px;
+}
+
+/*.hollow{
+  font-size: 9px !important;
+  font-weight: 800;
+  margin-bottom: 2px !important;
+}*/
+.box-notifiers {
+  color: #696E73;
+}
+
+.box-notifiers span:hover {
+  color: #4554A4;
+}
+
+.notifiers-count {
+  color: #ff0019;
+}
+
+.box-notifiers-alignment {
+  padding: 5px 15px;
+}
+
+.box-notifiers-alignment > span {
+  margin-right: 20px;
+}
+
+table thead tr th {
+  font-size: 0.9em !important;
+}
+
+.hide-pagination tfoot {
+  display: none;
+}

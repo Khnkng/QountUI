@@ -10,6 +10,7 @@ import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {StateService} from "qCommon/app/services/StateService";
 import {State} from "qCommon/app/models/State";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
 
 declare let jQuery:any;
 declare let _:any;
@@ -35,11 +36,13 @@ export class PaymentsComponent{
     fromPayments:boolean=false;
     localeFortmat:string='en-US';
     routeSubscribe:any;
+
     constructor(private switchBoard: SwitchBoard, private toastService: ToastService, private loadingService:LoadingService,
                 private paymentsService:PaymentsService,private _router:Router, private _route: ActivatedRoute,
                 private numeralService:NumeralService, private stateService: StateService,private titleService:pageTitleService){
-      this.titleService.setPageTitle("Payments");
+        this.titleService.setPageTitle("Payments");
         let companyId = Session.getCurrentCompany();
+        this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.loadingService.triggerLoadingEvent(true);
         this.routeSub = this._route.params.subscribe(params => {
@@ -52,13 +55,12 @@ export class PaymentsComponent{
                     }, error => this.handleError(error));
             }
         });
-      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => this.hideFlyout());
+        this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => this.hideFlyout());
     }
 
-  ngOnDestroy(){
-    this.routeSubscribe.unsubscribe();
-  }
-
+    ngOnDestroy(){
+        this.routeSubscribe.unsubscribe();
+    }
 
     handleError(error){
         this.loadingService.triggerLoadingEvent(false);
@@ -167,7 +169,8 @@ export class PaymentsComponent{
         if(Session.getLastVisitedUrl().indexOf('/payments/bill')==0){
             link = ["/payments"];
         }else {
-            link = [Session.getLastVisitedUrl()];
+            let route = this.stateService.getPrevState()? this.stateService.getPrevState().url: Session.getLastVisitedUrl();
+            link = [route];
         }
         this._router.navigate(link);
     }

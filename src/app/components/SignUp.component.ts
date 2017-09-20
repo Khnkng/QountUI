@@ -74,8 +74,7 @@ export class SignUpComponent implements OnInit{
       this.message = obj;
       this.newSignUp();
       this._toastService.pop(TOAST_TYPE.success,obj);
-      let link = ['Login'];
-      this._router.navigate(link);
+      this._router.navigate(['login']);
     } else {
       //this.status = {};
       //this.status['error'] = true;

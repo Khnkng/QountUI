@@ -2,7 +2,7 @@
  * Created by seshu on 27-02-2016.
  */
 
-import {AfterViewInit, Component, ElementRef, Input, ViewChild} from "@angular/core";
+import {Component, Input, ViewChild} from "@angular/core";
 import {Router} from "@angular/router";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
@@ -19,7 +19,7 @@ declare var _:any;
   templateUrl: '../views/sideBar.html'
 })
 
-export class SideBarComponent implements AfterViewInit{
+export class SideBarComponent {
   isDashboard:boolean = true;
   isBooks:boolean = false;
   isInvoice:boolean = false;
@@ -39,8 +39,13 @@ export class SideBarComponent implements AfterViewInit{
 
   @Input() isExpanded:boolean;
 
-  constructor(private el:ElementRef, private switchBoard:SwitchBoard, private _router:Router, private stateService: StateService,private titleService:pageTitleService) {
+  constructor(private switchBoard:SwitchBoard, private _router:Router, private stateService: StateService,private titleService:pageTitleService) {
     console.info('QountApp sidebar Component Mounted Successfully7');
+    this._router.events.subscribe((event:any) => {
+      if(event.url=='/dashboard') {
+       //this.showPage(PAGES.DASHBOARD,'');
+      }
+    });
   }
 
   logout() {
@@ -50,7 +55,6 @@ export class SideBarComponent implements AfterViewInit{
   }
 
   showPage(page:PAGES, $event) {
-
     $event && $event.stopImmediatePropagation();
     this.isDashboard = false;
     this.isBooks = false;
@@ -61,16 +65,16 @@ export class SideBarComponent implements AfterViewInit{
     this.isTools = false;
     this.isPayments=false;
     this.stateService.clearAllStates();
-    var base = this;
+    let base = this;
     switch (page) {
       case PAGES.DASHBOARD: {
-        let link = [''];
+        let link = ['dashboard'];
         this._router.navigate(link);
         base.isDashboard = true;
       }
         break;
       case PAGES.BOOKS: {
-        let link = ['books', 'deposits'];
+        let link = ['books', 'dashboard'];
         this._router.navigate(link);
         base.isBooks = true;
       }
@@ -105,16 +109,6 @@ export class SideBarComponent implements AfterViewInit{
         base.isPayments = true;
       }
         break;
-    }
-  }
-
-  static loadedFoundation = false;
-
-  ngAfterViewInit() {
-    if(!SideBarComponent.loadedFoundation) {
-      const elem = jQuery(this.el.nativeElement);
-      elem.foundation();
-      SideBarComponent.loadedFoundation = true;
     }
   }
 

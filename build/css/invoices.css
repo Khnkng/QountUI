@@ -1,0 +1,231 @@
+/**
+ * Created by yvadugu on 10-05-2016.
+ */
+table thead {
+  background: #E5E5E5;
+  border: none;
+  background-color: #E5E5E5;
+  color: #878787;
+  font-family: NiveauGroteskRegular;
+  font-weight: normal;
+  color: #878787;
+}
+
+table thead tr {
+  border: 1px solid #DCDEDD !important;
+}
+
+table thead tr th {
+  font-size: 1.05em;
+  border: none !important;
+  color: #878787;
+}
+
+table tbody tr {
+  border: 1px solid #DCDEDD;
+}
+
+table tbody tr td {
+  color: #878787;
+  font-size: 1.05em;
+  font-family: NiveauGroteskRegular;
+}
+
+table tbody tr:hover {
+  background: #F1F1F1 !important;
+}
+
+table tfoot {
+  background: #ffffff !important;
+  border: none !important;
+}
+
+@font-face {
+  font-family: 'open sans';
+  src: url("../fonts/OpenSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  src: url("../fonts/NotoSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url("../fonts/SourceSansPro-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskMedium';
+  src: url("../fonts/NiveauGrotesk-Medium.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskLight';
+  src: url("../fonts/NiveauGrotesk-light.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskRegular';
+  src: url("../fonts/NiveauGrotesk-regular.ttf");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.eot");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.svg");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.ttf");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.woff");
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/MaterialIcons-Regular.eot");
+  /* For IE6-8 */
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("../fonts/MaterialIcons-Regular.woff2") format("woff2"), url("../fonts/MaterialIcons-Regular.woff") format("woff"), url("../fonts/MaterialIcons-Regular.ttf") format("truetype");
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+[data-whatinput='mouse'] select {
+  outline: 0;
+}
+
+.new-invoice .button-wrapper .button {
+  float: left;
+  margin-left: 15px;
+}
+
+.new-invoice .logo {
+  height: 100px;
+  width: 100px;
+  background-color: #2B91AF;
+}
+
+.new-invoice .biz-data input {
+  text-align: right;
+}
+
+.invoice-settings .template-type {
+  width: 150px;
+  float: left;
+  border: 1px solid #DCDEDD;
+  height: 150px;
+  position: relative;
+  margin-left: 10px;
+}
+
+.invoice-settings .template-type label {
+  cursor: pointer;
+}
+
+.invoice-settings .template-text {
+  position: absolute;
+  bottom: 0px;
+  text-align: center;
+  width: 100%;
+}
+
+.invoice-settings textarea {
+  height: 80px;
+}
+
+.invoice-settings .other input {
+  width: auto;
+  margin-left: 5px;
+}
+
+.invoice-settings .image-wrapper {
+  margin-left: 25px;
+  margin-top: 10px;
+}
+
+.invoice-settings .image-wrapper img {
+  border: 1px solid #CACACA;
+}
+
+.invoice-settings .color-field {
+  width: 75px;
+}
+
+.new-invoice .addCustomerLogo {
+  border: 1pt solid #ccc;
+  width: 330px;
+  height: 150px;
+  position: relative;
+}
+
+.new-invoice .addCustomerLogo .addCustomerLink {
+  position: absolute;
+  top: 30%;
+  text-align: center;
+  width: 100%;
+}
+
+.new-invoice .addCustomerLogo .addCustomerLink i.icon {
+  font-size: 2.5em;
+  position: relative;
+  top: 8px;
+  margin-right: 10px;
+}
+
+.new-invoice label {
+  text-align: right;
+}
+
+.new-invoice .row.header {
+  background: #eee;
+  padding: 15px 0px 10px 0px;
+  border-bottom: 1pt solid #3c3c3c;
+  margin-bottom: 20px;
+}
+
+.new-invoice .row.header label {
+  text-align: left;
+  display: inline-block;
+}
+
+.new-invoice .row.items-table {
+  background: #EBF9FE;
+}
+
+.new-invoice .add-item {
+  border-top: 1pt solid #ccc;
+  border-bottom: 1pt solid #ccc;
+  padding: 10px;
+}

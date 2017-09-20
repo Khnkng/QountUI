@@ -64,6 +64,11 @@ export class ReconcileService extends  QountServices{
             .catch(this.handleError)
     }
 
+    deleteReconActivity(data:any) : Observable<any> {
+        var url = this.interpolateUrl(PATH.RECONCILE_RECON_DELETE, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany(),reconActivityID:data.id});
+        return this.delete(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+            .catch(this.handleError)
+    }
 
     private handleError (error: Response) {
         return Observable.throw(error.text());

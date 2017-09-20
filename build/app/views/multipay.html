@@ -1,0 +1,287 @@
+<div class="qount-off-canvas-menu">
+    <div class="flyout expanded">
+        <section class="flyout-placeholder">
+            <header class="flyout-header">
+                <h6>Payments</h6>
+            </header>
+            <div class="flyout-body flyout-shadow-effect">
+                <!--here comes actual flyout code-->
+                    <section class="form-section clearfix">
+                        <header class="form-section-header">Payment Info</header>
+ <div class="row">
+                <div class="small-12 medium-3 column">
+                    <label>Payment Title
+                <div><input type="text" [(ngModel)]="title" placeholder="Payment Title*"></div>
+                </label>
+                </div>
+                    <div class="small-12 medium-3 columns">
+                 <label>Payment Mode
+                     <select placeholder="PaymentMethod" [(ngModel)]="paymentMode">
+                         <option value="ach">ACH</option>
+                         <option value="digitalCheque">Digital Check</option>
+                         <option value="mailCheque">Physical Check</option>
+                     </select>
+                 </label>
+             </div>
+            <div class="small-12 medium-3 column">
+                <label>Bank Account
+                    <select combo-box #bankAccountsComboBoxDir="comboBox" title="" data-placeholder="Enter Account*" [listObject]="companyAccounts" (valueChanged)="onBankSelect($event)">
+                        <option *ngFor="let account of companyAccounts" [value]="account.name">{{account.name}}</option>
+                    </select>
+                </label>
+            </div>
+    <div class="columns small-12 medium-3" style="margin-top: 2rem;" >
+        <label ><input type="checkbox" (change)="hasMarkPaidApplied()"> Mark Paid
+        </label>
+    </div>
+</div>
+<div class="row" *ngIf="markPaid">
+    <div class="small-12 medium-3 column">
+        <label>Payment Number
+            <div><input type="text" [(ngModel)]="payNumber" placeholder="Payment Number*"></div>
+        </label>
+    </div>
+    <div class="small-12 medium-3 column">
+        <label>Pay Date
+            <input type="text" [(ngModel)]="payDate" [mindate]="'past'" custom-datepicker [format]="MM/DD/YYYY" (valueChanged)="setMarkPaidDate($event)"  placeholder="Pay date*">
+        </label>
+    </div>
+    <div class="small-12 medium-3 column">
+        <label>Notes
+            <div><input type="text" [(ngModel)]="notes" placeholder="Notes"></div>
+        </label>
+    </div>
+</div>
+
+
+<div class="row collapse">
+    <div class="column small-12 medium-12 large-12">
+        <ul foundation class="accordion" data-accordion data-allow-all-closed="true">
+            <li data-accordion-item class="accordion-item">
+                <a class="accordion-title"><span>Credits</span><span style="margin-right: 20px;" class="float-right">{{totalCredit| currency:companyCurrency:true:'1.2-2'}}</span></a>
+                <div class="accordion-content" data-tab-content>
+                    <div class="dropdown-values">
+                        <table *ngIf="credits">
+                            <thead>
+                            <tr>
+                                <th>
+                                    Credit Number
+                                </th>
+                                <th>
+                                    Credit Date
+                                </th>
+                                <th>
+                                    Credit Amount
+                                </th>
+                                <th>
+
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let credit of credits">
+                                <td>{{credit.customID}}</td>
+                                <td>{{credit.creditDate}}</td>
+                                <td>{{credit.totalAmount|currency:companyCurrency:true:'1.2-2'}}</td>
+                                <td><input type="checkbox" (change)="selectCredit(credit)" [(ngModel)]="credit.isSelected"/></td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    </div>
+
+<div class="row">
+    <label class="form-section-header form-checkbox">Bills</label>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Bill Number</th>
+            <th>Vendor</th>
+            <th>Vendor Email</th>
+            <th>Due Date</th>
+            <th *ngIf="hasForeignCurrency">Conversion Rate</th>
+            <th>Original Bill Amount</th>
+            <th>Bill Amount</th>
+            <th>Paid Amount</th>
+            <th>Unpaid Amount</th>
+            <th>Pay</th>
+        </tr>
+
+        </thead>
+        <tbody>
+        <tr *ngFor="let bill of selectedBills">
+            <td>{{bill.billID}}</td>
+            <td>{{bill.vendorName}}</td>
+            <td>{{bill.vendorEmail}}</td>
+            <td>{{bill.dueDate}}</td>
+            <td *ngIf="hasForeignCurrency">{{bill.conversionRate|currency:companyCurrency:true:'1.2-2'}}</td>
+            <td>{{bill.billAmount}}</td>
+            <td>{{(bill.amountPaid+bill.unpaidAmount)|currency:companyCurrency:true:'1.2-2'}}</td>
+            <td>{{bill.amountPaid| currency:companyCurrency:true:'1.2-2'}}</td>
+            <td>{{bill.unpaidAmount| currency:companyCurrency:true:'1.2-2'}}</td>
+            <td><input [(ngModel)]="bill.payAmount" numeral [format]="'$0,0.00'" [locale]="companyCurrency" (keyup)="setTotalAmount($event)" (change)="setTotalAmount($event)"/></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+                            <div class="row" foundation>
+                                <label class="small-12 medium-6 column">(Total Bills Amount - Total Credit Amount) : <span style="font-weight: bold;"> {{totalBillAmount| currency:companyCurrency:true:'1.2-2'}} - {{totalCredit| currency:companyCurrency:true:'1.2-2'}} = {{totalAmount| currency:companyCurrency:true:'1.2-2'}}</span></label>
+                                <div class="small-12 medium-6 column float-right" *ngIf="!markPaid">
+                                    <button class="button small float-right" style="margin-right: 10px;" (click)="showPaymentsTab(true)">Cancel</button>
+                                    <button class="button small float-right" style="margin-right: 10px;" (click)="openSchedulePay()" [disabled]="!paymentMode&&!checkBills()"> Pay Later</button>
+                                    <button class="button small float-right" style="margin-right: 10px;" [disabled]="!checkBills()" (click)="payBills(false)">Pay</button>
+                                </div>
+                                <div class="small-12 medium-6 column float-right" *ngIf="markPaid">
+                                    <button class="button small float-right" style="margin-right: 10px;" (click)="applyMarkPaid()">Submit</button>
+                                </div>
+                                <!--<div class="dropdown-pane" id="pay-later-dropdown" data-dropdown>
+                                    <label>Select a future date
+                                        <input type="text" [(ngModel)]="futureDate"  [customDatepicker1]="'MM-DD-YYYY'" (valueChanged)="setFutureDate($event)" placeholder="Future Date*">
+                                    </label>
+
+                                    <div class="text-right">
+                                        <button class="button small" data-close [disabled]="!futureDate" (click)="payBills(true)">Confirm</button>
+                                        <button class="button small" data-close>Cancel</button>
+                                    </div>
+                                </div>-->
+
+                                <div class="reveal tiny bill-modal-container" id="pay-later-dropdown" data-reveal foundation  data-close-on-click="false">
+                                    <label>Select a future date
+                                        <input type="text" [(ngModel)]="futureDate"  [customDatepicker1]="'MM-DD-YYYY'" (valueChanged)="setFutureDate($event)" placeholder="Future Date*">
+                                    </label>
+
+                                    <div class="text-right">
+                                        <button class="button small" data-close [disabled]="!futureDate" (click)="payBills(true)">Confirm</button>
+                                        <button class="button small" data-close>Cancel</button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                    </section>
+            </div>
+            <button class="close-flyout" aria-label="Close modal" type="button" (click)="showPaymentsTab(true)">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+            </button>
+        </section>
+    </div>
+</div>
+
+
+    <!--<label>Cheque
+    <input type="checkbox" [(ngModel)]="manualCheque"/>
+    </label>
+    <table [hidden]="manualCheque">
+      <thead>
+      <th>Bank Name</th>
+      <th>Created On</th>
+      </thead>
+      <tbody>
+      <tr *ngFor="let source of fundingSources;let index=index">
+        <td><input type="radio" name="payment" (click)="valueChanged(source)">&nbsp;{{source.name}}</td>
+        <td>{{source.created}}</td>
+      </tr>
+      </tbody>
+    </table>-->
+
+<!--
+<div class="row">
+
+</div>
+-->
+
+
+
+
+
+<!--<div class="qount-off-canvas-menu">
+    <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+        <section class="flyout-placeholder">
+            <header class="flyout-header">
+                <h6>{{editMode ? "Update Dimension" : "Add Dimension"}}</h6>
+            </header>
+            <div class="flyout-body flyout-shadow-effect">
+                &lt;!&ndash;here comes actual flyout code&ndash;&gt;
+                <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="dimensionForm">
+                    <section class="form-section clearfix">
+                        <div class="row">
+                            <div class="small-12 medium-12 columns">
+                                <div class="form-section-left">
+                                    <header class="form-section-header">Basic Info</header>
+                                    <div class="row">
+                                        <div class="small-4 columns">
+                                            <label class="text-right">Name</label>
+                                        </div>
+                                        <div class="small-6 columns">
+                                            <input type="text" formControlName="name" placeholder="Name*"/>
+                                            <div class="error" [hidden]="dimensionForm.controls.name.untouched || dimensionForm.controls.name.valid">Name is required.</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="small-4 columns">
+                                            <label class="text-right">Description</label>
+                                        </div>
+                                        <div class="small-6 columns">
+                                            <textarea formControlName="desc" rows="3" placeholder="Description"></textarea>
+                                            <div class="error" [hidden]="dimensionForm.controls.desc.untouched || dimensionForm.controls.desc.valid">Description is required.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-section-left">
+                                    <header class="form-section-header">Value Info</header>
+                                    <div class="row">
+                                        <div class="small-12 medium-12 columns dimension-values">
+                                            <div *ngFor="let valueObj of values">
+                                                <div class="dimension-value-wrapper label" *ngIf="!valueObj.editing && valueObj.action != 'delete'">
+                                                    <div class="dimension-value">{{valueObj.newValue}}</div>
+                                                    <div class="edit-wrapper">
+                                                        <i class="icon ion-edit" (click)="editValue(valueObj)"></i>
+                                                        <i class="icon ion-close" (click)="deleteValue(valueObj)"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="dimension-value-wrapper label" *ngIf="valueObj.editing && valueObj.action != 'delete'">
+                                                    <input type="text" (change)="onValueChange(valueObj, $event)" value="{{valueObj.newValue}}"/>
+                                                    <div class="edit-wrapper">
+                                                        <i class="icon ion-checkmark" (click)="updateValue(valueObj)"></i>
+                                                        <i class="icon ion-close" (click)="deleteFromEditing(valueObj)"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="small-4 columns">
+                                            <label class="text-right">{{editMode ? "Enter new values" : "Values"}}</label>
+                                        </div>
+                                        <div class="small-6 columns">
+                                            <ul class="bighalf-tags" id="dimensionValues" type="text" custom-tags></ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 10px;">
+                            <div class="small-12 medium-12 columns">
+                                <button class="button small float-right" [disabled]="!dimensionForm.valid" (click)="submit($event)">Save</button>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+            </div>
+            <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideFlyout()">
+                <span aria-hidden="true">
+                  <i class="ion-ios-close-empty"></i>
+                </span>
+            </button>
+        </section>
+    </div>
+</div>-->

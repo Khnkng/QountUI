@@ -18,6 +18,9 @@ import {StateService} from "qCommon/app/services/StateService";
 import {State} from "qCommon/app/models/State";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {ReportService} from "reportsUI/app/services/Reports.service";
+import {PAYMENTSPATHS} from "reportsUI/app/constants/payments.constants";
+import {InvoicesService} from "invoicesUI/app/services/Invoices.service";
 
 
 declare let _:any;
@@ -76,19 +79,27 @@ export class ReconcileComponent{
     selectedColor:any='red-tab';
     reconType:any='new';
     tabHeight:string;
-    switchPage:string;
-    routeSubscribe:any;
     @ViewChild('depositsTable') el:ElementRef;
     @ViewChild('expensesTable') el1:ElementRef;
     @ViewChild('global-checkbox') el2:ElementRef;
     editable:boolean = true;
     localeFortmat:string='en-US';
     isCreditAccount:boolean=false;
-
+    switchPage:string;
+    routeSubscribe:any;
+    logoURL:string;
+    hasReconcileData:boolean = false;
+    reconDate:string;
+    reconCompletedOn:string;
+    previousReconDate:string;
+    reconPeriod:string;
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
                 private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService,
-                private companyService: CompaniesService,private numeralService:NumeralService, private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard) {
+                private companyService: CompaniesService,private numeralService:NumeralService, private stateService: StateService,
+                private titleService:pageTitleService,_switchBoard:SwitchBoard, private reportService: ReportService,
+                private invoiceService: InvoicesService) {
         this.titleService.setPageTitle("Reconcile");
+        this.switchPage = 'Books';
         this.reconcileForm = _fb.group(_reconcileForm.getForm());
         this.companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
@@ -105,21 +116,23 @@ export class ReconcileComponent{
             let state = this.stateService.pop();
             this.fetchReconActivity(state.data, state.selectedId || 0);
         }
-      this.routeSubscribe =  _switchBoard.onClickPrev.subscribe(title => this.gotoPrevious());
+        this.routeSubscribe =  _switchBoard.onClickPrev.subscribe(title => this.gotoPrevious());
     }
-  gotoPrevious(){
-    switch (this.switchPage) {
-      case 'Books':
-        this.showPreviousPage();
-        break;
-      case 'reconcile':
-        this.resetReconcileForm();
-        break;
-      default:
-        this.showPreviousPage();
-        break;
+
+    gotoPrevious(){
+        switch (this.switchPage) {
+            case 'Books':
+                this.showPreviousPage();
+                break;
+            case 'reconcile':
+                this.resetReconcileForm();
+                break;
+            default:
+                this.showPreviousPage();
+                break;
+        }
     }
-  }
+
     fetchReconActivityData(){
         this.reconcileService.getReconActivityRecords()
             .subscribe(reconActivityData  => {
@@ -145,9 +158,10 @@ export class ReconcileComponent{
 
     ngOnInit(){
     }
-  ngOnDestroy(){
-    this.routeSubscribe.unsubscribe();
-  }
+
+    ngOnDestroy(){
+        this.routeSubscribe.unsubscribe();
+    }
 
     getBankAccountName(accountId){
         let account = _.find(this.accounts, {'id': accountId});
@@ -186,10 +200,10 @@ export class ReconcileComponent{
             data.bankAccountId = account.id;
             this.selectedBank = account.id;
             this.selectedBankName = account.name;
-            if(account.type == "credit") {
-              this.isCreditAccount = true;
+            if(account.type == 'credit') {
+                this.isCreditAccount = true;
             }else{
-              this.isCreditAccount = false;
+                this.isCreditAccount = false;
             }
         }else if(!account||account=='--None--'){
             data.bankAccountId='--None--';
@@ -255,12 +269,14 @@ export class ReconcileComponent{
     }
 
     fetchReconActivity($event, selectedTab){
+        this.switchPage = "reconcile";
         let base = this;
         this.loadingService.triggerLoadingEvent(true);
         this.reconcileService.getReconDetails($event)
             .subscribe(reconcileDetails => {
                 this.showForm = false;
                 this.reconcileData = reconcileDetails;
+                this.hasReconcileData = true;
                 this.selectedDepositsCount = reconcileDetails.deposits.length;
                 this.selectedExpensesCount = reconcileDetails.expenses.length;
                 if(this.reconcileData.unreconciled_deposits.length > 0){
@@ -273,14 +289,13 @@ export class ReconcileComponent{
                         base.reconcileData.expenses.push(entry);
                     });
                 }
-              let account = _.find(this.accounts, {'id': reconcileDetails.bank_Account_id});
-                if(account.type == 'credit'){
-                  this.isCreditAccount = true;
+                let account = _.find(this.accounts, {'id': reconcileDetails.bank_Account_id});
+                if(account.type === 'credit'){
+                    this.isCreditAccount = true;
                 }else{
-                  this.isCreditAccount = false;
+                    this.isCreditAccount = false;
                 }
-
-              this.selectedBankName = $event.bank;
+                this.selectedBankName = $event.bank;
                 let amount = reconcileDetails.ending_balance;
                 amount = parseFloat(amount);
                 this.endingBalance = amount;
@@ -290,8 +305,13 @@ export class ReconcileComponent{
                 this.statementEndingBalance = amount;
                 this.tableOptions.selectable = false;
                 this.reconDifference = 0;
+                this.reconCompletedOn= reconcileDetails.recon_done_date;
+                this.reconDate = reconcileDetails.last_Recon_date;
+                this.previousReconDate = reconcileDetails.previous_recon_date;
+                this.reconPeriod = this.processReportPeriod(reconcileDetails.previous_recon_date,reconcileDetails.last_Recon_date);
                 this.buildDepositsTableData();
                 this.buildExpensesTableData();
+                base.getCompanyLogo();
                 setTimeout(function(){
                     base.resetDepositsTab(true,'edit');
                     base.resetExpensesTab(true,'edit');
@@ -312,6 +332,87 @@ export class ReconcileComponent{
         this.fetchReconActivity($event, 0);
     }
 
+    handleReconSelect($event){
+        let base= this;
+        let action = $event.action;
+        delete $event.action;
+        delete $event.actions;
+        if(action == 'pdf') {
+            this.loadingService.triggerLoadingEvent(true);
+            this.reconcileService.getReconDetails($event)
+                .subscribe(reconcileDetails => {
+                    this.reconcileData = reconcileDetails;
+                    this.hasReconcileData = true;
+                    this.selectedDepositsCount = reconcileDetails.deposits.length;
+                    this.selectedExpensesCount = reconcileDetails.expenses.length;
+                    let account = _.find(this.accounts, {'id': reconcileDetails.bank_Account_id});
+                    if(account.type === 'credit'){
+                        this.isCreditAccount = true;
+                    }else{
+                        this.isCreditAccount = false;
+                    }
+                    this.selectedBankName = $event.bank;
+                    let amount = reconcileDetails.ending_balance;
+                    amount = parseFloat(amount);
+                    this.endingBalance = amount;
+                    this.startingBalance = reconcileDetails.starting_balance;
+                    this.inflow = reconcileDetails.sum_of_deposits;
+                    this.outflow = reconcileDetails.sum_of_expenses;
+                    this.statementEndingBalance = amount;
+                    this.reconCompletedOn= reconcileDetails.recon_done_date;
+                    this.reconDate = reconcileDetails.last_Recon_date;
+                    this.previousReconDate = reconcileDetails.previous_recon_date;
+                    this.reconPeriod = this.processReportPeriod(reconcileDetails.previous_recon_date,reconcileDetails.last_Recon_date);
+                    base.getCompanyLogo();
+                    setTimeout(function(){
+                        base.exportToPDF();
+                    },1000);
+                    this.loadingService.triggerLoadingEvent(false);
+                }, error =>  {
+                    base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile details");
+                    this.loadingService.triggerLoadingEvent(false);
+                });
+        }else{
+            this.loadingService.triggerLoadingEvent(true);
+            this.reconcileService.deleteReconActivity($event)
+                .subscribe(response => {
+                    this.hasData = false;
+                    this.fetchReconActivityData();
+                }, error =>  {
+                    base.toastService.pop(TOAST_TYPE.error, "Failed To Delete Recon Activity");
+                    this.loadingService.triggerLoadingEvent(false);
+                });
+        }
+    }
+
+    getCompanyLogo() {
+        this.invoiceService.getCompanyLogo(this.companyId,Session.getUser().id)
+            .subscribe(preference => this.processPreference(preference[0]), error => this.handleError(error));
+    }
+
+    processReportPeriod(startDate,endDate){
+        if(startDate) {
+            if (moment(startDate).isSame(endDate, 'year')) {
+                return moment(startDate).format("MMM Do") + ' - ' + moment(endDate).format("MMM Do YYYY");
+            } else {
+                return moment(startDate).format("MMM Do YYYY") + ' - ' + moment(endDate).format("MMM Do YYYY");
+            }
+        }else{
+            return moment(endDate).format("MMM Do YYYY");
+        }
+    }
+
+    processPreference(preference){
+        if(preference && preference.temporaryURL){
+            this.logoURL = preference.temporaryURL;
+        }
+    }
+
+    handleError(error) {
+        this.loadingService.triggerLoadingEvent(false);
+        this.toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+    }
+
     submit($event){
         $event && $event.preventDefault();
         let base = this;
@@ -321,6 +422,7 @@ export class ReconcileComponent{
         this.reconType = 'new';
         this.reconcileService.getReconcileData(data)
             .subscribe(reconcileData  => {
+                this.switchPage = "reconcile";
                 this.reconcileData = reconcileData;
                 this.reconcileDataCopy = reconcileData;
                 this.getStartingBalance();
@@ -345,8 +447,8 @@ export class ReconcileComponent{
     };
 
     calculateReconDifference(){
-      this.statementEndingBalance = parseFloat(this.statementEndingBalance);
-      this.endingBalance = parseFloat(this.endingBalance);
+        this.statementEndingBalance = parseFloat(this.statementEndingBalance);
+        this.endingBalance = parseFloat(this.endingBalance);
         this.reconDifference = Math.abs(this.statementEndingBalance.toFixed(2) - this.endingBalance.toFixed(2));
     }
 
@@ -507,6 +609,7 @@ export class ReconcileComponent{
                     row[key] = entry[key];
                 }
             });
+            row['actions'] = "<a class='action' data-action='pdf' style='margin-right:10px;'><i class='icon ion-ios-cloud-download-outline' style='font-size: 1.5rem;'></i></a><a class='action' data-action='undoRecon' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b' style='font-size: 1.5rem;color:grey !important;'></i></a>";
             base.reconActivityTableData.rows.push(row);
         });
     };
@@ -597,7 +700,8 @@ export class ReconcileComponent{
         this.reconType = 'new';
         this.titleService.setPageTitle("Reconcile");
         this.isCreditAccount = false;
-
+        this.switchPage = 'Books';
+        this.hasReconcileData = false;
     }
     getAccounts() {
         this.accountsService.financialAccounts(this.companyId)
@@ -738,6 +842,38 @@ export class ReconcileComponent{
             this.resetExpensesTab(state,'new');
         }
     }
+
+
+    exportToPDF(){
+        let imgString = jQuery('#company-img').clone().html();
+        let qountLogo = jQuery('.qount-logo').clone().html();
+        let html = jQuery('<div>').append(jQuery('style').clone()).append(jQuery('#numeric').clone()).html();
+
+        if(imgString) {
+            html = html.replace(imgString, imgString.replace('>', '/>'));
+        }
+        if(qountLogo) {
+            html = html.replace(qountLogo, qountLogo.replace('>', '/>'));
+        }
+        let pdfReq={
+            "version" : "1.1",
+            "genericReport": {
+                "payload": html,
+                "footer": moment(new Date()).format("MMMM DD, YYYY HH:mm a")
+            }
+        };
+        this.reportService.exportReportIntoFile(PAYMENTSPATHS.PDF_SERVICE, pdfReq)
+            .subscribe(data =>{
+                var blob=new Blob([data._body], {type:"application/pdf"});
+                var link= jQuery('<a></a>');
+                link[0].href= URL.createObjectURL(blob);
+                link[0].download= "reconActivity.pdf";
+                link[0].click();
+            }, error =>{
+                this.toastService.pop(TOAST_TYPE.error, "Failed to Export report into PDF");
+            });
+    }
+
 
     ngAfterViewInit() {
         let base = this;

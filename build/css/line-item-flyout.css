@@ -1,0 +1,182 @@
+/**
+ * Created by yvadugu on 10-05-2016.
+ */
+table thead {
+  background: #E5E5E5;
+  border: none;
+  background-color: #E5E5E5;
+  color: #878787;
+  font-family: NiveauGroteskRegular;
+  font-weight: normal;
+  color: #878787;
+}
+
+table thead tr {
+  border: 1px solid #DCDEDD !important;
+}
+
+table thead tr th {
+  font-size: 1.05em;
+  border: none !important;
+  color: #878787;
+}
+
+table tbody tr {
+  border: 1px solid #DCDEDD;
+}
+
+table tbody tr td {
+  color: #878787;
+  font-size: 1.05em;
+  font-family: NiveauGroteskRegular;
+}
+
+table tbody tr:hover {
+  background: #F1F1F1 !important;
+}
+
+table tfoot {
+  background: #ffffff !important;
+  border: none !important;
+}
+
+@font-face {
+  font-family: 'open sans';
+  src: url("../fonts/OpenSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  src: url("../fonts/NotoSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url("../fonts/SourceSansPro-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskMedium';
+  src: url("../fonts/NiveauGrotesk-Medium.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskLight';
+  src: url("../fonts/NiveauGrotesk-light.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskRegular';
+  src: url("../fonts/NiveauGrotesk-regular.ttf");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.eot");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.svg");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.ttf");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.woff");
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/MaterialIcons-Regular.eot");
+  /* For IE6-8 */
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("../fonts/MaterialIcons-Regular.woff2") format("woff2"), url("../fonts/MaterialIcons-Regular.woff") format("woff"), url("../fonts/MaterialIcons-Regular.ttf") format("truetype");
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+[data-whatinput='mouse'] select {
+  outline: 0;
+}
+
+.bill .flyout.line-item-create {
+  background: #ffffff;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+  padding: 15px 30px 15px;
+  top: 50px;
+  left: -50%;
+  transition: all 0.5s;
+  z-index: 100;
+  /* form styling */
+}
+
+@media screen and (min-width: 40em) {
+  .bill .flyout.line-item-create {
+    width: 49%;
+  }
+}
+
+.bill .flyout.line-item-create.expanded {
+  left: 0px;
+}
+
+@media screen and (min-width: 64em) {
+  .bill .flyout.line-item-create.expanded {
+    left: 55px;
+  }
+}
+
+.bill .flyout.line-item-create.expanded button.close-flyout {
+  position: absolute;
+  background: #fff;
+  top: 0;
+  right: 10px;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.bill .flyout.line-item-create.expanded button.close-flyout:hover {
+  background: #DCDEDD;
+}
+
+.bill .flyout.line-item-create.expanded button.close-flyout i {
+  font-size: 3em;
+}
+
+.bill .flyout.line-item-create.expanded .buttons-section {
+  position: absolute;
+  bottom: 5em;
+  right: 2em;
+}

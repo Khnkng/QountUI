@@ -36,7 +36,10 @@ import {ForgotPassword} from "./forms/ForgotPassword.form";
 import {VendorComponent} from "./components/Vendors.component";
 import {UserProfileComponent} from "qCommon/app/components/UserProfile.component";
 import {ChartOfAccountsComponent} from "./components/ChartOfAccounts.component";
+import {MetricsComponent} from "./components/Metrics.component";
+import {CreateMetricComponent} from "./components/CreateMetrics.component";
 import {COAForm} from "./forms/COA.form";
+import {MetricsForm,MetricsLineForm,metricPeriodForm} from "./forms/Metrics.form";
 import {DashBoardActivator} from "qCommon/app/services/DashBoardActivator";
 import {ToolsComponent} from "./components/Tools.component";
 import {ItemCodesComponent} from "./components/ItemCodes.component";
@@ -51,7 +54,7 @@ import {RulesService} from "qCommon/app/services/Rules.service";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 import {CategorizationComponent} from "./components/Categorization.component";
 import {CustomersComponent} from "./components/Customers.component";
-import {CustomersForm} from "./forms/Customers.form";
+import {CustomersForm,ContactLineForm} from "./forms/Customers.form";
 import {DimensionsComponent} from "./components/Dimensions.component";
 import {DimensionForm} from "./forms/Dimension.form";
 import {UsersComponent} from "./components/Users.component";
@@ -86,6 +89,7 @@ import {SearchResultsComponent} from "./components/SearchResults.component";
 import {ReconcileComponent} from "./components/Reconsile.component";
 import {ReconcileForm} from "./forms/Reconsile.form";
 import {ReconcileService} from "./services/Reconsile.service";
+import {MetricsService} from "./services/Metrics.service";
 import {DocumentsComponent} from "./components/Documents.component";
 import {DocumentService} from "./services/Documents.service";
 import {DocumentComponent} from "./components/Document.component";
@@ -99,251 +103,262 @@ import {PaymentsPlan}from"./forms/PaymentsPlan.form";
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
 @NgModule({
-    imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
-        {
-            path: '',
-            redirectTo: 'dashboard',
-            pathMatch: 'full'
-        },
-        {
-            path: 'dashboard',
-            component: CanvasComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'login',
-            component: LogInComponent,
-            canActivate: [DashBoardActivator]
-        },{
-            path: 'resetpassword/:token',
-            component: ResetPasswordComponent,
-            canActivate: [DashBoardActivator]
-        },{
-            path: 'yodleeToken',
-            component: YodleeTokenComponent
-        },
-        {
-            path: 'signUp',
-            component: SignUpComponent,
-            canActivate: [DashBoardActivator]
-        },
-        {
-            path: 'addCompany',
-            component: AddCompanyComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {   path: 'company/:id',
-            component: CompanyComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'companies',
-            component: CompaniesComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'taxes',
-            component: TaxesComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'Verification/:VerificationID',
-            component: VerificationComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'bills/:PaymentstableID',
-            component: paymenttableComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'books/:tabId',
-            component: BooksComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'paymentdashboard',
-            component: paymentdashboardComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'paid/:PaymentstableID',
-            component: paidtablecomponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'JournalEntry',
-            component: JournalEntryComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'Expense',
-            component: ExpenseComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'expense/:expenseID',
-            component: ExpenseComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'journalEntry/:journalID',
-            component: JournalEntryComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'journalEntry/:journalID/:reverse',
-            component: JournalEntryComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'vendors',
-            component: VendorComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'user-profile',
-            component: UserProfileComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'chartOfAccounts',
-            component: ChartOfAccountsComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'dimensions',
-            component: DimensionsComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'financialAccounts',
-            component: FinancialAccountsComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'itemCodes',
-            component: ItemCodesComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'expensecode',
-            component: ExpensesCodesComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'tools',
-            component: ToolsComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'customers',
-            component: CustomersComponent,
-            canActivate: [LoggedInActivator]
-        },{
-            path: 'users',
-            component: UsersComponent,
-            canActivate: [LoggedInActivator]
-        },{
-            path: 'modules',
-            component: ModulesComponent,
-            canActivate: [LoggedInActivator]
-        },{
-            path: 'rules',
-            component: RulesComponent,
-            canActivate: [LoggedInActivator]
-        },{
-            path: 'lock',
-            component: lockComponent,
-            canActivate: [LoggedInActivator]
-        },{
-            path: 'activate',
-            component: ChangePasswordComponent,
-            canActivate: [LoggedInActivator]
-        },{
-            path: 'termsAndConditions',
-            component: TermsAndConditionsComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'deposit',
-            component: DepositComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'deposit/:depositID',
-            component: DepositComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'employees',
-            component: EmployeesComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'categorization',
-            component: CategorizationComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'search',
-            component: SearchComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'payments',
-            component: PaymentsComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'payments/:paymentID',
-            component: PaymentsComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'reconcilation',
-            component: ReconcileComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'documents/:tabId',
-            component: DocumentsComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'document/:type/:documentId',
-            component: DocumentComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'budget',
-            component: BudgetComponent,
-            canActivate: [LoggedInActivator]
-        },{
-            path: 'switchCompany',
-            component: SwitchCompanyComponent,
-            canActivate: [LoggedInActivator]
-        },
-        {
-            path: 'plans',
-            component: PaymentsPlanComponent,
-            canActivate: [LoggedInActivator]
-        }
-    ]), PaymentsModule, ReportsModule, InvoicesModule
-    ],
-    declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
-        VendorComponent,TaxesComponent,VerificationComponent,paymenttableComponent,ChartOfAccountsComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
-        CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent,CurrentCompanyComponent, FinancialAccountsComponent,
-        OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
-        ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
-        CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent, DocumentComponent,BudgetComponent,PaymentsPlanComponent],
-    exports: [RouterModule],
-    bootstrap: [ AppComponent ],
-    providers: [APP_BASE, COAForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
-        TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, DimensionForm, UsersForm, DocumentService,
-        FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService,
-        BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan],
-    schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
+  imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
+    {
+      path: '',
+      redirectTo: 'dashboard',
+      pathMatch: 'full'
+    },
+    {
+      path: 'dashboard',
+      component: CanvasComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'login',
+      component: LogInComponent,
+      canActivate: [DashBoardActivator]
+    },{
+      path: 'resetpassword/:token',
+      component: ResetPasswordComponent,
+      canActivate: [DashBoardActivator]
+    },{
+      path: 'yodleeToken',
+      component: YodleeTokenComponent
+    },
+    {
+      path: 'signUp',
+      component: SignUpComponent,
+      canActivate: [DashBoardActivator]
+    },
+    {
+      path: 'addCompany',
+      component: AddCompanyComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {   path: 'company/:id',
+      component: CompanyComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'companies',
+      component: CompaniesComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'taxes',
+      component: TaxesComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'Verification/:VerificationID',
+      component: VerificationComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'bills/:PaymentstableID',
+      component: paymenttableComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'books/:tabId',
+      component: BooksComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'paymentdashboard',
+      component: paymentdashboardComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'paid/:PaymentstableID',
+      component: paidtablecomponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'JournalEntry',
+      component: JournalEntryComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'Expense',
+      component: ExpenseComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'expense/:expenseID',
+      component: ExpenseComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'journalEntry/:journalID',
+      component: JournalEntryComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'journalEntry/:journalID/:reverse',
+      component: JournalEntryComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'vendors',
+      component: VendorComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'user-profile',
+      component: UserProfileComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'chartOfAccounts',
+      component: ChartOfAccountsComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'dimensions',
+      component: DimensionsComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'financialAccounts',
+      component: FinancialAccountsComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'itemCodes',
+      component: ItemCodesComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'expensecode',
+      component: ExpensesCodesComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'tools',
+      component: ToolsComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'customers',
+      component: CustomersComponent,
+      canActivate: [LoggedInActivator]
+    },{
+      path: 'users',
+      component: UsersComponent,
+      canActivate: [LoggedInActivator]
+    },{
+      path: 'modules',
+      component: ModulesComponent,
+      canActivate: [LoggedInActivator]
+    },{
+      path: 'rules',
+      component: RulesComponent,
+      canActivate: [LoggedInActivator]
+    },{
+      path: 'lock',
+      component: lockComponent,
+      canActivate: [LoggedInActivator]
+    },{
+      path: 'activate',
+      component: ChangePasswordComponent,
+      canActivate: [LoggedInActivator]
+    },{
+      path: 'termsAndConditions',
+      component: TermsAndConditionsComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'deposit',
+      component: DepositComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'deposit/:depositID',
+      component: DepositComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'employees',
+      component: EmployeesComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'categorization',
+      component: CategorizationComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'search',
+      component: SearchComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'payments',
+      component: PaymentsComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'payments/:paymentID',
+      component: PaymentsComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'reconcilation',
+      component: ReconcileComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'documents/:tabId',
+      component: DocumentsComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'document/:type/:documentId',
+      component: DocumentComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'budget',
+      component: BudgetComponent,
+      canActivate: [LoggedInActivator]
+    },{
+      path: 'switchCompany',
+      component: SwitchCompanyComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'plans',
+      component: PaymentsPlanComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'metrics',
+      component: MetricsComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'createMetrics',
+      component: CreateMetricComponent,
+      canActivate: [LoggedInActivator]
+    }
+  ]), PaymentsModule, ReportsModule, InvoicesModule
+  ],
+  declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
+    VendorComponent,TaxesComponent,VerificationComponent,paymenttableComponent,ChartOfAccountsComponent,MetricsComponent,CreateMetricComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
+    CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent,CurrentCompanyComponent, FinancialAccountsComponent,
+    OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
+    ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
+    CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent,
+    DocumentComponent,BudgetComponent,PaymentsPlanComponent],
+  exports: [RouterModule],
+  bootstrap: [ AppComponent ],
+  providers: [APP_BASE, COAForm,MetricsForm,MetricsLineForm,metricPeriodForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
+    TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm,ContactLineForm, DimensionForm, UsersForm, DocumentService,
+    FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService,MetricsService,
+    BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan],
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
 

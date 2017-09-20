@@ -27,7 +27,7 @@ export class JournalEntryForm extends abstractForm{
       "endDate": [''],
       "recurringFrequency": [''],
       "desc": [''],
-      "jeType": ['Bill'],
+      "jeType": ['Other'],
 
       "newType": [],
       "newTitle": [],

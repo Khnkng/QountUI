@@ -129,12 +129,18 @@
                 <div class="thumb-label">Budget</div>
             </div>
         </div>
-        <div class="row tools-grids" style="width: 280px;margin-left:0px">
-            <div class="column tool-grid">
-                <div class="grid-icon chart-of-accounts" (click)="showPage('plans', $event)"></div>
+        <div class="row tools-grids">
+            <div class="column medium-2 tool-grid" (click)="showPage('plans', $event)">
+                <div class="grid-icon chart-of-accounts" ></div>
                 <span class="grid-qount" [hidden]="true"></span>
                 <div class="clear"></div>
                 <div class="thumb-label">Payment Plans</div>
+            </div>
+            <div class="column medium-2 tool-grid" (click)="showPage('metrics', $event)">
+                <div class="grid-icon chart-of-accounts"></div>
+                <span class="grid-qount" [hidden]="true"></span>
+                <div class="clear"></div>
+                <div class="thumb-label">Metrics</div>
             </div>
         </div>
     </div>

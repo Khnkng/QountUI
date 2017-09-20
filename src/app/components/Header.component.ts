@@ -9,7 +9,8 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {FullScreenService} from "qCommon/app/services/fullscreen.service";
 import {NotificationService} from "qCommon/app/services/Notification.service";
 import {Session} from "qCommon/app/services/Session";
-
+import {StateService} from "qCommon/app/services/StateService";
+import {State} from "qCommon/app/models/State";
 
 declare var jQuery:any;
 declare var _:any;
@@ -59,7 +60,8 @@ export class HeaderComponent implements  OnInit{
   @Output() togglemenu = new EventEmitter<boolean>();
   @Output() redirect = new EventEmitter<any>();
 
-  constructor(private _router: Router, private switchBoard: SwitchBoard, private _fullscreen: FullScreenService, private notificationServie: NotificationService) {
+  constructor(private _router: Router, private switchBoard: SwitchBoard, private _fullscreen: FullScreenService,
+              private notificationServie: NotificationService, private stateService: StateService) {
 
     /*this.switchBoard.onNotificationCountUpdate.subscribe(notification => {
       console.log(notification,'notification');
@@ -67,13 +69,13 @@ export class HeaderComponent implements  OnInit{
     });
     notificationServie.getNotificationsCount()
       .subscribe(notifications => this.handleNotifications(notifications), error => this.showError(error));*/
-    this.getNotifications();
-    this.switchBoard.onNewQountNotification.subscribe(notification => {
+    //this.getNotifications();
+    /*this.switchBoard.onNewQountNotification.subscribe(notification => {
       this.handleQountNotifications(notification);
-    });
+    });*/
     this.fullScreenIcon = "ion-arrow-expand";
     this.searchText = "";
-    this.switchBoard.onNotificationMarkRead.subscribe(status => this.getNotifications());
+    //this.switchBoard.onNotificationMarkRead.subscribe(status => this.getNotifications());
     this.companyCurrency=Session.getCurrentCompanyCurrency();
   }
 
@@ -171,7 +173,7 @@ export class HeaderComponent implements  OnInit{
 
   ngOnInit() {
     jQuery(document).ready(function(){
-      //jQuery(document).foundation();
+      jQuery(document).foundation();
     });
   }
 
@@ -186,7 +188,12 @@ export class HeaderComponent implements  OnInit{
 
   showSearchPage(){
     sessionStorage.removeItem('searchcriteria');
+    this.addCurrentState();
     let link = ['search'];
     this._router.navigate(link);
+  }
+
+  addCurrentState(){
+    this.stateService.addState(new State('', this._router.url, null, null));
   }
 }

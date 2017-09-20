@@ -41,7 +41,8 @@ export class EmployeesComponent {
     companyName:string;
     showFlyout:boolean = false;
     confirmSubscription:any;
-  routeSubscribe:any;
+    routeSubscribe:any;
+
     constructor(private _fb: FormBuilder, private employeeService: EmployeeService,
                 private _employeesForm:EmployeesForm, private _router: Router, private _toastService: ToastService,
                 private switchBoard: SwitchBoard, private loadingService:LoadingService,private titleService:pageTitleService) {
@@ -58,25 +59,25 @@ export class EmployeesComponent {
         }else {
             this._toastService.pop(TOAST_TYPE.error, "Please add company first");
         }
-      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
-        if(this.showFlyout){
-          this.hideFlyout();
-        }else {
-          this.toolsRedirect();
-        }
-      });
+        this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+            if(this.showFlyout){
+                this.hideFlyout();
+            }else {
+                this.toolsRedirect();
+            }
+        });
     }
 
-  toolsRedirect(){
-    let link = ['tools'];
-    this._router.navigate(link);
-  }
+    toolsRedirect(){
+        let link = ['tools'];
+        this._router.navigate(link);
+    }
 
 
-  ngOnDestroy(){
-    this.routeSubscribe.unsubscribe();
-    this.confirmSubscription.unsubscribe();
-  }
+    ngOnDestroy(){
+        this.routeSubscribe.unsubscribe();
+        this.confirmSubscription.unsubscribe();
+    }
 
     buildTableData(employees) {
         this.employees = employees;

@@ -1,0 +1,233 @@
+<style>
+    table{
+        width: 100%;
+        border:none;
+    }
+    table.middle-tables{
+        margin-top: 50px;
+    }
+    table.items{
+        border-top:5px solid #384986;
+    }
+    table thead {
+        background: none;
+        border:none;
+    }
+    table tbody {
+        border:none;
+    }
+    table tbody tr:hover{
+        background: none !important;
+    }
+    table tbody tr{
+        border:none !important;
+    }
+    tr td{
+        color: #0a0a0a;
+    }
+
+    .heading-color td{
+        color: #384986;
+    }
+    .heading-color {
+        color: #384986;
+    }
+    .separator {
+        border-top:1px solid #384986;
+        padding:0px;
+    }
+    .emptyCol{
+        padding:0px;
+    }
+    #payment-preview{
+        margin-top: 5px;
+    }
+    .text-right{
+        text-align: right;
+    }
+    .invoice-amount{
+        font-size: 20pt;
+    }
+
+    .preview-table-header {
+        color: #FFF;
+        box-shadow: 0 0 5px #ccc;
+        -webkit-box-shadow: 0 0 5px #ccc;
+        padding:10px 10px 0 10px;
+        background-color: #384986;
+    }
+    .font-color{
+        color:#FAFAFA !important;
+        padding: 0.5rem 0.625rem 0.3rem 0.625rem;
+    }
+
+    .address-tables tr td{
+        padding: 0.1rem 0.625rem !important;
+    }
+
+</style>
+<div id="payment-preview">
+    <div class="preview-table-header">
+        <table style='width:100%;margin-bottom:10px;'>
+            <tbody style="background-color: #384986;" cellpadding=5 cellspacing=5>
+            <tr>
+                <td class="font-color"><span>Invoice</span><span style="margin-left:5px;">{{invoiceData.number}}</span></td>
+                <td class="text-right font-color"><span>Due Date</span><span style="margin-left:5px;">{{invoiceData.due_date}}</span></td>
+            </tr>
+            <tr>
+                <td class="font-color"><span>Balance Due:</span><span style="margin-left:5px;">{{invoiceData.amount_due | currency:invoiceData.currency:true:'1.2-2'}}</span></td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <table style='width:100%;box-shadow: 0 0 5px #ccc;-webkit-box-shadow: 0 0 5px #ccc;' cellpadding='10'>
+        <tbody>
+        <tr>
+            <td style="width: 100%;">
+                <table class="address-tables">
+                    <thead>
+                    <tr><th class="heading-color">Invoice From</th><th></th></tr>
+                    </thead>
+                    <tbody cellpadding=5 cellspacing=5>
+                    <tr>
+                        <td>
+                            <div>{{invoiceData.company?invoiceData.company.name:""}}</div>
+                            <div>{{invoiceData.company?invoiceData.company.address:""}}</div>
+                            <div>{{invoiceData.company?invoiceData.company.state:""}}, {{invoiceData.company?invoiceData.company.zipcode:""}}</div>
+                            <div>{{invoiceData.company?invoiceData.company.country:""}}</div>
+                        </td>
+                        <td class="text-right" id="company-img"><img src={{logoURL}} alt="" height="70" style="position: relative;bottom:30px;"/></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="middle-tables address-tables">
+                    <thead>
+                    <tr>
+                        <th class="heading-color" colspan="3">Prepared For</th>
+                        <th class="heading-color">Invoice Date</th>
+                        <th class="heading-color">Invoice Number</th>
+                        <th class="heading-color text-right"><span>Invoice Total</span><span style="margin-left:5px;">({{invoiceData.currency}})</span></th>
+                    </tr>
+                    </thead>
+                    <tbody cellpadding=5 cellspacing=5>
+                    <tr>
+                        <td valign="top" colspan="3">
+                            <div>{{invoiceData.customer?invoiceData.customer.customer_name:""}}</div>
+                            <div>{{invoiceData.customer?invoiceData.customer.street_1:""}}</div>
+                            <div>{{invoiceData.customer?invoiceData.customer.customer_city:""}}, {{invoiceData.customer?invoiceData.customer.customer_zipcode:""}}</div>
+                            <div>{{invoiceData.customer?invoiceData.customer.customer_country:""}}</div>
+                        </td>
+                        <td valign="top">{{invoiceData.invoice_date}}</td>
+                        <td valign="top">{{invoiceData.number}}</td>
+                        <td valign="top" class="text-right invoice-amount">{{invoiceData.amount | currency:invoiceData.currency:true:'1.2-2'}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class='items middle-tables'>
+                    <tbody  cellpadding=5 cellspacing=5>
+                    <tr  class="heading-color" *ngIf="taskInvoices.length>0">
+                        <td >Item</td>
+                        <td >Description</td>
+                        <td ></td>
+                        <td >Rate</td>
+                        <td >Hours</td>
+                        <td >Line Total</td>
+                    </tr>
+                    <tr *ngFor="let taskInvoice of taskInvoices" [hidden]="taskInvoices.length<0">
+                        <td >{{taskInvoice.item.name}}</td>
+                        <td >{{taskInvoice.description}}</td>
+                        <td ></td>
+                        <td >{{taskInvoice.price | currency:invoiceData.currency:true:'1.2-2'}}</td>
+                        <td >{{taskInvoice.quantity}}</td>
+                        <td >{{taskInvoice.amount | currency:invoiceData.currency:true:'1.2-2'}}</td>
+                    </tr>
+                    <tr *ngIf="taskInvoices.length>0 && itemInvoices.length>0">
+                        <td  class="separator" colspan="6"></td>
+                    </tr>
+                    <tr class="heading-color" *ngIf="itemInvoices.length>0">
+                        <td >Item</td>
+                        <td >Description</td>
+                        <td ></td>
+                        <td >Unit Cost</td>
+                        <td >Quantity</td>
+                        <td >Line Total</td>
+                    </tr>
+                    <tr *ngFor="let itemInvoice of itemInvoices" [hidden]="itemInvoices.length<0">
+                        <td >{{itemInvoice.item.name}}</td>
+                        <td >{{itemInvoice.description}}</td>
+                        <td ></td>
+                        <td >{{itemInvoice.price | currency:invoiceData.currency:true:'1.2-2'}}</td>
+                        <td >{{itemInvoice.quantity}}</td>
+                        <td >{{itemInvoice.amount | currency:invoiceData.currency:true:'1.2-2'}}</td>
+                    </tr>
+
+                    <tr >
+                        <td  class="emptyCol" colspan="2"></td>
+                        <td  class="separator" colspan="4"></td>
+                    </tr>
+                    <tr >
+                        <td  colspan="2"></td>
+                        <td >Subtotal</td>
+                        <td  colspan="2"></td>
+                        <td>{{invoiceData.sub_total | currency:invoiceData.currency:true:'1.2-2'}}</td>
+                    </tr>
+                    <tr >
+                        <td  class="emptyCol" colspan="2"></td>
+                        <td >Tax</td>
+                        <td  class="emptyCol" colspan="2"></td>
+                        <td>{{invoiceData.tax_amount | currency:invoiceData.currency:true:'1.2-2'}}</td>
+                    </tr>
+                    <tr >
+                        <td  class="emptyCol" colspan="2"></td>
+                        <td  class="separator" colspan="4"></td>
+                    </tr>
+                    <tr  class="heading-color">
+                        <td  class="emptyCol" colspan="2"></td>
+                        <td >Total</td>
+                        <td  class="emptyCol" colspan="2"></td>
+                        <td >{{invoiceData.amount | currency:invoiceData.currency:true:'1.2-2'}}</td>
+                    </tr>
+                    <tr >
+                        <td  class="emptyCol" colspan="2"></td>
+                        <td  class="separator" colspan="4"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="middle-tables">
+                    <thead>
+                    <tr>
+                        <th class="heading-color">Payment Terms</th>
+                        <th class="heading-color">Notes</th>
+                    </tr>
+                    </thead>
+                    <tbody cellpadding=5 cellspacing=5>
+                    <tr>
+                        <td>
+                            <span>{{invoiceData.term}}</span>
+                        </td>
+                        <td>
+                            <span>{{invoiceData.notes}}</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <table class="middle-tables">
+                    <thead>
+                    <tr>
+                        <th class="heading-color">Payment Options</th>
+                    </tr>
+                    </thead>
+                    <tbody cellpadding=5 cellspacing=5>
+                    <tr>
+                        <td colspan="3">
+                            <span>{{invoiceData.payment_options}}</span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>

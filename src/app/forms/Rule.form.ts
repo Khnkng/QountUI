@@ -10,12 +10,13 @@ import {Validators} from "@angular/forms";
 export class RuleForm extends abstractForm{
     getForm() {
         return {
-            "sourceType": ['Expense', Validators.required],
+
             "source":['', Validators.required],
             "ruleName":[''],
             "attributeName": [''],
             "vendorValue":[''],
             "vendorType":[''],
+            "sourceType":[''],
             "customerValue":[''],
             "customerType":[''],
             "comparisionType": ['', Validators.required],

@@ -16,6 +16,7 @@ import {Session} from "qCommon/app/services/Session";
 import {PATH, TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -41,7 +42,8 @@ export class LogInComponent implements OnInit {
   routeSub:any;
 
   constructor(fb: FormBuilder, private _router: Router,  private switchBoard: SwitchBoard, private loginService: LoginService, private _loginForm: LoginForm, private loadingService:LoadingService,
-              private _forgotPasswordForm: ForgotPassword, private _route:ActivatedRoute, private _toastService:ToastService, private companyService: CompaniesService) {
+              private _forgotPasswordForm: ForgotPassword, private _route:ActivatedRoute, private _toastService:ToastService, private companyService: CompaniesService,
+            private numeralService: NumeralService) {
     this.routeSub = this._route.params.subscribe(params => {
       this.resetPasswordToken = params['resetPasswordToken'];
     });
@@ -53,7 +55,7 @@ export class LogInComponent implements OnInit {
   submit($event) {
     this.loadingService.triggerLoadingEvent(true);
     $event && $event.preventDefault();
-    var data = this._loginForm.getData(this.loginForm);
+    let data = this._loginForm.getData(this.loginForm);
     data["username"] = data.id;
     this.loginService.login(<LoginModel>data)
         .subscribe(success  => {this.showMessage(true, success); }, error =>  this.showMessage(false, error));
@@ -79,8 +81,8 @@ export class LogInComponent implements OnInit {
 
   refreshToken(){
     let base=this;
-   let interval= setInterval(function(){
-     let data={
+    let interval= setInterval(function(){
+      let data={
        token:Session.getToken(),
        refreshToken:Session.getRefreshToken(),
        ttl:Number(Session.getTTL())/1000
@@ -118,6 +120,11 @@ export class LogInComponent implements OnInit {
         Session.setCurrentCompany(defaultCompany.id);
         Session.setCurrentCompanyName(defaultCompany.name);
         Session.setCurrentCompanyCurrency(defaultCompany.defaultCurrency);
+        if(defaultCompany.defaultCurrency){
+          this.numeralService.switchLocale(defaultCompany.defaultCurrency);
+        } else{
+          this.numeralService.switchLocale("USD");
+        }
         Session.setFiscalStartDate(defaultCompany.fiscalStartDate?defaultCompany.fiscalStartDate:"");
       }
     } else{
@@ -150,18 +157,18 @@ export class LogInComponent implements OnInit {
   }
 
   gotoDefaultPage() {
-    var  link ='';
+    let link ='dashboard';
     if(Session.get('user').tempPassword){
       link= 'activate';
     } else{
       let defaultCompany:any = Session.getUser().default_company;
-      if(!_.isEmpty(defaultCompany) && defaultCompany.roles.indexOf('Owner') != -1){
+      if(!_.isEmpty(defaultCompany) && (defaultCompany.roles.indexOf('Owner') != -1||defaultCompany.roles.indexOf('Yoda') != -1)){
         if(!defaultCompany.tcAccepted){
           link = 'termsAndConditions';
         }
       }
     }
-    if(link == ''){
+    if(link == 'dashboard'){
       this.switchBoard.onLogin.next(Session.get('user'));
     }
     this._router.navigate([link]);
@@ -170,7 +177,7 @@ export class LogInComponent implements OnInit {
 
   changePassword($event){
     $event && $event.preventDefault();
-    var data = this._forgotPasswordForm.getData(this.forgotPasswordForm);
+    let data = this._forgotPasswordForm.getData(this.forgotPasswordForm);
     data["activationLink"]=PATH.ACTIVATION_LINK;
     data["username"] = data.id;
     this.loginService.forgotPassword(data).subscribe(success => this.handleForgotPassword(true, success),
@@ -184,6 +191,7 @@ export class LogInComponent implements OnInit {
       this.fpStatus['success'] = true;
       this.fpMessage = "Password reset successful";
       this._toastService.pop(TOAST_TYPE.success, obj._body);
+      this.showLoginPage = true;
       let link = ['Login'];
       this._router.navigate(link);
     } else {
@@ -214,8 +222,8 @@ export class LogInComponent implements OnInit {
   }
 
   resetPassword(){
-    var resetPassword = jQuery("#resetPassword").val();
-    var resetPasswordConfirmation = jQuery("#resetPasswordConfirmation").val();
+    let resetPassword = jQuery("#resetPassword").val();
+    let resetPasswordConfirmation = jQuery("#resetPasswordConfirmation").val();
     if(!resetPassword&&!resetPasswordConfirmation){
       this.forgotPwdStatus = true;
       this.fpStatus = {};
@@ -227,7 +235,7 @@ export class LogInComponent implements OnInit {
       this.fpStatus['error'] = true;
       this.fpMessage = 'passwords donot match';
     }else{
-      var data={};
+      let data={};
       data['password']=resetPassword;
       data['token']=this.resetPasswordToken;
       this.loginService.resetPassword(data).subscribe(success => this.handleForgotPassword(true, success),

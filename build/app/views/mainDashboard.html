@@ -1,0 +1,148 @@
+<div foundation>
+    <div class="column small-12 medium-12 large-12">
+        <div class="row">
+            <div class="medium-12 columns">
+                <div class="payment-dashboard" *ngIf="!showDetailedChart">
+                    <div class="row expanded" foundation>
+                        <div class="column medium-12">
+                            <div class="row report-stats word-wrap text-center" *ngIf="hasBoxData">
+                                <div class="column medium-3 small-12" style="padding-left:0;">
+                                    <div class="row">
+                                        <div class="column medium-6 pointer report-stats-padding" style="background-color: #05807C">
+                                            <div>Cash Balance</div>
+                                            <div>{{metrics.cashBalance}}</div>
+                                        </div>
+                                        <div class="column medium-6 pointer" style="background-color: #F06459">
+                                            <div>Tax Liability</div>
+                                            <div>0.00</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column medium-3 small-12" style="padding-left:0;">
+                                    <div class="row">
+                                        <div class="column medium-6 pointer report-stats-padding" style="background-color: #05807C">
+                                            <div>Receivable</div>
+                                            <div>{{metrics.receivable}}</div>
+                                        </div>
+                                        <div class="column medium-6 pointer" style="background-color: #F06459">
+                                            <div>Payable</div>
+                                            <div>{{metrics.payable}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column medium-3 small-12">
+                                    <div class="row">
+                                        <div class="column medium-6 pointer report-stats-padding" style="background: #05807C;">
+                                            <div>Quick Ratio</div>
+                                            <div>{{metrics.quickRatio}}</div>
+                                        </div>
+                                        <div class="column medium-6 pointer" style="background: #00B1A6;">
+                                            <div>Current Ratio</div>
+                                            <div>{{metrics.currentRatio}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="column medium-3 small-12" style="padding-left:0;">
+                                    <div class="row">
+                                        <div class="column medium-6 pointer report-stats-padding" style="background-color: #05807C">
+                                            <div>GP Margin</div>
+                                            <div>{{metrics.gpMargin}}%</div>
+                                        </div>
+                                        <div class="column medium-6 pointer" style="background-color: #F06459">
+                                            <div>NP Margin</div>
+                                            <div>{{metrics.npMargin}}%</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row expanded books-dashboard-top-charts">
+                        <div class="column medium-6 expanded charts-main" style="border-right:1px solid #e1e1e1;">
+                            <div *ngIf="hasArAPCashBalanceData" style="min-width: 300px;height:400px;">
+                                <high-chart #hChart2=highChart [options]="arApCashBalanceChartOptions"></high-chart>
+                            </div>
+                        </div>
+                        <div class="column medium-6 expanded charts-main">
+                            <div *ngIf="hasProfitTrendData" style="min-width: 300px;height:400px;">
+                                <high-chart #hChart2=highChart [options]="profitTrendChartOptions"></high-chart>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row chart-margin">
+                        <div class="column medium-6 detailed-chart-icons">
+                            <span *ngIf="hasArAPCashBalanceData" class="text-right float-right" (click)="expandChart('arApCashBalance')">
+                                <i class="icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i>
+                            </span>
+                        </div>
+                        <div class="column medium-6 detailed-chart-icons">
+                            <span *ngIf="hasProfitTrendData" class="text-right float-right" (click)="expandChart('profitTrend')">
+                                <i class="icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row expanded books-dashboard-top-charts">
+                        <div class="column medium-6 expanded charts-main" style="border-right:1px solid #e1e1e1;">
+                            <div *ngIf="hasGPNPData" style="min-width: 300px;height:400px;">
+                                <high-chart #hChart2=highChart [options]="gpNpChartDataOptions"></high-chart>
+                            </div>
+                        </div>
+                        <div class="column medium-6 expanded charts-main">
+                            <div *ngIf="hasCashBurnData" style="min-width: 300px;height:400px;">
+                                <high-chart #hChart2=highChart [options]="cashBurnDataOptions"></high-chart>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row chart-margin">
+                        <div class="column medium-6 detailed-chart-icons">
+                            <span *ngIf="hasGPNPData" class="text-right float-right" (click)="expandChart('grossAndNetProfit')">
+                                <i class="icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i>
+                            </span>
+                        </div>
+                        <div class="column medium-6 detailed-chart-icons">
+                            <span *ngIf="hasCashBurnData" class="text-right float-right" (click)="expandChart('cashBurnChart')">
+                                <i class="icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row expanded books-dashboard-top-charts">
+                        <div class="column medium-6 expanded charts-main" style="border-right:1px solid #e1e1e1;">
+                            <div *ngIf="hasAgingByVendor" style="min-width: 300px;height:400px;">
+                                <high-chart #hChart2=highChart [options]="agingByVendorChartOptions"></high-chart>
+                            </div>
+                        </div>
+                        <div class="column medium-6 expanded charts-main">
+                            <div *ngIf="hasAgingByCustomerData" style="min-width: 300px;height:400px;">
+                                <high-chart #hChart2=highChart [options]="agingByCustomerChartOptions"></high-chart>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row chart-margin">
+                        <div class="column medium-6 detailed-chart-icons">
+                            <span *ngIf="hasAgingByVendor" class="text-right float-right" (click)="expandChart('agingByVendor')">
+                                <i class="icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i>
+                            </span>
+                        </div>
+                        <div class="column medium-6 detailed-chart-icons">
+                            <span *ngIf="hasAgingByCustomerData" class="text-right float-right" (click)="expandChart('agingByCustomer')">
+                                <i class="icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row chart-margin" *ngIf="showDetailedChart">
+        <div class="column medium-12 expanded charts-main">
+            <div style="min-width: 300px;height: calc(100vh - 150px);">
+                <high-chart #hChart4=highChart [options]="detailedReportChartOptions"></high-chart>
+            </div>
+        </div>
+    </div>
+</div>
+

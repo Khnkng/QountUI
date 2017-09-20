@@ -1,0 +1,260 @@
+<section class="qount-payment-workflow" foundation>
+  <header>
+      <div class="row collapsed workflow-save-button">
+        <div class="columns small-6 small-offset-6 right">
+          <button class="button small float-right" (click)="saveWorkflow()"
+                  [disabled]="entryUsers.length == 0 || approveFlowSteps.length == 0
+                    || payeeUsers.length == 0 || !companyName">Save</button>
+        </div>
+      </div>
+
+  </header>
+  <div>
+
+    <div class="workflow-form">
+
+
+      <div class="data-entry-payer-form">
+        <header>
+          <div class="row collapsed">
+            <div class="column small-9 medium-10 align-self-bottom">
+              <label class="title">Data Entry & Payer</label>
+            </div>
+            <!--<div class="column small-3 medium-2 text-right">
+              <label> &lt;!&ndash;Select a company&ndash;&gt;
+                <select [(ngModel)]="companyName" (change)="loadWorkFlow($event.target.value)">
+                  <option *ngFor="let company of companies" [value]="company.id">{{company.name}}</option>
+                </select>
+              </label>
+            </div>-->
+          </div>
+        </header>
+        <div class="divider"></div>
+        <div class="row collapsed">
+          <div class="column small-12 medium-6 data-entry-part">
+            <!--<label>Data Entry</label>-->
+            <div class="row">
+              <div [hidden]="!isOwner" class="column small-12 medium-6">
+                <label>Data entry
+                  <div>
+                    <select combo-box title="" data-clear-onselect="true" data-placeholder="Enter User ID" [listObject]="entryUsers1" (valueChanged)="addEntryUser($event)">
+                      <option *ngFor="let companyUser of entryUsers1" [value]="companyUser">{{companyUser}}</option>
+                    </select>
+                  </div>
+                </label>
+              </div>
+              <div class="column small-12" [ngClass]="{'medium-6':isOwner}">
+                <label>Data entry users</label>
+                <div class="user-grid">
+                  <div class="user-grid-empty" *ngIf="entryUsers && entryUsers.length==0">
+
+                  </div>
+                  <div class="user-grid-list" *ngIf="entryUsers && entryUsers.length>0">
+                    <ul>
+                      <li *ngFor="let user of entryUsers;let index=index">
+                        <div>
+                          <span>{{user}}</span>
+                          <span *ngIf="isOwner">
+                             <a class="float-right" (click)="removeEntryUser(index, $event)"><i class="icon ion-trash-b"></i></a>
+                          </span>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column small-12 medium-6 payer-part">
+            <!--<label>Payer</label>-->
+            <div class="row">
+              <div [hidden]="!isOwner" class="column small-12 medium-6">
+                <label>Payer
+                  <div >
+                    <select combo-box title="" data-clear-onselect="true" data-placeholder="Enter User ID" [listObject]="payeeUsers1" (valueChanged)="addPayeeUser($event)">
+                      <option *ngFor="let companyUser of payeeUsers1" [value]="companyUser">{{companyUser}}</option>
+                    </select>
+                  </div>
+                </label>
+              </div>
+              <div class="column small-12" [ngClass]="{'medium-6':isOwner}">
+                <label>Payers</label>
+                <div class="user-grid">
+                  <div class="user-grid-empty" *ngIf="payeeUsers && payeeUsers.length==0">
+
+                  </div>
+                  <div class="user-grid-list" *ngIf="payeeUsers && payeeUsers.length>0">
+                    <ul>
+                      <li *ngFor="let user of payeeUsers;let index=index">
+                        <div>
+                          <span>{{user}}</span>
+                          <span *ngIf="isOwner">
+                             <a class="float-right" (click)="removePayeeUser(index, $event)"><i class="icon ion-trash-b"></i></a>
+                          </span>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="Approval-flow-form">
+        <header>
+          <div class="row collapsed">
+            <div class="column small-12 align-self-bottom">
+              <label class="title">Approval flow</label>
+            </div>
+          </div>
+        </header>
+        <div class="divider"></div>
+        <div class="approval-part">
+          <div class="row collapsed">
+            <div class="column small-12 " [ngClass]="{'medium-6':isOwner}">
+              <table>
+                <thead>
+                <tr>
+                  <th width="10%">Rank</th>
+                  <th width="10%">Name</th>
+                  <th width="30%">Approver</th>
+                  <th width="25%">CheckList</th>
+                  <th></th>
+                </tr>
+
+                </thead>
+                <tbody>
+                <tr *ngIf="approveFlowSteps && approveFlowSteps.length==0">
+                  <td colspan="5" align="center">
+                    No Approval flow found!
+                  </td>
+                </tr>
+                <tr *ngFor="let flow of approveFlowSteps;let index=index">
+                  <td>{{flow.rank}}</td>
+                  <td>{{flow.name}}</td>
+                  <td>
+                      <span *ngFor="let user of flow.emails" class="userListItem">
+                        {{user}}
+                      </span>
+                  </td>
+                  <td>
+                      <span *ngFor="let chkLstItem of flow.checkList" class="checkListItem">
+                        {{chkLstItem}}
+                      </span>
+                  </td>
+                  <td>
+                    <span><i class="icon ion-edit" (click)="editApproveFlow(flow)"></i></span>
+                    <span><i class="icon ion-trash-b" (click)="removeApproveFlow(flow)"></i></span>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="column small-12 medium-6" *ngIf="isOwner">
+              <div class="row">
+                <div class="column">
+                  <label>{{editApproveFlowTitle? editApproveFlowTitle : 'Create Approval Workflow'}}</label>
+                </div>
+                <div class="column text-right">
+                  <div *ngIf="!editedFlowRank" >
+                    <button class="button small" [disabled]="!approveFlowName || approveUsers.length == 0 || rankCheckList.length == 0" (click)="addToApproveFlowSteps()"><i class="icon ion-plus"></i>Flow</button>
+                  </div>
+                  <div *ngIf="editedFlowRank">
+                    <button class="button small" [disabled]="!approveFlowName || approveUsers.length == 0 || rankCheckList.length == 0" (click)="syncEdittedApproveFlow()"><i class="icon ion-edit"></i>Flow</button>
+                    <button class="button small"  (click)="cancelEditApproveFlow()"><i class="icon"></i>Cancel</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="column small-12 medium-6">
+                  <label>Name
+                    <div class="input-group">
+                      <input class="input-group-field" [disabled]="!isOwner" [(ngModel)]="approveFlowName" type="text" placeholder="Name">
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="row collapsed">
+                <div class="column small-12 medium-6 no-padding">
+                  <div class="row">
+                    <div class="column small-12">
+                      <label [hidden]="!isOwner">User
+                        <select combo-box title="" data-clear-onselect="true" data-placeholder="Enter User ID" [listObject]="approverUsersList" (valueChanged)="addApproveUser($event)">
+                          <option *ngFor="let companyUser of approverUsersList" [value]="companyUser">{{companyUser}}</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div class="column small-12">
+                      <label>Approvers</label>
+                      <div class="user-grid">
+                        <div class="user-grid-empty" *ngIf="approveUsers && approveUsers.length==0">
+
+                        </div>
+                        <div class="user-grid-list" *ngIf="approveUsers && approveUsers.length>0">
+                          <ul>
+                            <li *ngFor="let user of approveUsers;let index=index">
+                              <div>
+                                <span>{{user}}</span>
+                                <span *ngIf="isOwner">
+                                   <a class="float-right" (click)="removeApproveUser(index, $event)"><i class="icon ion-trash-b"></i></a>
+                                </span>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+                <div class="column small-12 medium-6 no-padding">
+                  <div class="row">
+                    <div class="column small-12">
+                      <label [hidden]="!isOwner">Checklist Item
+                        <select combo-box title="" data-allow-invalid="true" data-clear-onselect="true" data-placeholder="Enter Checklist Item" [listObject]="checkList" (valueChanged)="addCheckListItem($event)">
+                          <option *ngFor="let chklstItem of checkList" [value]="chklstItem">{{chklstItem}}</option>
+                        </select>
+                      </label>
+                    </div>
+                    <div class="column small-12">
+                      <label>Checklist Items</label>
+                      <div class="user-grid">
+                        <div class="user-grid-empty" *ngIf="rankCheckList && rankCheckList.length==0">
+
+                        </div>
+                        <div class="user-grid-list" *ngIf="rankCheckList && rankCheckList.length>0">
+                          <ul>
+                            <li *ngFor="let chkListItem of rankCheckList;let index=index">
+                              <div>
+                                <span>{{chkListItem}}</span>
+                                <span *ngIf="isOwner">
+                                   <a class="float-right" (click)="removeCheckListItem(index, $event)"><i class="icon ion-trash-b"></i></a>
+                                </span>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+
+
+  </div>
+  <footer>
+
+  </footer>
+</section>

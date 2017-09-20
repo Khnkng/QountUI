@@ -18,6 +18,7 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
 
 declare var jQuery:any;
 declare var _:any;
@@ -65,13 +66,14 @@ export class FinancialAccountsComponent{
   bankCoa:Array<any>=[];
   creditCoa:Array<any>=[];
   routeSubscribe:any;
+
   constructor(private _router:Router,private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
-              private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard,
-              private dateFormater: DateFormater,private numeralService:NumeralService,private titleService:pageTitleService){
+              private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard,private dateFormater: DateFormater,private numeralService:NumeralService,private titleService:pageTitleService){
     this.titleService.setPageTitle("Financial Accounts");
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
     this.companyCurrency=Session.getCurrentCompanyCurrency();
+    this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
     this.dateFormat = dateFormater.getFormat();
     this.serviceDateformat = dateFormater.getServiceDateformat();
     if(this.currentCompany){
@@ -89,6 +91,7 @@ export class FinancialAccountsComponent{
     } else{
       this.toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
     }
+
     this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
       if(this.showFlyout){
         this.hideFlyout();
@@ -97,10 +100,12 @@ export class FinancialAccountsComponent{
       }
     });
   }
+
   toolsRedirect(){
     let link = ['tools'];
     this._router.navigate(link);
   }
+
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
     this.row = {};
@@ -173,9 +178,11 @@ export class FinancialAccountsComponent{
   ngOnInit(){
 
   }
+
   ngOnDestroy(){
     this.routeSubscribe.unsubscribe();
   }
+
   updateChartOfAccount(coa){
     let data = this._financialAccountForm.getData(this.accountForm);
     if(coa && coa.id){
@@ -241,7 +248,7 @@ export class FinancialAccountsComponent{
             }
           }, error =>{
             this.loadingService.triggerLoadingEvent(false);
-            this.toastService.pop(TOAST_TYPE.error, "Failed to update financial account");
+            this.handleCreateError(JSON.parse(error));
             this.showFlyout = false;
           });
     } else{
@@ -257,11 +264,16 @@ export class FinancialAccountsComponent{
             }
           }, error => {
             this.loadingService.triggerLoadingEvent(false);
-            this.toastService.pop(TOAST_TYPE.error, "Failed to create Account");
+            this.handleCreateError(JSON.parse(error));
             this.showFlyout = false;
           });
     }
   }
+
+  handleCreateError(obj) {
+    this.toastService.pop(TOAST_TYPE.error, obj.message);
+  }
+
 
   handleAccount(newAccount){
     this.toastService.pop(TOAST_TYPE.success, "Financial Account created successfully");
@@ -353,7 +365,7 @@ export class FinancialAccountsComponent{
     });
     setTimeout(function(){
       base.hasAccounts = true;
-    base.loadingService.triggerLoadingEvent(false);
+      base.loadingService.triggerLoadingEvent(false);
     }, 0)
 
   }

@@ -20,6 +20,8 @@ import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {StateService} from "qCommon/app/services/StateService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -70,6 +72,9 @@ export class ExpenseComponent{
     tempData:any;
     lineTotal:number=0;
     routeSubscribe:any;
+    formattedLineTotal:string;
+    localeFormat:string='en-US';
+
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
     @ViewChild("editEntityComboBoxDir") editEntityComboBox: ComboBox;
@@ -77,14 +82,15 @@ export class ExpenseComponent{
 
 
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _expenseForm: ExpenseForm,
-            private _expenseItemForm: ExpenseItemForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
-            private vendorService: CompaniesService, private expenseService: ExpenseService, private toastService: ToastService,
-            private loadingService: LoadingService, private dimensionService: DimensionService,private customerService:CustomersService,
-            private employeeService:EmployeeService,private paymentsService:PaymentsService,private dateFormater:DateFormater,
-            private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard){
+                private _expenseItemForm: ExpenseItemForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
+                private vendorService: CompaniesService, private expenseService: ExpenseService, private toastService: ToastService,
+                private loadingService: LoadingService, private dimensionService: DimensionService,private customerService:CustomersService,
+                private employeeService:EmployeeService,private paymentsService:PaymentsService,private dateFormater:DateFormater,
+                private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService){
         this.currentCompanyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
         this.serviceDateformat = dateFormater.getServiceDateformat();
+        this.localeFormat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
         this.routeSub = this._route.params.subscribe(params => {
             this.expenseID=params['expenseID'];
             if(!this.expenseID){
@@ -100,15 +106,15 @@ export class ExpenseComponent{
 
             });
         this.companyCurrency = Session.getCurrentCompanyCurrency();
-      this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => {
-        if(this.itemActive){
-          this.hideFlyout();
-        }else if(this.mappingFlyoutCSS == "expanded"){
-          this.hideMappingPage();
-        }else{
-          this.showExpensesPage();
-        }
-      });
+        this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => {
+            if(this.itemActive){
+                this.hideFlyout();
+            }else if(this.mappingFlyoutCSS == "expanded"){
+                this.hideMappingPage();
+            }else{
+                this.showExpensesPage();
+            }
+        });
     }
 
     showMappingPage(){
@@ -121,7 +127,7 @@ export class ExpenseComponent{
                 return
             }
             this.mappingFlyoutCSS="expanded";
-          this.titleService.setPageTitle("Payments");
+            this.titleService.setPageTitle("Payments");
             this.loadingService.triggerLoadingEvent(true);
             this.paymentsService.mappings(this.currentCompanyId,this.expenseType,"false",this.bankAccountID)
                 .subscribe(mappings => {
@@ -137,7 +143,7 @@ export class ExpenseComponent{
 
     showExpensesPage(bankID?){
         if(this.stayFlyout){
-           let base=this;
+            let base=this;
             this.initialize();
             this.dimensionFlyoutCSS = "";
             this.mappingFlyoutCSS="";
@@ -253,7 +259,7 @@ export class ExpenseComponent{
         });
         let account = _.find(this.accounts, {'id': expense.bank_account_id});
         setTimeout(function(){
-           base.accountComboBox.setValue(account, 'name');
+            base.accountComboBox.setValue(account, 'name');
         });
         this._expenseForm.updateForm(this.expenseForm, expense);
         this.updateLineTotal();
@@ -263,12 +269,12 @@ export class ExpenseComponent{
     editItem(index, itemForm){
         let linesControl:any = this.expenseForm.controls['expense_items'];
         let base = this;
-         let itemData = this._expenseItemForm.getData(itemForm);
-         //this.editingItems[index] = itemData;
-         setTimeout(function(){
-         jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
-         jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
-         });
+        let itemData = this._expenseItemForm.getData(itemForm);
+        //this.editingItems[index] = itemData;
+        setTimeout(function(){
+            jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
+            jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
+        });
         if(index == this.getLastActiveLineIndex(linesControl)){
             this.addDefaultLine(1);
         }
@@ -276,8 +282,19 @@ export class ExpenseComponent{
         itemForm.editable = !itemForm.editable;
     }
 
+    enableLines(){
+        let expItems: any = this.expenseForm.controls.expense_items;
+        let lines = expItems.controls;
+        if(lines && lines.length > 0){
+            this.editItem(0, lines[0]);
+        } else{
+            this.addDefaultLine(1);
+            this.editItem(0, lines[0]);
+        }
+    }
 
-    handleKeyEvent(event: Event,index,key){
+
+    handleKeyEvent(event: Event, index, key){
         let current_ele = jQuery(this.el.nativeElement).find("tr")[index].closest('tr');
         let focusedIndex;
         jQuery(current_ele).find("td input").each(function(id,field) {
@@ -293,22 +310,22 @@ export class ExpenseComponent{
             setTimeout(function(){
                 let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
                 jQuery(elem).find("td input").each(function(id,field) {
-                    if(id == focusedIndex) {
+                    if(id == 0) {
                         jQuery(field).focus();
                     }
                 });
             });
         }else{
-                let nextIndex = this.getNextElement(current_ele,index,'Arrow Up');
-                base.editItem(nextIndex, expenseLines.controls[nextIndex]);
-                setTimeout(function(){
-                    let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
-                    jQuery(elem).find("td input").each(function(id,field) {
-                        if(id == focusedIndex) {
-                            jQuery(field).focus();
-                        }
-                    });
+            let nextIndex = this.getNextElement(current_ele,index,'Arrow Up');
+            base.editItem(nextIndex, expenseLines.controls[nextIndex]);
+            setTimeout(function(){
+                let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
+                jQuery(elem).find("td input").each(function(id,field) {
+                    if(id == 0) {
+                        jQuery(field).focus();
+                    }
                 });
+            });
         }
     }
 
@@ -344,36 +361,36 @@ export class ExpenseComponent{
     }
 
     /*showNewItem(){
-        this.addNewItemFlag = true;
-        this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
-        let base=this;
-        let account = _.find(this.chartOfAccounts, {'number': '699999'});
-        setTimeout(function(){
-            if(account)
-                base.newCOAComboBox.setValue(account,'name');
-        });
-    }*/
+     this.addNewItemFlag = true;
+     this.newItemForm = this._fb.group(this._expenseItemForm.getForm());
+     let base=this;
+     let account = _.find(this.chartOfAccounts, {'number': '699999'});
+     setTimeout(function(){
+     if(account)
+     base.newCOAComboBox.setValue(account,'name');
+     });
+     }*/
 
     /*hideNewItem(){
-        this.addNewItemFlag = false;
-    }*/
+     this.addNewItemFlag = false;
+     }*/
 
     /*saveNewItem(){
-        this.addNewItemFlag = !this.addNewItemFlag;
-        let tempItemForm = _.cloneDeep(this.newItemForm);
-        let itemsControl:any = this.expenseForm.controls['expense_items'];
-        itemsControl.controls.push(tempItemForm);
-    }*/
+     this.addNewItemFlag = !this.addNewItemFlag;
+     let tempItemForm = _.cloneDeep(this.newItemForm);
+     let itemsControl:any = this.expenseForm.controls['expense_items'];
+     itemsControl.controls.push(tempItemForm);
+     }*/
 
     /*setCOAForNewItem(chartOfAccount){
-        let data = this._expenseItemForm.getData(this.newItemForm);
-        if(chartOfAccount&&chartOfAccount.id){
-            data.chart_of_account_id = chartOfAccount.id;
-        }else if(!chartOfAccount||chartOfAccount=='--None--'){
-            data.chart_of_account_id='--None--';
-        }
-        this._expenseItemForm.updateForm(this.newItemForm, data);
-    }*/
+     let data = this._expenseItemForm.getData(this.newItemForm);
+     if(chartOfAccount&&chartOfAccount.id){
+     data.chart_of_account_id = chartOfAccount.id;
+     }else if(!chartOfAccount||chartOfAccount=='--None--'){
+     data.chart_of_account_id='--None--';
+     }
+     this._expenseItemForm.updateForm(this.newItemForm, data);
+     }*/
 
     setCOA(chartOfAccount, index){
         let data = this._expenseItemForm.getData(this.expenseForm.controls[index]);
@@ -394,10 +411,10 @@ export class ExpenseComponent{
     }
 
     /*setEntityForNewItem(entity){
-        let data = this._expenseItemForm.getData(this.newItemForm);
-        data.entity_id = entity.id;
-        this._expenseItemForm.updateForm(this.newItemForm, data);
-    }*/
+     let data = this._expenseItemForm.getData(this.newItemForm);
+     data.entity_id = entity.id;
+     this._expenseItemForm.updateForm(this.newItemForm, data);
+     }*/
 
     getCOAName(chartOfAccountId){
         let coa = _.find(this.chartOfAccounts, {'id': chartOfAccountId});
@@ -537,7 +554,7 @@ export class ExpenseComponent{
     submit($event){
         $event && $event.preventDefault();
         let data = this._expenseForm.getData(this.expenseForm);
-        data.expense_items = this.getExpenseItemData(this.expenseForm.controls['expense_items']);
+        //data.expense_items = this.getExpenseItemData(this.expenseForm.controls['expense_items']);
         data.expense_items=this.getExpenseLineData(this.expenseForm);
         data.amount=this.roundOffValue(data.amount);
         this.updateExpenseLinesData(data);
@@ -580,8 +597,8 @@ export class ExpenseComponent{
     }
 
     ngOnDestroy(){
-      this.routeSubscribe.unsubscribe();
         jQuery('#expense-password-conformation').remove();
+        this.routeSubscribe.unsubscribe();
     }
 
     initialize(){
@@ -660,7 +677,7 @@ export class ExpenseComponent{
         }
     }
 
-   /*view changes*/
+    /*view changes*/
 
     addDefaultLine(count){
         let linesControl: any = this.expenseForm.controls['expense_items'];
@@ -706,9 +723,13 @@ export class ExpenseComponent{
             let lineData = base._expenseItemForm.getData(jeLineControl);
             if(!_.isEqual(lineData, defaultLine)){
                 if(!base.newExpense){
-                    data.push(lineData);
+                    if(lineData.amount){
+                        data.push(lineData);
+                    }
                 } else if(!lineData.destroy){
-                    data.push(lineData);
+                    if(lineData.amount){
+                        data.push(lineData);
+                    }
                 }
             }
         });
@@ -773,7 +794,7 @@ export class ExpenseComponent{
     }
     handleSelect(event:any) {
         if(event&&event[0])
-        this.selectedMappingID=event[0]['groupID'];
+            this.selectedMappingID=event[0]['groupID'];
     }
 
     saveMappingID(){
@@ -790,20 +811,18 @@ export class ExpenseComponent{
             this.toastService.pop(TOAST_TYPE.error, "Please select valid bank account");
             return false;
         }
-
         if(data.amount <= 0){
             this.toastService.pop(TOAST_TYPE.error, "Expense amount must be greater than zero.");
             return false;
         }
-
         let itemTotal = _.sumBy(data.expense_items, function(expense){
             return expense.destroy? 0 : expense.amount;
         });
+        itemTotal = this.roundOffValue(itemTotal);
         if(itemTotal != data.amount){
             this.toastService.pop(TOAST_TYPE.error, "Expense amount and Item total did not match.");
             return false;
         }
-
         return result;
     }
 
@@ -877,10 +896,15 @@ export class ExpenseComponent{
                 base.lineTotal += line.amount? base.roundOffValue(parseFloat(line.amount)): 0;
             }
         });
+        this.formattedLineTotal=this.formatAmount(this.lineTotal);
     }
 
     roundOffValue(num){
         return Math.round(num * 100) / 100
+    }
+
+    formatAmount(value){
+        return this.numeralService.format('$0,0.00', value)
     }
 
 }

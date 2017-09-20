@@ -42,7 +42,7 @@
                           <label class="text-right">Vendor Type</label>
                         </div>
                         <div class="small-6 columns">
-                          <select formControlName="type" (change)="setVendorType($event.target.value)">
+                          <select formControlName="type">
                             <option value="Business">Business</option>
                             <option value="Individual">Individual</option>
                           </select>
@@ -237,7 +237,6 @@
     </div>
     <div class="flyout expanded" [ngClass]="{'expanded':showMailFlyout}">
       <section class="flyout-placeholder">
-
         <div class="flyout-body flyout-shadow-effect">
           <!--here comes actual flyout code-->
           <section class="form-section clearfix">
@@ -258,11 +257,6 @@
             </div>
           </section>
         </div>
-        <button class="close-flyout" aria-label="Close modal" type="button" (click)="hideMailFlyout()">
-                <span aria-hidden="true">
-                  <i class="ion-ios-close-empty"></i>
-                </span>
-        </button>
       </section>
     </div>
   </div>

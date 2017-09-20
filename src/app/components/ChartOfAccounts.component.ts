@@ -16,10 +16,10 @@ import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {Router} from "@angular/router";
 
-
-declare var jQuery:any;
-declare var _:any;
+declare let jQuery:any;
+declare let _:any;
 
 @Component({
   selector: 'chart-of-accounts',
@@ -51,13 +51,15 @@ export class ChartOfAccountsComponent{
   combo:boolean = true;
   sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices", "loansTo"];
   hasParentOrChild: boolean = false;
+  hasChildren: boolean = false;
   showFlyout:boolean = false;
   coaId:any;
   confirmSubscription:any;
   companyCurrency:string;
   localeFortmat:string='en-US';
+  routeSubscribe:any;
 
-  constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard,
+  constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard,private _router: Router,
               private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private toastService: ToastService, private companiesService: CompaniesService,private numeralService:NumeralService,private titleService:pageTitleService){
     this.titleService.setPageTitle("CHART OF ACCOUNTS");
@@ -77,6 +79,19 @@ export class ChartOfAccountsComponent{
       }
       this.fetchChartOfAccountData();
     }, error => this.handleError(error));
+
+    this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+      if(this.showFlyout){
+        this.hideFlyout();
+      }else {
+        this.toolsRedirect();
+      }
+    });
+  }
+
+  toolsRedirect(){
+    let link = ['tools'];
+    this._router.navigate(link);
   }
 
   fetchChartOfAccountData(){
@@ -87,10 +102,10 @@ export class ChartOfAccountsComponent{
   }
 
   ngOnDestroy(){
+    this.routeSubscribe.unsubscribe();
     this.confirmSubscription.unsubscribe();
   }
   handleError(error){
-    this.row = {};
     this.loadingService.triggerLoadingEvent(false);
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
   }
@@ -119,7 +134,8 @@ export class ChartOfAccountsComponent{
   }
 
   populateSubtypes($event){
-    if(this.editMode && this.row.parentID){
+    let data = this._coaForm.getData(this.coaForm);
+    if(this.editMode && data.parentID){
       this.toastService.pop(TOAST_TYPE.error, "Type cannot be changed for a child");
       $event && $event.preventDefault();
       return false;
@@ -128,17 +144,29 @@ export class ChartOfAccountsComponent{
     this.displaySubtypes = _.sortBy(this.allSubTypes[categoryType], ['name']);
     this.description = "";
     this.coaForm.controls['subType'].patchValue('');
-    this.setParents(categoryType);
+    this.setParents(categoryType, data.id);
   }
 
   setParents(categoryType, coaId?){
     if(categoryType){
       this.parentAccounts = _.filter(this.chartOfAccounts, {type: categoryType});
       if(coaId){
-        _.remove(this.parentAccounts, {id: coaId});
+        this.removeChildren(coaId);
       }
       _.sortBy(this.parentAccounts, ['number', 'name']);
       this.refreshComboBox();
+    }
+  }
+
+  removeChildren(coaId){
+    let base = this;
+    let children = this.getChildren(this.chartOfAccounts, coaId);
+    _.remove(base.parentAccounts, {id: coaId});
+    if(children.length > 0){
+      _.each(children, function(child){
+        _.remove(base.parentAccounts, {id: child.id});
+        base.removeChildren(child.id);
+      });
     }
   }
 
@@ -154,6 +182,7 @@ export class ChartOfAccountsComponent{
     this.description = "";
     this.subAccount = false;
     this.hasParentOrChild = false;
+    this.hasChildren = false;
     this.showFlyout = true;
   }
 
@@ -167,37 +196,37 @@ export class ChartOfAccountsComponent{
   }
 
   showEditCOA(row: any){
-    this.titleService.setPageTitle("UPDATE CHART OF ACCOUNT");
-    row = _.find(this.chartOfAccounts, {'id': row.id});
-    this.row = row;
     let base = this;
-    this.editMode = true;
-    this.showFlyout = true;
-    this.coaForm = this._fb.group(this._coaForm.getForm());
-    this.subAccount = this.row.subAccount = Boolean(row.subAccount);
-    this.displaySubtypes = this.allSubTypes[row.type];
-    this.description = this.descriptions[row.subType];
-    this.setParents(row.type, row.id);
-    let parentIndex = _.findIndex(this.parentAccounts, {id: row.parentID});
-    if(parentIndex != -1){
-      setTimeout(function () {
-        base.parentAccountComboBox.setValue(base.parentAccounts[parentIndex], 'name');
-      },100);
-    }
-    this.updateCOAStatus();
-    this._coaForm.updateForm(this.coaForm, row);
+    this.titleService.setPageTitle("UPDATE CHART OF ACCOUNT");
+    this.loadingService.triggerLoadingEvent(true);
+    this.coaService.getChartOfAccount(row.id, this.currentCompany.id).subscribe( coa => {
+      this.loadingService.triggerLoadingEvent(false);
+      this.editMode = true;
+      this.showFlyout = true;
+      this.coaForm = this._fb.group(this._coaForm.getForm());
+      this.subAccount = Boolean(coa.subAccount);
+      this.displaySubtypes = this.allSubTypes[coa.type];
+      this.description = this.descriptions[coa.subType];
+      this.setParents(coa.type, coa.id);
+      let parentIndex = _.findIndex(this.parentAccounts, {id: coa.parentID});
+      if(parentIndex != -1){
+        setTimeout(function () {
+          base.parentAccountComboBox.setValue(base.parentAccounts[parentIndex], 'name');
+        },100);
+      }
+      this.updateCOAStatus(coa);
+      this._coaForm.updateForm(this.coaForm, coa);
+    }, error => {
+
+    });
   }
 
-  updateCOAStatus(){
-    let base = this;
-    this.hasParentOrChild = false;
-    if(this.row.parentID != "" && this.row.subAccount){
-      this.hasParentOrChild = true; //Child of another COA
-    } else{
-      let children = _.filter(this.chartOfAccounts, {'parentID': this.row.id});
-      if(children.length > 0){
-        this.hasParentOrChild = true;
-      }
+  updateCOAStatus(coa){
+    this.hasParentOrChild = this.hasRelation(coa);
+    this.hasChildren = false;
+    let children = _.filter(this.chartOfAccounts, {'parentID': coa.id});
+    if(children.length > 0){
+      this.hasChildren = true;
     }
   }
 
@@ -264,23 +293,24 @@ export class ChartOfAccountsComponent{
   updateParent(parentCoa){
     let coaData = this._coaForm.getData(this.coaForm);
     coaData.parentID = parentCoa.id;
+    coaData.level = parentCoa.level+1;
     this._coaForm.updateForm(this.coaForm, coaData);
   }
 
   saveCOA($event){
-    this.loadingService.triggerLoadingEvent(true);
     let base = this;
     $event && $event.preventDefault();
     let data = this._coaForm.getData(this.coaForm);
     if(!data.subAccount){
       data.parentID = null;
+      data.level = 0;
     }
+    this.loadingService.triggerLoadingEvent(true);
     if(this.editMode){
-      data.id = this.row.id;
       this.coaService.updateCOA(data.id, data, this.currentCompany.id)
           .subscribe(coa => {
             base.hideFlyout();
-            base.row = {};
+            this.loadingService.triggerLoadingEvent(false);
             base.toastService.pop(TOAST_TYPE.success, "Chart of Account updated successfully");
             this.fetchChartOfAccountData();
           }, error => this.handleCOAError(error));
@@ -288,7 +318,9 @@ export class ChartOfAccountsComponent{
       this.coaService.addChartOfAccount(data, this.currentCompany.id)
           .subscribe(newCOA => {
             base.hideFlyout();
-            this.handleCOA(newCOA);
+            this.loadingService.triggerLoadingEvent(false);
+            this.toastService.pop(TOAST_TYPE.success, "Chart of account created successfully");
+            this.fetchChartOfAccountData();
           }, error => this.handleCOAError(error));
     }
     this.buildTableData(this.chartOfAccounts);
@@ -301,12 +333,6 @@ export class ChartOfAccountsComponent{
     } else{
       this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
     }
-  }
-
-  handleCOA(newCOA){
-    this.toastService.pop(TOAST_TYPE.success, "Chart of account created successfully");
-    this.chartOfAccounts.push(newCOA);
-    this.buildTableData(this.chartOfAccounts);
   }
 
   getMappingName(mappingValue){

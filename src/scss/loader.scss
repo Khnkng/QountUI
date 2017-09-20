@@ -3,7 +3,7 @@
 
 /* Loading CSS*/
 .qount-overlay{
-  position: absolute;
+  position: fixed;
   top:0;
   left: 0;
   z-index: 5000;
@@ -13,7 +13,7 @@
   height: 100vh;
 }
 .qount-loading-wheel{
-  position: absolute;
+  position: fixed;
   top:30%;
   left:50%;
   z-index: 5009;

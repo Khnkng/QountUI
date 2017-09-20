@@ -1,0 +1,443 @@
+/**
+ * Created by yvadugu on 10-05-2016.
+ */
+table thead {
+  background: #E5E5E5;
+  border: none;
+  background-color: #E5E5E5;
+  color: #878787;
+  font-family: NiveauGroteskRegular;
+  font-weight: normal;
+  color: #878787;
+}
+
+table thead tr {
+  border: 1px solid #DCDEDD !important;
+}
+
+table thead tr th {
+  font-size: 1.05em;
+  border: none !important;
+  color: #878787;
+}
+
+table tbody tr {
+  border: 1px solid #DCDEDD;
+}
+
+table tbody tr td {
+  color: #878787;
+  font-size: 1.05em;
+  font-family: NiveauGroteskRegular;
+}
+
+table tbody tr:hover {
+  background: #F1F1F1 !important;
+}
+
+table tfoot {
+  background: #ffffff !important;
+  border: none !important;
+}
+
+@font-face {
+  font-family: 'open sans';
+  src: url("../fonts/OpenSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  src: url("../fonts/NotoSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url("../fonts/SourceSansPro-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskMedium';
+  src: url("../fonts/NiveauGrotesk-Medium.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskLight';
+  src: url("../fonts/NiveauGrotesk-light.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskRegular';
+  src: url("../fonts/NiveauGrotesk-regular.ttf");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.eot");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.svg");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.ttf");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.woff");
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/MaterialIcons-Regular.eot");
+  /* For IE6-8 */
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("../fonts/MaterialIcons-Regular.woff2") format("woff2"), url("../fonts/MaterialIcons-Regular.woff") format("woff"), url("../fonts/MaterialIcons-Regular.ttf") format("truetype");
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+[data-whatinput='mouse'] select {
+  outline: 0;
+}
+
+.qount-off-canvas-menu-buttom i {
+  font-size: 2em;
+  color: #6f7f8f;
+  margin-left: .25em;
+  margin-right: .25em;
+}
+
+.qount-off-canvas-menu .flyout {
+  /*@media screen and (max-width: 39.9375em) {
+      $left-margin-for-menu: 0px;
+    }*/
+  background: #ffffff;
+  height: 100%;
+  position: fixed;
+  width: 100%;
+  top: 50px;
+  left: -100%;
+  transition: all 0.5s;
+  z-index: 100;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media screen and (min-width: 64em) {
+  .qount-off-canvas-menu .flyout {
+    width: calc(100% - 55px);
+  }
+}
+
+.qount-off-canvas-menu .flyout.expanded {
+  left: 0px;
+}
+
+@media screen and (min-width: 64em) {
+  .qount-off-canvas-menu .flyout.expanded {
+    left: 55px;
+  }
+}
+
+.qount-off-canvas-menu .flyout.expanded button.close-flyout {
+  position: absolute;
+  top: -5px;
+  right: 25px;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.qount-off-canvas-menu .flyout.expanded button.close-flyout:hover {
+  background: #DCDEDD;
+}
+
+.qount-off-canvas-menu .flyout.expanded button.close-flyout i {
+  font-size: 3em;
+}
+
+.qount-off-canvas-menu .flyout.qount-mobile-menu {
+  z-index: 1000;
+}
+
+.qount-off-canvas-menu .flyout.qount-mobile-menu .side-nav {
+  margin: 0;
+  list-style: none;
+  display: block;
+}
+
+.qount-off-canvas-menu .flyout.qount-mobile-menu .side-nav li {
+  border-bottom: 1px solid #CACACA;
+  display: block;
+  list-style: none;
+  height: 55px;
+}
+
+.qount-off-canvas-menu .flyout.qount-mobile-menu .side-nav li:first-child {
+  display: none;
+}
+
+.qount-off-canvas-menu .flyout.qount-mobile-menu .side-nav li a {
+  color: #696E73;
+  display: block;
+  font-size: 1rem;
+  padding: 1em 0.5em;
+}
+
+.qount-off-canvas-menu .flyout.qount-mobile-menu .side-nav li a .icon {
+  display: inline-block;
+  width: 30px;
+  text-align: right;
+  margin-right: 20px;
+  font-size: 1.3em;
+}
+
+.qount-off-canvas-menu .flyout.qount-mobile-menu .side-nav li a .name {
+  display: inline-block;
+  font-weight: 600;
+}
+
+.qount-off-canvas-menu .flyout.qount-mobile-menu .side-nav li:hover {
+  background: #F1F1F1;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder {
+  min-height: calc(100vh - 50px);
+  background: #ffffff;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-header {
+  padding-left: 5px;
+  background: transparent;
+  color: #696E73;
+  height: 30px;
+  text-transform: uppercase;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-header h1, .qount-off-canvas-menu .flyout .flyout-placeholder .flyout-header h2, .qount-off-canvas-menu .flyout .flyout-placeholder .flyout-header h3, .qount-off-canvas-menu .flyout .flyout-placeholder .flyout-header h4, .qount-off-canvas-menu .flyout .flyout-placeholder .flyout-header h5, .qount-off-canvas-menu .flyout .flyout-placeholder .flyout-header h6 {
+  color: #696E73;
+  font-weight: 700;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body {
+  min-height: calc(100vh - 80px);
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section {
+  background: #FFF;
+  padding: 30px 15px 30px 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section .address-component {
+  border: none !important;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section div.error {
+  font-size: 0.9em;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section .ng-dirty.ng-invalid, .qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section .ng-touched.ng-invalid {
+  margin-bottom: 0px;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section.search-reveal {
+  padding: 15px;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section .form-section-header {
+  font-weight: 700;
+  font-size: 1em;
+  color: #696E73;
+  margin: 4px 0;
+  padding-left: 14px;
+}
+
+@media screen and (min-width: 40em) {
+  .qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section .form-section-left {
+    width: 50%;
+    float: left;
+  }
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section .form-section-left.expense-row {
+  width: 100%;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section .form-section-left.expense-row .combo-box-field input, .qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section .form-section-left.expense-row .combo-box-field a {
+  margin-top: -15px;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section .custom-qount-form-field {
+  margin-bottom: 18px;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section .custom-qount-form-submit {
+  position: absolute;
+  right: 30px;
+  bottom: 80px;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-body .form-section:last-child {
+  margin-bottom: 5px !important;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .flyout-shadow-effect {
+  /*  position:relative;
+        -webkit-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        -moz-box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+        &:before, &:after{
+          content:"";
+          position:absolute;
+          z-index:-1;
+          -webkit-box-shadow:0 0 20px rgba(0,0,0,0.8);
+          -moz-box-shadow:0 0 20px rgba(0,0,0,0.8);
+          box-shadow:0 0 20px rgba(0,0,0,0.8);
+          top:10px;
+          bottom:10px;
+          left:0;
+          right:0;
+          -moz-border-radius:100px / 10px;
+          border-radius:100px / 10px;
+        }
+
+        &:after{
+          right:10px;
+          left:auto;
+          -webkit-transform:skew(8deg) rotate(3deg);
+          -moz-transform:skew(8deg) rotate(3deg);
+          -ms-transform:skew(8deg) rotate(3deg);
+          -o-transform:skew(8deg) rotate(3deg);
+          transform:skew(8deg) rotate(3deg);
+        }*/
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .dimension-values {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  margin-bottom: 10px;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .dimension-values .label {
+  background: #EEEEEE;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .dimension-values .dimension-value-wrapper {
+  margin-left: 15px;
+  margin-top: 10px;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  padding: 0.33333rem 0.1rem;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .dimension-values .dimension-value-wrapper .icon {
+  font-size: 0.8rem;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .dimension-values .dimension-value-wrapper .edit-wrapper {
+  float: right;
+  margin-left: 9px;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .dimension-values .dimension-value-wrapper .dimension-value, .qount-off-canvas-menu .flyout .flyout-placeholder .dimension-values .dimension-value-wrapper .edit-wrapper {
+  padding: 5px;
+}
+
+.qount-off-canvas-menu .flyout .flyout-placeholder .dimension-values .dimension-value-wrapper input {
+  height: 20px;
+  font-size: 12px;
+}
+
+.qount-off-canvas-menu.chart-of-accounts .description {
+  font-size: 12px;
+}
+
+/*TODO need to move to different scss file, it donnt belong here */
+@media screen and (min-width: 40em) {
+  .create-vendor .create-vendor-separator {
+    border-left: 1px solid #CACACA;
+  }
+}
+
+.qount-page-icon-bar {
+  position: absolute;
+  right: 25px;
+}
+
+.qount-page-icon-bar .button {
+  border-radius: 25px;
+  margin-left: 10px !important;
+}
+
+.rule-flyout .rule-row label, .rule-flyout .rule-row select, .rule-flyout .rule-row input, .rule-flyout .action-row label, .rule-flyout .action-row select, .rule-flyout .action-row input {
+  float: left;
+  width: auto;
+  margin: 0px 5px;
+}
+
+.rule-flyout .action-row {
+  margin-top: 10px;
+}
+
+.rule-flyout input {
+  width: auto;
+}
+
+.rule-flyout select, .rule-flyout input {
+  font-size: 12px;
+}
+
+.rule-flyout .actions-form {
+  border: none !important;
+}
+
+.rule-flyout label.combo-box {
+  width: 175px;
+}
+
+.rule-flyout .date-wrapper {
+  margin-left: 5px;
+}
+
+.rule-flyout .date-wrapper .button {
+  border-radius: 3px 0px 0px 3px;
+}
+
+.rule-flyout .date-wrapper input {
+  border-radius: 0px 3px 3px 0px;
+  height: 34px;
+}
+
+.rule-flyout .add-action {
+  margin: 10px 0px;
+}

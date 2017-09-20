@@ -1,0 +1,145 @@
+<form [formGroup]="invoicePaymentForm">
+    <div class="row">
+        <div class="medium-6 columns">
+            <div class="row">
+                <div class="medium-12 columns">
+                    <label>
+                        Invoice Number
+                        <div>
+                            <input type="button" class="button" [ngClass]="{'hollow grey': type!='cheque', 'sky-blue-button': type=='cheque'}" value="Check" (click)="setType('cheque')"/>
+                            <input type="button" class="button" [ngClass]="{'hollow grey': type!='cash', 'sky-blue-button': type=='cash'}" value="Cash" (click)="setType('cash')"/>
+                            <input type="button" class="button" [ngClass]="{'hollow grey': type!='card', 'sky-blue-button': type=='card'}" value="Credit/Debit" (click)="setType('card')"/>
+                            <input type="button" class="button" [ngClass]="{'hollow grey': type!='paypal', 'sky-blue-button': type=='paypal'}" value="PayPal" (click)="setType('paypal')"/>
+                            <input type="button" class="button" [ngClass]="{'hollow grey': type!='other', 'sky-blue-button': type=='other'}" value="Other" (click)="setType('other')"/>
+                        </div>
+                    </label>
+                    <input style="visibility: hidden" type="input" formControlName="type"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-9 columns">
+                    <label>
+                        Received From
+                        <select formControlName="receivedFrom" (change)="setCustomerName()">
+                            <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns">
+                    <label>
+                        Payment Amount
+                        <input type="text" [readonly]="paymentId" formControlName="paymentAmount" numeral [locale]="currentLocale" [format]="'$0,0.00'"/>
+                    </label>
+                </div>
+                <div class="medium-3 columns">
+                    <label>
+                        Currency
+                        <select formControlName="currencyCode" (change)="setLocale()">
+                            <option [value]="'USD'" selected>USD</option>
+                            <option [value]="'INR'">INR</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns">
+                    <label>
+                        Reference Number
+                        <input type="text" formControlName="referenceNo"/>
+                    </label>
+                </div>
+                <div class="medium-3 columns">
+                    <label>
+                        Payment Date
+                        <input type="text" formControlName="paymentDate" invoice-custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setPaymentDate($event)" placeholder="Payment Date*"/>
+                    </label>
+                </div>
+                <div class="medium-3 columns">
+                    <i class="ion ion-android-calendar" style="color:#4554A4;position: relative;top:27px;left:-10px;font-size: 2rem;"></i>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-6 columns">
+                    <label>
+                        Memo
+                        <input type="text" formControlName="memo"/>
+                    </label>
+                </div>
+
+            </div>
+        </div>
+        <div class="medium-6 columns">
+            <div class="row" style="margin-top:20px;">
+                <div class="medium-4 columns">
+                    <input type="button" class="button large" [disabled]="saving" (click)="save()" value="Save Payment"/>
+                </div>
+                <div class="medium-4 columns">
+                    <input type="button" class="button large clear" (click)="invoicePaymentForm.reset()" value="Cancel"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-8 columns">
+                    <label>Deposit Into Bank
+                        <select formControlName="depositedTo">
+                            <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="medium-8 columns">
+                    <label>Payment Note (only you can see these)
+                    <textarea style="height: 120px;" placeholder="Add payment details here to help you
+remember them later…" formControlName="paymentNote">
+
+                   </textarea>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<div class="row" *ngIf="invoicePaymentForm.controls.receivedFrom.value">
+    <div class="medium-12 columns">
+        <h5 style="margin-bottom: 0px;">Invoices - {{currentClientName}}</h5>
+        <span style="color: #878787">Outstanding balance: {{getOutstandingBalance()}}</span>
+        <span class="float-right">
+            <span style="margin-right:20px;color:#4554A4;font-weight: bold">{{getAppliedText()}}</span>
+            <span class="pointer" (click)="gotoInvoice()">
+                  <i class=" icon ion-ios-plus-outline"></i>
+                  <span>Invoice</span>
+            </span>
+        </span>
+        <table style="margin-top: 15px;">
+            <thead>
+            <tr>
+                <th>Invoice</th>
+                <th>Invoice Date</th>
+                <th>Due Date/Status</th>
+                <th>Amount</th>
+                <th>Due Amount</th>
+                <th>Apply Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let paymentLine of paymentLines">
+                <td>
+                    <div>{{paymentLine.number}}</div>
+                </td>
+                <td>{{paymentLine.invoiceDate}}</td>
+                <td>
+                    <div>{{paymentLine.dueDate || "-"}}</div>
+                    <div><small>{{paymentLine.state || "-"}}</small></div>
+                </td>
+                <td>{{numeralService.format('$0,0.00', paymentLine.invoiceAmount)}}</td>
+                <td>{{numeralService.format('$0,0.00', paymentLine.dueAmount)}}</td>
+                <td><input type="text" [readonly]="paymentLine.dueAmount == 0" [(ngModel)]="paymentLine.amount" numeral [locale]="currentLocale" [format]="'$0,0.00'"/></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

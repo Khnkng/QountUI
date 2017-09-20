@@ -99,12 +99,8 @@
 
                 <div class="small-12 medium-6 columns">
                   <label>Bills email
-                    <div class="input-group">
-                      <span class="input-group-label">dev.bills.</span>
-                      <input class="input-group-field" name="companyEmail" formControlName="companyEmail" type="text" (blur)="validateEmail()">
-                      <span class="input-group-label">@qounthq.io</span>
-                    </div>
-                    <div class="error" *ngIf="!emailValidation"><small>Email ID Does Not Exist</small></div>
+                      <input type="text" formControlName="companyEmail" placeholder="Bills Email" (blur)="validateEmail()">
+                      <div class="error" *ngIf="!emailValidation"><small>Email ID Does Not Exist</small></div>
                   </label>
                 </div>
                 <div class="small-12 medium-4 columns">
@@ -132,6 +128,35 @@
                     <div>
                       <input  custom-datepicker (valueChanged)="setDate($event,lockdate)" [mindate]="'past'" [maxdate]="todaysDate" [format]="'MM/DD/YYYY'"  type="text" name="fiscalStartDate" formControlName="fiscalStartDate" placeholder="Fiscal Start Date*"/>
                       <div class="error" [hidden]="companyForm.controls.fiscalStartDate.untouched || companyForm.controls.fiscalStartDate.valid"><small>Company Fiscal Start Date is required.</small></div>
+                    </div>
+                  </label>
+                </div>
+                <div class="small-12 medium-4 columns">
+                  <label>Classification
+                    <div>
+                      <select formControlName="companyClassification" placeholder="Company Classification">
+                        <option *ngFor="let companyClassification of companyClassifications" value="{{companyClassification.value}}">{{companyClassification.name}}</option>
+                      </select>
+                      <div class="error" [hidden]="companyForm.controls.companyClassification.untouched || companyForm.controls.companyClassification.valid"><small>Select Classification</small></div>
+                    </div>
+                  </label>
+                </div>
+                <div class="small-8 medium-4 columns">
+                  <label>Email
+                    <div>
+                      <input formControlName="email_id" type="text" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
+                      <div class="error" *ngIf="companyForm.controls.email_id.touched && companyForm.controls.email_id.hasError('pattern')">Please check email format</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="small-8 medium-4 columns">
+                  <label>Tax Bracket
+                    <div>
+                      <input class="" type="text" formControlName="taxBracket" placeholder="Tax Bracket" pattern="^[0-9][0-9]?$|^100$">
+                      <div class="error" *ngIf="companyForm.controls.taxBracket.touched && companyForm.controls.taxBracket.hasError('required')">Tax Bracket is required.</div>
+                      <div class="error" *ngIf="companyForm.controls.taxBracket.touched && companyForm.controls.taxBracket.hasError('pattern')">Tax bracket should be 0 to 100.</div>
                     </div>
                   </label>
                 </div>

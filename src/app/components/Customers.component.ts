@@ -1,6 +1,6 @@
 
 import {Component, ViewChild} from "@angular/core";
-import {FormGroup, FormBuilder} from "@angular/forms";
+import {FormGroup, FormBuilder,FormArray} from "@angular/forms";
 import {Address} from "qCommon/app/directives/address.directive";
 import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
@@ -13,7 +13,7 @@ import {Session} from "qCommon/app/services/Session";
 import {CompanyModel} from "../models/Company.model";
 import {CustomersService} from "qCommon/app/services/Customers.service";
 import {CustomersModel} from "../models/Customers.model";
-import {CustomersForm} from "../forms/Customers.form";
+import {CustomersForm,ContactLineForm} from "../forms/Customers.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {YEARS, MONTHS} from "qCommon/app/constants/Date.constants";
@@ -54,20 +54,20 @@ export class CustomersComponent {
     chartOfAccounts:any;
     confirmSubscription:any;
     publicKey:string;
-    months:Array<string>=MONTHS;
-    years:Array<string>=YEARS;
-    showPaymentInfo:boolean=false;
     payment_spring_token:string;
-    showExistingCard:boolean;
     last4:string;
-    cardName:string;
     isCardDeleted:boolean;
-  routeSubscribe:any;
+    routeSubscribe:any;
+    ContactLineArray:FormArray = new FormArray([]);
+
     constructor(private _fb: FormBuilder, private customersService: CustomersService,
-                private _customersForm:CustomersForm, private _router: Router, private _toastService: ToastService,
+                private _customersForm:CustomersForm,private _contactLineForm:ContactLineForm, private _router: Router, private _toastService: ToastService,
                 private switchBoard: SwitchBoard, private loadingService:LoadingService,private coaService: ChartOfAccountsService,private titleService:pageTitleService) {
         this.titleService.setPageTitle("Customers");
-        this.customerForm = this._fb.group(_customersForm.getForm());
+
+        let _form:any = this._customersForm.getForm();
+        _form['customer_contact_details'] = this.ContactLineArray;
+        this.customerForm = this._fb.group(_form);
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteVendor(toast));
         this.companyId = Session.getCurrentCompany();
         this.coaService.chartOfAccounts(this.companyId)
@@ -84,23 +84,23 @@ export class CustomersComponent {
             this.loadingService.triggerLoadingEvent(false);
             this._toastService.pop(TOAST_TYPE.error, "Please add company first");
         }
-      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
-        if(this.showFlyout){
-          this.hideFlyout();
-        }else {
-          this.toolsRedirect();
-        }
-      });
+        this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+            if(this.showFlyout){
+                this.hideFlyout();
+            }else {
+                this.toolsRedirect();
+            }
+        });
     }
 
-  toolsRedirect(){
-    let link = ['tools'];
-    this._router.navigate(link);
-  }
-  ngOnDestroy(){
-    this.confirmSubscription.unsubscribe();
-    this.routeSubscribe.unsubscribe();
-  }
+    toolsRedirect(){
+        let link = ['tools'];
+        this._router.navigate(link);
+    }
+    ngOnDestroy(){
+        this.confirmSubscription.unsubscribe();
+        this.routeSubscribe.unsubscribe();
+    }
 
     buildTableData(customers) {
         this.customers = customers;
@@ -141,46 +141,13 @@ export class CustomersComponent {
         let self = this;
         let defaultCountry  = {name:'United States', code:'US'};
         this.editMode = false;
-        this.customerForm = this._fb.group(this._customersForm.getForm());
+        this.addContactList();
         this.newForm1();
-        setTimeout(function () {
-            self.vendorCountryComboBox.setValue(defaultCountry, 'name');
-        },100);
         this.showVendorProvince(defaultCountry);
         this.showFlyout = true;
     }
 
-    getToken(data){
-        this.customersService.getPaymentSpringToken(this.companyId)
-            .subscribe(res  => {
-                if(!_.isEmpty(res)){
-                    this.publicKey=res.public_key;
-                    this.getCardTokenDetails(data);
-                }else {
-                    this.loadingService.triggerLoadingEvent(false);
-                    this._toastService.pop(TOAST_TYPE.error, "Add company to payment spring");
-                }
-            }, error =>  this.handleError(error));
-    }
 
-    getCardTokenDetails(_data){
-        let data={
-            "card_number": _data.card_number,
-            "card_exp_month": _data.card_exp_month,
-            "card_exp_year": _data.card_exp_year,
-            "card_owner_name": _data.card_owner_name,
-            "csc": _data.csc
-        };
-        this.customersService.getCreditCardToken(data,this.publicKey)
-            .subscribe(res  => {
-                this.payment_spring_token=res.id;
-                this.saveDetails();
-            }, error =>  {
-                let err=JSON.parse(error);
-                this.loadingService.triggerLoadingEvent(false);
-                this._toastService.pop(TOAST_TYPE.error, err.errors[0].message);
-            });
-    }
 
     handleAction($event){
         let action = $event.action;
@@ -200,16 +167,16 @@ export class CustomersComponent {
         this.showAddress = false;
         setTimeout(()=> this.showAddress=true, 0);
     }
-deleteVendor(toast){
-    this.loadingService.triggerLoadingEvent(true);
-    this.customersService.removeCustomer(this.customerId, this.companyId)
-        .subscribe(success  => {
-            this.loadingService.triggerLoadingEvent(false);
-            this._toastService.pop(TOAST_TYPE.success, "Customer deleted successfully");
-            this.customersService.customers(this.companyId)
-                .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
-        }, error =>  this.handleError(error));
-}
+    deleteVendor(toast){
+        this.loadingService.triggerLoadingEvent(true);
+        this.customersService.removeCustomer(this.customerId, this.companyId)
+            .subscribe(success  => {
+                this.loadingService.triggerLoadingEvent(false);
+                this._toastService.pop(TOAST_TYPE.success, "Customer deleted successfully");
+                this.customersService.customers(this.companyId)
+                    .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
+            }, error =>  this.handleError(error));
+    }
     removeVendor(row:any) {
         let customer:CustomersModel = row;
         this.customerId=customer.customer_id;
@@ -239,21 +206,22 @@ deleteVendor(toast){
         this.customersService.customer(row.customer_id, this.companyId)
             .subscribe(customer => {
                 this.row = customer;
+                this.loadingService.triggerLoadingEvent(false);
                 /*this.row.email_ids=customer.email_ids
-                let email_id:any = this.customerForm.controls['email_ids'];
-                email_id.patchValue(customer.email_ids);
-                let customer_address:any = this.customerForm.controls['customer_address'];
-                customer_address.patchValue(customer.customer_address);
-                let customer_city:any = this.customerForm.controls['customer_city'];
-                customer_city.patchValue(customer.customer_city);
-                let customer_state:any = this.customerForm.controls['customer_state'];
-                customer_state.patchValue(customer.customer_state);
-                let customer_zipcode:any = this.customerForm.controls['customer_zipcode'];
-                customer_zipcode.patchValue(customer.customer_zipcode);
-                let phone_number:any = this.customerForm.controls['phone_number'];
-                phone_number.patchValue(customer.phone_number);
-                let term:any = this.customerForm.controls['term'];
-                term.patchValue(customer.term);*/
+                 let email_id:any = this.customerForm.controls['email_ids'];
+                 email_id.patchValue(customer.email_ids);
+                 let customer_address:any = this.customerForm.controls['customer_address'];
+                 customer_address.patchValue(customer.customer_address);
+                 let customer_city:any = this.customerForm.controls['customer_city'];
+                 customer_city.patchValue(customer.customer_city);
+                 let customer_state:any = this.customerForm.controls['customer_state'];
+                 customer_state.patchValue(customer.customer_state);
+                 let customer_zipcode:any = this.customerForm.controls['customer_zipcode'];
+                 customer_zipcode.patchValue(customer.customer_zipcode);
+                 let phone_number:any = this.customerForm.controls['phone_number'];
+                 phone_number.patchValue(customer.phone_number);
+                 let term:any = this.customerForm.controls['term'];
+                 term.patchValue(customer.term);*/
                 let coa = _.find(this.chartOfAccounts, function(_coa) {
                     return _coa.id == customer.coa;
                 });
@@ -268,20 +236,18 @@ deleteVendor(toast){
                     return _country.name == countryName;
                 });
                 let stateName = row.state;
-                var base=this;
-                this.cardName=customer.card_name;
-                if(customer.payment_spring_id){
-                    this.getCardDetails(customer.payment_spring_id);
-                }else {
-                    base.loadingService.triggerLoadingEvent(false);
-                }
+                let base=this;
+
+                base.loadingService.triggerLoadingEvent(false);
 
                 setTimeout(function () {
                     base.vendorCountryComboBox.setValue(country, 'name');
                 },100);
+                let contactLineControl:any = this.customerForm.controls['customer_contact_details'];
+                customer.customer_contact_details.forEach(function(contactLine:any){
+                    contactLineControl.controls.push(base._fb.group(base._contactLineForm.getForm(contactLine)));
+                });
                 this._customersForm.updateForm(this.customerForm, this.row);
-                let email_id:any = this.customerForm.controls['email_ids'];
-                email_id.patchValue(customer.email_ids);
             }, error => this.handleError(error));
     }
 
@@ -293,73 +259,29 @@ deleteVendor(toast){
             this._toastService.pop(TOAST_TYPE.error, "Please select payment COA");
             return;
         }
-        if(data.email_ids.length==0){
-            this._toastService.pop(TOAST_TYPE.error, "Please enter emails");
-            return;
-        }
-
-        if(this.showPaymentInfo){
-            if(data.card_exp_month&&data.card_exp_year&&data.card_number&&data.csc&&data.card_owner_name&&data.card_name){
-                /*let res=new CreditCardType().validateCreditCard(data.card_number,data.csc);
-                if(res.valid){
-
-                }else{
-                    this._toastService.pop(TOAST_TYPE.error, "Invalid card details");
-                }*/
-                this.loadingService.triggerLoadingEvent(true);
-                this.getToken(data);
-            }else{
-                this._toastService.pop(TOAST_TYPE.error, "Please fill card details");
-            }
-        }else {
-            this.loadingService.triggerLoadingEvent(true);
-            this.saveDetails();
-        }
+        this.saveDetails();
     }
 
     saveDetails(){
+        this.loadingService.triggerLoadingEvent(true);
         var data = this._customersForm.getData(this.customerForm);
-        if(this.showPaymentInfo){
-            data.payment_spring_token=this.payment_spring_token;
-            if(this.editMode){
-                data.payment_action="customer_credit_card_update";
-                data.payment_spring_id=this.row.payment_spring_id;
-            }
-            this.removeCardDetails(data);
-            this.resetCardDetails();
-        }else {
-            this.removeCardDetails(data);
-            if(this.isCardDeleted){
-                data.payment_spring_id=this.row.payment_spring_id;
-                data.payment_action="customer_credit_card_delete";
-            }
-        }
+        data.customer_contact_details=this.getContactData(this.customerForm.controls['customer_contact_details']);
+
         if(this.editMode) {
             data.customer_id=this.row.customer_id;
-            this.customersService.updateCustomer(<CustomersModel>data, this.companyId)
+            this.customersService.updateCustomer(data, this.companyId)
                 .subscribe(success  => {
                     this.showMessage(true, success);
-                    this.showPaymentInfo=false;
                 }, error =>  this.showMessage(false, error));
             this.showFlyout = false;
         } else {
-            this.customersService.addCustomer(<CustomersModel>data, this.companyId)
+            this.customersService.addCustomer(data, this.companyId)
                 .subscribe(success  => {
                     this.showMessage(true, success);
-                    this.showPaymentInfo=false;
                 }, error =>  this.showMessage(false, error));
             this.showFlyout = false;
         }
     }
-
-    removeCardDetails(data){
-        delete data.card_number;
-        delete data.card_exp_month;
-        delete data.card_exp_year;
-        delete data.csc;
-        return data;
-    }
-
 
     showMessage(status, obj) {
         if(status) {
@@ -367,12 +289,14 @@ deleteVendor(toast){
             this.status['success'] = true;
             this.hasCustomersList=false;
             if(this.editMode) {
+                this.resetForm();
                 this.customersService.customers(this.companyId)
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
                 this.newForm1();
                 this._toastService.pop(TOAST_TYPE.success, "Customer updated successfully.");
             } else {
                 this.newForm1();
+                this.resetForm();
                 this.customersService.customers(this.companyId)
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
                 this._toastService.pop(TOAST_TYPE.success, "Customer created successfully.");
@@ -380,6 +304,7 @@ deleteVendor(toast){
             this.newCustomer();
         } else {
             this.loadingService.triggerLoadingEvent(false);
+            this.resetForm();
             this.status = {};
             this.status['error'] = true;
             this._toastService.pop(TOAST_TYPE.error, "Failed to update the customer");
@@ -388,10 +313,10 @@ deleteVendor(toast){
     }
 
     addressValid() {
-    if(this.addressDir) {
-        return this.addressDir.isValid();
+        if(this.addressDir) {
+            return this.addressDir.isValid();
 
-    } return false;
+        } return false;
     }
 
 
@@ -416,42 +341,43 @@ deleteVendor(toast){
         this.titleService.setPageTitle("Customers");
         this.row = {};
         this.showFlyout = !this.showFlyout;
-        this.showExistingCard=false;
-    }
-
-    changeShowPaymentInfo(){
-        this.showPaymentInfo=!this.showPaymentInfo;
-    }
-
-    getCardDetails(springToken){
-        this.customersService.getSavedCardDetails(this.companyId,springToken)
-            .subscribe(res  => {
-                this.loadingService.triggerLoadingEvent(false);
-                if(res){
-                    this.last4=res.last_4;
-                    this.showExistingCard=true;
-                }
-
-            }, error =>  this.handleError(error));
-    }
-
-    deleteCardDetails(){
-        this.showExistingCard=false;
-        this.isCardDeleted=true;
-    }
-
-    resetCardDetails(){
-        this.customerForm.controls['csc'].patchValue(null);
-        this.customerForm.controls['card_number'].patchValue(null);
-        this.customerForm.controls['card_exp_month'].patchValue(null);
-        this.customerForm.controls['card_exp_year'].patchValue(null);
-        this.customerForm.controls['card_owner_name'].patchValue(null);
-        this.customerForm.controls['card_name'].patchValue(null);
+        this.resetForm();
     }
 
     getEmailIds(){
         let data = this._customersForm.getData(this.customerForm);
         return data.email_ids || [];
     }
+
+    addContactList(line?:any) {
+        let customer:any={};
+        let _form:any = this._contactLineForm.getForm(line);
+        let contactListForm = this._fb.group(_form);
+        //this.ContactLineArray.push(contactListForm);
+        if(!line){
+            let contactControl:any = this.customerForm.controls['customer_contact_details'];
+            contactControl.controls.push(contactListForm);
+            this._customersForm.updateForm(this.customerForm, customer);
+
+        }
+    }
+
+    resetForm(){
+        let _form = this._customersForm.getForm();
+        _form['customer_contact_details'] = new FormArray([]);
+        this.customerForm = this._fb.group(_form);
+    }
+
+    getContactData(customerForm){
+        let base = this;
+        let data = [];
+        _.each(customerForm.controls, function(contactControl){
+            let itemData = base._contactLineForm.getData(contactControl);
+            if(itemData.email)
+                data.push(itemData);
+        });
+        return data;
+    }
+
 
 }

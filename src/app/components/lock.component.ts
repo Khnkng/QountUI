@@ -105,19 +105,19 @@ export class lockComponent {
             });
 
         this.todaysDate=moment(new Date()).format(this.dateFormat);
-      this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
-        if(this.showFlyout){
-          this.hideFlyout();
-        }else {
-          this.toolsRedirect();
-        }
-      });
+        this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+            if(this.showFlyout){
+                this.hideFlyout();
+            }else {
+                this.toolsRedirect();
+            }
+        });
     }
 
-  toolsRedirect(){
-    let link = ['tools'];
-    this._router.navigate(link);
-  }
+    toolsRedirect(){
+        let link = ['tools'];
+        this._router.navigate(link);
+    }
 
     buildTableData(lockList){
         this.hasItemCodes = false;
@@ -204,7 +204,7 @@ export class lockComponent {
         //     }, error =>  this.handleError(error));
     }
     ngOnDestroy(){
-      this.routeSubscribe.unsubscribe();
+        this.routeSubscribe.unsubscribe();
         this.confirmSubscription.unsubscribe();
     }
     getLockDetails(row){

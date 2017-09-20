@@ -10,6 +10,11 @@ import {ExpenseService} from "qCommon/app/services/Expense.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {FinancialAccountsService} from "qCommon/app/services/FinancialAccounts.service";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {StateService} from "qCommon/app/services/StateService";
+import {State} from "qCommon/app/models/State";
+
 
 declare let _:any;
 declare let jQuery:any;
@@ -29,9 +34,11 @@ export class CategorizationComponent{
     hasEntries:boolean = false;
     tableOptions:any = {search:false, pageSize:12};
     localeFortmat:string='en-US';
+    routeSubscribe:any;
 
     constructor(private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
-                private loadingService: LoadingService, private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private numeralService:NumeralService) {
+                private loadingService: LoadingService, private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private numeralService:NumeralService,_switchBoard:SwitchBoard,private titleService:pageTitleService, private stateService: StateService) {
+        this.titleService.setPageTitle("Categorization");
         this.companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.loadingService.triggerLoadingEvent(true);
@@ -42,15 +49,22 @@ export class CategorizationComponent{
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
             });
+        this.routeSubscribe  = _switchBoard.onClickPrev.subscribe(title => this.showPreviousPage());
     }
 
     showPreviousPage(){
-        let link = ['books', 'deposits'];
-        this._router.navigate(link);
+        let prevState = this.stateService.getPrevState();
+        if(prevState){
+            this._router.navigate([prevState.url]);
+        }
     }
 
     ngOnInit(){
 
+    }
+
+    ngOnDestroy(){
+        this.routeSubscribe.unsubscribe();
     }
 
     fetchUncategorizedEntries(){
@@ -94,6 +108,7 @@ export class CategorizationComponent{
         delete $event.actions;
         if(action == 'edit') {
             this.redirectToEntryPage($event);
+            this.addCategorizationState();
         }
     }
 
@@ -127,6 +142,10 @@ export class CategorizationComponent{
         if(this.tableData.rows.length > 0){
             this.hasEntries = true;
         }
+    }
+
+    addCategorizationState(){
+        this.stateService.addState(new State('CATEGORIZATION', this._router.url, null,null));
     }
 
 }

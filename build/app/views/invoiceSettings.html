@@ -1,0 +1,308 @@
+<form (ngSubmit)="submit($event)" [formGroup]="invoiceSettingsForm">
+    <div class="row invoice-settings">
+        <div class="small-12 medium-12 columns">
+            <ul foundation class="accordion" data-accordion data-allow-all-closed="true">
+                <li data-accordion-item class="accordion-item is-active">
+                    <a class="accordion-title">General Settings</a>
+                    <div class="accordion-content" data-tab-content>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Template type:</label>
+                            </div>
+                            <div class="small-12 medium-9 columns">
+                                <div class="template-type">
+                                    <div class="template-text">
+                                        <label>
+                                            <input type="radio" formControlName="templateType" value="Contemporary"/>
+                                            <span>Contemporary</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="template-type">
+                                    <div class="template-text">
+                                        <label>
+                                            <input type="radio" formControlName="templateType" value="Classic"/>
+                                            <span>Classic</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="template-type">
+                                    <div class="template-text">
+                                        <label>
+                                            <input type="radio" formControlName="templateType" value="Modern"/>
+                                            <span>Modern</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Company Logo:</label>
+                            </div>
+                            <div class="small-12 medium-3 columns">
+                                <div class="image-wrapper">
+                                    <img src="{{logoURL}}" *ngIf="logoURL"/>
+                                </div>
+                            </div>
+                            <div class="small-12 medium-3 columns">
+                                <div class="file-upload-modal">
+                                    <section class="upload-area"  ng2FileDrop [uploader]="uploader" (fileOver)="fileOverBase($event)" >
+                                        <div class="row upload-choose-btn" [ngClass]="{'popup-file-over': hasBaseDropZoneOver}">
+                                            <div class="column text-center">
+                                                <label for="nativeFileUpload" class="button">Choose File</label>
+                                                <input type="file" id="nativeFileUpload" (change)="startUpload($event)" value="null" class="show-for-sr" ng2FileSelect [uploader]="uploader" />
+                                                <p>Drag and drop files here.</p>
+                                            </div>
+                                        </div>
+                                        <div class="row files-to-upload-section">
+                                            <ul *ngIf="uploader.queue.length>0">
+                                                <li *ngFor="let item of uploader.queue">
+                                                    <div class="row">
+                                                        <div class="column small-10" [ngClass]="{'item-uploaded':item.isSuccess}">
+                                                        <span *ngIf="!(item.isReady || item.isUploading || item.isSuccess)">
+                                                          <i class="ion-ios-cloud-upload-outline" (click)="item.upload()"></i>
+                                                        </span>
+                                                            {{ item?.file?.name }} &nbsp;({{ item?.file?.size/1024/1024 | number:'.2' }} MB)
+                                                        </div>
+                                                        <div class="column small-2 text-right">
+                                                            <i *ngIf="(item.isUploading)" class="ion-ios-close-outline" (click)="item.cancel()"></i>
+                                                            <i class="ion-ios-minus-outline" (click)="removeUploadItem(item)"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div *ngIf="item.isUploading">
+                                                        <div class="progress">
+                                                            <div class="progress-meter" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Display Logo:</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <input type="checkbox" formControlName="displayLogo"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Accent Color:</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <input type="text" class="color-field" formControlName="accentColor"/>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li data-accordion-item class="accordion-item">
+                    <a class="accordion-title">Invoice Settings</a>
+                    <div class="accordion-content" data-tab-content>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Default Payment terms:</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <textarea formControlName="defaultPaymentTerms"></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Default Title:</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <input type="text" formControlName="defaultTitle"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Default Subheading:</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <input type="text" formControlName="defaultSubHeading"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Default Footer:</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <input type="text" formControlName="defaultFooter"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Standard Memo:</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <textarea formControlName="standardMemo"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li data-accordion-item class="accordion-item">
+                    <a class="accordion-title">Column Settings</a>
+                    <div class="accordion-content" data-tab-content>
+                        <div class="row">
+                            <div class="small-12 medium-12 columns">
+                                <label>Edit the titles of columns on your choice.</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Items:</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <div class="field-group">
+                                    <div class="field-row">
+                                        <label>
+                                            <input type="radio" formControlName="items" value="Items"/>
+                                            <span>Items</span>
+                                        </label>
+                                    </div>
+                                    <div class="field-row">
+                                        <label>
+                                            <input type="radio" formControlName="items" value="Products"/>
+                                            <span>Products</span>
+                                        </label>
+                                    </div>
+                                    <div class="field-row">
+                                        <label>
+                                            <input type="radio" formControlName="items" value="Services"/>
+                                            <span>Services</span>
+                                        </label>
+                                    </div>
+                                    <div class="field-row other">
+                                        <label class="float-left">
+                                            <input type="radio" formControlName="items" value="Other"/>
+                                            <span>Other</span>
+                                        </label>
+                                        <input class="float-left" type="text" [disabled]="isOtherItem()" formControlName="otherItems"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Units:</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <div class="field-group">
+                                    <div class="field-row">
+                                        <label>
+                                            <input type="radio" formControlName="units" value="Units"/>
+                                            <span>Units</span>
+                                        </label>
+                                    </div>
+                                    <div class="field-row">
+                                        <label>
+                                            <input type="radio" formControlName="units" value="Hours"/>
+                                            <span>Hours</span>
+                                        </label>
+                                    </div>
+                                    <div class="field-row other">
+                                        <label class="float-left">
+                                            <input type="radio" formControlName="units" value="Other"/>
+                                            <span>Other</span>
+                                        </label>
+                                        <input type="text" class="float-left" [disabled]="isOtherUnit()" formControlName="otherUnits"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Price:</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <div class="field-group">
+                                    <div class="field-row">
+                                        <label>
+                                            <input type="radio" formControlName="price" value="Price"/>
+                                            <span>Price</span>
+                                        </label>
+                                    </div>
+                                    <div class="field-row">
+                                        <label>
+                                            <input type="radio" formControlName="price" value="Rate"/>
+                                            <span>Rate</span>
+                                        </label>
+                                    </div>
+                                    <div class="field-row other">
+                                        <label class="float-left">
+                                            <input type="radio" formControlName="price" value="Other"/>
+                                            <span>Other</span>
+                                        </label>
+                                        <input class="float-left" type="text" [disabled]="isOtherPrice()" formControlName="otherPrice"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Amount:</label>
+                            </div>
+                            <div class="small-12 medium-6 columns">
+                                <div class="field-group">
+                                    <div class="field-row">
+                                        <label>
+                                            <input type="radio" formControlName="amount" value="Amount"/>
+                                            <span>Amount</span>
+                                        </label>
+                                    </div>
+                                    <div class="field-row other">
+                                        <label class="float-left">
+                                            <input type="radio" formControlName="amount" value="Other"/>
+                                            <span>Other</span>
+                                        </label>
+                                        <input class="float-left" type="text" [disabled]="isOtherAmount()" formControlName="otherAmount"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="small-12 medium-3 columns text-right">
+                                <label>Hide columns:</label>
+                            </div>
+                            <div class="small-12 medium-9 columns">
+                                <div class="row">
+                                    <div class="small-12 medium-6 columns">
+                                        <input type="checkbox" formControlName="hideItemName"/> <label>Hide item name</label>
+                                    </div>
+                                    <div class="small-12 medium-6 columns">
+                                        <input type="checkbox" formControlName="hideItemDescription"/> <label>Hide item description</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="small-12 medium-6 columns">
+                                        <input type="checkbox" formControlName="hideUnits"/> <label>Hide units</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="small-12 medium-6 columns">
+                                        <input type="checkbox" formControlName="hidePrice"/> <label>Hide price</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="small-12 medium-6 columns">
+                                        <input type="checkbox" formControlName="hideAmount"/> <label>Hide Amount</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="small-12 medium-12 columns">
+            <button class="button small float-right" type="submit">Submit</button>
+        </div>
+    </div>
+</form>

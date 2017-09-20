@@ -1,0 +1,17 @@
+
+<div class="row" foundation>
+    <div class="column small-12 medium-6">
+        <h5>Invoices</h5>
+    </div>
+    <div class="columns small-6 small-offset-6 right">
+
+    </div>
+</div>
+<div class="row chart-of-accounts" foundation>
+    <div class="column large-12 medium-12 small-12 foo-container">
+        <div class="foo-toolbar">
+            <button class="button small" (click)="showAddInvoice()"><i class="icon ion-plus-round"></i> Invoice</button>
+        </div>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasInvoices" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    </div>
+</div>

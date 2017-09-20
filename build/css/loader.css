@@ -1,0 +1,231 @@
+/**
+ * Created by yvadugu on 10-05-2016.
+ */
+table thead {
+  background: #E5E5E5;
+  border: none;
+  background-color: #E5E5E5;
+  color: #878787;
+  font-family: NiveauGroteskRegular;
+  font-weight: normal;
+  color: #878787;
+}
+
+table thead tr {
+  border: 1px solid #DCDEDD !important;
+}
+
+table thead tr th {
+  font-size: 1.05em;
+  border: none !important;
+  color: #878787;
+}
+
+table tbody tr {
+  border: 1px solid #DCDEDD;
+}
+
+table tbody tr td {
+  color: #878787;
+  font-size: 1.05em;
+  font-family: NiveauGroteskRegular;
+}
+
+table tbody tr:hover {
+  background: #F1F1F1 !important;
+}
+
+table tfoot {
+  background: #ffffff !important;
+  border: none !important;
+}
+
+@font-face {
+  font-family: 'open sans';
+  src: url("../fonts/OpenSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Noto Sans';
+  src: url("../fonts/NotoSans-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Source Sans Pro';
+  src: url("../fonts/SourceSansPro-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskMedium';
+  src: url("../fonts/NiveauGrotesk-Medium.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskLight';
+  src: url("../fonts/NiveauGrotesk-light.ttf");
+}
+
+@font-face {
+  font-family: 'NiveauGroteskRegular';
+  src: url("../fonts/NiveauGrotesk-regular.ttf");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.eot");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.svg");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.ttf");
+}
+
+@font-face {
+  font-family: 'footable';
+  src: url("../fonts/footable.woff");
+}
+
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url("../fonts/MaterialIcons-Regular.eot");
+  /* For IE6-8 */
+  src: local("Material Icons"), local("MaterialIcons-Regular"), url("../fonts/MaterialIcons-Regular.woff2") format("woff2"), url("../fonts/MaterialIcons-Regular.woff") format("woff"), url("../fonts/MaterialIcons-Regular.ttf") format("truetype");
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+[data-whatinput='mouse'] select {
+  outline: 0;
+}
+
+/* Loading CSS*/
+.qount-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 5000;
+  background: #FFF;
+  opacity: 0.8;
+  width: 100%;
+  height: 100vh;
+}
+
+.qount-loading-wheel {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  z-index: 5009;
+}
+
+.qount-loading-wheel .fond {
+  position: absolute;
+  padding-top: 85px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.qount-loading-wheel .contener_general {
+  animation: animball_two 2s infinite;
+  width: 44px;
+  height: 44px;
+}
+
+.qount-loading-wheel .contener_mixte {
+  width: 44px;
+  height: 44px;
+  position: absolute;
+}
+
+.qount-loading-wheel .ballcolor {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.qount-loading-wheel .ball_1, .qount-loading-wheel .ball_2, .qount-loading-wheel .ball_3, .qount-loading-wheel .ball_4 {
+  position: absolute;
+  animation: animball_one 2s infinite ease;
+}
+
+.qount-loading-wheel .ball_1 {
+  background-color: #F1645A;
+  top: 0;
+  left: 0;
+}
+
+.qount-loading-wheel .ball_2 {
+  background-color: #24B574;
+  top: 0;
+  left: 44px;
+}
+
+.qount-loading-wheel .ball_3 {
+  background-color: #4587F9;
+  top: 44px;
+  left: 0;
+}
+
+.qount-loading-wheel .ball_4 {
+  background-color: #4655A5;
+  top: 44px;
+  left: 44px;
+}
+
+@keyframes animball_one {
+  0% {
+    position: absolute;
+  }
+  50% {
+    top: 12px;
+    left: 12px;
+    position: absolute;
+    opacity: 1;
+  }
+  100% {
+    position: absolute;
+  }
+}
+
+@keyframes animball_two {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(360deg) scale(1);
+  }
+  100% {
+    transform: rotate(720deg) scale(1);
+  }
+}
+
+/*end*/

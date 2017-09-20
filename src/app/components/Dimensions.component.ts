@@ -4,6 +4,7 @@
 
 import {Component} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
@@ -11,7 +12,6 @@ import {DimensionService} from "qCommon/app/services/DimensionService.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {DimensionForm} from "../forms/Dimension.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
-import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {Router} from "@angular/router";
 
@@ -40,9 +40,10 @@ export class DimensionsComponent{
   dimensionName:any;
   tableColumns:Array<string> = ['name', 'id', 'values', 'desc'];
   routeSubscribe:any;
-  constructor(private _fb: FormBuilder, private _dimensionForm: DimensionForm, private dimensionService: DimensionService,
+
+  constructor(private _fb: FormBuilder, private _dimensionForm: DimensionForm, private dimensionService: DimensionService,private _router: Router,
                private loadingService:LoadingService,private switchBoard: SwitchBoard,
-        private toastService: ToastService, private companiesService: CompaniesService,private titleService:pageTitleService,private _router: Router){
+        private toastService: ToastService, private companiesService: CompaniesService,private titleService:pageTitleService){
     this.titleService.setPageTitle("Dimensions");
     this.dimensionForm = this._fb.group(_dimensionForm.getForm());
     let companyId = Session.getCurrentCompany();

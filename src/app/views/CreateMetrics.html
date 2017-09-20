@@ -1,0 +1,97 @@
+<div class="qount-off-canvas-menu">
+    <div class="flyout expanded" [ngClass]="{'expanded':true}">
+        <section class="flyout-placeholder">
+            <div class="flyout-body flyout-shadow-effect">
+                <form *ngIf="active" (ngSubmit)="submit($event)" novalidate [formGroup]="metricForm">
+                    <section class="form-section clearfix">
+                        <div class="row">
+                            <div class="small-12 medium-12 columns">
+                                <div class="form-section-left expense-row">
+                                    <div class="row">
+                                        <div class="small-12 medium-3 columns">
+                                            <label>Year
+                                                <select formControlName="year" data-placeholder="Select Year" (change)="getValueMetric($event)">
+                                                    <option *ngFor="let year of years" [value]="year.value">{{year.name}}</option>
+                                                </select>
+                                                <div class="error" [hidden]="metricForm.controls.year.untouched || metricForm.controls.year.valid"><small>Select Metric Year.</small></div>
+                                            </label>
+                                        </div>
+                                        <div class="small-12 medium-3 columns">
+                                            <label>Month
+                                                <select class="jeSelect" formControlName="month" placeholder="month" (change)="getValueMetric($event)">
+                                                    <option value="jan1-jan31">Jan1-Jan31</option>
+                                                    <option value="feb1-feb28">Feb1-Feb28</option>
+                                                    <option value="mar1-mar31">Mar1-Mar31</option>
+                                                    <option value="april1-april30">April1-April30</option>
+                                                    <option value="may1-may31">May1-May31</option>
+                                                    <option value="june1-june30">June1-June30</option>
+                                                    <option value="july1-july31">July1-July31</option>
+                                                    <option value="aug1-aug31">Aug1-Aug31</option>
+                                                    <option value="sep1-sep30">Sep1-Sep30</option>
+                                                    <option value="oct1-oct31">Oct1-Oct31</option>
+                                                    <option value="nov1-nov30">Nov1-Nov30</option>
+                                                    <option value="dec1-dec31">Dec1-Dec31</option>
+                                                </select>
+                                                <div class="error" [hidden]="metricForm.controls.month.untouched || metricForm.controls.month.valid"><small>Please select month.</small></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <table class="stack line-table">
+                                        <thead>
+                                        <tr>
+                                            <th width="10%">Metric Name</th>
+                                            <th width="5%">Value</th>
+                                            <th width="20%">Description</th>
+                                            <th width="3%"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody *ngIf="getLineCount() != 0">
+                                        <tr *ngFor="let lineListItem of metricForm.controls.metricLines.controls;let index=index;" [hidden]="lineListItem.controls.destroy.value" (click)="editLine(lineListItem, index)"  (keydown.ArrowDown)="handleKeyEvent( $event,index,'Arrow Down')" (keydown.ArrowUp)="handleKeyEvent( $event,index,'Arrow Up' )">
+                                            <td class="truncate" [hidden]="lineListItem.editable">{{getMetricName(lineListItem.controls.metricID.value)}}</td>
+                                            <td [hidden]="!lineListItem.editable">
+                                                <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Metric" [listObject]="metrics" (valueChanged)="updateLineMetric($event, index)">
+                                                    <option *ngFor="let metric of metrics" [value]="metric.id">{{metric.name}}</option>
+                                                </select>
+                                            </td>
+                                            <td [hidden]="lineListItem.editable">
+                                                {{lineListItem.controls.value.value?(lineListItem.controls.value.value):null}}
+                                            </td>
+                                            <td [hidden]="!lineListItem.editable">
+                                                <input type="text" [formControl]="lineListItem.controls.value" placeholder="value"/>
+                                            </td>
+                                            <td class="truncate" [hidden]="lineListItem.editable">{{lineListItem.controls.description.value}}</td>
+                                            <td [hidden]="!lineListItem.editable">
+                                                <input type="text" [formControl]="lineListItem.controls.description" placeholder="description"/>
+                                            </td>
+                                            <td>
+                                                <i class="icon ion-edit"></i>
+                                                <i class="icon ion-ios-trash-outline" *ngIf="getLineCount() > 2" (click)="deleteLine($event, index)"></i>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                        <tbody *ngIf="getLineCount() == 0">
+                                        <tr>
+                                            <td colspan="6" class="text-center">No lines found</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="row" *ngIf="!newValueMetric">
+                                        <div class="columns">
+                                            <button type="submit" class="button small float-right" [disabled]="!metricForm.valid" (click)="submit($event)"><i class="icon ion-edit"></i>Update</button>
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngIf="newValueMetric">
+                                        <div class="columns">
+                                            <button type="submit" class="button small float-right" [disabled]="!metricForm.valid" (click)="submit($event)">Save</button>
+                                            <button type="submit" class="button small float-right" style="margin-right:10px;" [disabled]="!metricForm.valid" (click)="submit($event);stayFlyout = true">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </form>
+            </div>
+        </section>
+    </div>
+</div>

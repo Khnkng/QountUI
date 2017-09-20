@@ -16,6 +16,7 @@ import {ItemCodeForm} from "../forms/ItemCode.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {Router} from "@angular/router";
+
 declare let jQuery:any;
 declare let _:any;
 
@@ -48,6 +49,7 @@ export class ItemCodesComponent{
   confirmSubscription:any;
   companyCurrency:string;
   routeSubscribe:any;
+
   constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard,private _router: Router,
               private codeService: CodesService, private toastService: ToastService, private loadingService:LoadingService,
         private coaService: ChartOfAccountsService, private companiesService: CompaniesService,private titleService:pageTitleService){
@@ -77,6 +79,7 @@ export class ItemCodesComponent{
       }
     });
   }
+
   toolsRedirect(){
     let link = ['tools'];
     this._router.navigate(link);
@@ -98,7 +101,7 @@ export class ItemCodesComponent{
       return coa.category == 'Expenses';
     });
     this.invoiceChartOfAccounts = _.filter(chartOfAccounts, function(coa){
-      return coa.category == 'Income';
+      return coa.category == 'Income'||coa.category=='Revenue';
     });
     _.sortBy(this.paymentChartOfAccounts, ['number', 'name']);
     _.sortBy(this.invoiceChartOfAccounts, ['number', 'name']);
@@ -128,32 +131,29 @@ export class ItemCodesComponent{
     this.codeService.getItemCode(row.id)
         .subscribe(item => {
          this.row=item;
-          let name:any = this.itemcodeForm.controls['name'];
-          name.patchValue(item.name);
+          let paymentCOAIndex = _.findIndex(this.paymentChartOfAccounts, function(coa){
+            return coa.id == row.payment_coa_mapping;
+          });
+          let invoiceCOAIndex = _.findIndex(this.invoiceChartOfAccounts, function(coa){
+            return coa.id == row.invoice_coa_mapping;
+          });
+          setTimeout(function(){
+            base.paymentCOAComboBox.setValue(base.paymentChartOfAccounts[paymentCOAIndex], 'name');
+            base.invoiceCOAComboBox.setValue(base.invoiceChartOfAccounts[invoiceCOAIndex], 'name');
+          },0);
 
-          let purchase_price:any = this.itemcodeForm.controls['purchase_price'];
-          purchase_price.patchValue(item.purchase_price);
-          let sales_price:any = this.itemcodeForm.controls['sales_price'];
-          sales_price.patchValue(item.sales_price);
-          let desc:any = this.itemcodeForm.controls['desc'];
-          desc.patchValue(item.desc);
+          let isService:any = this.itemcodeForm.controls['is_service'];
+          isService.patchValue(item.is_service);
+
+          let deferredRevenue:any = this.itemcodeForm.controls['deferredRevenue'];
+          deferredRevenue.patchValue(item.deferredRevenue);
+
+          this._itemCodeForm.updateForm(this.itemcodeForm, item);
           this.loadingService.triggerLoadingEvent(false);
         }, error => this.handleError(error));
     let base = this;
     this.editMode = true;
     this.newForm();
-    this.row = row;
-    let paymentCOAIndex = _.findIndex(this.paymentChartOfAccounts, function(coa){
-      return coa.id == row.payment_coa_mapping;
-    });
-    let invoiceCOAIndex = _.findIndex(this.invoiceChartOfAccounts, function(coa){
-      return coa.id == row.invoice_coa_mapping;
-    });
-    setTimeout(function(){
-      base.paymentCOAComboBox.setValue(base.paymentChartOfAccounts[paymentCOAIndex], 'name');
-      base.invoiceCOAComboBox.setValue(base.invoiceChartOfAccounts[invoiceCOAIndex], 'name');
-    },0);
-    this._itemCodeForm.updateForm(this.itemcodeForm, row);
     this.showFlyout = true;
   }
   deleteItemCode(toast){

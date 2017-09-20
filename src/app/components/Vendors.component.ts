@@ -65,6 +65,8 @@ export class VendorComponent {
   showFirstStep:boolean = true;
   showSecondStep:boolean = false;
   routeSubscribe:any;
+
+
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
               private _router: Router, private loadingService:LoadingService,
               private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService,
@@ -104,6 +106,7 @@ export class VendorComponent {
       }
     });
   }
+
   toolsRedirect(){
     let link = ['tools'];
     this._router.navigate(link);
@@ -184,7 +187,7 @@ export class VendorComponent {
   }
 
   showCreateVendor() {
-      this.titleService.setPageTitle("CREATE VENDOR");
+    this.titleService.setPageTitle("CREATE VENDOR");
     let defaultCountry  = {name:'United States', code:'US'};
     let self = this;
     this.editMode = false;
@@ -230,18 +233,18 @@ export class VendorComponent {
     }
     this._vendorForm.updateForm(this.vendorForm, data);
   }
-deleteVendor(toast){
-  this.loadingService.triggerLoadingEvent(true);
-  this.companyService.removeVendor(this.vendorId, this.companyId)
-      .subscribe(success  => {
-        this.companyService.vendors(this.companyId)
-            .subscribe(vendors  => {
-              this.buildTableData(vendors);
-              this._toastService.pop(TOAST_TYPE.success, "Vendor deleted successfully");
-            }, error =>  this.handleError1(error));
-      }, error =>  this.handleError(error));
+  deleteVendor(toast){
+    this.loadingService.triggerLoadingEvent(true);
+    this.companyService.removeVendor(this.vendorId, this.companyId)
+        .subscribe(success  => {
+          this.companyService.vendors(this.companyId)
+              .subscribe(vendors  => {
+                this.buildTableData(vendors);
+                this._toastService.pop(TOAST_TYPE.success, "Vendor deleted successfully");
+              }, error =>  this.handleError1(error));
+        }, error =>  this.handleError(error));
 
-}
+  }
   handleError1(error){
     this.loadingService.triggerLoadingEvent(false);
   }
@@ -260,7 +263,7 @@ deleteVendor(toast){
   }
 
   showEditVendor(row:any) {
-      this.titleService.setPageTitle("UPDATE VENDOR");
+    this.titleService.setPageTitle("UPDATE VENDOR");
     this.showFlyout = true;
     this.editMode = true;
     this.vendorForm = this._fb.group(this._vendorForm.getForm());
@@ -277,10 +280,10 @@ deleteVendor(toast){
     if(data.coa=='--None--'||data.coa==''){
       this._toastService.pop(TOAST_TYPE.error, "Please select COA");
       return;
-    }if(addressData.state=='--None--'||addressData.state==''){
+    }/*if(addressData.state=='--None--'||addressData.state==''){
       this._toastService.pop(TOAST_TYPE.error, "Please select state");
       return;
-    }
+    }*/
     this.showFirstStep = false;
     this.showSecondStep = true;
   }
@@ -298,7 +301,7 @@ deleteVendor(toast){
       this.companyService.updateVendor(<VendorModel>data, this.companyId)
           .subscribe(success  => {
             this.showMessage(true, success);
-           this.hideFlyout();
+            this.hideFlyout();
           }, error =>  this.showMessage(false, error));
     } else {
       this.companyService.addVendor(<VendorModel>data, this.companyId)
@@ -439,7 +442,7 @@ deleteVendor(toast){
         });
       }
       vendor.has1099 = vendor.has1099 == 'true' || vendor.has1099 == true;
-      this.setVendorType(vendor.type, vendor);
+      //this.setVendorType(vendor.type, vendor);
       let accountNumbersControl:any = this.vendorForm.controls['accountNumbers'];
       accountNumbersControl.patchValue(vendor.accountNumbers);
       this._vendorForm.updateForm(this.vendorForm, vendor);
@@ -463,7 +466,7 @@ deleteVendor(toast){
 
   checkValidation(){
     if(this.mailID)
-        return true;
+      return true;
     return false;
   }
 

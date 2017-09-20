@@ -15,7 +15,6 @@ import {State} from "qCommon/app/models/State";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 
-
 declare let jQuery:any;
 declare let _:any;
 declare let Highcharts:any;
@@ -49,10 +48,10 @@ export class paymenttableComponent {
     credits:any;
     billstate:any;
     billstatus:boolean=false;
-    routeSubscribe:any;
     @ViewChild('fooTableDir') fooTableDir:FTable;
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('createtaxes') createtaxes;
+    routeSubscribe:any;
 
     constructor(private _router: Router,private _route: ActivatedRoute,private companyService: CompaniesService,
             private loadingService:LoadingService, private reportService: ReportService, private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard) {
@@ -108,7 +107,7 @@ export class paymenttableComponent {
             }, error =>{
                 this.loadingService.triggerLoadingEvent(false);
             });
-      this.routeSubscribe =  _switchBoard.onClickPrev.subscribe(title => this.hideFlyout());
+       this.routeSubscribe =  _switchBoard.onClickPrev.subscribe(title => this.hideFlyout());
     }
 
     handleAction($event){
@@ -194,8 +193,10 @@ export class paymenttableComponent {
         }, 0)
         this.loadingService.triggerLoadingEvent(false);
     }
-  ngOnDestroy(){
-    this.routeSubscribe.unsubscribe();
-  }
+
+    ngOnDestroy(){
+        this.routeSubscribe.unsubscribe();
+    }
+
 }
 

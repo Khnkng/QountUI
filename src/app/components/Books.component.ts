@@ -6,7 +6,8 @@ import {Component} from "@angular/core";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
-import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {TOAST_TYPE,JE_CATEGORIES} from "qCommon/app/constants/Qount.constants";
+import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {JournalEntriesService} from "qCommon/app/services/JournalEntries.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ExpenseService} from "qCommon/app/services/Expense.service";
@@ -18,13 +19,16 @@ import {ReconcileService} from "../services/Reconsile.service";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {StateService} from "qCommon/app/services/StateService";
+import {ReportService} from "reportsUI/app/services/Reports.service";
 import {State} from "qCommon/app/models/State";
-import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {Observable} from "rxjs/Rx";
+import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
 
 declare let _:any;
 declare let jQuery:any;
 declare let moment:any;
+declare let Highcharts:any;
 
 @Component({
     selector: 'books',
@@ -63,7 +67,6 @@ export class BooksComponent{
     hasExpenses:boolean = false;
     hasDeposits:boolean = false;
     allCompanies:Array<any>;
-    currentCompany:any;
     accounts:Array<any>;
     companyCurrency: string;
     ruleToDelete:any;
@@ -80,25 +83,63 @@ export class BooksComponent{
     validateLockDate:boolean=false;
     tempData:any;
     userAction:string;
-    categoryData:any = {'depreciation':'Depreciation','payroll':'Payroll','apBalance':'AP balance','arBalance':'AR balance','inventory':'Inventory','credit':'Credit','bill':'Bill','billPayment':'Payment','deposit':'Deposit','expense':'Expense','amortization':'Amortization','openingEntry':'Opening Entry','creditMemo':'Credit Memo','cashApplication':'Cash Application','other':'Other'};
+    categoryData:any = JE_CATEGORIES;
+
+    //Dashboard related declarataions
+    currentFiscalStart: any;
+    asOfDate: any;
+    currentCompanyId: string;
+
+    hasBoxData:boolean = false;
+    reportRequest: any = {};
+    hasOpexData:boolean  = false;
+    opexChartOptions: any = {};
+    groupedOpexDataOptions: any = {};
+    hasCashBurnData: boolean = false;
+    showDetailedChart: boolean = false;
+    hasProfitTrendData: boolean = false;
+    cashBurnDataOptions:any = {};
+    profitTrendDataOptions: any = {};
+    detailedReportChartOptions: any = {};
+    metrics: any = {};
+    routeSubscribe: any = {};
+    chartColors:Array<any> = ['#44B6E8','#18457B','#00B1A9','#F06459','#22B473','#384986','#4554A4','#808CC5'];
+
     constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
                 private toastService: ToastService,private switchBoard:SwitchBoard, private loadingService:LoadingService, private companiesService: CompaniesService,
                 private expenseService: ExpenseService, private accountsService: FinancialAccountsService,private depositService: DepositService,
                 private badgesService: BadgeService, private reconcileService: ReconcileService,private dateFormater: DateFormater,
-                private numeralService:NumeralService, private stateService: StateService,private companyService:CompaniesService, private titleService: pageTitleService) {
-        let companyId = Session.getCurrentCompany();
+                private numeralService:NumeralService, private stateService: StateService, private titleService:pageTitleService,
+                private reportsService: ReportService) {
+        this.currentCompanyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
         this.serviceDateformat = dateFormater.getServiceDateformat();
         this.stateService.clearAllStates();
+        this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
+        let today = moment();
+        let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
+        this.currentFiscalStart = moment([today.get('year'),fiscalStartDate.get('month'),1]);
+        if(today < fiscalStartDate){
+            this.currentFiscalStart = moment([today.get('year')-1,fiscalStartDate.get('month'),1]);
+        }
+        this.currentFiscalStart = this.currentFiscalStart.format('MM/DD/YYYY');
+        this.asOfDate = moment().format('MM/DD/YYYY');
+        this.reportRequest = {
+            "basis":"accrual",
+            "companyID": this.currentCompanyId,
+            "companyCurrency": this.companyCurrency,
+            "asOfDate": this.asOfDate,
+            "startDate": this.currentFiscalStart
+        };
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => {
             switch (this.selectedTab) {
-                case 0:
+                case 1:
                     this.removeDepo(toast);
                     break;
-                case 1:
+                case 2:
                     this.removeExp(toast);
                     break;
-                case 2:
+                case 3:
                     this.removeJournal(toast);
                     break;
                 default:
@@ -106,39 +147,36 @@ export class BooksComponent{
                     break;
             }
         });
-        this.companiesService.companies().subscribe(companies => {
-            this.allCompanies = companies;
-            if(companyId){
-                this.currentCompany = _.find(this.allCompanies, {id: companyId});
-            } else if(this.allCompanies.length> 0){
-                this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+        this.routeSub = this._route.params.subscribe(params => {
+            if(params['tabId']=='dashboard'){
+                this.selectTab(0,"");
+            } else if(params['tabId']=='deposits'){
+                this.selectTab(1,"");
+                this.hasDeposits = false;
+            } else if(params['tabId']=='expenses'){
+                this.selectTab(2,"");
+                this.hasExpenses = false;
+            } else if(params['tabId']=='journalEntries'){
+                this.selectTab(3,"");
+                this.hasJournalEntries = false;
             }
-            this.routeSub = this._route.params.subscribe(params => {
-                if(params['tabId']=='deposits'){
-                    this.selectTab(0,"");
-                    this.hasDeposits = false;
-                }
-                else if(params['tabId']=='expenses'){
-                    this.selectTab(1,"");
-                    this.hasExpenses = false;
-                }
-                else if(params['tabId']=='journalEntries'){
-                    this.selectTab(2,"");
-                    this.hasJournalEntries = false;
-                }
-                else{
-                    console.log("error");
-                }
-            });
-            this.localBadges=JSON.parse(sessionStorage.getItem("localBooksBadges"));
-            if(!this.localBadges){
-                this.localBadges = {'deposits':0,'expenses':0,'journalEntries':0};
-                sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
-            } else{
-                this.localBadges = JSON.parse(sessionStorage.getItem("localBooksBadges"));
+            else{
+                console.log("error");
             }
-            this.getBookBadges();
-        }, error => this.handleError(error));
+        });
+        this.localBadges=JSON.parse(sessionStorage.getItem("localBooksBadges"));
+        if(!this.localBadges){
+            this.localBadges = {'deposits':0,'expenses':0,'journalEntries':0};
+            sessionStorage.setItem('localBooksBadges', JSON.stringify(this.localBadges));
+        } else{
+            this.localBadges = JSON.parse(sessionStorage.getItem("localBooksBadges"));
+        }
+        this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+            if(this.showDetailedChart){
+                this.showDetailedChart = !this.showDetailedChart;
+            }
+        });
+        this.getBookBadges();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
     }
 
@@ -147,7 +185,7 @@ export class BooksComponent{
     }
 
     getBookBadges(){
-        this.badgesService.getBooksBadgeCount(this.currentCompany.id).subscribe(badges => {
+        this.badgesService.getBooksBadgeCount(this.currentCompanyId).subscribe(badges => {
             let journalCount = badges.journals;
             let depositCount = badges.deposits;
             let expenseCount = badges.expenses;
@@ -194,10 +232,10 @@ export class BooksComponent{
     }
 
     fetchExpenses(){
-        this.accountsService.financialAccounts(this.currentCompany.id)
+        this.accountsService.financialAccounts(this.currentCompanyId)
             .subscribe(accounts => {
                 this.accounts = accounts.accounts;
-                this.expenseService.expenses(this.currentCompany.id)
+                this.expenseService.expenses(this.currentCompanyId)
                     .subscribe(expenses => {
                         this.buildExpenseTableData(expenses.expenses);
                     }, error => this.handleError(error));
@@ -207,10 +245,10 @@ export class BooksComponent{
     }
 
     fetchDeposits(){
-        this.accountsService.financialAccounts(this.currentCompany.id)
+        this.accountsService.financialAccounts(this.currentCompanyId)
             .subscribe(accounts => {
                 this.accounts = accounts.accounts;
-                this.depositService.deposits(this.currentCompany.id)
+                this.depositService.deposits(this.currentCompanyId)
                     .subscribe(deposits => {
                         this.buildDepositTableData(deposits.deposits);
                     }, error => this.handleError(error));
@@ -229,15 +267,19 @@ export class BooksComponent{
         this.tabDisplay[tabNo] = {'display':'block'};
         this.tabBackground = this.bgColors[tabNo];
         this.loadingService.triggerLoadingEvent(true);
+        this.hasBoxData = false;
         if(this.selectedTab == 0){
+            this.getDashboardData();
+            this.titleService.setPageTitle("BOOKS DASHBOARD");
+        } else if(this.selectedTab == 1){
             this.isLoading = true;
             this.fetchDeposits();
             this.titleService.setPageTitle("DEPOSITS");
-        } else if(this.selectedTab == 1){
+        } else if(this.selectedTab == 2){
             this.isLoading = true;
             this.fetchExpenses();
             this.titleService.setPageTitle("EXPENSES");
-        } else if(this.selectedTab == 2){
+        } else if(this.selectedTab == 3){
             this.isLoading = true;
             this.fetchJournalEntries();
             this.titleService.setPageTitle("JOURNAL ENTRIES");
@@ -245,7 +287,7 @@ export class BooksComponent{
     }
 
     fetchJournalEntries(){
-        this.journalService.journalEntries(this.currentCompany.id)
+        this.journalService.journalEntries(this.currentCompanyId)
             .subscribe(journalEntries => {
                 this.buildTableData(journalEntries);
             }, error => this.handleError(error));
@@ -298,12 +340,12 @@ export class BooksComponent{
     removeJournal(toast){
         let base = this;
         this.loadingService.triggerLoadingEvent(true);
-        this.journalService.removeJournalEntry(this.journalToDelete, this.currentCompany.id)
+        this.journalService.removeJournalEntry(this.journalToDelete, this.currentCompanyId)
             .subscribe(response => {
                 this.loadingService.triggerLoadingEvent(false);
                 base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully");
                 this.hasJournalEntries = false;
-                this.selectTab(2,"");
+                this.selectTab(3,"");
                 this.getBookBadges();
             }, error => {
                 this.loadingService.triggerLoadingEvent(false);
@@ -354,6 +396,7 @@ export class BooksComponent{
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
             {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
+            {"name": "cash_only_journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
                 amount = parseFloat(amount);
                 return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -393,7 +436,9 @@ export class BooksComponent{
                  row[key] = expense.is_paid? "PAID": "UNPAID";
                  }*/
             });
-            if(expense.journal_id){
+            if(expense.journal_id&&expense.cash_only_journal_id){
+                row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='je2navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            }else if(expense.journal_id){
                 row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             } else{
                 row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
@@ -576,6 +621,10 @@ export class BooksComponent{
             this.addBookState();
             let link = ['journalEntry', $event.journal_id];
             this._router.navigate(link);
+        } else if(action == 'je2navigation'){
+            this.addBookState();
+            let link = ['journalEntry', $event.cash_only_journal_id];
+            this._router.navigate(link);
         }
     }
 
@@ -602,12 +651,12 @@ export class BooksComponent{
 
     removeDepo(toast){
         this.loadingService.triggerLoadingEvent(true);
-        this.depositService.removeDeposit(this.DepositToDelete, this.currentCompany.id)
+        this.depositService.removeDeposit(this.DepositToDelete, this.currentCompanyId)
             .subscribe(response=> {
                 this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
                 // this.fetchDeposits();
                 this.hasDeposits = false;
-                this.selectTab(0,"");
+                this.selectTab(1,"");
                 this.getBookBadges();
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
@@ -624,12 +673,12 @@ export class BooksComponent{
     }
     removeExp(toast){
         this.loadingService.triggerLoadingEvent(true);
-        this.expenseService.removeExpense(this.ruleToDelete, this.currentCompany.id)
+        this.expenseService.removeExpense(this.ruleToDelete, this.currentCompanyId)
             .subscribe(response=> {
                 this.toastService.pop(TOAST_TYPE.success, "Deleted expense successfully");
                 // this.fetchExpenses();
                 this.hasExpenses = false;
-                this.selectTab(1,"");
+                this.selectTab(2,"");
                 this.getBookBadges();
             }, error=>{
                 this.loadingService.triggerLoadingEvent(false);
@@ -675,29 +724,31 @@ export class BooksComponent{
         topOfDiv = topOfDiv < 150 ? 150 : topOfDiv;
         let bottomOfVisibleWindow = Math.max(jQuery(document).height(), jQuery(window).height());
         base.tabHeight = (bottomOfVisibleWindow - topOfDiv - 25) + "px";
-        jQuery('.tab-content').css('height', base.tabHeight);
+        jQuery('.tab-content').css('min-height', base.tabHeight);
         base.depositsTableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75) / 42) - 3;
         base.expensesTableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75) / 42) - 3;
         base.jeTableOptions.pageSize = Math.floor((bottomOfVisibleWindow - topOfDiv - 75) / 42) - 3;
     }
 
+
     reRoutePage(tabId) {
-        if(tabId==0){
+        if(tabId == 0){
+            let link = ['books', 'dashboard'];
+            this._router.navigate(link);
+            return;
+        } else if(tabId == 1){
             let link = ['books', 'deposits'];
             this._router.navigate(link);
             return;
-        }
-        else if(tabId==1){
+        } else if(tabId == 2){
             let link = ['books', 'expenses'];
             this._router.navigate(link);
             return;
-        }
-        else{
+        } else{
             let link = ['books', 'journalEntries'];
             this._router.navigate(link);
             return;
         }
-
     }
 
     ngAfterViewInit() {
@@ -708,8 +759,8 @@ export class BooksComponent{
     }
 
     ngOnDestroy(){
-      this.routeSub && this.routeSub.unsubscribe();
-      this.confirmSubscription && this.confirmSubscription.unsubscribe();
+        this.routeSub.unsubscribe();
+        this.confirmSubscription.unsubscribe();
         jQuery('#password-conformation').remove();
     }
 
@@ -789,4 +840,403 @@ export class BooksComponent{
         this.key=null;
     }
 
+    getDashboardData(){
+        this.getBalanceSheetData();
+        this.getOpexChartData();
+        this.getCashBurnChartData();
+        this.getProfitTrendData();
+    }
+
+    formatNumber(value){
+        return this.numeralService.format("0.00", value);
+    }
+
+    getBalanceSheetData(){
+        let base = this;
+        this.loadingService.triggerLoadingEvent(true);
+        this.reportRequest.type = "balanceSheet";
+        let balanceSheet = this.reportsService.generateAccountReport(this.reportRequest, this.currentCompanyId);
+        this.reportRequest.type = "cashBalance";
+        let cashBalance = this.reportsService.generateAccountReport(this.reportRequest, this.currentCompanyId);
+        this.reportRequest.type = "incomeStatement";
+        let incomeStatement = this.reportsService.generateAccountReport(this.reportRequest, this.currentCompanyId);
+        Observable.forkJoin(balanceSheet, cashBalance, incomeStatement).subscribe(results => {
+            base.hasBoxData = true;
+            this.metrics["currentRatio"] = this.formatNumber(results[0].metrics.currentRatio || 0);
+            this.metrics["quickRatio"] = this.formatNumber(results[0].metrics.quickRatio || 0);
+            this.metrics["cashBalance"] = this.getFormattedAmount(results[1].cashBalance || 0);
+            this.metrics["gpMargin"] = this.formatNumber(results[2].margins.grossProfitMargin || 0);
+            this.metrics["npMargin"] = this.formatNumber(results[2].margins.netProfitMargin || 0);
+            this.metrics["opexValue"] = this.getFormattedAmount(results[2].expenses.opex.totals.total.value || 0);
+            this.metrics["cogsValue"] = this.getFormattedAmount(results[2].cogs.cogs.totals.total.value || 0);
+            this.loadingService.triggerLoadingEvent(false);
+        }, error => {
+            this.loadingService.triggerLoadingEvent(false);
+           this.toastService.pop(TOAST_TYPE.error, "Failed to get box data");
+        });
+    }
+
+    getOpexChartData(){
+        let base = this;
+        this.reportRequest.type = "incomeStatement";
+        this.reportRequest.metricsType = "opexPie";
+        this.reportsService.generateMetricReport(this.reportRequest, this.currentCompanyId).subscribe(metricData => {
+            this.hasOpexData = true;
+            this.opexChartOptions = {
+                colors: this.chartColors,
+                credits: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: true
+                },
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie',
+                    style: {
+                        fontFamily: 'NiveauGroteskRegular'
+                    }
+                },
+                title: {
+                    text: 'Operational Expenses',
+                    style: {
+                        color: '#878787',
+                        fontFamily: 'NiveauGroteskLight',
+                        fontSize:'24'
+                    }
+                },
+                tooltip: {
+                    pointFormatter: function(){
+                        return '<b>Total: '+base.getFormattedAmount(this.y)+'</b><b>('+base.getFormattedPercentage(this.percentage)+'%)</b>';
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: false
+                        },
+                        showInLegend: true
+                    }
+                },
+                series: [{
+                    colorByPoint: true,
+                    data: base.getOpexData(metricData.data)
+                }]
+            };
+            this.groupedOpexDataOptions = {
+                colors: this.chartColors,
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie',
+                    style: {
+                        fontFamily: 'NiveauGroteskRegular'
+                    }
+                },
+                title: {
+                    text: 'Operational Expenses',
+                    align:'left',
+                    style: {
+                        color: '#878787',
+                        fontFamily: 'NiveauGroteskLight',
+                        fontSize:'24'
+                    }
+                },
+                subtitle: {
+                    text: ''
+                },
+                credits: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                },
+                tooltip: {
+                    pointFormatter: function(){
+                        return '<b>Total: '+base.getFormattedAmount(this.y)+'</b><b>('+base.getFormattedPercentage(this.percentage)+'%)</b>';
+                    }
+                },
+                pie: {
+                    dataLabels: {
+                        enabled: true,
+                        inside: true,
+                        formatter: function(){
+                            return this.y;
+                        },
+                        distance: -40,
+                        color: 'white'
+                    },
+                    showInLegend: true
+                },
+                series: [{
+                    colorByPoint: true,
+                    data: base.getOpexData(metricData.groupedData)
+                }]
+            };
+            this.loadingService.triggerLoadingEvent(false);
+        }, error => this.handleError(error));
+    }
+
+    getOpexData(data){
+        let result = [];
+        _.each(data, function(obj){
+            result.push({
+                "name": obj.displayName,
+                "y": obj.value
+            });
+        });
+        return result;
+    }
+
+    getCashBurnChartData(){
+        let base = this;
+        this.reportRequest.type = "cashFlowStatement";
+        this.reportRequest.metricsType = "cashBurn";
+        this.reportsService.generateMetricReport(this.reportRequest, this.currentCompanyId).subscribe(metricData => {
+            this.hasCashBurnData = true;
+            let categories = [];
+            _.each(metricData.CashFlowMOM, function(value,key){
+                categories.push(key);
+            });
+            this.cashBurnDataOptions = {
+                colors: this.chartColors,
+                chart: {
+                    zoomType: 'xy',
+                    style: {
+                        fontFamily: 'NiveauGroteskRegular'
+                    }
+                },
+                title: {
+                    text: 'Cash Burn',
+                    align:'left',
+                    style: {
+                        color: '#878787',
+                        fontFamily: 'NiveauGroteskLight',
+                        fontSize:'24'
+                    }
+                },
+                subtitle: {
+                    text: '',
+                    align:'left'
+                },
+                credits: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: [{
+                    categories: categories,
+                    crosshair: true,
+                    labels: {
+                        style: {
+                            fontSize:'13px',
+                            fontWeight:'bold',
+                            color:'#878787',
+                            fill:'#878787'
+                        }
+                    }
+                }],
+                tooltip: {
+                    pointFormatter: function(){
+                        return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.getFormattedAmount(this.y)+'</b><br/>'
+                    },
+                    shared: true
+                },
+                yAxis: [{ // Primary yAxis
+                    labels: {
+                        style: {
+                            fontSize:'13px',
+                            color:'#878787',
+                            fill:'#878787'
+                        }
+                    },
+                    title: {
+                        text: '',
+                        style: {
+                            color: Highcharts.getOptions().colors[2]
+                        }
+                    },
+                    opposite: true
+
+                }, { // Secondary yAxis
+                    gridLineWidth: 0,
+                    title: {
+                        text: '',
+                        style: {
+                            color: Highcharts.getOptions().colors[0]
+                        }
+                    },
+                    labels: {
+                        style: {
+                            fontSize:'13px',
+                            color:'#878787',
+                            fill:'#878787'
+                        }
+                    }
+
+                }, { // Tertiary yAxis
+                    gridLineWidth: 0,
+                    title: {
+                        text: '',
+                        style: {
+                            color: Highcharts.getOptions().colors[1]
+                        }
+                    },
+                    labels: {
+                        format: '{value} %',
+                        style: {
+                            fontSize:'13px',
+                            color:'#878787',
+                            fill:'#878787'
+                        }
+                    },
+                    opposite: true
+                }],
+                series: [{
+                    name: 'Cash Burn',
+                    type: 'line',
+                    yAxis: 1,
+                    data: this.getDataArray(metricData["CashFlowMOM"], categories),
+                    tooltip: {
+                        valueDecimals: 2,
+                        valuePrefix: metricData.currencySymbol
+                    }
+                }]
+            };
+            this.loadingService.triggerLoadingEvent(false);
+        }, error => {
+
+        });
+    }
+
+    getProfitTrendData(){
+        let base = this;
+        this.reportRequest.type = "incomeStatement";
+        this.reportRequest.metricsType = "profitTrend";
+        this.reportsService.generateMetricReport(this.reportRequest, this.currentCompanyId).subscribe(metricData => {
+            this.hasProfitTrendData = true;
+            this.profitTrendDataOptions = {
+                colors: this.chartColors,
+                chart: {
+                    zoomType: 'xy',
+                    style: {
+                        fontFamily: 'NiveauGroteskRegular'
+                    }
+                },
+                title: {
+                    text: 'Revnue vs Expenses',
+                    align: 'left',
+                    style: {
+                        color: '#878787',
+                        fontFamily: 'NiveauGroteskLight',
+                        fontSize: '24'
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: [{
+                    categories: metricData.categories,
+                    crosshair: true,
+                    labels: {
+                        style: {
+                            fontSize: '13px',
+                            fontWeight: 'bold',
+                            color: '#878787',
+                            fill: '#878787'
+                        }
+                    }
+                }],
+                yAxis: [{ // Primary yAxis
+                    labels: {
+                        formatter: function () {
+                            return base.getFormattedAmount(this.value);
+                        },
+                        style: {
+                            fontSize: '13px',
+                            color: '#878787',
+                            fill: '#878787'
+                        }
+                    },
+                    title: {
+                        text: '',
+                        style: {
+                            color: Highcharts.getOptions().colors[2]
+                        }
+                    },
+                }],
+                tooltip: {
+                    pointFormatter: function(){
+                        return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.getFormattedAmount(this.y)+'</b><br/>'
+                    },
+                    shared: true
+                },
+                series: [{
+                    name: 'Revenue',
+                    type: 'column',
+                    data: this.getDataArray(metricData.Income, metricData.categories),
+                    tooltip: {
+                        valuePrefix: metricData.currencySymbol
+                    }
+                }, {
+                    name: 'Expenses',
+                    type: 'column',
+                    data: this.getDataArray(metricData.Expenses, metricData.categories),
+                    tooltip: {
+                        valuePrefix: metricData.currencySymbol
+                    }
+                }]
+            };
+            this.loadingService.triggerLoadingEvent(false);
+        }, error => {});
+    }
+
+    getDataArray(obj, categories){
+        let result = [];
+        _.each(obj, function(value, key){
+            result.push(value);
+        });
+        return result;
+    }
+
+    getFormattedAmount(amount){
+        return this.numeralService.format("$0,0.00", amount);
+    }
+
+    getFormattedPercentage(value){
+        return this.numeralService.format("00.00", value);
+    }
+
+    formatCategories(categories){
+        let result = [];
+        _.each(categories, function(value){
+            if(value.length > 0){
+                result.push(value[0].toUpperCase()+value.slice(1));
+            } else{
+                result.push(value);
+            }
+        });
+        return result;
+    }
+
+    showOtherCharts(type){
+        this.showDetailedChart = true;
+        if(type=='opexChart'){
+            this.detailedReportChartOptions = _.clone(this.opexChartOptions);
+        } else if(type=='profitTrend'){
+            this.detailedReportChartOptions = _.clone(this.profitTrendDataOptions);
+        } else if(type=='cashBurnChart'){
+            this.detailedReportChartOptions = _.clone(this.cashBurnDataOptions);
+        }
+        this.detailedReportChartOptions.legend = {enabled: true};
+    }
 }

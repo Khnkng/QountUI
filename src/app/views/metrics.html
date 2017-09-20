@@ -1,0 +1,125 @@
+
+<div class="row" foundation>
+    <div class="columns small-6 small-offset-6 right">
+
+    </div>
+</div>
+<div class="row chart-of-accounts" foundation>
+    <div class="column large-12 medium-12 small-12 foo-container">
+        <div class="row add-share-buttons add-share-adjust">
+            <div class="column medium-12 text-right">
+                <span class="pointer recon-selected-count" (click)="showAddMetric()"><i class="icon ion-ios-plus-outline"></i><span>Metric</span></span>
+                <span class="pointer" (click)="showValuedMetric()"><i class="icon ion-ios-plus-outline"></i><span>Input Metric</span></span>
+            </div>
+        </div>
+        <foo-table #fooTableDir="fooTable" class="metrics-footable" *ngIf="hasMetricsList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+    </div>
+    <div class="qount-off-canvas-menu chart-of-accounts">
+        <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+            <section class="flyout-placeholder">
+                <div class="flyout-body flyout-shadow-effect">
+                    <!--here comes actual flyout code-->
+                    <div #createVendor id="createVendor" class="create-vendor">
+                        <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="metricsForm">
+
+                            <section class="form-section clearfix">
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <div class="form-section-left">
+                                            <header class="form-section-header">Basic Info</header>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Name</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <input type="text" formControlName="name" placeholder="Name*"/>
+                                                    <div class="error" [hidden]="metricsForm.controls.name.untouched || metricsForm.controls.name.valid">Name is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">
+                                                        Type
+                                                    </label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <select formControlName="type" placeholder="Category type" *ngIf="!hasParentOrChild" (change)="populateSubtypes($event)">
+                                                        <option *ngFor="let category of categoryTypes" [value]="category.value">{{category.name}}</option>
+                                                    </select>
+                                                    <select formControlName="type" disabled *ngIf="hasParentOrChild">
+                                                        <option *ngFor="let category of categoryTypes" [value]="category.value">{{category.name}}</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="metricsForm.controls.type.untouched || metricsForm.controls.type.valid">Category type is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-12 columns description" [innerHTML]="description">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-section-left">
+                                            <header class="form-section-header">&nbsp;</header>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Description</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <textarea formControlName="description" rows="3" placeholder="Description"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                    <label class="text-right">Sub Type</label>
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <select formControlName="subType" placeholder="Sub type" *ngIf="!hasParentOrChild" (change)="selectSubtype($event)">
+                                                        <option value="{{subtype.value}}" *ngFor="let subtype of displaySubtypes">{{subtype.name}}</option>
+                                                    </select>
+                                                    <select formControlName="subType" disabled *ngIf="hasParentOrChild">
+                                                        <option value="{{subtype.value}}" *ngFor="let subtype of displaySubtypes">{{subtype.name}}</option>
+                                                    </select>
+                                                    <div class="error" [hidden]="metricsForm.controls.subType.untouched || metricsForm.controls.subType.valid">Sub type is required.</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="small-4 columns">
+                                                </div>
+                                                <div class="small-6 columns">
+                                                    <div class="subaccount-wrapper">
+                                                        <input type="checkbox" formControlName="subAccount" (change)="changeStatus()" disabled *ngIf="hasChildren"/>
+                                                        <input type="checkbox" formControlName="subAccount" (change)="changeStatus()" *ngIf="!hasChildren"/>
+                                                        <label class="text-right">Sub Account</label>
+                                                    </div>
+                                                    <div [hidden]="!subAccount || hasChildren">
+                                                        <select combo-box #parentAccountComboBoxDir="comboBox" data-placeholder="Enter parent account" formControlName="parentID" [listObject]="parentAccounts" (valueChanged)="updateParent($event)">
+                                                            <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.id">{{parentAccount.name}}</option>
+                                                        </select>
+                                                    </div>
+                                                    <div [hidden]="!hasChildren">
+                                                        <select disabled formControlName="parentID">
+                                                            <option *ngFor="let parentAccount of parentAccounts" [value]="parentAccount.id">{{parentAccount.name}}</option>
+                                                        </select>
+                                                        <div class="description">
+                                                            You cannot update parent as this Metric has children.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="small-12 medium-12 columns">
+                                        <button class="button create small float-right" [disabled]="!metricsForm.valid" (click)="saveMetric($event)">Save</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

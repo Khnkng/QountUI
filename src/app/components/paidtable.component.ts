@@ -48,10 +48,10 @@ export class paidtablecomponent {
     credits:any;
     billstate:any;
     billstatus:boolean=false;
+    @ViewChild('hChart1') hChart1:HighChart;
+    @ViewChild('createtaxes') createtaxes;
     routeSubscribe:any;
 
-  @ViewChild('hChart1') hChart1:HighChart;
-    @ViewChild('createtaxes') createtaxes;
     constructor(private _router: Router,private _route: ActivatedRoute,private companyService: CompaniesService,
                 private loadingService:LoadingService,private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard) {
         this.companyId = Session.getCurrentCompany();
@@ -80,7 +80,7 @@ export class paidtablecomponent {
                 });
         }
         this.titleService.setPageTitle("paid");
-      this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => this.hideFlyout());
+        this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => this.hideFlyout());
     }
     handleAction($event){
         let action = $event.action;
@@ -141,11 +141,11 @@ export class paidtablecomponent {
             base.hasItemCodes = true;
         }, 0);
         this.loadingService.triggerLoadingEvent(false);
-
     }
-  ngOnDestroy(){
-    this.routeSubscribe.unsubscribe();
-  }
+
+    ngOnDestroy(){
+        this.routeSubscribe.unsubscribe();
+    }
 }
 
 

@@ -14,9 +14,12 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {MONTHS_NAMES} from "qCommon/app/constants/Date.constants";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {Router} from "@angular/router";
+import {YEARS, BUDGET_YEARS} from "qCommon/app/constants/Date.constants";
 
 declare let jQuery:any;
 declare let _:any;
+declare let moment:any;
 
 @Component({
     selector: 'budgetdetails',
@@ -54,15 +57,27 @@ export class BudgetComponent{
     incomeTotal:number=0;
     cogsTotal:number=0;
     expenseTotal:number=0;
-    constructor(private _fb: FormBuilder, private _budgetForm: BudgetForm, private switchBoard: SwitchBoard,
+    routeSubscribe:any;
+    years:Array<any>=YEARS;
+    budgetYears:Array<any>=BUDGET_YEARS;
+    isSingleFisicalYear:boolean=false;
+
+    constructor(private _fb: FormBuilder, private _budgetForm: BudgetForm, private switchBoard: SwitchBoard,private _router: Router,
                 private budgetService: BudgetService, private toastService: ToastService, private loadingService:LoadingService,
                 private coaService: ChartOfAccountsService,private numeralService:NumeralService,private _budgetItemForm: BudgetItemForm,private titleService:pageTitleService){
-       // this.budgetForm = this._fb.group(_budgetForm.getForm());
+        // this.budgetForm = this._fb.group(_budgetForm.getForm());
         this.titleService.setPageTitle("Budget");
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteBudgetCode(toast));
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.currentCompany=Session.getCurrentCompany();
         this.calculateMonthsOrder();
+        if(Session.getFiscalStartDate()){
+            let momentdate=moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
+            if(momentdate.month()==0&&momentdate.date()==1){
+                this.isSingleFisicalYear=true;
+            }
+        }
+
         this.loadingService.triggerLoadingEvent(true);
         this.loadBudgets();
         this.coaService.chartOfAccounts(this.currentCompany)
@@ -80,8 +95,24 @@ export class BudgetComponent{
             }, error => {
 
             });
+        this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
+            if(this.itemActive){
+                this.hideFlyout();
+            }else if(this.showFlyout){
+                this.closeFlyout();
+            }else {
+                this.toolsRedirect();
+            }
+        });
     }
+
+    toolsRedirect(){
+        let link = ['tools'];
+        this._router.navigate(link);
+    }
+
     ngOnDestroy(){
+        this.routeSubscribe.unsubscribe();
         this.confirmSubscription.unsubscribe();
     }
 
@@ -107,7 +138,7 @@ export class BudgetComponent{
         this.editMode = false;
         this.newForm();
         let budget:any={};
-         var base=this;
+        var base=this;
         let revenueItemsControl:any = this.budgetForm.controls['income'];
         _.each(this.revenueCOA, function(item){
             item.coaID = item.id;
@@ -214,8 +245,8 @@ export class BudgetComponent{
         data['budget']=budget;
         this.loadingService.triggerLoadingEvent(true);
         /*if(data.frequency=='yearly'){
-            data.startDate=Session.getFiscalStartDate();
-        }*/
+         data.startDate=Session.getFiscalStartDate();
+         }*/
         data.netProfit=this.incomeTotal-(this.cogsTotal+this.expenseTotal);
         data.grossProfit=this.incomeTotal-this.cogsTotal;
         delete data.income;
@@ -434,43 +465,43 @@ export class BudgetComponent{
         }
     }
 
-    updateTotalAmount(val,form,type){
-       let total=0;
+    updateTotalAmount(_val,form,type){
+        let total=0;
         for(var i=0;i<this.lineItemNames.length-1;i++){
-            var val:any=this.lineItemNames[i];
+            var val=this.lineItemNames[i];
             total=total+this.checkNumber(form.controls[val].value)
         }
         form.controls['total'].patchValue(total);
         this.updateTotals(total,type);
     }
 
-    updateBudgetLineAmount(val,form,type){
+    updateBudgetLineAmount(_val,form,type){
         let total=this.checkNumber(form.controls['total'].value);
         if(total){
             let avgVal=Math.round((total/12) * 100) / 100;
             for(var i=0;i<this.lineItemNames.length-1;i++){
-                var val:any=this.lineItemNames[i];
+                var val=this.lineItemNames[i];
                 form.controls[val].patchValue(avgVal);
             }
             this.updateTotals(total,type);
         }
     }
 
-    updateTotals(total,type){
-        let latestTotal=0;
+    updateTotals(_total,type){
+        let total=0;
         if(type){
             let formControls=this.budgetForm.controls[type]['controls'];
             for(var i=0;i<formControls.length;i++){
-              latestTotal=latestTotal+Number(formControls[i].controls.total.value);
+                total=total+Number(formControls[i].controls.total.value);
             }
         }
 
         if(type=='income'){
-            this.incomeTotal=latestTotal;
+            this.incomeTotal=total;
         }else if(type=='costOfGoodsSold'){
-            this.cogsTotal=latestTotal;
+            this.cogsTotal=total;
         }else {
-            this.expenseTotal=latestTotal;
+            this.expenseTotal=total;
         }
     }
 

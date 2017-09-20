@@ -11,6 +11,11 @@ import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {CustomersService} from "qCommon/app/services/Customers.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ToastService} from "qCommon/app/services/Toast.service";
+import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {StateService} from "qCommon/app/services/StateService";
+import {State} from "qCommon/app/models/State";
+import {DimensionService} from "qCommon/app/services/DimensionService.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -45,33 +50,83 @@ export class SearchComponent{
     showtable:boolean=false;
     tableData:any = {};
     tableOptions:any = {};
+    routeSubscribe:any;
+    currency:string='USD';
+    locale:string="en-US";
+
+    selectedDimension:string;
+    dimensions:Array<any> = [];
+    dimensionValues:Array<any> = [];
+    selectedValues:Array<any> = [];
+    selectedValue:string;
 
     constructor(private _router: Router, private coaService: ChartOfAccountsService, private companyService: CompaniesService,
-                private customersService: CustomersService, private loadingService: LoadingService, private toastService: ToastService) {
+                private customersService: CustomersService, private loadingService: LoadingService, private toastService: ToastService,
+                private titleService:pageTitleService,_switchBoard:SwitchBoard, private stateService: StateService, private dimensionService: DimensionService) {
         this.companyCurrency=Session.getCurrentCompanyCurrency();
         this.companyId=Session.getCurrentCompany();
-
+        this.titleService.setPageTitle("Search");
         this.coaService.chartOfAccounts(this.companyId)
             .subscribe(chartOfAccounts => {
                 this.chartOfAccounts = chartOfAccounts;
             }, error => {
-
             });
         this.companyService.vendors(this.companyId)
             .subscribe(vendors => {
                 this.vendors = vendors;
             }, error => {
-
             });
         this.customersService.customers(this.companyId)
             .subscribe(customers => {
                 this.customers = customers;
             }, error => {
-
+            });
+        this.dimensionService.dimensions(this.companyId)
+            .subscribe(dimensions => {
+               this.dimensions = dimensions;
             });
         this.amountCondition = 'greaterthan';
         this.textCondition  ='beginsWith';
         this.dateCondition = 'equals';
+        this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => {
+            if(this.showtable == true){
+                this.stateService.pop();
+                this.showtable = false;
+                this.titleService.setPageTitle("Search");
+            } else {
+                this.showPreviousPage();
+            }
+        });
+    }
+
+    setDimension(dimension){
+        this.selectedDimension = dimension;
+        this.dimensionValues = this.getDimensionValues(dimension);
+    }
+
+    getDimensionValues(dimensionName){
+        let dimension = _.find(this.dimensions, {'name': dimensionName});
+        return dimension? _.cloneDeep(dimension.values): [];
+    }
+
+    setDimensionValue(value){
+        let base = this;
+        let index = -1;
+        _.each(this.selectedValues, function(obj){
+            if(obj.dimension == base.selectedDimension && obj.value == value){
+                index += 1;
+            }
+        });
+        if(index == -1){
+            this.selectedValues.push({
+                "dimension": this.selectedDimension,
+                "value": value
+            });
+        }
+    }
+
+    removeSelectedValue(index){
+        this.selectedValues.splice(index, 1);
     }
 
     ngOnInit() {
@@ -87,12 +142,22 @@ export class SearchComponent{
         let criteria = sessionStorage.getItem("searchcriteria");
         if(criteria){
             this.getSearchResults(JSON.parse(criteria));
+            this.stateService.pop();
         }
     }
 
+    ngOnDestroy(){
+        this.routeSubscribe.unsubscribe();
+    }
+
     showPreviousPage(){
-        let link = [Session.getLastVisitedUrl()];
-        this._router.navigate(link);
+        let prevState = this.stateService.pop();
+        if(prevState){
+            this._router.navigate([prevState.url]);
+        }else{
+            let link = [''];
+            this._router.navigate(link);
+        }
     }
 
     isCompSelected(component){
@@ -169,8 +234,29 @@ export class SearchComponent{
         return _.sortBy([this.lowerLimit, this.upperLimit]);
     }
 
+    generateDimensionsObject(){
+        let result = [];
+        let dimensions = [];
+        _.each(this.selectedValues, function(dimensionValue){
+            if(dimensions.indexOf(dimensionValue.dimension) == -1){
+                result.push({
+                    "name": dimensionValue.dimension,
+                    "values": []
+                });
+                dimensions.push(dimensionValue.dimension);
+            }
+        });
+        _.each(this.selectedValues, function(dimensionValue){
+            _.each(result, function(dim){
+                if(dim.name == dimensionValue.dimension){
+                    dim.values.push(dimensionValue.value);
+                }
+            })
+        });
+        return result;
+    }
+
     doSearch(){
-        console.log(this.amountCondition);
         if(!this.validate()){
             return;
         }
@@ -205,15 +291,19 @@ export class SearchComponent{
                 "value": this.text
             }
         }
+        if(this.selectedValues && this.selectedValues.length != 0){
+            data.criteria['dimensions'] = this.generateDimensionsObject();
+        }
         sessionStorage.setItem("searchcriteria", JSON.stringify(data));
         this.getSearchResults(data);
     }
-
     getSearchResults(data){
         this.loadingService.triggerLoadingEvent(true);
         this.companyService.doSearch(data, this.companyId)
             .subscribe(results => {
                 this.showtable = true;
+                this.addSearchState(data);
+                this.titleService.setPageTitle("Search Results");
                 this.buildResultsTableData(results);
             }, error => {
                 this.showtable = true;
@@ -221,6 +311,10 @@ export class SearchComponent{
                 this.loadingService.triggerLoadingEvent(false);
                 console.log(error);
             })
+    }
+
+    addSearchState(data){
+        this.stateService.addState(new State('search_results', this._router.url, data, null));
     }
 
     handleAction($event){
@@ -238,6 +332,8 @@ export class SearchComponent{
                 link = ['payments/credit', this.companyId, $event.id];
             } else if($event.type == 'Payments'){
                 link = ['payments', $event.id];
+            } else if($event.type == 'Invoice'){
+                link =['invoices/edit',$event.id];
             }
         }
         this._router.navigate(link);
@@ -259,12 +355,14 @@ export class SearchComponent{
         ];
         _.each(searchResults, function(result){
             let row:any = {};
+            let currency=result.currency?result.currency:'USD';
             _.each(Object.keys(result), function(key){
                 if(key == 'bill_amount' || key == 'amount'){
-                    row['amount'] = result[key]? parseFloat(result[key]).toFixed(2): '';
+                    let amount=parseFloat(result[key]);
+                    row['amount'] =amount.toLocaleString('en-US', { style: 'currency', currency: currency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 } else if(key == 'type'){
                     row['type'] = result[key]? (result[key].charAt(0).toUpperCase() + result[key].slice(1)) : '';
-                } else if(key == 'bill_date' || key.toLowerCase() == 'date'){
+                } else if(key == 'bill_date' ||key == 'invoice_date' ||key.toLowerCase() == 'date'){
                     row['date'] = result[key];
                 } else if(key == 'title' || key.toLowerCase() == 'name' || key.toLowerCase() == 'number'){
                     row['title'] = result[key];
@@ -277,7 +375,7 @@ export class SearchComponent{
         });
         this.loadingService.triggerLoadingEvent(false);
         setTimeout(function(){
-           base.hasSearchResults = true;
+            base.hasSearchResults = true;
         });
     }
 }

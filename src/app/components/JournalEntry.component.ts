@@ -22,6 +22,7 @@ import {StateService} from "qCommon/app/services/StateService";
 import {State} from "qCommon/app/models/State";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
 declare let _:any;
 declare let jQuery:any;
@@ -86,11 +87,12 @@ export class JournalEntryComponent{
     badgeText:string="B";
     showBadge:boolean=false;
     routeSubscribe:any;
+
     constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
-            private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
-            private companiesService: CompaniesService, private dimensionService: DimensionService, private loadingService: LoadingService,
-            private employeeService: EmployeeService, private customerService: CustomersService,private dateFormater:DateFormater,
-            private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard) {
+                private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
+                private companiesService: CompaniesService, private dimensionService: DimensionService, private loadingService: LoadingService,
+                private employeeService: EmployeeService, private customerService: CustomersService,private dateFormater:DateFormater,
+                private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService) {
         this.titleService.setPageTitle("CREATE JOURNAL ENTRY");
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.dateFormat = dateFormater.getFormat();
@@ -131,15 +133,17 @@ export class JournalEntryComponent{
             });
             this.customers = customers;
         }, error => this.handleError(error));
-      this.routeSubscribe  = _switchBoard.onClickPrev.subscribe(title => {
-        if(this.dimensionFlyoutCSS == "expanded"){
-          this.hideFlyout();
-        }else if(this.showAdvance){
-          this.showRecurringOpts();
-        }else{
-          this.goToPreviousPage();
-        }
-      });
+
+        this.routeSubscribe  = _switchBoard.onClickPrev.subscribe(title => {
+            if(this.dimensionFlyoutCSS == "expanded"){
+                this.hideFlyout();
+            }else if(this.showAdvance){
+                this.showRecurringOpts();
+            }else{
+                this.goToPreviousPage();
+            }
+        });
+
     }
 
     toggleReverseJournal(type, reversedFrom){
@@ -419,7 +423,18 @@ export class JournalEntryComponent{
         lineListItem.editable = !lineListItem.editable;
     }
 
-    handleKeyEvent(event: Event,index,key){
+    enableLines(){
+        let expItems: any = this.jeForm.controls.journalLines;
+        let lines = expItems.controls;
+        if(lines && lines.length > 0){
+            this.editLine(lines[0], 0);
+        } else{
+            this.addDefaultLine(1);
+            this.editLine(lines[0], 0);
+        }
+    }
+
+    handleKeyEvent(event: Event, index, key){
         let current_ele = jQuery(this.el.nativeElement).find("tr")[index].closest('tr');
         let focusedIndex;
         jQuery(current_ele).find("td input").each(function(id,field) {
@@ -435,7 +450,7 @@ export class JournalEntryComponent{
             setTimeout(function(){
                 let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
                 jQuery(elem).find("td input").each(function(id,field) {
-                    if(id == focusedIndex) {
+                    if(id == 0) {
                         jQuery(field).focus();
                     }
                 });
@@ -446,7 +461,7 @@ export class JournalEntryComponent{
             setTimeout(function(){
                 let elem = jQuery(base.el.nativeElement).find("tr")[nextIndex];
                 jQuery(elem).find("td input").each(function(id,field) {
-                    if(id == focusedIndex) {
+                    if(id == 0) {
                         jQuery(field).focus();
                     }
                 });
@@ -785,7 +800,13 @@ export class JournalEntryComponent{
         this.onJETypeSelect(this.jeDetails.jeType);
         this.setBadge();
         journalEntry.journalLines = _.orderBy(journalEntry.journalLines, ['entryType'], ['desc']);
+        if(journalEntry.journalLines && journalEntry.journalLines.length == 0){
+            this.addDefaultLine(2);
+        }
         journalEntry.date = this.dateFormater.formatDate(journalEntry.date,this.serviceDateformat,this.dateFormat);
+        if(journalEntry.journalLines && journalEntry.journalLines.length == 0){
+            this.addDefaultLine(2);
+        }
         let base = this;
         this.journalEntry = journalEntry;
         if(this.isReverse){
@@ -801,7 +822,7 @@ export class JournalEntryComponent{
             });
         }
         if(journalEntry['createdBY']==='system'){
-           this.isSystemCreatedJE=true;
+            this.isSystemCreatedJE=true;
         }
         this.disableReversalDate = !Boolean(journalEntry.autoReverse);
         this.disableRecurring = !Boolean(journalEntry.recurring);
@@ -851,7 +872,7 @@ export class JournalEntryComponent{
         jQuery('.pika-single').remove();
         jQuery('.ui-helper-hidden-accessible').remove();
         jQuery('.ui-menu').remove();
-      this.routeSubscribe.unsubscribe();
+        this.routeSubscribe.unsubscribe();
     }
 
     addDefaultLine(count){
@@ -952,6 +973,14 @@ export class JournalEntryComponent{
             let link = ['/payments', sourceID];
             this._router.navigate(link);
 
+        }else if(sourceID&&source=='accountsReceivable'){
+            if(sourceType == 'invoice') {
+                let link = ['invoices/edit', sourceID];
+                this._router.navigate(link);
+            }else if(sourceType == 'payment'){
+                let link = ['payments/edit', sourceID];
+                this._router.navigate(link);
+            }
         }
     }
 
@@ -965,6 +994,14 @@ export class JournalEntryComponent{
                 this.showBadge=true;
             }else{
                 this.badgeText="B";
+                this.showBadge=true;
+            }
+        }else if(sourceID && source === 'accountsReceivable'){
+            if(sourceType === 'payment'){
+                this.badgeText="P";
+                this.showBadge=true;
+            }else if(sourceType === 'invoice'){
+                this.badgeText="I";
                 this.showBadge=true;
             }
         }else if(sourceID && source === 'outflow'){
@@ -988,6 +1025,10 @@ export class JournalEntryComponent{
 
     roundOffValue(num){
         return Math.round(num * 100) / 100
+    }
+
+    formatAmount(value){
+        return this.numeralService.format('$0,0.00', value)
     }
 
 }
