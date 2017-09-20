@@ -17,6 +17,7 @@ import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {Router} from "@angular/router";
 import {YEARS, BUDGET_YEARS} from "qCommon/app/constants/Date.constants";
 import {DimensionService} from "qCommon/app/services/DimensionService.service";
+import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
 
 declare let jQuery:any;
 declare let _:any;
@@ -67,12 +68,15 @@ export class BudgetComponent{
     showDimensions:boolean;
     showFirstStep:boolean = true;
     showSecondStep:boolean = false;
+    formattedGrossProfit:string;
+    formattedNetProfit:string;
 
     constructor(private _fb: FormBuilder, private _budgetForm: BudgetForm, private switchBoard: SwitchBoard,private _router: Router,
                 private budgetService: BudgetService, private toastService: ToastService, private loadingService:LoadingService,
                 private coaService: ChartOfAccountsService,private numeralService:NumeralService,private _budgetItemForm: BudgetItemForm,private titleService:pageTitleService,private dimensionService: DimensionService){
         // this.budgetForm = this._fb.group(_budgetForm.getForm());
         this.titleService.setPageTitle("Budget");
+        this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteBudgetCode(toast));
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.currentCompany=Session.getCurrentCompany();
@@ -213,6 +217,7 @@ export class BudgetComponent{
         });
         this.selectedDimensions=budget.dimensions;
         this._budgetForm.updateForm(this.budgetForm, budget);
+        this.updateProfits();
         this.showFlyout = true;
         this.loadingService.triggerLoadingEvent(false);
     }
@@ -363,6 +368,7 @@ export class BudgetComponent{
         this.cogsTotal=0;
         this.incomeTotal=0;
         this.expenseTotal=0;
+        this.updateProfits();
     }
 
 
@@ -532,6 +538,8 @@ export class BudgetComponent{
         }else {
             this.expenseTotal=total;
         }
+
+        this.updateProfits();
     }
 
     duplicateAll(form){
@@ -637,7 +645,6 @@ export class BudgetComponent{
 
     nextStep($event) {
         $event && $event.preventDefault();
-        this.validateDimensions();
         let dimensions = this.budgetForm.controls['dimensions'];
         dimensions.patchValue(this.selectedDimensions);
         if(this.validateDimensions()){
@@ -685,7 +692,8 @@ export class BudgetComponent{
                 }else {
                     return true;
                 }
-            }else{
+            }
+            else{
                 let status=true;
                 _.forEach(yearFilterList, function(budget) {
                     if(budget.dimensions.length==0){
@@ -697,6 +705,15 @@ export class BudgetComponent{
         }else{
             return true;
         }
+    }
+
+    formatAmount(value){
+        return this.numeralService.format('$0,0.00', value);
+    }
+
+    updateProfits(){
+        this.formattedGrossProfit=this.formatAmount(this.incomeTotal-this.cogsTotal);
+        this.formattedNetProfit=this.formatAmount(this.incomeTotal-Number(this.cogsTotal+this.expenseTotal));
     }
 
 }

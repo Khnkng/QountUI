@@ -31,7 +31,7 @@
                         <td >{{bill.sourceName}}</td>
                         <td >{{bill.vendorName}}</td>
                         <td >{{bill.amount|currency:companyCurrency:true:'1.2-2'}}</td>
-                        <td >{{bill.date}}</td>
+                        <td >{{convertDateToLocaleFormat(bill.date)}}</td>
                     </tr>
                     </tbody>
                 </table>
