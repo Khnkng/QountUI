@@ -16,6 +16,7 @@ import {MONTHS_NAMES} from "qCommon/app/constants/Date.constants";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {Router} from "@angular/router";
 import {YEARS, BUDGET_YEARS} from "qCommon/app/constants/Date.constants";
+import {DimensionService} from "qCommon/app/services/DimensionService.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -61,10 +62,15 @@ export class BudgetComponent{
     years:Array<any>=YEARS;
     budgetYears:Array<any>=BUDGET_YEARS;
     isSingleFisicalYear:boolean=false;
+    dimensions:Array<any> = [];
+    selectedDimensions:Array<any> = [];
+    showDimensions:boolean;
+    showFirstStep:boolean = true;
+    showSecondStep:boolean = false;
 
     constructor(private _fb: FormBuilder, private _budgetForm: BudgetForm, private switchBoard: SwitchBoard,private _router: Router,
                 private budgetService: BudgetService, private toastService: ToastService, private loadingService:LoadingService,
-                private coaService: ChartOfAccountsService,private numeralService:NumeralService,private _budgetItemForm: BudgetItemForm,private titleService:pageTitleService){
+                private coaService: ChartOfAccountsService,private numeralService:NumeralService,private _budgetItemForm: BudgetItemForm,private titleService:pageTitleService,private dimensionService: DimensionService){
         // this.budgetForm = this._fb.group(_budgetForm.getForm());
         this.titleService.setPageTitle("Budget");
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteBudgetCode(toast));
@@ -77,6 +83,14 @@ export class BudgetComponent{
                 this.isSingleFisicalYear=true;
             }
         }
+
+        this.dimensionService.dimensions(Session.getCurrentCompany())
+            .subscribe(dimensions =>{
+                this.dimensions = dimensions;
+                this.showDimensions=true;
+            }, error => {
+
+            });
 
         this.loadingService.triggerLoadingEvent(true);
         this.loadBudgets();
@@ -99,7 +113,11 @@ export class BudgetComponent{
             if(this.itemActive){
                 this.hideFlyout();
             }else if(this.showFlyout){
-                this.closeFlyout();
+                if(this.showFirstStep){
+                    this.closeFlyout();
+                }else if(this.showSecondStep){
+                    this.hideSecondStep();
+                }
             }else {
                 this.toolsRedirect();
             }
@@ -126,11 +144,17 @@ export class BudgetComponent{
     }
 
     loadBudgets(){
+        this.resetSteps();
         this.budgetService.budget(this.currentCompany)
             .subscribe(budget => {
                 this.budgetList=budget;
                 this.buildTableData(this.budgetList);
             }, error => this.handleError(error));
+    }
+
+    resetSteps(){
+        this.showFirstStep = true;
+        this.showSecondStep = false;
     }
 
     showAddBudget() {
@@ -171,6 +195,7 @@ export class BudgetComponent{
         this.editMode = true;
         this.newForm();
         var base=this;
+        this.budgetId=budget.id;
         let revenueItemsControl:any = this.budgetForm.controls['income'];
         _.each(budget.budget.income, function(revenueItem){
             base.incomeTotal=base.incomeTotal+revenueItem.total;
@@ -186,6 +211,7 @@ export class BudgetComponent{
             base.expenseTotal=base.expenseTotal+expenseItem.total;
             expenseItemsControl.controls.push(base._fb.group(base._budgetItemForm.getForm(expenseItem)));
         });
+        this.selectedDimensions=budget.dimensions;
         this._budgetForm.updateForm(this.budgetForm, budget);
         this.showFlyout = true;
         this.loadingService.triggerLoadingEvent(false);
@@ -323,6 +349,9 @@ export class BudgetComponent{
     closeFlyout(){
         this.showFlyout = !this.showFlyout;
         this.resetForm();
+        this.showFirstStep = true;
+        this.showSecondStep = false;
+        this.selectedDimensions=[];
     }
 
     resetForm(){
@@ -548,6 +577,126 @@ export class BudgetComponent{
 
     roundOffValue(num){
         return Math.round(num * 100) / 100
+    }
+
+    isDimensionSelected(dimensionName){
+        let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
+        return selectedDimensionNames.indexOf(dimensionName) != -1;
+    }
+
+    doNothing($event){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+    }
+
+    selectDimension($event, dimensionName){
+        $event && $event.preventDefault();
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+        let selectedDimensionNames = _.map(this.selectedDimensions, 'name');
+        if(selectedDimensionNames.indexOf(dimensionName) == -1){
+            this.selectedDimensions.push({
+                "name": dimensionName,
+                "values": []
+            });
+        } else{
+            this.selectedDimensions.splice(selectedDimensionNames.indexOf(dimensionName), 1);
+        }
+    }
+
+    isValueSelected(dimension, value){
+        let currentDimension = _.find(this.selectedDimensions, {'name': dimension.name});
+        if(!_.isEmpty(currentDimension)){
+            if(currentDimension.values.indexOf(value) != -1){
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    selectValue($event, dimension, value){
+        $event && $event.stopPropagation();
+        $event && $event.stopImmediatePropagation();
+        _.each(this.selectedDimensions, function (selectedDimension) {
+            if(selectedDimension.name == dimension.name){
+                if(selectedDimension.values.indexOf(value) == -1){
+                    selectedDimension.values.push(value);
+                } else{
+                    selectedDimension.values.splice(selectedDimension.values.indexOf(value), 1);
+                }
+            }
+        });
+    }
+
+    hideSecondStep(){
+        this.showFirstStep = true;
+        this.showSecondStep = false;
+    }
+
+    nextStep($event) {
+        $event && $event.preventDefault();
+        this.validateDimensions();
+        let dimensions = this.budgetForm.controls['dimensions'];
+        dimensions.patchValue(this.selectedDimensions);
+        if(this.validateDimensions()){
+            this.showFirstStep = false;
+            this.showSecondStep = true;
+        }else {
+            this.toastService.pop(TOAST_TYPE.error, "Duplicate budget exists with these dimensions");
+        }
+    }
+
+    validateDimensions(){
+        let year = this.budgetForm.controls['year'].value;
+        let yearFilterList=[];
+        let base=this;
+        if(this.editMode){
+            yearFilterList=_.filter(this.budgetList, function(budget) {
+                return budget.year==year&&budget.id!=base.budgetId;
+                    });
+        }else {
+            yearFilterList=_.filter(this.budgetList, function(budget) { return budget.year==year;});
+        }
+        if(yearFilterList.length>0){
+            if(this.selectedDimensions.length>0){
+                    let allOldDimensionValues=[];
+                    let selectedDimensionsValues=[];
+                    let duplicates=[];
+                _.forEach(yearFilterList, function(budget) {
+                    if (budget.dimensions.length > 0) {
+                        _.forEach(budget.dimensions, function(budgetValue) {
+                            if (budgetValue.values.length > 0) {
+                                allOldDimensionValues=allOldDimensionValues.concat(budgetValue.values);
+                            }
+                        });
+                    }
+                });
+
+                _.forEach(this.selectedDimensions, function(dimension) {
+                    if (dimension.values.length > 0) {
+                        selectedDimensionsValues=selectedDimensionsValues.concat(dimension.values);
+                    }
+                });
+                duplicates=_.intersection(selectedDimensionsValues,allOldDimensionValues);
+                if(duplicates.length>0){
+                    return false;
+                }else {
+                    return true;
+                }
+            }else{
+                let status=true;
+                _.forEach(yearFilterList, function(budget) {
+                    if(budget.dimensions.length==0){
+                        status=false;
+                    }
+                });
+                return status;
+            }
+        }else{
+            return true;
+        }
     }
 
 }

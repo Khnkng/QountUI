@@ -21,6 +21,7 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {ReportService} from "reportsUI/app/services/Reports.service";
 import {PAYMENTSPATHS} from "reportsUI/app/constants/payments.constants";
 import {InvoicesService} from "invoicesUI/app/services/Invoices.service";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
 
 declare let _:any;
@@ -93,15 +94,20 @@ export class ReconcileComponent{
     reconCompletedOn:string;
     previousReconDate:string;
     reconPeriod:string;
+    dateFormat:string;
+    serviceDateformat:string;
+
     constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
                 private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService,
                 private companyService: CompaniesService,private numeralService:NumeralService, private stateService: StateService,
                 private titleService:pageTitleService,_switchBoard:SwitchBoard, private reportService: ReportService,
-                private invoiceService: InvoicesService) {
+                private invoiceService: InvoicesService, private dateFormater: DateFormater) {
         this.titleService.setPageTitle("Reconcile");
         this.switchPage = 'Books';
         this.reconcileForm = _fb.group(_reconcileForm.getForm());
         this.companyId = Session.getCurrentCompany();
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.loadingService.triggerLoadingEvent(true);
         this.accountsService.financialAccounts(this.companyId)
@@ -417,6 +423,7 @@ export class ReconcileComponent{
         $event && $event.preventDefault();
         let base = this;
         let data = this._reconcileForm.getData(this.reconcileForm);
+        data.date = base.dateFormater.formatDate(data.date,base.dateFormat,base.serviceDateformat);
         this.statementEndingBalance = data.statementEndingBalance;
         this.loadingService.triggerLoadingEvent(true);
         this.reconType = 'new';
@@ -502,7 +509,9 @@ export class ReconcileComponent{
                         },
                         value : amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
                     }
-                } else{
+                } else if(key == 'date'){
+                    row[key] = base.dateFormater.formatDate(entry[key],base.serviceDateformat,base.dateFormat);
+                }else{
                     row[key] = entry[key];
                 }
             });
@@ -539,6 +548,8 @@ export class ReconcileComponent{
                         },
                         value : amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
                     }
+                } else if(key == 'due_date'){
+                    row[key] = base.dateFormater.formatDate(entry[key],base.serviceDateformat,base.dateFormat);
                 } else{
                     row[key] = entry[key];
                 }
@@ -596,8 +607,10 @@ export class ReconcileComponent{
                 if(key == 'bank_Account_id'){
                     row[key] = entry[key];
                     row['bank'] = base.getBankAccountName(entry[key]);
+                }else if(key == 'last_Recon_date'){
+                    row[key] = moment(entry[key]).format(base.dateFormat);
                 }else if(key == 'recon_done_date'){
-                    row[key] = moment(entry[key]).format('MM/DD/YYYY');
+                    row[key] = moment(entry[key]).format(base.dateFormat);
                 }else if(key == 'ending_balance'){
                     row[key] = {
                         'options': {
@@ -644,7 +657,7 @@ export class ReconcileComponent{
             selected["unreconciled_deposits"] = unreconciled_deposits;
             selected["unreconciled_expenses"] = unreconciled_expenses;
             selected["last_recon_ending_balance"] = this.endingBalance;
-            selected["last_recon_date"] = this.reconcileDate;
+            selected["last_recon_date"] = this.dateFormater.formatDate(this.reconcileDate,this.dateFormat,this.serviceDateformat);
             selected["starting_balance"] = this.startingBalance;
             selected["sum_of_deposits"] = this.inflow;
             selected["sum_of_expenses"] = this.outflow;

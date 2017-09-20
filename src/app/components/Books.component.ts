@@ -390,8 +390,8 @@ export class BooksComponent{
         this.handleBadges(data.length, 1);
         this.expensesTableData.columns = [
             {"name": "title", "title": "Title"},
-            {"name": "due_date", "title": "Expense Date","type":"date","sortValue": function(value){
-                return moment(value,"MM/DD/YYYY").valueOf();
+            {"name": "due_date", "title": "Expense Date","type":"text","sortValue": function(value){
+                return moment(value,base.dateFormat).valueOf();
             }},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
@@ -465,8 +465,8 @@ export class BooksComponent{
         this.depositsTableData.search = true;
         this.depositsTableData.columns = [
             {"name": "title", "title": "Title"},
-            {"name": "date", "title": "Date","type":"date","sortValue": function(value){
-                return moment(value,"MM/DD/YYYY").valueOf();
+            {"name": "date", "title": "Date","type":"text","sortValue": function(value){
+                return moment(value,base.dateFormat).valueOf();
             }},
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
@@ -528,8 +528,8 @@ export class BooksComponent{
         this.handleBadges(data.length, 2);
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
-            {"name": "date", "title": "Date","type":"date","sortValue": function(value){
-                return moment(value,"MM/DD/YYYY").valueOf();
+            {"name": "date", "title": "Date","type":"text","sortValue": function(value){
+                return moment(value,base.dateFormat).valueOf();
             }},
             {"name": "type", "title": "Journal Type","visible":false, 'filterable': false},
             {"name": "categoryValue", "title": "Category"},

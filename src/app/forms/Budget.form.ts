@@ -16,7 +16,8 @@ export class BudgetForm extends abstractForm{
             "description": [model ? model.description : ''],
             id: [model ? model.id : ''],
             "year": [model ? model.year : '',Validators.required],
-            "defaultBudget":[model ? model.defaultBudget : false,Validators.required]
+            /*"defaultBudget":[model ? model.defaultBudget : false,Validators.required],*/
+            "dimensions": [model? model.dimensions: []]
         }
     }
 

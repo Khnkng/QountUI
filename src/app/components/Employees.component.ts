@@ -13,6 +13,7 @@ import {EmployeesModel} from "../models/Employees.model";
 import {EmployeesForm} from "../forms/Employees.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -26,6 +27,8 @@ export class EmployeesComponent {
     tableData:any = {};
     tableOptions:any = {};
     status:any;
+    dateFormat:string;
+    serviceDateformat:string;
     employeeId:any;
     employees:Array<any>;
     editMode:boolean = false;
@@ -45,7 +48,10 @@ export class EmployeesComponent {
 
     constructor(private _fb: FormBuilder, private employeeService: EmployeeService,
                 private _employeesForm:EmployeesForm, private _router: Router, private _toastService: ToastService,
-                private switchBoard: SwitchBoard, private loadingService:LoadingService,private titleService:pageTitleService) {
+                private switchBoard: SwitchBoard, private loadingService:LoadingService,private titleService:pageTitleService,
+                private dateFormater:DateFormater) {
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
         this.titleService.setPageTitle("Employees");
         this.employeesForm = this._fb.group(_employeesForm.getForm());
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteEmployee(toast));
@@ -176,6 +182,8 @@ export class EmployeesComponent {
         $event && $event.preventDefault();
         var data = this._employeesForm.getData(this.employeesForm);
         this.companyId = Session.getCurrentCompany();
+
+        data.dob = this.dateFormater.formatDate(data.dob,this.dateFormat,this.serviceDateformat);
 
         this.loadingService.triggerLoadingEvent(true);
         if(this.editMode) {

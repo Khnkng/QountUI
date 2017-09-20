@@ -77,7 +77,7 @@
                                                     <label class="text-right">Date Of Birth</label>
                                                 </div>
                                                 <div class="small-6 columns">
-                                                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDateOfBirth($event)" formControlName="dob" placeholder="Date Of Birth*">
+                                                    <input type="text" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setDateOfBirth($event)" formControlName="dob" placeholder="Date Of Birth*">
                                                 </div>
                                             </div>
 

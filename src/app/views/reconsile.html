@@ -80,7 +80,7 @@
         <div class="row">
             <div class="small-12 medium-3 columns">
                 <label>Reconcile Date
-                    <input type="text" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="date" placeholder="Date*">
+                    <input type="text" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="date" placeholder="Date*">
                     <div class="error" [hidden]="reconcileForm.controls.date.untouched || reconcileForm.controls.date.valid">Date is required</div>
                 </label>
             </div>

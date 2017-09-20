@@ -645,6 +645,21 @@ a:focus .je-badge{
   width: 100%;
   z-index: 1000;
   top: 0px;
+  padding:0px;
+  .top-bar-right {
+    .menu {
+      a {
+        display: inline;
+        .icon {
+          top: 10px;
+        }
+      }
+      padding-top: 8px;
+      .vertical {
+        top:5px;
+      }
+    }
+  }
 }
 
 .top-bar .search {

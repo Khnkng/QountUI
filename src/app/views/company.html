@@ -94,7 +94,7 @@
 														<label class="text-right">Fiscal Start Date</label>
 													</div>
 													<div class="small-6 columns">
-														<input  custom-datepicker (valueChanged)="setDate($event,lockdate)" [mindate]="'past'" [maxdate]="todaysDate" [format]="'MM/DD/YYYY'"  type="text" formControlName="fiscalStartDate" name="fiscalStartDate" placeholder="Fiscal Start Date*"/>
+														<input  custom-datepicker (valueChanged)="setDate($event,lockdate)" [mindate]="'past'" [maxdate]="todaysDate" [format]="dateFormat"  type="text" formControlName="fiscalStartDate" name="fiscalStartDate" placeholder="Fiscal Start Date*"/>
 														<div class="error" [hidden]="companyForm.controls.fiscalStartDate.untouched || companyForm.controls.fiscalStartDate.valid"><small>Select Fiscal Start Date</small></div>
 													</div>
 												</div>

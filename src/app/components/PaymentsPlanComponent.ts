@@ -10,6 +10,7 @@ import {PaymentsPlan} from "../forms/PaymentsPlan.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {Router} from "@angular/router";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {DAYS_OF_WEEK, DAYS_OF_MONTH,WEEK_OF_MONTH,MONTH_OF_QUARTER,MONTH_OF_YEAR} from "qCommon/app/constants/Date.constants";
 
 declare let jQuery:any;
@@ -42,10 +43,15 @@ export class PaymentsPlanComponent{
     weekOfMonth:Array<string>=WEEK_OF_MONTH;
     monthOfQuarter:Array<string>=MONTH_OF_QUARTER;
     monthOfYear:Array<string>=MONTH_OF_YEAR;
+    dateFormat:string;
+    serviceDateformat:string;
+
 
     constructor(private _fb: FormBuilder, private _paymentPlanForm: PaymentsPlan, private switchBoard: SwitchBoard,private _router: Router,
                 private codeService: PaymentsPlanService, private toastService: ToastService, private loadingService:LoadingService,
-                private titleService:pageTitleService){
+                private titleService:pageTitleService, private dateFormater:DateFormater){
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
         this.titleService.setPageTitle("Payments Plan");
         this.paymentPlanForm = this._fb.group(_paymentPlanForm.getForm());
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteItemCode(toast));
@@ -145,7 +151,8 @@ export class PaymentsPlanComponent{
             return
         }
         data.amount=data.amount+"";
-        data.ends_after=moment(data.ends_after,'MM/DD/YYYY').format("YYYY-MM-DD");
+        //data.ends_after=moment(data.ends_after,'MM/DD/YYYY').format("YYYY-MM-DD");
+        data.ends_after=this.dateFormater.formatDate(data.ends_after,this.dateFormat,this.serviceDateformat);
         if(data.frequency=='quarterly'||data.frequency=='yearly'){
             let dayObj:any={};
             dayObj.month=data.month;
@@ -197,7 +204,11 @@ export class PaymentsPlanComponent{
         paymentPlans.forEach(function(itemCode) {
             let row:any = {};
             _.each(base.tableColumns, function(key) {
-                row[key] = itemCode[key];
+                if(key == 'ends_after') {
+                    row[key] = base.dateFormater.formatDate(itemCode[key],base.serviceDateformat,base.dateFormat);
+                }else {
+                    row[key] = itemCode[key];
+                }
                 row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             });
             base.tableData.rows.push(row);

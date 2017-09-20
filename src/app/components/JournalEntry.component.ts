@@ -698,6 +698,9 @@ export class JournalEntryComponent{
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
         data.date = this.dateFormater.formatDate(data.date,this.dateFormat,this.serviceDateformat);
+        data.reversalDate = this.dateFormater.formatDate(data.reversalDate,this.dateFormat,this.serviceDateformat);
+        data.nextJEDate = this.dateFormater.formatDate(data.nextJEDate,this.dateFormat,this.serviceDateformat);
+        data.endDate = this.dateFormater.formatDate(data.endDate,this.dateFormat,this.serviceDateformat);
         data.journalLines = this.getJournalLineData(this.jeForm);
         this.updateJournalLinesData(data);
         if(this.validateLines(data.journalLines)){
