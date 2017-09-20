@@ -1693,7 +1693,7 @@ ul.side-nav a {
         border-top-right-radius: 0 !important;
       }
       label{
-        margin-top: 5px;
+        border-top-right-radius: 0 !important;
       }
     }
     position: relative;
@@ -1703,6 +1703,9 @@ ul.side-nav a {
     text-align: center;
     border-top-right-radius:10px;
     margin-left: 5px;
+    height:42px;
+    padding: 0px;
+    overflow: hidden;
     &:first-child {
       margin-left: 0px;
     }
@@ -1725,6 +1728,7 @@ ul.side-nav a {
     :hover {
       background-color: $qount-sidebar-bg;
       color: #ffffff;
+      border-top-right-radius: 10px;
     }
   }
 
