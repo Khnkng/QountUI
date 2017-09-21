@@ -1122,6 +1122,7 @@ form {
   color: #E8E4DB;
   font-size: 1.2em;
   padding: 1em 0.5em;
+  //line-height:1px;
 }
 
 .sidebar ul.side-nav li a .icon {
@@ -1136,6 +1137,9 @@ form {
   -o-transition: 0.2s ease-in-out;
   transition: 0.2s ease-in-out;
   font-size: 1.1em !important;
+  cursor:pointer;
+  height: 20px;
+  //line-height:1px;
 }
 
 .sidebar ul.side-nav li a .glyphicon, .sidebar ul.side-nav li a .fa{
@@ -1144,7 +1148,7 @@ form {
 
 .sidebar ul.side-nav li a.collapsed {
   text-align: center;
-  padding: 1em 0.3em;
+  padding: 0.8em 0.3em 0.7em 0.3em
 }
 
 .sidebar ul.side-nav li a.collapsed .icon {
@@ -1182,6 +1186,10 @@ form {
 .sidebar ul.side-nav li a:hover {
   background-color: #FFFFFF;
   color: $qount-sidebar-bg;
+  cursor: pointer;
+  .i {
+    cursor: pointer;
+  }
 }
 
 .selectedNav {
