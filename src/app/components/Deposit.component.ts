@@ -840,7 +840,7 @@ export class DepositComponent{
          this.loadingService.triggerLoadingEvent(true);
          this.depositService.unMappedInvoices(this.currentCompanyId,"false",this.bankAccountID)
             .subscribe(mappings => {
-              this.buildTableData(_mappings || []);
+              this.buildTableData(mappings || []);
             }, error => {
             this.loadingService.triggerLoadingEvent(false);
          });
