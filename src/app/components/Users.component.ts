@@ -12,8 +12,9 @@ import {UsersModel} from "qCommon/app/models/Users.model";
 import {UsersForm} from "../forms/Users.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
-declare var jQuery:any;
-declare var _:any;
+
+declare let jQuery:any;
+declare let _:any;
 
 @Component({
     selector: 'users',
@@ -43,7 +44,7 @@ export class UsersComponent {
 
     constructor(private _fb: FormBuilder, private usersService: CompanyUsers, private _usersForm:UsersForm,
                 private _router: Router, private _toastService: ToastService, private loadingService:LoadingService,
-                private switchBoard: SwitchBoard,private toastService: ToastService,private titleService:pageTitleService) {
+                private switchBoard: SwitchBoard, private titleService:pageTitleService) {
         this.titleService.setPageTitle("Users");
         this.userForm = this._fb.group(_usersForm.getForm());
         this.companyId = Session.getCurrentCompany();
@@ -225,7 +226,7 @@ export class UsersComponent {
 
     handleError(error) {
         this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Item code?");
+        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Item code?");
     }
 
     hideFlyout(){

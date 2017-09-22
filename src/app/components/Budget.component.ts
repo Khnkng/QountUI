@@ -100,6 +100,7 @@ export class BudgetComponent{
         this.loadBudgets();
         this.coaService.chartOfAccounts(this.currentCompany)
             .subscribe(chartOfAccounts=> {
+                chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
                 this.chartOfAccounts = chartOfAccounts;
                 this.revenueCOA = _.filter(chartOfAccounts, {'category': 'Revenue'});
                 _.sortBy(this.revenueCOA, ['name']);
@@ -166,7 +167,7 @@ export class BudgetComponent{
         this.editMode = false;
         this.newForm();
         let budget:any={};
-        var base=this;
+        let base=this;
         let revenueItemsControl:any = this.budgetForm.controls['income'];
         _.each(this.revenueCOA, function(item){
             item.coaID = item.id;
@@ -198,7 +199,7 @@ export class BudgetComponent{
     processBudget(budget){
         this.editMode = true;
         this.newForm();
-        var base=this;
+        let base=this;
         this.budgetId=budget.id;
         let revenueItemsControl:any = this.budgetForm.controls['income'];
         _.each(budget.budget.income, function(revenueItem){
@@ -434,8 +435,8 @@ export class BudgetComponent{
         let data = [];
         _.each(expenseForm.controls, function(expenseItemControl){
             let itemData = base._budgetItemForm.getData(expenseItemControl);
-            for(var i=0;i<base.lineItemNames.length;i++){
-                var val=base.lineItemNames[i];
+            for(let i=0;i<base.lineItemNames.length;i++){
+                let val=base.lineItemNames[i];
                 itemData[val]=base.roundOffValue(itemData[val]);
             }
             data.push(itemData);
@@ -491,8 +492,8 @@ export class BudgetComponent{
             itemsControl = this.budgetForm.controls['expenses'];
         }
         let itemControl = itemsControl.controls[this.editItemIndex];
-        for(var i=0;i<this.lineItemNames.length;i++){
-            var val=this.lineItemNames[i];
+        for(let i=0;i<this.lineItemNames.length;i++){
+            let val=this.lineItemNames[i];
             itemControl.controls[val].patchValue(item[val]);
             if(val=='total'){
                 this.updateTotals(item[val],this.selectedGroup)
@@ -502,8 +503,8 @@ export class BudgetComponent{
 
     updateTotalAmount(_val,form,type){
         let total=0;
-        for(var i=0;i<this.lineItemNames.length-1;i++){
-            var val=this.lineItemNames[i];
+        for(let i=0;i<this.lineItemNames.length-1;i++){
+            let val=this.lineItemNames[i];
             total=total+this.checkNumber(form.controls[val].value)
         }
         form.controls['total'].patchValue(total);
@@ -514,8 +515,8 @@ export class BudgetComponent{
         let total=this.checkNumber(form.controls['total'].value);
         if(total){
             let avgVal=Math.round((total/12) * 100) / 100;
-            for(var i=0;i<this.lineItemNames.length-1;i++){
-                var val=this.lineItemNames[i];
+            for(let i=0;i<this.lineItemNames.length-1;i++){
+                let val=this.lineItemNames[i];
                 form.controls[val].patchValue(avgVal);
             }
             this.updateTotals(total,type);
@@ -526,7 +527,7 @@ export class BudgetComponent{
         let total=0;
         if(type){
             let formControls=this.budgetForm.controls[type]['controls'];
-            for(var i=0;i<formControls.length;i++){
+            for(let i=0;i<formControls.length;i++){
                 total=total+Number(formControls[i].controls.total.value);
             }
         }
@@ -545,8 +546,8 @@ export class BudgetComponent{
     duplicateAll(form){
         let janValue=this.checkNumber(form.controls['jan'].value);
         if(janValue){
-            for(var i=0;i<this.lineItemNames.length-1;i++){
-                var val=this.lineItemNames[i];
+            for(let i=0;i<this.lineItemNames.length-1;i++){
+                let val=this.lineItemNames[i];
                 form.controls[val].patchValue(janValue);
             }
             this.updateTotalAmount(null,form,this.selectedGroup);
@@ -565,11 +566,11 @@ export class BudgetComponent{
     }
 
     calculateMonthsOrder(){
-        var allMonths = MONTHS_NAMES;
+        let allMonths = MONTHS_NAMES;
         if(Session.getFiscalStartDate()){
-            var today = new Date(Session.getFiscalStartDate());
-            var monthIndex = today.getMonth();
-            var i;
+            let today = new Date(Session.getFiscalStartDate());
+            let monthIndex = today.getMonth();
+            let i;
             for (i=0; i<12; i++) {
                 this.orderedMonths.push(allMonths[monthIndex]);
                 monthIndex++;

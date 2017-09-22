@@ -80,6 +80,7 @@ export class FinancialAccountsComponent{
       this.loadingService.triggerLoadingEvent(true);
       this.coaService.chartOfAccounts(this.currentCompany)
           .subscribe(chartOfAccounts => {
+            chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
             this.bankCoa=_.filter(chartOfAccounts, {'type': 'bank'});
             this.creditCoa=_.filter(chartOfAccounts, {'type': 'creditCard'});
             this.chartOfAccounts = chartOfAccounts;

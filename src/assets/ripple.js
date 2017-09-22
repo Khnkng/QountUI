@@ -1,7 +1,6 @@
 // Ripple-effect animation
 (function($) {
   $("body").on('click', '.ripple-effect', function(e){
-    debugger;
     var rippler = $(this);
 
     // create .ink element if it doesn't exist
