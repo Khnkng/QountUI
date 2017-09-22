@@ -181,7 +181,7 @@ export class BooksComponent{
     }
 
     addBookState(){
-        this.stateService.addState(new State('BOOKS', this._router.url, null, null));
+        this.stateService.addState(new State('BOOKS', this._router.url, null, null, []));
     }
 
     getBookBadges(){

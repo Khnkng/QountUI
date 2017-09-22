@@ -68,6 +68,7 @@ export class ItemCodesComponent{
       }
       this.coaService.chartOfAccounts(this.currentCompany.id)
           .subscribe(chartOfAccounts => {
+            chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
             this.filterChartOfAccounts(chartOfAccounts);
           }, error=> this.handleError(error));
     }, error => this.handleError(error));

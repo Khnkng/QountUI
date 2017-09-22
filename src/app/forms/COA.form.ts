@@ -10,7 +10,7 @@ import {Validators} from "@angular/forms";
 export class COAForm extends abstractForm{
 
   getForm() {
-    var numberValidator = [];
+    let numberValidator = [];
     numberValidator.push(Validators.pattern);
     numberValidator.push(Validators.required);
     return {
@@ -20,6 +20,7 @@ export class COAForm extends abstractForm{
       "subType": ['', Validators.required],
       "desc": [''],
       "subAccount": [false],
+      "inActive": [false],
       "parentID": [''],
       "id": [],
       "level": [0]
