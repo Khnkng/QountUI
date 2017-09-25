@@ -268,11 +268,13 @@ export class ExpenseComponent{
 
     editItem(index, itemForm){
       let base = this;
-      let depositData = this._expenseForm.getData(this.expenseForm);
+      let expenseData = this._expenseForm.getData(this.expenseForm);
       let linesControl:any = this.expenseForm.controls['expense_items'];
       let itemData = this._expenseItemForm.getData(itemForm);
-      itemData.amount = depositData.amount || 0;
-      this.setValuesToControls(linesControl.controls[index], itemData);
+      if(!itemData.amount){
+        itemData.amount = expenseData.amount || 0;
+        this.setValuesToControls(linesControl.controls[index], itemData);
+      }
       setTimeout(function(){
         jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
         jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));

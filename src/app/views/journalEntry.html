@@ -68,11 +68,11 @@
 
                                             <div class="small-12 medium-3 columns">
                                                 <label>Basis
-                                                    <select class="jeSelect" formControlName="basis" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId&&jeForm.controls.category.value!='openingEntry'">
+                                                    <select class="jeSelect" formControlName="basis" *ngIf="!isSystemCreatedJE && !reversed&&!haveSourceId && jeForm.controls.category.value!='openingEntry'">
                                                         <option value="Cash">Cash</option>
                                                         <option value="Accrual">Accrual</option>
                                                     </select>
-                                                    <select class="jeSelect" formControlName="basis" *ngIf="!isSystemCreatedJE&&!reversed&&!haveSourceId&&jeForm.controls.category.value=='openingEntry'">
+                                                    <select class="jeSelect" formControlName="basis" *ngIf="!isSystemCreatedJE && !reversed&&!haveSourceId && jeForm.controls.category.value=='openingEntry'">
                                                         <option value="Accrual">Accrual</option>
                                                     </select>
                                                     <select class="jeSelect" formControlName="basis" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>

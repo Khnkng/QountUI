@@ -253,14 +253,15 @@ export class DepositComponent{
       let linesControl:any = this.depositForm.controls['payments'];
       itemForm.editable = !itemForm.editable;
       let itemData = this._depositLineForm.getData(itemForm);
-      itemData.amount = depositData.amount || 0;
-      this.setValuesToControls(linesControl.controls[index], itemData);
+      if(!itemData.amount){
+        itemData.amount = depositData.amount;
+        this.setValuesToControls(linesControl.controls[index], itemData);
+      }
       setTimeout(function(){
         jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
         jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
         jQuery('#invoice-'+index).siblings().children('input').val(base.getInvoiceName(itemData.invoice_id));
       });
-
       if(index == this.getLastActiveLineIndex(linesControl)){
         this.addDefaultLine(1);
       }

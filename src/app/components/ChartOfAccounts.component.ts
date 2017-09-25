@@ -178,6 +178,8 @@ export class ChartOfAccountsComponent{
     this.titleService.setPageTitle("CREATE CHART OF ACCOUNT");
     this.editMode = false;
     this.coaForm = this._fb.group(this._coaForm.getForm());
+    let inActiveControl: any = this.coaForm.controls.inActive;
+    inActiveControl.setValue(true);
     this.displaySubtypes = [];
     this.description = "";
     this.subAccount = false;

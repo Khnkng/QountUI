@@ -17,6 +17,7 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {LoginService} from "qCommon/app/services/Login.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
+import {environment} from "../../environments/environment";
 
 declare let jQuery:any;
 declare let _:any;
@@ -55,13 +56,17 @@ export class AppComponent  implements OnInit{
     isOverlay:boolean=false;
     isLoading:boolean=false;
     pageTitle:string='';
+    currentEnvironment:any;
 
     constructor(_switchBoard:SwitchBoard, private _router:Router, private route: ActivatedRoute, private toastService: ToastService,
                 private socketService: SocketService,private titleService:pageTitleService, private companyService: CompaniesService,
                 private loadingService:LoadingService,private loginService: LoginService, private _toastService:ToastService,
                 private numeralService: NumeralService) {
         let self = this;
-        let data=this.getCookie("dev");
+        this.currentEnvironment = environment;
+        debugger;
+        let cookieKey = this.currentEnvironment.production? "prod": "dev";
+        let data= this.getCookie(cookieKey);
         if(data){
             let obj=JSON.parse(data);
             if(obj){
@@ -81,11 +86,14 @@ export class AppComponent  implements OnInit{
             }
         }else {
             if(Session.hasSession()) {
-                 this.hasLoggedIn = true;
-               }else {
-                /*let link = ['/login'];
-                 this._router.navigate(link);*/
+              this.hasLoggedIn = true;
+            }else {
+              if(this.currentEnvironment.isLocal){
+                let link = ['/login'];
+                this._router.navigate(link);
+              } else{
                 this.logout();
+              }
             }
         }
 
@@ -256,8 +264,13 @@ export class AppComponent  implements OnInit{
 
     logout(){
         this.loadingService.triggerLoadingEvent(true);
-        document.cookie="dev=;path=/;domain=qount.io";
-        window.location.href = 'https://dev-welcome.qount.io/oneapp/login'
+        if(this.currentEnvironment.production){
+          document.cookie="prod=;path=/;domain=qount.io";
+          window.location.href = 'https://welcome.qount.io/oneapp/login'
+        } else {
+          document.cookie="dev=;path=/;domain=qount.io";
+          window.location.href = 'https://dev-welcome.qount.io/oneapp/login'
+        }
     }
 
     routeChanged(routeChange:NavigationEnd) {

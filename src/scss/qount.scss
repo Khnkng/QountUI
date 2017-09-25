@@ -4436,6 +4436,13 @@ select:-webkit-autofill:active {
   }
 }
 
+@media (min-width: 1100px) {
+  .report-dynamic-width{
+    width: 1070px;
+    overflow-x: scroll;
+  }
+}
+
 @media (min-width: 1200px) {
   .report-dynamic-width{
     width: 1170px;
@@ -4443,9 +4450,9 @@ select:-webkit-autofill:active {
   }
 }
 
-@media (min-width: 1500px) {
+@media (min-width: 1450px) {
   .report-dynamic-width{
-    width: 1450px;
+    width: 1400px;
     overflow-x: scroll;
   }
 }

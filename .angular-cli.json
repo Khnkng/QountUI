@@ -43,7 +43,8 @@
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",
-        "prod": "environments/environment.prod.ts"
+        "prod": "environments/environment.prod.ts",
+        "local": "environments/environment.local.ts"
       }
     }
   ],
@@ -73,7 +74,7 @@
     "component": {
     },
     "serve": {
-      "port": 4200,
+      "port": 8000,
       "host": "local.qount.io"
     }
   }
