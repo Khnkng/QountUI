@@ -471,6 +471,7 @@ export class BooksComponent{
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
             {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
+            {"name": "cash_only_journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
                 amount = parseFloat(amount);
                 return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -503,7 +504,9 @@ export class BooksComponent{
                     row[key] = expense[key];
                 }
             });
-            if(expense.journal_id){
+            if(expense.journal_id&&expense.cash_only_journal_id){
+                row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='je2navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            }else if(expense.journal_id){
                 row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             } else{
                 row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
@@ -645,6 +648,10 @@ export class BooksComponent{
         }  else if(action == 'navigation'){
             this.addBookState();
             let link = ['journalEntry', $event.journal_id];
+            this._router.navigate(link);
+        } else if(action == 'je2navigation'){
+            this.addBookState();
+            let link = ['journalEntry', $event.cash_only_journal_id];
             this._router.navigate(link);
         }
     }
