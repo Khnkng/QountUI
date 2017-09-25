@@ -423,7 +423,7 @@ export class BooksComponent{
                         value : amount.toFixed(2)
                     }
                 }else if(key == 'due_date'){
-                    row[key] = base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat);
+                    row[key] = (expense[key]) ? base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat) : expense[key];
                 } else{
                     row[key] = expense[key];
                 }
@@ -498,7 +498,7 @@ export class BooksComponent{
                         value : amount.toFixed(2)
                     }
                 }else if(key == 'date'){
-                    row[key] = base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat);
+                    row[key] = (expense[key]) ? base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat) : expense[key];
                 }else{
                     row[key] = expense[key];
                 }
@@ -557,7 +557,7 @@ export class BooksComponent{
                 }else if(key == 'category'){
                     row['categoryValue'] = base.categoryData[journalEntry[key]];
                 }else if(key == 'date'){
-                    row[key] = base.dateFormater.formatDate(journalEntry[key],base.serviceDateformat,base.dateFormat);
+                    row[key] = (journalEntry[key]) ? base.dateFormater.formatDate(journalEntry[key],base.serviceDateformat,base.dateFormat) : journalEntry[key];
                 }else {
                     row[key] = journalEntry[key];
                 }
