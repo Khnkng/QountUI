@@ -35,6 +35,7 @@ export class ToolsComponent {
   accountsCount:number = 0;
   ruleCount:number = 0;
   employeesCount:number = 0;
+  budgetsCount:number=0;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private badgeService: BadgeService,private titleService:pageTitleService) {
     this.titleService.setPageTitle("TOOLS");
@@ -58,6 +59,7 @@ export class ToolsComponent {
       this.usersCount= badges.companyUsers;
       this.dimensionCount = badges.dimensions;
       this.accountsCount = badges.accounts;
+      this.budgetsCount=badges.budgetsCount;
     }, error => this.handleError(error));
   }
 
