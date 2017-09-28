@@ -142,6 +142,12 @@
                 <div class="clear"></div>
                 <div class="thumb-label">Metrics</div>
             </div>
+            <div class="column medium-2 tool-grid" (click)="showPage('generate_reports', $event)">
+                <div class="grid-icon chart-of-accounts"></div>
+                <span class="grid-qount" [hidden]="true"></span>
+                <div class="clear"></div>
+                <div class="thumb-label">Generate Reports</div>
+            </div>
         </div>
     </div>
 </div>
