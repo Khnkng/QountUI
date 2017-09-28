@@ -4192,7 +4192,7 @@ dropdown-content.dropdown-content:before {
   &.hollow.download {
     border-color: #04469e;
     color: #04469e;
-    font-size: 0.9em;
+    font-size: 0.9em !important;
   }
   &.sky-blue-button {
     background: #00B1A9;
