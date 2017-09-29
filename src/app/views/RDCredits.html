@@ -9,10 +9,17 @@
       </div>
     </div>
 
-    <ul>
-      <div class="tax-credits">
-        <li *ngFor="let credits of rdCredits">
-          <div class="row rdCredits">
+    <!--<ul>-->
+        <!--<li *ngFor="let credits of rdCredits">-->
+    <div style="margin-top: 5px">
+          <div class="row" *ngFor="let credits of rdCredits">
+            <div class="column medium-1">
+              <div class="dec1"></div>
+              <div class="dec2"></div>
+            </div>
+          <!--<div class="tax-credits">-->
+            <div class="column medium-11">
+              <div class="row rdCredits">
             <div class="column medium-12">
               <div class="row creditInfo">
                 <div class="column medium-6 text-left">{{credits.name}}</div>
@@ -29,9 +36,13 @@
               </div>
             </div>
           </div>
-        </li>
-      </div>
-    </ul>
+            </div>
+          </div>
+    </div>
+          <!--</div>-->
+
+        <!--</li>-->
+    <!--</ul>-->
     <!--   <div class="tax-credits">
        <div class="row rdCredits">
          <div class="column medium-12">
@@ -87,7 +98,7 @@
                         </div>
                       </div>
 
-                      <div class="row" style="margin-top:14px">
+                      <div class="row">
                         <div class="small-4 columns">
                           <label class="text-right">Year</label>
                         </div>
@@ -112,8 +123,15 @@
                           <label class="text-right">Type</label>
                         </div>
                         <div class="small-6 columns">
-                          <input checked style="margin-top:3px;" value="Acquired" type="radio" formControlName="creditType" name="creditType"/> Acquired
-                          <input checked style="margin-top:3px;" value="Used" type="radio" formControlName="creditType" name="creditType"/> Used
+                          <div class="row">
+                            <div class="column" style="padding-left: 0px">
+                              <input checked value="Acquired" type="radio" formControlName="creditType" name="creditType"/> Acquired
+                            </div>
+                            <div class="column" style="padding-left: 0px">
+                              <input checked value="Used" type="radio" formControlName="creditType" name="creditType"/> Used
+                            </div>
+                          </div>
+
                           <!--<input type="checkbox" formControlName="acquired" style="margin-top:6px;" />
                           <div class="error" [hidden]="rdCreditsForm.controls.acquired.untouched || rdCreditsForm.controls.acquired.valid">Credits Acquired is required</div>-->
                         </div>
@@ -129,7 +147,7 @@
                                               </div>
                                             </div>
                       -->
-                      <div class="row">
+                      <div class="row" style="margin-top:3px;">
                         <div class="small-4 columns">
                           <label class="text-right">Chart Of Account</label>
                         </div>
