@@ -4457,10 +4457,6 @@ select:-webkit-autofill:active {
   }
 }
 
-.tax-credits {
-  padding: 20px 0;
-
-}
 
 .dec1{
   border: 2px solid #F06459;
@@ -4476,6 +4472,14 @@ select:-webkit-autofill:active {
   height: 80%
 }
 
+//.rdCredits:before{
+//  position: absolute;
+//  display: inline-block;
+//  border-top: 10px solid transparent;
+//  border-right: 10px solid #ccc;
+//  border-bottom: 10px solid transparent;
+//}
+
 .rdCredits {
   margin-bottom: 20px;
   border:1px solid #e1e1e1;
@@ -4487,6 +4491,10 @@ select:-webkit-autofill:active {
     border-bottom: 1px solid #e1e1e1;
     color: #384986;
   }
+  .credit-desc{
+    font-size: 0.85em;
+  }
+
   .row {
     padding-top: 5px;
     padding-bottom: 5px;

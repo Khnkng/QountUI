@@ -11,23 +11,23 @@
 
     <!--<ul>-->
         <!--<li *ngFor="let credits of rdCredits">-->
-    <div style="margin-top: 5px">
+    <div style="margin-top: 20px">
           <div class="row" *ngFor="let credits of rdCredits">
             <div class="column medium-1">
               <div class="dec1"></div>
               <div class="dec2"></div>
             </div>
           <!--<div class="tax-credits">-->
-            <div class="column medium-11">
+            <div class="column medium-11" style="padding-left:0px">
               <div class="row rdCredits">
             <div class="column medium-12">
               <div class="row creditInfo">
                 <div class="column medium-6 text-left">{{credits.name}}</div>
-                <div class="column medium-6 text-right">{{getDateValue(credits.date)}}</div>
+                <div class="column medium-6 text-right" style="font-size: 0.85em">{{getDateValue(credits.date)}}</div>
               </div>
             </div>
             <div class="column medium-12">
-              <div class="row">
+              <div class="row credit-desc">
                 <div class="column medium-10">{{credits.description}}</div>
                 <div class="column medium-2 text-right">
                   <i class="icon ion-edit" (click)="showCreditForEdit(credits)"></i>
