@@ -4535,8 +4535,7 @@ select:-webkit-autofill:active {
         .report-main,
         .report-input,
         .complete{
-          width: 512px;
-          height: 32px;
+          width: 100%;
           line-height: 32px;
         }
         .report-main {
@@ -4553,10 +4552,8 @@ select:-webkit-autofill:active {
         .report-input:focus,
         .complete:focus{
           outline: none;
-          border-color: #aaa;
         }
         .report-input {
-          color: #333;
           background-color: transparent;
         }
         .complete {
@@ -4569,8 +4566,8 @@ select:-webkit-autofill:active {
           font-family: NiveauGroteskRegular;
           background-color: transparent;
           background: transparent;
-          padding-left: 10px;
-          padding-top:5px;
+          padding-left: 7px;
+          padding-top:3px;
           &:focus{
             box-shadow: none;
             transition: none;
