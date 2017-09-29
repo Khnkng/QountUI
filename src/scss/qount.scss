@@ -4531,26 +4531,61 @@ select:-webkit-autofill:active {
         &:not(:nth-child(3)){
           border-bottom:1px solid #e1e1e1 !important;
         }
-        .complete {
+
+        .report-main,
+        .report-input,
+        .complete{
+          width: 512px;
+          height: 32px;
+          line-height: 32px;
+        }
+        .report-main {
           position: relative;
-          top:29px;
+        }
+        .report-input,
+        .complete{
+          position: absolute;
+          top: 0;
+          right: 0;
+          padding: 0 8px;
+          cursor: text;
+        }
+        .report-input:focus,
+        .complete:focus{
+          outline: none;
+          border-color: #aaa;
+        }
+        .report-input {
+          color: #333;
+          background-color: transparent;
+        }
+        .complete {
+          color: #898989;
         }
         input {
           border:none !important;
           color: #878787;
           font-size: 1.05em;
           font-family: NiveauGroteskRegular;
-          padding:0;
+          background-color: transparent;
+          background: transparent;
+          padding-left: 10px;
+          padding-top:5px;
           &:focus{
             box-shadow: none;
             transition: none;
           }
+        }
+        [type='text']:focus {
+          box-shadow: none !important;
         }
       }
     }
   }
 
 }
+
+
 
 .button[disabled] {
   background-color: #878ccb !important;
