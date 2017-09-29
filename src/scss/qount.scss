@@ -4456,3 +4456,33 @@ select:-webkit-autofill:active {
     overflow-x: scroll;
   }
 }
+
+.tax-credits {
+  border-left: 5px solid #e1e1e1;
+  padding-left: 10px;
+}
+.rdCredits {
+  border:1px solid #e1e1e1;
+  color: #878787;
+  font-size: 1.05em;
+  font-family: NiveauGroteskRegular;
+
+  .creditInfo{
+    border-bottom: 1px solid #e1e1e1;
+    color: #384986;
+  }
+  .row {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    .column {
+      padding-left: 0px;
+      padding-right: 0px;
+    }
+  }
+  .ion-trash-b {
+    color: #F06459;
+  }
+  .ion-edit {
+    color: #44B6E8;
+  }
+}

@@ -1,0 +1,162 @@
+
+<div class="row" foundation>
+</div>
+<div class="row" foundation>
+  <div class="column large-12 medium-12 small-12">
+    <div class="row add-share-buttons">
+      <div class="column medium-12 text-right">
+        <span class="pointer"  (click)="showCreateCredit()"><i class="icon ion-ios-plus-outline"></i><span>R&D Credit</span></span>
+      </div>
+    </div>
+
+    <ul>
+      <div class="tax-credits">
+        <li *ngFor="let credits of rdCredits">
+          <div class="row rdCredits">
+            <div class="column medium-12">
+              <div class="row creditInfo">
+                <div class="column medium-6 text-left">{{credits.name}}</div>
+                <div class="column medium-6 text-right">{{getDateValue(credits.date)}}</div>
+              </div>
+            </div>
+            <div class="column medium-12">
+              <div class="row">
+                <div class="column medium-10">{{credits.description}}</div>
+                <div class="column medium-2 text-right">
+                  <i class="icon ion-edit" (click)="showCreditForEdit(credits)"></i>
+                  <i class="icon ion-trash-b" (click)="deleteCredit(credits)"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </li>
+      </div>
+    </ul>
+    <!--   <div class="tax-credits">
+       <div class="row rdCredits">
+         <div class="column medium-12">
+           <div class="row">
+             <div class="column medium-6 text-left">Nagaraju</div>
+             <div class="column medium-6 text-right">Mar 7, 2017</div>
+           </div>
+         </div>
+         <div class="column medium-12 credit-desc">Purchased 45,444 shares of Common stock for $0.01000 per share</div>
+       </div>
+       </div>-->
+
+    <!--<foo-table #fooTableDir="fooTable" class="bighalf-footable account_search" *ngIf="hasEmployeesList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>-->
+  </div>
+
+  <div class="qount-off-canvas-menu">
+    <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+      <section class="flyout-placeholder">
+        <div class="flyout-body flyout-shadow-effect">
+          <!--here comes actual flyout code-->
+          <div #createVendor id="createVendor" class="create-vendor">
+            <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="rdCreditsForm">
+
+              <section class="form-section clearfix">
+                <div class="row">
+                  <div class="small-12 medium-12 columns">
+                    <div class="form-section-left">
+                      <header class="form-section-header">Basic Info</header>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Name</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="name" placeholder="Name*">
+                          <div class="error" [hidden]="rdCreditsForm.controls.name.untouched || rdCreditsForm.controls.name.valid">Name is required.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Description</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <textarea formControlName="description" rows="3" placeholder="Description"></textarea>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Amount</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
+                          <div class="error" [hidden]="rdCreditsForm.controls.amount.untouched || rdCreditsForm.controls.amount.valid">Amount is required.</div>
+                        </div>
+                      </div>
+
+                      <div class="row" style="margin-top:14px">
+                        <div class="small-4 columns">
+                          <label class="text-right">Year</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <select formControlName="year" data-placeholder="Select Year">
+                            <option *ngFor="let year of years" [value]="year.value">{{year.name}}</option>
+                          </select>
+                          <div class="error" [hidden]="rdCreditsForm.controls.year.untouched || rdCreditsForm.controls.year.valid">Select Year.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Date</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="date" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setDate($event)" placeholder="Date*">
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Type</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input checked style="margin-top:3px;" value="Acquired" type="radio" formControlName="creditType" name="creditType"/> Acquired
+                          <input checked style="margin-top:3px;" value="Used" type="radio" formControlName="creditType" name="creditType"/> Used
+                          <!--<input type="checkbox" formControlName="acquired" style="margin-top:6px;" />
+                          <div class="error" [hidden]="rdCreditsForm.controls.acquired.untouched || rdCreditsForm.controls.acquired.valid">Credits Acquired is required</div>-->
+                        </div>
+                      </div>
+
+                      <!--                      <div class="row">
+                                              <div class="small-4 columns">
+                                                <label class="text-right">Used</label>
+                                              </div>
+                                              <div class="small-6 columns">
+                                                <input type="checkbox" formControlName="used" style="margin-top:6px;" />
+                                                <div class="error" [hidden]="rdCreditsForm.controls.used.untouched || rdCreditsForm.controls.used.valid">Credits Used is required</div>
+                                              </div>
+                                            </div>
+                      -->
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Chart Of Account</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="coaId" [listObject]="chartOfAccounts" (valueChanged)="updateChartOfAccount($event)">
+                            <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.number}} - {{coa.name}}</option>
+                          </select>
+                          <div class="error" [hidden]="rdCreditsForm.controls.coaId.untouched || rdCreditsForm.controls.coaId.valid">COA is required</div>
+                        </div>
+                      </div>
+
+
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="small-12 medium-12 columns">
+                    <button class="button create small float-right" [disabled]="!rdCreditsForm.valid" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Create"}}</button>
+                  </div>
+                </div>
+              </section>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>

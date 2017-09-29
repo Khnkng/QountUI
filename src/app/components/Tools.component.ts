@@ -174,6 +174,11 @@ export class ToolsComponent {
         let link = ['metrics'];
         this._router.navigate(link);
       }
+        break;
+      case 'rdCredits': {
+        let link = ['rdCredits'];
+        this._router.navigate(link);
+      }
     }
   }
 }
