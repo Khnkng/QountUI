@@ -64,7 +64,6 @@ export class AppComponent  implements OnInit{
                 private numeralService: NumeralService) {
         let self = this;
         this.currentEnvironment = environment;
-        debugger;
         let cookieKey = this.currentEnvironment.production? "prod": "dev";
         let data= this.getCookie(cookieKey);
         if(data){

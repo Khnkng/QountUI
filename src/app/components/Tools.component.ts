@@ -173,6 +173,10 @@ export class ToolsComponent {
       case 'metrics': {
         let link = ['metrics'];
         this._router.navigate(link);
+      } break;
+      case 'generate_reports': {
+        let link = ['reports','generate_report'];
+        this._router.navigate(link);
       }
     }
   }
