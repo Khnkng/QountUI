@@ -2299,6 +2299,10 @@ table.footable-editing-right tr.footable-editing td {
           border-bottom: 3px solid $qount-btn-primary;
           background-color: #fff;
         }
+        &:focus {
+          outline:none !important;
+          background: none !important;
+        }
       }
     }
   }
@@ -4588,6 +4592,7 @@ select:-webkit-autofill:active {
   background-color: #878ccb !important;
 }
 
-[type='text']:focus {
-  box-shadow: 0 0 5px #818181 !important;
+textarea:focus,select:focus,[type='text']:focus {
+  box-shadow: none !important;
 }
+
