@@ -4596,3 +4596,16 @@ textarea:focus,select:focus,[type='text']:focus {
   box-shadow: none !important;
 }
 
+
+.payment-tabs {
+  .hollow {
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    margin-bottom: 1rem !important;
+  }
+}
+
+div.footable-loader {
+  display: none;
+}
+
