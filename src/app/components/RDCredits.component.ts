@@ -1,13 +1,11 @@
 
 import {Component, ViewChild} from "@angular/core";
 import {FormGroup, FormBuilder} from "@angular/forms";
-import {FTable} from "qCommon/app/directives/footable.directive";
 import {Router} from "@angular/router";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
-import {CompanyModel} from "../models/Company.model";
 import {RDcreditsService} from "../services/RDcredits.service";
 import {RDcreditsForm} from "../forms/RDcredits.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
@@ -26,27 +24,17 @@ declare let moment: any;
 })
 
 export class RDCreditsComponent {
-  tableData: any = {};
-  tableOptions: any = {};
   status: any;
   dateFormat: string;
   serviceDateformat: string;
-  employeeId: any;
-  employees: Array<any>;
   editMode:boolean = false;
-  @ViewChild('createVendor') createVendor;
   @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
 
   row: any;
   rdCreditsForm: FormGroup;
-  @ViewChild('fooTableDir') fooTableDir: FTable;
-  hasEmployeesList: boolean = false;
   message: string;
   companyId: string;
-  companies: Array<CompanyModel> = [];
-  companyName: string;
   showFlyout: boolean = false;
-  confirmSubscription: any;
   routeSubscribe: any;
   companyCurrency: string;
   years: Array<any> = [];
@@ -66,7 +54,6 @@ export class RDCreditsComponent {
     this.generateYears();
     this.titleService.setPageTitle("R&D Credits");
     this.rdCreditsForm = this._fb.group(_rdCreditsForm.getForm());
-    //this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteEmployee(toast));
     this.companyId = Session.getCurrentCompany();
     this.defaultDate = moment(new Date()).format(this.dateFormat);
 
@@ -87,7 +74,6 @@ export class RDCreditsComponent {
     } else{
       this._toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
     }
-
 
     this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
       if(this.showFlyout){
@@ -111,11 +97,6 @@ export class RDCreditsComponent {
     this._router.navigate(link);
   }
 
-/*  setDate(date) {
-    let dateControl:any = this.rdCreditsForm.controls['date'];
-    dateControl.setValue(date);
-  }*/
-
   getDateValue(date){
     return (date) ? this.dateFormater.formatDate(date,this.serviceDateformat, "MMM DD, YYYY") : date;
   }
@@ -128,11 +109,6 @@ export class RDCreditsComponent {
       data.coaId='--None--';
     }
     this._rdCreditsForm.updateForm(this.rdCreditsForm, data);
-  }
-
-  ngOnDestroy(){
-    //this.routeSubscribe.unsubscribe();
-    //this.confirmSubscription.unsubscribe();
   }
 
   setDate(date){
@@ -149,35 +125,6 @@ export class RDCreditsComponent {
     this.setDate(this.defaultDate);
     this.showFlyout = true;
   }
-
-  handleAction($event){
-    let action = $event.action;
-    delete $event.action;
-    delete $event.actions;
-    if(action == 'edit') {
-      //this.showEditEmployee($event);
-    } else if(action == 'delete'){
-      //this.removeEmployee($event);
-    }
-  }
-
-
-  /*  deleteEmployee(toast){
-      this.loadingService.triggerLoadingEvent(true);
-      this.rdCreditsService.removeEmployee(this.employeeId, this.companyId)
-        .subscribe(success  => {
-          this.loadingService.triggerLoadingEvent(false);
-          this._toastService.pop(TOAST_TYPE.success, "Customer deleted successfully");
-          this.rdCreditsService.employees(this.companyId)
-            .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
-        }, error =>  this.handleError(error));
-    }*/
-
-  // removeEmployee(row:any) {
-  //   let employee:EmployeesModel = row;
-  //   this.employeeId=employee.id;
-  //   this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
-  // }
 
   active1:boolean=true;
   newForm1(){
@@ -216,7 +163,6 @@ export class RDCreditsComponent {
   }
 
   submit($event) {
-    // let base =this;
     $event && $event.preventDefault();
     var data = this._rdCreditsForm.getData(this.rdCreditsForm);
     this.companyId = Session.getCurrentCompany();
@@ -224,52 +170,48 @@ export class RDCreditsComponent {
     data.id = this.companyId;
     this.loadingService.triggerLoadingEvent(true);
     if(this.editMode) {
-              data.id=this.row.id;
-              this.rdCreditsService.updateCredit(data, this.companyId)
-                .subscribe(success  => {
-                  this.loadingService.triggerLoadingEvent(false);
-                  this.showMessage(true, success);
-                }, error =>  this.showMessage(false, error));
-              this.showFlyout = false;
+      data.id=this.row.id;
+      this.rdCreditsService.updateCredit(data, this.companyId)
+        .subscribe(success  => {
+          this.loadingService.triggerLoadingEvent(false);
+          this.showMessage(true, success);
+        }, error =>  this.showMessage(false, error));
+      this.showFlyout = false;
 
     } else {
-          this.rdCreditsService.addCredits(data, this.companyId)
-            .subscribe(success  => {
-              // base.getAllCredits();
-              // this.setDate(this.defaultDate);
-              this.showFlyout = false;
-              this.loadingService.triggerLoadingEvent(false);
-              this.showMessage(true, success);
-            }, error =>  this.showMessage(false, error));
+      this.rdCreditsService.addCredits(data, this.companyId)
+        .subscribe(success  => {
+          this.showFlyout = false;
+          this.loadingService.triggerLoadingEvent(false);
+          this.showMessage(true, success);
+        }, error =>  this.showMessage(false, error));
     }
 
   }
 
-
   showMessage(status, obj) {
-        this.loadingService.triggerLoadingEvent(false);
-        if(status) {
-          this.status = {};
-          this.status['success'] = true;
-          //this.hasEmployeesList=false;
-          if(this.editMode) {
-            this.rdCreditsService.credits(this.companyId)
-              .subscribe(credits  => this.rdCredits = credits, error =>  this.handleError(error));
-            this.newForm1();
-            this._toastService.pop(TOAST_TYPE.success, "Credit updated successfully.");
-          } else {
-            this.newForm1();
-            this.rdCreditsService.credits(this.companyId)
-              .subscribe(credits  => this.rdCredits = credits, error =>  this.handleError(error));
-            this._toastService.pop(TOAST_TYPE.success, "Credit created successfully.");
-          }
-          this.newCustomer();
-        } else {
-          this.status = {};
-          this.status['error'] = true;
-          this._toastService.pop(TOAST_TYPE.error, "Failed to update the Credit");
-          this.message = obj;
-        }
+    this.loadingService.triggerLoadingEvent(false);
+    if(status) {
+      this.status = {};
+      this.status['success'] = true;
+      if(this.editMode) {
+        this.rdCreditsService.credits(this.companyId)
+          .subscribe(credits  => this.rdCredits = credits, error =>  this.handleError(error));
+        this.newForm1();
+        this._toastService.pop(TOAST_TYPE.success, "Credit updated successfully.");
+      } else {
+        this.newForm1();
+        this.rdCreditsService.credits(this.companyId)
+          .subscribe(credits  => this.rdCredits = credits, error =>  this.handleError(error));
+        this._toastService.pop(TOAST_TYPE.success, "Credit created successfully.");
+      }
+      this.newCustomer();
+    } else {
+      this.status = {};
+      this.status['error'] = true;
+      this._toastService.pop(TOAST_TYPE.error, "Failed to update the Credit");
+      this.message = obj;
+    }
   }
 
   // Reset the form with a new hero AND restore 'pristine' class state
@@ -283,11 +225,11 @@ export class RDCreditsComponent {
     setTimeout(()=> this.active=true, 0);
   }
 
-
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
     this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
   }
+
   hideFlyout(){
     this.titleService.setPageTitle("R&D Credits");
     this.row = {};

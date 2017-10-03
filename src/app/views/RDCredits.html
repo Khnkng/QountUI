@@ -9,17 +9,14 @@
       </div>
     </div>
 
-    <!--<ul>-->
-        <!--<li *ngFor="let credits of rdCredits">-->
     <div style="margin-top: 20px">
-          <div class="row rdCircles" *ngFor="let credits of rdCredits">
-            <div class="column medium-1 ">
-              <div class="dec1"></div>
-              <div class="dec2"></div>
-            </div>
-          <!--<div class="tax-credits">-->
-            <div class="column medium-11" style="padding-left:0px">
-              <div class="row rdCredits">
+      <div class="row rdCircles" *ngFor="let credits of rdCredits">
+        <div class="column medium-1" style="padding-left: 55px">
+          <div class="dec1"></div>
+          <div class="dec2"></div>
+        </div>
+        <div class="column medium-11" style="padding-left:0px">
+          <div class="row rdCredits">
             <div class="column medium-12">
               <div class="row creditInfo">
                 <div class="column medium-6 text-left">{{credits.name}}</div>
@@ -36,26 +33,9 @@
               </div>
             </div>
           </div>
-            </div>
-          </div>
+        </div>
+      </div>
     </div>
-          <!--</div>-->
-
-        <!--</li>-->
-    <!--</ul>-->
-    <!--   <div class="tax-credits">
-       <div class="row rdCredits">
-         <div class="column medium-12">
-           <div class="row">
-             <div class="column medium-6 text-left">Nagaraju</div>
-             <div class="column medium-6 text-right">Mar 7, 2017</div>
-           </div>
-         </div>
-         <div class="column medium-12 credit-desc">Purchased 45,444 shares of Common stock for $0.01000 per share</div>
-       </div>
-       </div>-->
-
-    <!--<foo-table #fooTableDir="fooTable" class="bighalf-footable account_search" *ngIf="hasEmployeesList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>-->
   </div>
 
   <div class="qount-off-canvas-menu">
@@ -132,22 +112,8 @@
                               <input checked value="Used" type="radio" formControlName="creditType" name="creditType"/> Used
                             </div>
                           </div>
-
-                          <!--<input type="checkbox" formControlName="acquired" style="margin-top:6px;" />
-                          <div class="error" [hidden]="rdCreditsForm.controls.acquired.untouched || rdCreditsForm.controls.acquired.valid">Credits Acquired is required</div>-->
                         </div>
                       </div>
-
-                      <!--                      <div class="row">
-                                              <div class="small-4 columns">
-                                                <label class="text-right">Used</label>
-                                              </div>
-                                              <div class="small-6 columns">
-                                                <input type="checkbox" formControlName="used" style="margin-top:6px;" />
-                                                <div class="error" [hidden]="rdCreditsForm.controls.used.untouched || rdCreditsForm.controls.used.valid">Credits Used is required</div>
-                                              </div>
-                                            </div>
-                      -->
                       <div class="row" style="margin-top:3px;">
                         <div class="small-4 columns">
                           <label class="text-right">Chart Of Account</label>
@@ -159,7 +125,6 @@
                           <div class="error" [hidden]="rdCreditsForm.controls.coaId.untouched || rdCreditsForm.controls.coaId.valid">COA is required</div>
                         </div>
                       </div>
-
 
                     </div>
 
