@@ -127,6 +127,8 @@ export class DepositComponent{
             let base=this;
             this.initialize();
             this.dimensionFlyoutCSS = "";
+            this.mappingFlyoutCSS="";
+            this.selectedMappingID=null;
             let account = _.find(this.accounts, {'id': bankID});
             setTimeout(function(){
                 base.accountComboBox.setValue(account, 'name');
