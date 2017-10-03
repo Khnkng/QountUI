@@ -54,7 +54,7 @@ export class RDCreditsComponent {
   bankCoa: Array<any>=[];
   creditCoa: Array<any>=[];
   rdCredits: Array<any>=[];
-
+  defaultDate:string;
 
   constructor(private _fb: FormBuilder, private rdCreditsService: RDcreditsService,
               private _rdCreditsForm: RDcreditsForm, private _router: Router, private _toastService: ToastService,
@@ -68,6 +68,7 @@ export class RDCreditsComponent {
     this.rdCreditsForm = this._fb.group(_rdCreditsForm.getForm());
     //this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteEmployee(toast));
     this.companyId = Session.getCurrentCompany();
+    this.defaultDate = moment(new Date()).format(this.dateFormat);
 
     if(this.companyId){
       let base= this;
@@ -110,10 +111,10 @@ export class RDCreditsComponent {
     this._router.navigate(link);
   }
 
-  setDate(date) {
+/*  setDate(date) {
     let dateControl:any = this.rdCreditsForm.controls['date'];
     dateControl.setValue(date);
-  }
+  }*/
 
   getDateValue(date){
     return (date) ? this.dateFormater.formatDate(date,this.serviceDateformat, "MMM DD, YYYY") : date;
@@ -134,12 +135,18 @@ export class RDCreditsComponent {
     //this.confirmSubscription.unsubscribe();
   }
 
+  setDate(date){
+    let data = this._rdCreditsForm.getData(this.rdCreditsForm);
+    data.date = date;
+    this._rdCreditsForm.updateForm(this.rdCreditsForm, data);
+  }
+
   showCreateCredit() {
     this.titleService.setPageTitle("CREATE R&D Credit");
-    let self = this;
     this.editMode = false;
     this.rdCreditsForm = this._fb.group(this._rdCreditsForm.getForm());
     this.newForm1();
+    this.setDate(this.defaultDate);
     this.showFlyout = true;
   }
 
@@ -229,6 +236,7 @@ export class RDCreditsComponent {
           this.rdCreditsService.addCredits(data, this.companyId)
             .subscribe(success  => {
               // base.getAllCredits();
+              // this.setDate(this.defaultDate);
               this.showFlyout = false;
               this.loadingService.triggerLoadingEvent(false);
               this.showMessage(true, success);
@@ -264,12 +272,6 @@ export class RDCreditsComponent {
         }
   }
 
-  /*
-    setDateOfBirth(date: string){
-      let empDateControl:any = this.employeesForm.controls['dob'];
-      empDateControl.patchValue(date);
-    }
-    */
   // Reset the form with a new hero AND restore 'pristine' class state
   // by toggling 'active' flag which causes the form
   // to be removed/re-added in a tick via NgIf

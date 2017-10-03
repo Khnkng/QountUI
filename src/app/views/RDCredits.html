@@ -115,6 +115,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="date" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setDate($event)" placeholder="Date*">
+                          <div class="error" [hidden]="rdCreditsForm.controls.date.untouched || rdCreditsForm.controls.date.valid">Select Date.</div>
                         </div>
                       </div>
 

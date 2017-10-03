@@ -17,10 +17,8 @@ export class RDcreditsForm extends abstractForm{
       "amount": ['', Validators.required],
       "year": ['', Validators.required],
       "date": ['', Validators.required],
-      "creditType": [""],
-      // "acquired":[false],
-      // "used":[false],
-      "coaId":[''],
-    }
+      "creditType": ["Acquired"],
+      "coaId": ['', Validators.required]
+    };
   }
 }
