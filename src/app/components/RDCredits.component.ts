@@ -118,7 +118,7 @@ export class RDCreditsComponent {
   }
 
   showCreateCredit() {
-    this.titleService.setPageTitle("CREATE R&D Credit");
+    this.titleService.setPageTitle("R&D Credit");
     this.editMode = false;
     this.rdCreditsForm = this._fb.group(this._rdCreditsForm.getForm());
     this.newForm1();
@@ -133,9 +133,8 @@ export class RDCreditsComponent {
   }
 
   showCreditForEdit(credits) {
-    this.titleService.setPageTitle("UPDATE R&D CREDIT");
+    this.titleService.setPageTitle("R&D CREDIT");
     this.editMode = true;
-    this.showFlyout = true;
     this.row = credits;
     this.rdCreditsService.getCredit(credits.id, this.companyId)
       .subscribe(credit => {
@@ -149,6 +148,7 @@ export class RDCreditsComponent {
         },0);
         this._rdCreditsForm.updateForm(this.rdCreditsForm, this.row);
       }, error => this.handleError(error));
+    this.showFlyout = true;
   }
 
   deleteCredit(credits){
@@ -233,7 +233,7 @@ export class RDCreditsComponent {
   hideFlyout(){
     this.titleService.setPageTitle("R&D Credits");
     this.row = {};
-    this.showFlyout = !this.showFlyout;
+    this.showFlyout = false;
   }
 
   generateYears(){

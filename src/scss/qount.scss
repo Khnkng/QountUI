@@ -4632,16 +4632,16 @@ div.footable-loader {
 
 .rdCredits {
   margin-bottom: 20px;
-  border:1px solid #e1e1e1;
+  border: 1px solid #e1e1e1;
   color: #878787;
   font-size: 1.05em;
   font-family: NiveauGroteskRegular;
 
-  .creditInfo{
+  .creditInfo {
     border-bottom: 1px solid #e1e1e1;
     color: #384986;
   }
-  .credit-desc{
+  .credit-desc {
     font-size: 0.85em;
   }
 
@@ -4655,17 +4655,24 @@ div.footable-loader {
   }
   .ion-trash-b {
     color: #F06459;
-    visibility:hidden;
+    visibility: hidden;
   }
   .ion-edit {
     color: #44B6E8;
-    visibility:hidden;
+    visibility: hidden;
   }
 
-  &:hover .ion-trash-b {
-    visibility:visible;
+  &:hover {
+    .ion-trash-b {
+      visibility: visible;
+    }
+    .credit-desc {
+      background: #F1F1F1;
+    }
   }
-  &:hover .ion-edit {
-    visibility:visible;
+  &:hover {
+    .ion-edit {
+      visibility: visible;
+    }
   }
 }
