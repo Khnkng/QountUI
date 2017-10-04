@@ -178,6 +178,11 @@ export class ToolsComponent {
         let link = ['reports','generate_report'];
         this._router.navigate(link);
       }
+        break;
+      case 'rdCredits': {
+        let link = ['rdCredits'];
+        this._router.navigate(link);
+      }
     }
   }
 }
