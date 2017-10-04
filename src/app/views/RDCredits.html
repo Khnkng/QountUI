@@ -9,12 +9,13 @@
       </div>
     </div>
 
-    <div style="margin-top: 20px">
+    <div style="margin:20px 0 30px 0">
       <div *ngIf="rdCredits.length>0">
-        <div class="row rdCircles" *ngFor="let credits of rdCredits">
+        <div class="row rdCircles" *ngFor="let credits of rdCredits; let last=last;">
           <div class="column medium-1" style="padding-left: 55px">
             <div class="dec1" [style.border]="credits.color"></div>
             <div class="dec2"></div>
+            <div class="dec1" *ngIf="last? true:false;" [style.border]="credits.color"></div>
           </div>
           <div class="column medium-11" style="padding-left:0px">
             <div class="row rdCredits">
@@ -53,7 +54,7 @@
                 <div class="row">
                   <div class="small-12 medium-12 columns">
                     <div class="form-section-left">
-                      <header class="form-section-header">Basic Info</header>
+                      <!--<header class="form-section-header">Basic Info</header>-->
                       <div class="row">
                         <div class="small-4 columns">
                           <label class="text-right">Name</label>
