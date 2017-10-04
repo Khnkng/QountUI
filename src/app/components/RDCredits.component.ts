@@ -43,6 +43,7 @@ export class RDCreditsComponent {
   creditCoa: Array<any>=[];
   rdCredits: Array<any>=[];
   defaultDate:string;
+  count: any = 0;
 
   constructor(private _fb: FormBuilder, private rdCreditsService: RDcreditsService,
               private _rdCreditsForm: RDcreditsForm, private _router: Router, private _toastService: ToastService,
@@ -77,6 +78,7 @@ export class RDCreditsComponent {
 
     this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
       if(this.showFlyout){
+        this.count = 0;
         this.hideFlyout();
       }else {
         this.toolsRedirect();
@@ -88,6 +90,7 @@ export class RDCreditsComponent {
     this.loadingService.triggerLoadingEvent(true);
     this.rdCreditsService.credits(this.companyId).subscribe(credits => {
       this.rdCredits = credits;
+      this.updateCredits(this.rdCredits);
       this.loadingService.triggerLoadingEvent(false);
     }, error => this.handleError(error));
   }
@@ -115,6 +118,24 @@ export class RDCreditsComponent {
     let data = this._rdCreditsForm.getData(this.rdCreditsForm);
     data.date = date;
     this._rdCreditsForm.updateForm(this.rdCreditsForm, data);
+  }
+
+  getCircleColor() {
+    let colors = ["2px solid #44B6E8", "2px solid #18457B", "2px solid #00B1A9", "2px solid #F06459", "2px solid #22B473","2px solid #384986","2px solid #4554A4 "];
+    if (this.count < 7) {
+      this.count++;
+      return colors[this.count - 1];
+    } else {
+      this.count = 0;
+      return colors[this.count];
+    }
+
+  };
+
+  updateCredits(credits) {
+    for(var i in credits){
+      credits[i]["color"] = this.getCircleColor();
+    }
   }
 
   showCreateCredit() {
