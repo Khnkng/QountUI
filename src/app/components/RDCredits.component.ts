@@ -88,11 +88,7 @@ export class RDCreditsComponent {
 
   getAllCredits(){
     this.loadingService.triggerLoadingEvent(true);
-    this.rdCreditsService.credits(this.companyId).subscribe(credits => {
-      this.rdCredits = credits;
-      this.updateCredits(this.rdCredits);
-      this.loadingService.triggerLoadingEvent(false);
-    }, error => this.handleError(error));
+    this.serviceCallForCredits();
   }
 
   toolsRedirect(){
@@ -172,14 +168,21 @@ export class RDCreditsComponent {
     this.showFlyout = true;
   }
 
+  serviceCallForCredits(){
+    this.rdCreditsService.credits(this.companyId)
+      .subscribe(credits  => {
+        this.rdCredits = credits;
+        this.updateCredits(this.rdCredits);
+        this.loadingService.triggerLoadingEvent(false);
+      }, error =>  this.handleError(error));
+  }
+
   deleteCredit(credits){
     this.loadingService.triggerLoadingEvent(true);
     this.rdCreditsService.removeCredit(credits, this.companyId)
       .subscribe(success  => {
-        this.loadingService.triggerLoadingEvent(false);
         this._toastService.pop(TOAST_TYPE.success, "Credit deleted successfully");
-        this.rdCreditsService.credits(this.companyId)
-          .subscribe(credits  => this.rdCredits = credits, error =>  this.handleError(error));
+        this.serviceCallForCredits();
       }, error =>  this.handleError(error));
   }
 
@@ -211,19 +214,16 @@ export class RDCreditsComponent {
   }
 
   showMessage(status, obj) {
-    this.loadingService.triggerLoadingEvent(false);
     if(status) {
       this.status = {};
       this.status['success'] = true;
       if(this.editMode) {
-        this.rdCreditsService.credits(this.companyId)
-          .subscribe(credits  => this.rdCredits = credits, error =>  this.handleError(error));
+        this.serviceCallForCredits();
         this.newForm1();
         this._toastService.pop(TOAST_TYPE.success, "Credit updated successfully.");
       } else {
         this.newForm1();
-        this.rdCreditsService.credits(this.companyId)
-          .subscribe(credits  => this.rdCredits = credits, error =>  this.handleError(error));
+        this.serviceCallForCredits();
         this._toastService.pop(TOAST_TYPE.success, "Credit created successfully.");
       }
       this.newCustomer();
@@ -232,6 +232,7 @@ export class RDCreditsComponent {
       this.status['error'] = true;
       this._toastService.pop(TOAST_TYPE.error, "Failed to update the Credit");
       this.message = obj;
+      this.loadingService.triggerLoadingEvent(false);
     }
   }
 
