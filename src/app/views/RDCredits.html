@@ -37,8 +37,8 @@
             </div>
           </div>
         </div>
-    </div>
-      <div *ngIf="rdCredits.length==0" class="text-center">No records found.</div>
+      </div>
+      <div *ngIf="rdCredits.length==0" class="text-center">Stop slacking get some R&D work in.</div>
     </div>
   </div>
 
@@ -52,9 +52,9 @@
 
               <section class="form-section clearfix">
                 <div class="row">
-                  <div class="small-12 medium-12 columns">
-                    <div class="form-section-left">
-                      <!--<header class="form-section-header">Basic Info</header>-->
+                  <div class="column medium-6">
+                    <div class="small-12 medium-12 columns">
+                      <!--<div class="form-section-left">-->
                       <div class="row">
                         <div class="small-4 columns">
                           <label class="text-right">Name</label>
@@ -102,6 +102,12 @@
                           <div class="error" [hidden]="rdCreditsForm.controls.date.untouched || rdCreditsForm.controls.date.valid">Select Date.</div>
                         </div>
                       </div>
+
+                    </div>
+                  </div>
+
+                  <div class="column medium-6">
+                    <div class="small-12 medium-12 columns">
 
                       <div class="row">
                         <div class="small-4 columns">
