@@ -66,6 +66,23 @@
                         </div>
                       </div>
                       <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">
+                            Is Active?
+                          </label>
+                        </div>
+                        <div class="small-6 columns">
+                          <div class="switch tiny">
+                            <input class="switch-input" id="status-switch" type="checkbox" formControlName="inActive">
+                            <label class="switch-paddle" for="status-switch">
+                              <span class="show-for-sr">Is Active?</span>
+                              <span class="switch-active" aria-hidden="true">Yes</span>
+                              <span class="switch-inactive" aria-hidden="true">No</span>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
                         <div class="small-12 columns description" [innerHTML]="description">
                         </div>
                       </div>

@@ -47,7 +47,7 @@ export class ChartOfAccountsComponent{
   allCompanies:Array<any>;
   mappings:Array<any>;
   row:any;
-  coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'type', 'subType', 'desc', 'number', 'balance'];
+  coaColumns:Array<string> = ['name', 'id', 'parentID', 'subAccount', 'type', 'subType', 'desc', 'number', 'balance', 'credit', 'debit'];
   combo:boolean = true;
   sortingOrder:Array<string> = ["accountsReceivable", "bank", "otherCurrentAssets", "fixedAssets", "otherAssets", "accountsPayable", "creditCard", "otherCurrentLiabilities", "longTermLiabilities", "equity", "income", "otherIncome", "costOfGoodsSold", "expenses", "otherExpense", "costOfServices", "loansTo"];
   hasParentOrChild: boolean = false;
@@ -178,6 +178,8 @@ export class ChartOfAccountsComponent{
     this.titleService.setPageTitle("CREATE CHART OF ACCOUNT");
     this.editMode = false;
     this.coaForm = this._fb.group(this._coaForm.getForm());
+    let inActiveControl: any = this.coaForm.controls.inActive;
+    inActiveControl.setValue(true);
     this.displaySubtypes = [];
     this.description = "";
     this.subAccount = false;
@@ -201,6 +203,7 @@ export class ChartOfAccountsComponent{
     this.loadingService.triggerLoadingEvent(true);
     this.coaService.getChartOfAccount(row.id, this.currentCompany.id).subscribe( coa => {
       this.loadingService.triggerLoadingEvent(false);
+      coa.inActive = !coa.inActive;
       this.editMode = true;
       this.showFlyout = true;
       this.coaForm = this._fb.group(this._coaForm.getForm());
@@ -301,6 +304,7 @@ export class ChartOfAccountsComponent{
     let base = this;
     $event && $event.preventDefault();
     let data = this._coaForm.getData(this.coaForm);
+    data.inActive = !data.inActive;
     if(!data.subAccount){
       data.parentID = null;
       data.level = 0;
@@ -360,12 +364,19 @@ export class ChartOfAccountsComponent{
       {"name": "categoryType", "title": "Type"},
       {"name": "subTypeCode", "title": "Sub Type"},
       {"name": "parentName", "title": "Parent"},
-      {"name": "balance", "title": "Balance", "type":"number", "formatter": (balance)=>{
-        balance = parseFloat(balance);
-        return balance.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      }, "sortValue": function(value){
-        return base.numeralService.value(value);
-      },"classes": "currency-align currency-padding"
+      {"name": "debit", "title": "Debit", "type":"number", "formatter": (debit)=>{
+          debit = parseFloat(debit);
+          return base.numeralService.format("$0,0.00", debit);
+        }, "sortValue": function(value){
+          return base.numeralService.value(value);
+        },"classes": "currency-align currency-padding"
+      },
+      {"name": "credit", "title": "Credit", "type":"number", "formatter": (credit)=>{
+          credit = parseFloat(credit);
+          return base.numeralService.format("$0,0.00", credit);
+        }, "sortValue": function(value){
+          return base.numeralService.value(value);
+        },"classes": "currency-align currency-padding"
       },
       {"name": "type", "title": "Type", "visible": false},
       {"name": "subType", "title": "Sub type", "visible": false},
@@ -409,7 +420,7 @@ export class ChartOfAccountsComponent{
           } else{
             row[key] = coa[key];
           }
-        }else if(key == 'balance'){
+        }else if(key == 'debit' || key == 'credit'){
           row[key] = {
             'options': {
               "classes": "text-right"

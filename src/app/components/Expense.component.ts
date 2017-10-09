@@ -267,19 +267,23 @@ export class ExpenseComponent{
     }
 
     editItem(index, itemForm){
-        let linesControl:any = this.expenseForm.controls['expense_items'];
-        let base = this;
-        let itemData = this._expenseItemForm.getData(itemForm);
-        //this.editingItems[index] = itemData;
-        setTimeout(function(){
-            jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
-            jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
-        });
-        if(index == this.getLastActiveLineIndex(linesControl)){
-            this.addDefaultLine(1);
-        }
-        this.resetAllLinesFromEditing(linesControl);
-        itemForm.editable = !itemForm.editable;
+      let base = this;
+      let expenseData = this._expenseForm.getData(this.expenseForm);
+      let linesControl:any = this.expenseForm.controls['expense_items'];
+      let itemData = this._expenseItemForm.getData(itemForm);
+      if(!itemData.amount){
+        itemData.amount = expenseData.amount || 0;
+        this.setValuesToControls(linesControl.controls[index], itemData);
+      }
+      setTimeout(function(){
+        jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
+        jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
+      });
+      if(index == this.getLastActiveLineIndex(linesControl)){
+        this.addDefaultLine(1);
+      }
+      this.resetAllLinesFromEditing(linesControl);
+      itemForm.editable = !itemForm.editable;
     }
 
     enableLines(){
@@ -521,14 +525,18 @@ export class ExpenseComponent{
 
     /*This will just update line details in VIEW*/
     updateLineInView(item){
-        let itemsControl:any = this.expenseForm.controls['expense_items'];
-        let itemControl = itemsControl.controls[this.editItemIndex];
-        itemControl.controls['title'].patchValue(item.title);
-        itemControl.controls['amount'].patchValue(item.amount);
-        itemControl.controls['chart_of_account_id'].patchValue(item.chart_of_account_id);
-        itemControl.controls['entity_id'].patchValue(item.entity_id);
-        itemControl.controls['notes'].patchValue(item.notes);
-        itemControl.controls['dimensions'].patchValue(item.dimensions);
+      let itemsControl:any = this.expenseForm.controls['expense_items'];
+      let itemControl = itemsControl.controls[this.editItemIndex];
+      this.setValuesToControls(itemControl, item);
+    }
+
+    setValuesToControls(itemControl, item){
+      itemControl.controls['title'].patchValue(item.title);
+      itemControl.controls['amount'].patchValue(item.amount);
+      itemControl.controls['chart_of_account_id'].patchValue(item.chart_of_account_id);
+      itemControl.controls['entity_id'].patchValue(item.entity_id);
+      itemControl.controls['notes'].patchValue(item.notes);
+      itemControl.controls['dimensions'].patchValue(item.dimensions);
     }
 
     getExpenseItemData(expenseForm){
@@ -623,6 +631,7 @@ export class ExpenseComponent{
             });
         this.coaService.chartOfAccounts(this.currentCompanyId)
             .subscribe(chartOfAccounts=> {
+                chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
                 _.forEach(chartOfAccounts, function(coa) {
                     coa['displayName']=coa.number+' - '+coa.name;
                 });

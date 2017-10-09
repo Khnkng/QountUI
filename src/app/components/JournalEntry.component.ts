@@ -698,9 +698,9 @@ export class JournalEntryComponent{
         $event && $event.preventDefault();
         let data = this._jeForm.getData(this.jeForm);
         data.date = this.dateFormater.formatDate(data.date,this.dateFormat,this.serviceDateformat);
-        data.reversalDate = this.dateFormater.formatDate(data.reversalDate,this.dateFormat,this.serviceDateformat);
-        data.nextJEDate = this.dateFormater.formatDate(data.nextJEDate,this.dateFormat,this.serviceDateformat);
-        data.endDate = this.dateFormater.formatDate(data.endDate,this.dateFormat,this.serviceDateformat);
+        data.reversalDate = data.reversalDate?this.dateFormater.formatDate(data.reversalDate,this.dateFormat,this.serviceDateformat):"";
+        data.nextJEDate = data.nextJEDate?this.dateFormater.formatDate(data.nextJEDate,this.dateFormat,this.serviceDateformat):"";
+        data.endDate = data.endDate?this.dateFormater.formatDate(data.endDate,this.dateFormat,this.serviceDateformat):"";
         data.journalLines = this.getJournalLineData(this.jeForm);
         this.updateJournalLinesData(data);
         if(this.validateLines(data.journalLines)){
@@ -914,6 +914,7 @@ export class JournalEntryComponent{
 
             this.coaService.chartOfAccounts(this.companyId)
                 .subscribe(chartOfAccounts => {
+                    chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
                     this.chartOfAccounts = chartOfAccounts;
                     _.sortBy(this.chartOfAccounts, ['number', 'name']);
                     this.toggleAutoReverse();

@@ -112,7 +112,7 @@
                                                     <label class="text-right">Plan end date</label>
                                                 </div>
                                                 <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="text" formControlName="ends_after" custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setPlanEndDate($event)" placeholder="End Date*">
+                                                    <input type="text" formControlName="ends_after" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setPlanEndDate($event)" placeholder="End Date*">
                                                     <div class="error" [hidden]="paymentPlanForm.controls.day.untouched || paymentPlanForm.controls.day.valid">Year is required.</div>
                                                 </div>
                                             </div>

@@ -181,7 +181,7 @@ export class BooksComponent{
     }
 
     addBookState(){
-        this.stateService.addState(new State('BOOKS', this._router.url, null, null));
+        this.stateService.addState(new State('BOOKS', this._router.url, null, null, []));
     }
 
     getBookBadges(){
@@ -423,7 +423,7 @@ export class BooksComponent{
                         value : amount.toFixed(2)
                     }
                 }else if(key == 'due_date'){
-                    row[key] = base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat);
+                    row[key] = (expense[key]) ? base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat) : expense[key];
                 } else{
                     row[key] = expense[key];
                 }
@@ -471,6 +471,7 @@ export class BooksComponent{
             {"name": "bank_account_id", "title": "Bank Account"},
             {"name": "id", "title": "id", 'visible': false, 'filterable': false},
             {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
+            {"name": "cash_only_journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
             {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
                 amount = parseFloat(amount);
                 return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -498,12 +499,14 @@ export class BooksComponent{
                         value : amount.toFixed(2)
                     }
                 }else if(key == 'date'){
-                    row[key] = base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat);
+                    row[key] = (expense[key]) ? base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat) : expense[key];
                 }else{
                     row[key] = expense[key];
                 }
             });
-            if(expense.journal_id){
+            if(expense.journal_id&&expense.cash_only_journal_id){
+                row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='je2navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+            }else if(expense.journal_id){
                 row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
             } else{
                 row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
@@ -557,7 +560,7 @@ export class BooksComponent{
                 }else if(key == 'category'){
                     row['categoryValue'] = base.categoryData[journalEntry[key]];
                 }else if(key == 'date'){
-                    row[key] = base.dateFormater.formatDate(journalEntry[key],base.serviceDateformat,base.dateFormat);
+                    row[key] = (journalEntry[key]) ? base.dateFormater.formatDate(journalEntry[key],base.serviceDateformat,base.dateFormat) : journalEntry[key];
                 }else {
                     row[key] = journalEntry[key];
                 }
@@ -645,6 +648,10 @@ export class BooksComponent{
         }  else if(action == 'navigation'){
             this.addBookState();
             let link = ['journalEntry', $event.journal_id];
+            this._router.navigate(link);
+        } else if(action == 'je2navigation'){
+            this.addBookState();
+            let link = ['journalEntry', $event.cash_only_journal_id];
             this._router.navigate(link);
         }
     }

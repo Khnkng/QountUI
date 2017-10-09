@@ -127,6 +127,8 @@ export class DepositComponent{
             let base=this;
             this.initialize();
             this.dimensionFlyoutCSS = "";
+            this.mappingFlyoutCSS="";
+            this.selectedMappingID=null;
             let account = _.find(this.accounts, {'id': bankID});
             setTimeout(function(){
                 base.accountComboBox.setValue(account, 'name');
@@ -248,22 +250,25 @@ export class DepositComponent{
     }
 
     editItem(index, itemForm){
-        let linesControl:any = this.depositForm.controls['payments'];
-        let base = this;
-        itemForm.editable = !itemForm.editable;
-        let itemData = this._depositLineForm.getData(itemForm);
-        setTimeout(function(){
-            jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
-            jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
-            jQuery('#invoice-'+index).siblings().children('input').val(base.getInvoiceName(itemData.invoice_id));
-        });
-
-        if(index == this.getLastActiveLineIndex(linesControl)){
-            this.addDefaultLine(1);
-        }
-        this.resetAllLinesFromEditing(linesControl);
-        itemForm.editable = !itemForm.editable;
-
+      let base = this;
+      let depositData = this._depositForm.getData(this.depositForm);
+      let linesControl:any = this.depositForm.controls['payments'];
+      itemForm.editable = !itemForm.editable;
+      let itemData = this._depositLineForm.getData(itemForm);
+      if(!itemData.amount){
+        itemData.amount = depositData.amount;
+        this.setValuesToControls(linesControl.controls[index], itemData);
+      }
+      setTimeout(function(){
+        jQuery('#coa-'+index).siblings().children('input').val(base.getCOAName(itemData.chart_of_account_id));
+        jQuery('#entity-'+index).siblings().children('input').val(base.getEntityName(itemData.entity_id));
+        jQuery('#invoice-'+index).siblings().children('input').val(base.getInvoiceName(itemData.invoice_id));
+      });
+      if(index == this.getLastActiveLineIndex(linesControl)){
+        this.addDefaultLine(1);
+      }
+      this.resetAllLinesFromEditing(linesControl);
+      itemForm.editable = !itemForm.editable;
     }
 
     enableLines(){
@@ -531,15 +536,19 @@ export class DepositComponent{
 
     /*This will just update line details in VIEW*/
     updateLineInView(item){
-        let itemsControl:any = this.depositForm.controls['payments'];
-        let itemControl = itemsControl.controls[this.editItemIndex];
-        itemControl.controls['title'].patchValue(item.title);
-        itemControl.controls['amount'].patchValue(item.amount);
-        itemControl.controls['chart_of_account_id'].patchValue(item.chart_of_account_id);
-        itemControl.controls['entity_id'].patchValue(item.entity_id);
-        itemControl.controls['invoice_id'].patchValue(item.invoice_id);
-        itemControl.controls['notes'].patchValue(item.notes);
-        itemControl.controls['dimensions'].patchValue(item.dimensions);
+      let itemsControl:any = this.depositForm.controls['payments'];
+      let itemControl = itemsControl.controls[this.editItemIndex];
+      this.setValuesToControls(itemControl, item);
+    }
+
+    setValuesToControls(itemControl, item){
+      itemControl.controls['title'].patchValue(item.title);
+      itemControl.controls['amount'].patchValue(item.amount);
+      itemControl.controls['chart_of_account_id'].patchValue(item.chart_of_account_id);
+      itemControl.controls['entity_id'].patchValue(item.entity_id);
+      itemControl.controls['invoice_id'].patchValue(item.invoice_id);
+      itemControl.controls['notes'].patchValue(item.notes);
+      itemControl.controls['dimensions'].patchValue(item.dimensions);
     }
 
     getDepositItemData(depositForm){
@@ -638,6 +647,7 @@ export class DepositComponent{
             });
         this.coaService.chartOfAccounts(this.currentCompanyId)
             .subscribe(chartOfAccounts=> {
+                chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
                 _.forEach(chartOfAccounts, function(coa) {
                     coa['displayName']=coa.number+' - '+coa.name;
                 });
@@ -822,23 +832,22 @@ export class DepositComponent{
     /*mapping changes*/
     showMappingPage(){
      if(this.selectedMappingID){
-     let link = ['payments/edit', this.selectedMappingID];
-     this._router.navigate(link);
+       let link = ['payments/edit', this.selectedMappingID];
+       this._router.navigate(link);
      }else {
          if(!this.bankAccountID){
              this.toastService.pop(TOAST_TYPE.error, "Please select bank account.");
              return
          }
-     this.mappingFlyoutCSS="expanded";
-     this.loadingService.triggerLoadingEvent(true);
-     this.depositService.unMappedInvoices(this.currentCompanyId,"false",this.bankAccountID)
-     .subscribe(mappings => {
-     let _mappings=mappings?mappings:[];
-     this.buildTableData(_mappings);
-     }, error => {
-     this.loadingService.triggerLoadingEvent(false);
-     });
-     }
+         this.mappingFlyoutCSS="expanded";
+         this.loadingService.triggerLoadingEvent(true);
+         this.depositService.unMappedInvoices(this.currentCompanyId,"false",this.bankAccountID)
+            .subscribe(mappings => {
+              this.buildTableData(mappings || []);
+            }, error => {
+            this.loadingService.triggerLoadingEvent(false);
+         });
+       }
      }
      hideMappingPage(){
      this.mappingFlyoutCSS="collapsed";

@@ -11,6 +11,7 @@ import {StateService} from "qCommon/app/services/StateService";
 import {State} from "qCommon/app/models/State";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -36,12 +37,17 @@ export class PaymentsComponent{
     fromPayments:boolean=false;
     localeFortmat:string='en-US';
     routeSubscribe:any;
+    dateFormat:string;
+    serviceDateformat:string;
 
     constructor(private switchBoard: SwitchBoard, private toastService: ToastService, private loadingService:LoadingService,
                 private paymentsService:PaymentsService,private _router:Router, private _route: ActivatedRoute,
-                private numeralService:NumeralService, private stateService: StateService,private titleService:pageTitleService){
+                private numeralService:NumeralService, private stateService: StateService,private titleService:pageTitleService,
+                private dateFormater:DateFormater){
         this.titleService.setPageTitle("Payments");
         let companyId = Session.getCurrentCompany();
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
         this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.loadingService.triggerLoadingEvent(true);
@@ -103,6 +109,10 @@ export class PaymentsComponent{
             }, error => this.handleError(error));
     }
 
+    convertDateToLocaleFormat(val){
+        return (val) ? this.dateFormater.formatDate(val,this.serviceDateformat,this.dateFormat) : val;
+    }
+
     buildTableData(payments) {
         this.hasPayments = false;
         this.payments = payments;
@@ -115,7 +125,7 @@ export class PaymentsComponent{
             {"name": "amount", "title": "Amount", "sortValue": function(value){
                 return base.numeralService.value(value);
             }},
-            {"name": "date", "title": "Date","type":"date"},
+            {"name": "date", "title": "Date","type":"text"},
             {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
             {"name": "vendorName", "title": "Vendor"},
             {name:"bankName","title":"Bank"},
@@ -129,6 +139,9 @@ export class PaymentsComponent{
                 if(key == 'amount'){
                     let amount = parseFloat(pyment[key]);
                     row[key] = amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                }
+                if(key == 'date'){
+                    row[key] = (pyment[key]) ? base.dateFormater.formatDate(pyment[key],base.serviceDateformat,base.dateFormat) : pyment[key];
                 }
                 let action ="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
                 if(pyment.journalID){

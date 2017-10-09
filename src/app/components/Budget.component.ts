@@ -17,6 +17,7 @@ import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {Router} from "@angular/router";
 import {YEARS, BUDGET_YEARS} from "qCommon/app/constants/Date.constants";
 import {DimensionService} from "qCommon/app/services/DimensionService.service";
+import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
 
 declare let jQuery:any;
 declare let _:any;
@@ -67,12 +68,15 @@ export class BudgetComponent{
     showDimensions:boolean;
     showFirstStep:boolean = true;
     showSecondStep:boolean = false;
+    formattedGrossProfit:string;
+    formattedNetProfit:string;
 
     constructor(private _fb: FormBuilder, private _budgetForm: BudgetForm, private switchBoard: SwitchBoard,private _router: Router,
                 private budgetService: BudgetService, private toastService: ToastService, private loadingService:LoadingService,
                 private coaService: ChartOfAccountsService,private numeralService:NumeralService,private _budgetItemForm: BudgetItemForm,private titleService:pageTitleService,private dimensionService: DimensionService){
         // this.budgetForm = this._fb.group(_budgetForm.getForm());
         this.titleService.setPageTitle("Budget");
+        this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteBudgetCode(toast));
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.currentCompany=Session.getCurrentCompany();
@@ -96,6 +100,7 @@ export class BudgetComponent{
         this.loadBudgets();
         this.coaService.chartOfAccounts(this.currentCompany)
             .subscribe(chartOfAccounts=> {
+                chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
                 this.chartOfAccounts = chartOfAccounts;
                 this.revenueCOA = _.filter(chartOfAccounts, {'category': 'Revenue'});
                 _.sortBy(this.revenueCOA, ['name']);
@@ -162,7 +167,7 @@ export class BudgetComponent{
         this.editMode = false;
         this.newForm();
         let budget:any={};
-        var base=this;
+        let base=this;
         let revenueItemsControl:any = this.budgetForm.controls['income'];
         _.each(this.revenueCOA, function(item){
             item.coaID = item.id;
@@ -194,7 +199,7 @@ export class BudgetComponent{
     processBudget(budget){
         this.editMode = true;
         this.newForm();
-        var base=this;
+        let base=this;
         this.budgetId=budget.id;
         let revenueItemsControl:any = this.budgetForm.controls['income'];
         _.each(budget.budget.income, function(revenueItem){
@@ -213,6 +218,7 @@ export class BudgetComponent{
         });
         this.selectedDimensions=budget.dimensions;
         this._budgetForm.updateForm(this.budgetForm, budget);
+        this.updateProfits();
         this.showFlyout = true;
         this.loadingService.triggerLoadingEvent(false);
     }
@@ -363,6 +369,7 @@ export class BudgetComponent{
         this.cogsTotal=0;
         this.incomeTotal=0;
         this.expenseTotal=0;
+        this.updateProfits();
     }
 
 
@@ -428,8 +435,8 @@ export class BudgetComponent{
         let data = [];
         _.each(expenseForm.controls, function(expenseItemControl){
             let itemData = base._budgetItemForm.getData(expenseItemControl);
-            for(var i=0;i<base.lineItemNames.length;i++){
-                var val=base.lineItemNames[i];
+            for(let i=0;i<base.lineItemNames.length;i++){
+                let val=base.lineItemNames[i];
                 itemData[val]=base.roundOffValue(itemData[val]);
             }
             data.push(itemData);
@@ -485,8 +492,8 @@ export class BudgetComponent{
             itemsControl = this.budgetForm.controls['expenses'];
         }
         let itemControl = itemsControl.controls[this.editItemIndex];
-        for(var i=0;i<this.lineItemNames.length;i++){
-            var val=this.lineItemNames[i];
+        for(let i=0;i<this.lineItemNames.length;i++){
+            let val=this.lineItemNames[i];
             itemControl.controls[val].patchValue(item[val]);
             if(val=='total'){
                 this.updateTotals(item[val],this.selectedGroup)
@@ -496,8 +503,8 @@ export class BudgetComponent{
 
     updateTotalAmount(_val,form,type){
         let total=0;
-        for(var i=0;i<this.lineItemNames.length-1;i++){
-            var val=this.lineItemNames[i];
+        for(let i=0;i<this.lineItemNames.length-1;i++){
+            let val=this.lineItemNames[i];
             total=total+this.checkNumber(form.controls[val].value)
         }
         form.controls['total'].patchValue(total);
@@ -508,8 +515,8 @@ export class BudgetComponent{
         let total=this.checkNumber(form.controls['total'].value);
         if(total){
             let avgVal=Math.round((total/12) * 100) / 100;
-            for(var i=0;i<this.lineItemNames.length-1;i++){
-                var val=this.lineItemNames[i];
+            for(let i=0;i<this.lineItemNames.length-1;i++){
+                let val=this.lineItemNames[i];
                 form.controls[val].patchValue(avgVal);
             }
             this.updateTotals(total,type);
@@ -520,7 +527,7 @@ export class BudgetComponent{
         let total=0;
         if(type){
             let formControls=this.budgetForm.controls[type]['controls'];
-            for(var i=0;i<formControls.length;i++){
+            for(let i=0;i<formControls.length;i++){
                 total=total+Number(formControls[i].controls.total.value);
             }
         }
@@ -532,13 +539,15 @@ export class BudgetComponent{
         }else {
             this.expenseTotal=total;
         }
+
+        this.updateProfits();
     }
 
     duplicateAll(form){
         let janValue=this.checkNumber(form.controls['jan'].value);
         if(janValue){
-            for(var i=0;i<this.lineItemNames.length-1;i++){
-                var val=this.lineItemNames[i];
+            for(let i=0;i<this.lineItemNames.length-1;i++){
+                let val=this.lineItemNames[i];
                 form.controls[val].patchValue(janValue);
             }
             this.updateTotalAmount(null,form,this.selectedGroup);
@@ -557,11 +566,11 @@ export class BudgetComponent{
     }
 
     calculateMonthsOrder(){
-        var allMonths = MONTHS_NAMES;
+        let allMonths = MONTHS_NAMES;
         if(Session.getFiscalStartDate()){
-            var today = new Date(Session.getFiscalStartDate());
-            var monthIndex = today.getMonth();
-            var i;
+            let today = new Date(Session.getFiscalStartDate());
+            let monthIndex = today.getMonth();
+            let i;
             for (i=0; i<12; i++) {
                 this.orderedMonths.push(allMonths[monthIndex]);
                 monthIndex++;
@@ -637,7 +646,6 @@ export class BudgetComponent{
 
     nextStep($event) {
         $event && $event.preventDefault();
-        this.validateDimensions();
         let dimensions = this.budgetForm.controls['dimensions'];
         dimensions.patchValue(this.selectedDimensions);
         if(this.validateDimensions()){
@@ -685,7 +693,8 @@ export class BudgetComponent{
                 }else {
                     return true;
                 }
-            }else{
+            }
+            else{
                 let status=true;
                 _.forEach(yearFilterList, function(budget) {
                     if(budget.dimensions.length==0){
@@ -697,6 +706,15 @@ export class BudgetComponent{
         }else{
             return true;
         }
+    }
+
+    formatAmount(value){
+        return this.numeralService.format('$0,0.00', value);
+    }
+
+    updateProfits(){
+        this.formattedGrossProfit=this.formatAmount(this.incomeTotal-this.cogsTotal);
+        this.formattedNetProfit=this.formatAmount(this.incomeTotal-Number(this.cogsTotal+this.expenseTotal));
     }
 
 }
