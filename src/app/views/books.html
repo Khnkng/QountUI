@@ -141,7 +141,21 @@
       <div *ngIf="tabDisplay[1].display == 'block'" class="column small-12 medium-12 large-12" id="deposits">
         <div class="row">
           <div class="column">
-            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasDeposits" [data]="depositsTableData" [options]="depositsTableOptions" (onRowAction)="handleDepositAction($event)"></foo-table>
+            <!--<div class="row add-share-buttons add-share-adjust">-->
+              <!--<div class="column medium-12 small-12 text-right">-->
+                <div class="float-right icons report-icon-header">
+
+                  <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
+                  <div class="dropdown-pane bottom export-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation>
+                    <div (click)="exportToExcel('deposits')" class="export-option">Export To Excel</div>
+                    <div (click)="exportToPDF('deposits')" class="export-option">Export To PDF</div>
+                  </div>
+                </div>
+
+              <!--</div>-->
+            <!--</div>-->
+
+            <foo-table class="bigpay-dashboard bighalf-footable bills-footable" *ngIf="hasDeposits" [data]="depositsTableData" [options]="depositsTableOptions" (onRowAction)="handleDepositAction($event)"></foo-table>
             <div class=" callout entry-callout text-center" [hidden]="isLoading" *ngIf="!hasDeposits">
               <div class="woo-woo">Woot Woot!</div>
               <p>There are no Deposits.</p>
