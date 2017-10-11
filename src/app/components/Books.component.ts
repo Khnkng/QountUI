@@ -104,7 +104,7 @@ export class BooksComponent{
   metrics: any = {};
   routeSubscribe: any = {};
   chartColors:Array<any> = ['#44B6E8','#18457B','#00B1A9','#F06459','#22B473','#384986','#4554A4','#808CC5'];
-  depositsTableColumns: Array<any> = ['Title', 'Date', 'bank_account_id', 'amount'];
+  depositsTableColumns: Array<any> = ['title', 'date', 'bank_account_id', 'amount'];
   expenseTableColumns: Array<any> = [];
   journalEntriesTableColumns: Array<any> = [];
   depositsData: any;
@@ -263,20 +263,6 @@ export class BooksComponent{
       });
   }
 
-  getDepositsData(inputData) {
-    let tempData = _.cloneDeep(inputData);
-
-    for( var i in  tempData) {
-      // tempData[i].bank_account_id = this.getBankAccountName(tempData[i].bank_account_id);
-      // tempData[i].date = (tempData[i].date) ? this.dateFormater.formatDate(tempData[i].date, this.serviceDateformat, this.dateFormat) : tempData[i].date;
-      tempData[i].amount = parseFloat(tempData[i].amount.value).toLocaleString(this.localeFortmat, { style: 'currency', currency: this.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
-      delete tempData[i].id;
-      delete tempData[i].cash_only_journal_id;
-      delete tempData[i].journal_id;
-      delete tempData[i].actions;
-    }
-    return tempData;
-  }
 
   selectTab(tabNo, color) {
     this.selectedTab=tabNo;
@@ -1269,14 +1255,37 @@ export class BooksComponent{
     this.detailedReportChartOptions.legend = {enabled: true};
   }
 
+
+  getDepositsData(inputData) {
+    let tempData = _.cloneDeep(inputData);
+
+    for( var i in  tempData) {
+      // tempData[i].bank_account_id = this.getBankAccountName(tempData[i].bank_account_id);
+      // tempData[i].date = (tempData[i].date) ? this.dateFormater.formatDate(tempData[i].date, this.serviceDateformat, this.dateFormat) : tempData[i].date;
+      tempData[i].amount = parseFloat(tempData[i].amount.value).toLocaleString(this.localeFortmat, { style: 'currency', currency: this.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      delete tempData[i].id;
+      delete tempData[i].cash_only_journal_id;
+      delete tempData[i].journal_id;
+      delete tempData[i].actions;
+    }
+    return tempData;
+  }
+
   buildPdfTabledata(tabId){
-    this.depositsData = this.getDepositsData(this.depositsTableData.rows);
-    this.pdfTableData.tableHeader.values = this.depositsTableColumns;
-    this.pdfTableData.tableRows.rows = this.depositsData;
     this.pdfTableData['documentHeader'] = "Header";
     this.pdfTableData['documentFooter'] = "Footer";
-    this.pdfTableData['fileType'] = "excel";
+    this.pdfTableData['fileType'] = "pdf";
     this.pdfTableData['name'] = "Name";
+
+    if(tabId == 'deposits'){
+      this.pdfTableData.tableHeader.values = this.depositsTableColumns;
+      this.pdfTableData.tableRows.rows = this.getDepositsData(this.depositsTableData.rows);
+    }else if(tabId == 'expenses'){
+
+    }else if(tabId == 'journalEntries'){
+
+    }
+
   }
 
   exportToExcel(tabId) {
@@ -1289,13 +1298,24 @@ export class BooksComponent{
         link['download']="deposits.xls";
         link.click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export report into Excel");
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
       });
     jQuery('#example-dropdown').foundation('close');
 
   }
 
-  exportToPDF() {
+  exportToPDF(tabId) {
+    this.buildPdfTabledata(tabId);
+    this.reportsService.exportFooTableIntoFile(this.currentCompanyId, this.pdfTableData)
+      .subscribe(data =>{
+        var blob=new Blob([data._body], {type:"application/pdf"});
+        var link= jQuery('<a></a>');
+        link[0].href= URL.createObjectURL(blob);
+        link[0].download= "deposits.pdf";
+        link[0].click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+      });
 
   }
 
