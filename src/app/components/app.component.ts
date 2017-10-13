@@ -18,6 +18,7 @@ import {LoginService} from "qCommon/app/services/Login.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {environment} from "../../environments/environment";
+import {UrlService} from "../../../node_modules/qCommon/app/services/UrlService";
 
 declare let jQuery:any;
 declare let _:any;
@@ -65,6 +66,7 @@ export class AppComponent  implements OnInit{
         let self = this;
         this.currentEnvironment = environment;
         let cookieKey = this.currentEnvironment.production? "prod": "dev";
+        UrlService.setUrls(this.currentEnvironment);
         let data= this.getCookie(cookieKey);
         if(data){
             let obj=JSON.parse(data);
