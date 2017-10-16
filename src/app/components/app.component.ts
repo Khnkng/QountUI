@@ -18,7 +18,7 @@ import {LoginService} from "qCommon/app/services/Login.service";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {environment} from "../../environments/environment";
-import {UrlService} from "../../../node_modules/qCommon/app/services/UrlService";
+import {UrlService} from "qCommon/app/services/UrlService";
 
 declare let jQuery:any;
 declare let _:any;
