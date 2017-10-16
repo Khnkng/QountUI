@@ -13,6 +13,7 @@ import {LoginForm} from "../forms/Login.form";
 import {ForgotPassword} from "../forms/ForgotPassword.form";
 import {LoginModel} from "../models/Login.model";
 import {Session} from "qCommon/app/services/Session";
+import {UrlService} from "qCommon/app/services/UrlService";
 import {PATH, TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
@@ -178,7 +179,7 @@ export class LogInComponent implements OnInit {
   changePassword($event){
     $event && $event.preventDefault();
     let data = this._forgotPasswordForm.getData(this.forgotPasswordForm);
-    data["activationLink"]=PATH.ACTIVATION_LINK;
+    data["activationLink"]= UrlService.getBaseUrl("ACTIVATION_LINK");
     data["username"] = data.id;
     this.loginService.forgotPassword(data).subscribe(success => this.handleForgotPassword(true, success),
         error => this.handleForgotPassword(false, error));

@@ -84,6 +84,7 @@ export class BooksComponent{
     tempData:any;
     userAction:string;
     categoryData:any = JE_CATEGORIES;
+    searchString: string;
 
     //Dashboard related declarataions
     currentFiscalStart: any;
@@ -114,7 +115,6 @@ export class BooksComponent{
         this.currentCompanyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
         this.serviceDateformat = dateFormater.getServiceDateformat();
-        this.stateService.clearAllStates();
         this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
         let today = moment();
         let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
@@ -178,10 +178,22 @@ export class BooksComponent{
         });
         this.getBookBadges();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+        let state = this.stateService.pop();
+        if(state){
+          let data = state.data;
+          this.searchString = data.searchString;
+        }
     }
 
     addBookState(){
-        this.stateService.addState(new State('BOOKS', this._router.url, null, null, []));
+        let data = {
+          "searchString": this.searchString
+        };
+        this.stateService.addState(new State('BOOKS', this._router.url, data, null, []));
+    }
+
+    setSearchString($event){
+      this.searchString = $event || "";
     }
 
     getBookBadges(){
@@ -258,6 +270,7 @@ export class BooksComponent{
     }
 
     selectTab(tabNo, color) {
+        this.searchString = "";
         this.selectedTab=tabNo;
         this.selectedColor=color;
         let base = this;
@@ -387,6 +400,8 @@ export class BooksComponent{
     buildExpenseTableData(data){
         let base = this;
         this.expensesTableData.search = true;
+        this.expensesTableData.defSearch = true;
+        this.expensesTableData.defSearchString = this.searchString;
         this.handleBadges(data.length, 1);
         this.expensesTableData.columns = [
             {"name": "title", "title": "Title"},
