@@ -282,7 +282,7 @@ export class UsersComponent {
 
   }
 
-  exportToPDF(tabId) {
+  exportToPDF() {
     this.buildPdfTabledata("pdf");
 
     this.reportsService.exportFooTableIntoFile(this.companyId, this.pdfTableData)

@@ -275,7 +275,7 @@ export class PaymentsPlanComponent{
 
   }
 
-  exportToPDF(tabId) {
+  exportToPDF() {
     this.buildPdfTabledata("pdf");
 
     this.reportsService.exportFooTableIntoFile(this.companyID, this.pdfTableData)

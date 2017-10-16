@@ -364,7 +364,7 @@ export class ItemCodesComponent{
 
   }
 
-  exportToPDF(tabId) {
+  exportToPDF() {
     this.buildPdfTabledata("pdf");
 
     this.reportsService.exportFooTableIntoFile(this.currentCompany, this.pdfTableData)
