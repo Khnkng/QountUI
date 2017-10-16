@@ -478,6 +478,8 @@ export class BooksComponent{
         let base = this;
         this.handleBadges(data.length, 0);
         this.depositsTableData.search = true;
+        this.depositsTableData.defSearch = true;
+        this.depositsTableData.defSearchString = this.searchString;
         this.depositsTableData.columns = [
             {"name": "title", "title": "Title"},
             {"name": "date", "title": "Date","type":"text","sortValue": function(value){
@@ -544,6 +546,8 @@ export class BooksComponent{
     buildTableData(data){
         let base = this;
         this.handleBadges(data.length, 2);
+        this.jeTableData.defSearch = true;
+        this.jeTableData.defSearchString = this.searchString;
         this.jeTableData.columns = [
             {"name": "number", "title": "Number"},
             {"name": "date", "title": "Date","type":"text","sortValue": function(value){
