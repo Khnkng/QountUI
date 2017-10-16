@@ -14,5 +14,6 @@ export const environment = {
   WORKFLOW_SERVICE_URL: 'https://dev-services.qount.io',
   DOCUMENT_SERVICE_URL: "https://dev-services.qount.io/DocumentServices",
   DOCHUB_SERVICE_URL: 'https://dev-services.qount.io/DocumentServices',
-  ACTIVATION_LINK: "https://oneapp.qount.io/login"
+  ACTIVATION_LINK: "https://oneapp.qount.io/login",
+  WELCOME_URL: "https://dev-welcome.qount.io/oneapp/login"
 };
