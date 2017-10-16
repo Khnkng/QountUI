@@ -18,6 +18,7 @@ import {ExpensesService} from "qCommon/app/services/ExpenseCodes.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {Router} from "@angular/router";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {ReportService} from "reportsUI/app/services/Reports.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -51,11 +52,14 @@ export class ExpensesCodesComponent {
   itemCodeId:any;
   confirmSubscription:any;
   routeSubscribe:any;
+  expensesTableColumns: Array<any> = ['Name', 'Description', 'COA'];
+  pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
 
   constructor(private _fb: FormBuilder, private _expensesForm: ExpenseCodesForm, private switchBoard: SwitchBoard,
               private codeService: CodesService, private toastService: ToastService, private _router:Router,
               private coaService: ChartOfAccountsService, private expensesSerice:ExpensesService,
-              private companiesService: CompaniesService, private loadingService:LoadingService,private titleService:pageTitleService){
+              private companiesService: CompaniesService, private loadingService:LoadingService,private titleService:pageTitleService,
+              private reportsService: ReportService){
     this.titleService.setPageTitle("Expense Codes");
     this.expensesForm = this._fb.group(_expensesForm.getForm());
     this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteExpense(toast));
@@ -269,4 +273,64 @@ export class ExpensesCodesComponent {
     this.row = {};
     this.showFlyout = false;
   }
+
+  getExpensesTableData(inputData) {
+    let tempData = _.cloneDeep(inputData);
+    let newTableData: Array<any> = [];
+    let tempJsonArray: any;
+
+    for( var i in  tempData) {
+      tempJsonArray = {};
+      tempJsonArray["Name"] = tempData[i].name;
+      tempJsonArray["Description"] = tempData[i].desc;
+      tempJsonArray["COA"] = tempData[i].selectedCOAName;
+
+      newTableData.push(tempJsonArray);
+    }
+
+    return newTableData;
+  }
+
+  buildPdfTabledata(fileType){
+    this.pdfTableData['documentHeader'] = "Header";
+    this.pdfTableData['documentFooter'] = "Footer";
+    this.pdfTableData['fileType'] = fileType;
+    this.pdfTableData['name'] = "Name";
+
+    this.pdfTableData.tableHeader.values = this.expensesTableColumns;
+    this.pdfTableData.tableRows.rows = this.getExpensesTableData(this.tableData.rows);
+  }
+
+  exportToExcel() {
+    this.buildPdfTabledata("excel");
+    this.reportsService.exportFooTableIntoFile(this.currentCompany, this.pdfTableData)
+      .subscribe(data =>{
+        let blob = new Blob([data._body], {type:"application/vnd.ms-excel"});
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link['download'] = "ExpenseCodes.xls";
+        link.click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+      });
+    // jQuery('#example-dropdown').foundation('close');
+
+  }
+
+  exportToPDF(tabId) {
+    this.buildPdfTabledata("pdf");
+
+    this.reportsService.exportFooTableIntoFile(this.currentCompany, this.pdfTableData)
+      .subscribe(data =>{
+        var blob = new Blob([data._body], {type:"application/pdf"});
+        var link = jQuery('<a></a>');
+        link[0].href = URL.createObjectURL(blob);
+        link[0].download = "ExpenseCodes.pdf";
+        link[0].click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+      });
+
+  }
+
 }

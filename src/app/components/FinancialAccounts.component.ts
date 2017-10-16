@@ -19,6 +19,7 @@ import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
+import {ReportService} from "reportsUI/app/services/Reports.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -66,9 +67,13 @@ export class FinancialAccountsComponent{
   bankCoa:Array<any>=[];
   creditCoa:Array<any>=[];
   routeSubscribe:any;
+  finActTableColumns: Array<any> = ['Name', 'Chart of Account', 'Start Balance Date', 'Starting Balance', 'Current Balance'];
+  pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
 
   constructor(private _router:Router,private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
-              private financialAccountsService: FinancialAccountsService, private toastService: ToastService, private yodleeService: YodleeService, private switchBoard:SwitchBoard,private dateFormater: DateFormater,private numeralService:NumeralService,private titleService:pageTitleService){
+              private financialAccountsService: FinancialAccountsService, private toastService: ToastService,
+              private yodleeService: YodleeService, private switchBoard:SwitchBoard,private dateFormater: DateFormater,
+              private numeralService:NumeralService,private titleService:pageTitleService, private reportsService: ReportService){
     this.titleService.setPageTitle("Financial Accounts");
     this.accountForm = this._fb.group(_financialAccountForm.getForm());
     this.currentCompany = Session.getCurrentCompany();
@@ -448,4 +453,67 @@ export class FinancialAccountsComponent{
       this.chartOfAccounts=this.bankCoa;
     }
   }
+
+  getFinActTableData(inputData) {
+    let tempData = _.cloneDeep(inputData);
+    let newTableData: Array<any> = [];
+    let tempJsonArray: any;
+
+    for( var i in  tempData) {
+      tempJsonArray = {};
+      // tempData[i].starting_balance = parseFloat(tempData[i].starting_balance.value).toLocaleString(this.localeFortmat, { style: 'currency', currency: this.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      tempJsonArray["Name"] = tempData[i].name;
+      tempJsonArray["Chart of Account"] = tempData[i].chart_of_account;
+      tempJsonArray["Start Balance Date"] = tempData[i].starting_balance_date;
+      tempJsonArray["Starting Balance"] = tempData[i].starting_balance.value;
+      tempJsonArray["Current Balance"] = tempData[i].current_balance.value;
+
+      newTableData.push(tempJsonArray);
+    }
+
+    return newTableData;
+  }
+
+  buildPdfTabledata(fileType){
+    this.pdfTableData['documentHeader'] = "Header";
+    this.pdfTableData['documentFooter'] = "Footer";
+    this.pdfTableData['fileType'] = fileType;
+    this.pdfTableData['name'] = "Name";
+
+    this.pdfTableData.tableHeader.values = this.finActTableColumns;
+    this.pdfTableData.tableRows.rows = this.getFinActTableData(this.tableData.rows);
+  }
+
+  exportToExcel() {
+    this.buildPdfTabledata("excel");
+    this.reportsService.exportFooTableIntoFile(this.currentCompany, this.pdfTableData)
+      .subscribe(data =>{
+        let blob = new Blob([data._body], {type:"application/vnd.ms-excel"});
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link['download'] = "FinanceAccounts.xls";
+        link.click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+      });
+    // jQuery('#example-dropdown').foundation('close');
+
+  }
+
+  exportToPDF(tabId) {
+    this.buildPdfTabledata("pdf");
+
+    this.reportsService.exportFooTableIntoFile(this.currentCompany, this.pdfTableData)
+      .subscribe(data =>{
+        var blob = new Blob([data._body], {type:"application/pdf"});
+        var link = jQuery('<a></a>');
+        link[0].href = URL.createObjectURL(blob);
+        link[0].download = "FinanceAccounts.pdf";
+        link[0].click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+      });
+
+  }
+
 }

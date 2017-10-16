@@ -8,6 +8,11 @@
     <div class="column large-12 medium-12 small-12 foo-container">
         <div class="add-share-buttons add-share-adjust text-right">
             <span class="pointer" (click)="showAddDimension()"><i class="icon ion-ios-plus-outline"></i><span>Dimension</span></span>
+            <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
+            <div class="dropdown-pane bottom export-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation >
+              <div (click)="exportToExcel()" class="export-option">Export To Excel</div>
+              <div (click)="exportToPDF()" class="export-option">Export To PDF</div>
+            </div>
         </div>
         <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasDimensions" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>

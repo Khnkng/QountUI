@@ -406,7 +406,7 @@ export class BooksComponent{
       {"name": "cash_only_journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
       {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
         amount = parseFloat(amount);
-        return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }, "sortValue": function(value){
         return base.numeralService.value(value);
       },
@@ -432,7 +432,7 @@ export class BooksComponent{
         }else if(key == 'due_date'){
           row[key] = (expense[key]) ? base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat) : expense[key];
         } else{
-          row[key] = expense[key];
+           row[key] = expense[key];
         }
         /*else if(key == 'is_paid'){
          if(expense.is_paid || expense.paid_date){
@@ -1263,23 +1263,14 @@ export class BooksComponent{
     // console.log("Temp Table data === ", tempData);
     for( var i in  tempData) {
       tempJsonArray = {};
-      tempData[i].amount = parseFloat(tempData[i].amount.value).toLocaleString(this.localeFortmat, { style: 'currency', currency: this.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      tempData[i].amount = parseFloat(tempData[i].amount.value).toLocaleString(this.localeFortmat, { style: 'currency', currency: this.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
       tempJsonArray["Title"] = tempData[i].title;
       tempJsonArray["Date"] = tempData[i].date;
       tempJsonArray["Bank Account Name"] = tempData[i].bank_account_id;
       tempJsonArray["Amount"] = tempData[i].amount;
 
       newTableData.push(tempJsonArray);
-      // tempData[i].bank_account_id = this.getBankAccountName(tempData[i].bank_account_id);
-      // tempData[i].date = (tempData[i].date) ? this.dateFormater.formatDate(tempData[i].date, this.serviceDateformat, this.dateFormat) : tempData[i].date;
-
-      /*delete tempData[i].id;
-      delete tempData[i].cash_only_journal_id;
-      delete tempData[i].journal_id;
-      delete tempData[i].actions;*/
     }
-
-    console.log("New Table data === ", newTableData);
     return newTableData;
   }
 
@@ -1287,8 +1278,6 @@ export class BooksComponent{
     let tempData = _.cloneDeep(inputData);
     let newTableData: Array<any> = [];
     let tempJsonArray: any;
-
-    console.log("tempData === ", tempData);
 
     for( var i in  tempData) {
       tempJsonArray = {};
@@ -1300,8 +1289,6 @@ export class BooksComponent{
 
       newTableData.push(tempJsonArray);
     }
-
-    console.log("New Table data === ", newTableData);
     return newTableData;
   }
 
@@ -1319,8 +1306,6 @@ export class BooksComponent{
 
       newTableData.push(tempJsonArray);
     }
-
-    console.log("New Table data === ", newTableData);
     return newTableData;
   }
 
@@ -1360,17 +1345,17 @@ export class BooksComponent{
   }
 
   exportToPDF(tabId) {
-    // this.buildPdfTabledata(tabId, "pdf");
-    let html = jQuery('<div>').append(jQuery('style').clone()).append(jQuery('#numeric').clone()).html();
-    let pdfReq={
-      "version" : "1.1",
-      "genericReport": {
-        "payload": html,
-        "footer": moment(new Date()).format("MMMM DD, YYYY HH:mm a")
-      }
-    };
+    this.buildPdfTabledata(tabId, "pdf");
+    // let html = jQuery('<div>').append(jQuery('style').clone()).append(jQuery('#numeric').clone()).html();
+    // let pdfReq={
+    //   "version" : "1.1",
+    //   "genericReport": {
+    //     "payload": html,
+    //     "footer": moment(new Date()).format("MMMM DD, YYYY HH:mm a")
+    //   }
+    // };
 
-    this.reportsService.exportFooTableIntoFile(this.currentCompanyId, pdfReq)
+    this.reportsService.exportFooTableIntoFile(this.currentCompanyId, this.pdfTableData)
       .subscribe(data =>{
         var blob = new Blob([data._body], {type:"application/pdf"});
         var link = jQuery('<a></a>');
