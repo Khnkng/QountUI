@@ -3794,7 +3794,7 @@ input[readonly], textarea[readonly]{
 }
 
 .foo-container .bills-footable .footable-filtering .footable-filtering {
-  right: 190px !important;
+  right: 210px !important;
 }
 
 .foo-container .metrics-footable .footable-filtering .footable-filtering {
@@ -4689,5 +4689,24 @@ div.footable-loader {
         right:35px;
       }
     }
+  }
+}
+
+.footable-download {
+  .icon {
+    margin-left:7px;
+  }
+  .export-dropdown {
+    right:0;
+
+    &:after{
+      right:26px;
+      left:auto;
+    }
+    &:before{
+      right:25px;
+      left:auto;
+    }
+
   }
 }
