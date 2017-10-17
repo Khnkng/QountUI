@@ -4650,3 +4650,14 @@ div.footable-loader {
     }
   }
 }
+
+.report-download i{
+  position: relative;
+  top: 25px;
+  font-size: 30px;
+  margin-left:10px;
+
+  &:hover {
+    color: #384986;
+  }
+}
