@@ -154,7 +154,7 @@
               <!--</div>-->
             <!--</div>-->
 
-            <foo-table class="bigpay-dashboard bighalf-footable bills-footable" *ngIf="hasDeposits" [data]="depositsTableData" [options]="depositsTableOptions" (onRowAction)="handleDepositAction($event)"></foo-table>
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasDeposits" [data]="depositsTableData" [options]="depositsTableOptions" (onRowAction)="handleDepositAction($event)" (onSearch)="setSearchString($event)"></foo-table>
             <div class=" callout entry-callout text-center" [hidden]="isLoading" *ngIf="!hasDeposits">
               <div class="woo-woo">Woot Woot!</div>
               <p>There are no Deposits.</p>
@@ -175,7 +175,7 @@
               </div>
             </div>
 
-            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasExpenses" [data]="expensesTableData" [options]="expensesTableOptions" (onRowAction)="handleExpenseAction($event)"></foo-table>
+            <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasExpenses" [data]="expensesTableData" [options]="expensesTableOptions" (onRowAction)="handleExpenseAction($event)" (onSearch)="setSearchString($event)"></foo-table>
             <div class=" callout entry-callout text-center" [hidden]="isLoading" *ngIf="!hasExpenses">
               <div class="woo-woo">Woot Woot!</div>
               <p>There are no Expenses.</p>
@@ -195,8 +195,7 @@
                 <div (click)="exportToPDF('journalEntries')" class="export-option">Export To PDF</div>
               </div>
             </div>
-
-            <foo-table class="bigpay-dashboard bighalf-footable je-footable" *ngIf="hasJournalEntries" [data]="jeTableData" [options]="jeTableOptions" (onRowAction)="handleAction($event)"></foo-table>
+            <foo-table class="bigpay-dashboard bighalf-footable je-footable" *ngIf="hasJournalEntries" [data]="jeTableData" [options]="jeTableOptions" (onRowAction)="handleAction($event)" (onSearch)="setSearchString($event)"></foo-table>
             <div class=" callout entry-callout text-center" [hidden]="isLoading" *ngIf="!hasJournalEntries">
               <div class="woo-woo">Woot Woot!</div>
               <p>There are no Journal entries.</p>

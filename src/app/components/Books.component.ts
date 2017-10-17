@@ -108,7 +108,6 @@ export class BooksComponent{
   depositsTableColumns: Array<any> = ['Title', 'Date', 'Bank Account Name', 'Amount'];
   expenseTableColumns: Array<any> = ['Title', 'Expense Date', 'Bank Account', 'Amount'];
   journalEntriesTableColumns: Array<any> = ['Number', 'Date', 'Category', 'Source'];
-  depositsData: any;
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
 
   constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
@@ -1271,6 +1270,7 @@ export class BooksComponent{
     this.detailedReportChartOptions.legend = {enabled: true};
   }
 
+
   getDepositsData(inputData) {
     let tempData = _.cloneDeep(inputData);
     let newTableData: Array<any> = [];
@@ -1382,5 +1382,4 @@ export class BooksComponent{
       });
 
   }
-
 }
