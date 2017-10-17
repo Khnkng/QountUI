@@ -4670,3 +4670,24 @@ div.footable-loader {
     }
   }
 }
+
+.tab-container {
+  .report-icon-header {
+    position: inherit !important;
+    .icon {
+      bottom:10px;
+    }
+    .export-dropdown {
+      right:30px;
+
+      &:after {
+        left: auto !important;
+        right:36px;
+      }
+      &:before {
+        left: auto !important;
+        right:35px;
+      }
+    }
+  }
+}
