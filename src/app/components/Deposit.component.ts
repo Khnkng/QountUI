@@ -136,7 +136,7 @@ export class DepositComponent{
             this.setDueDate(this.defaultDate);
             this.setDefaultDepositType();
         }else {
-            let prevState = this.stateService.pop();
+            let prevState = this.stateService.getPrevState();
             if(prevState){
                 this._router.navigate([prevState.url]);
             }else{
