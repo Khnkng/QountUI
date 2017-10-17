@@ -4695,6 +4695,7 @@ div.footable-loader {
 .footable-download {
   .icon {
     margin-left:7px;
+    font-size: 1.2em;
   }
   .export-dropdown {
     right:0;
@@ -4708,5 +4709,25 @@ div.footable-loader {
       left:auto;
     }
 
+  }
+}
+
+.invoice-footable-doanload {
+  .icon {
+    margin-left:7px;
+    font-size: 1.7em;
+  }
+  .export-dropdown {
+    width: 140px !important;
+    right: 30px;
+
+    &:after {
+      right: 36px;
+      left: auto;
+    }
+    &:before {
+      right: 35px;
+      left: auto;
+    }
   }
 }
