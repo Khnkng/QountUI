@@ -10,7 +10,7 @@ import {FormGroup, FormBuilder} from "@angular/forms";
 import {Router, ActivatedRoute} from "@angular/router";
 import {PATH, TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {SignUpModel} from "../models/SignUp.model";
-
+import {UrlService} from "qCommon/app/services/UrlService";
 
 @Component({
   selector: 'qount-signup',
@@ -57,7 +57,7 @@ export class SignUpComponent implements OnInit{
     var data = this._signUpForm.getData(this.signUpForm);
     data.id = data.email;
     delete data.passwordConfirmation;
-    data.activationLink=PATH.ACTIVATION_LINK;
+    data.activationLink= UrlService.getBaseUrl("ACTIVATION_LINK");
     this.signUpService.signUp(<SignUpModel>data)
       .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
   }
