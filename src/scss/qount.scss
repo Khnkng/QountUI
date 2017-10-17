@@ -4535,33 +4535,10 @@ select:-webkit-autofill:active {
           border-bottom:1px solid #e1e1e1 !important;
         }
 
-        .report-main,
-        .report-input,
-        .complete{
-          width: 100%;
-          line-height: 32px;
-        }
         .report-main {
           position: relative;
         }
-        .report-input,
-        .complete{
-          position: absolute;
-          top: 0;
-          right: 0;
-          padding: 0 8px;
-          cursor: text;
-        }
-        .report-input:focus,
-        .complete:focus{
-          outline: none;
-        }
-        .report-input {
-          background-color: transparent;
-        }
-        .complete {
-          color: #898989;
-        }
+
         input {
           border:none !important;
           color: #878787;
@@ -4579,10 +4556,13 @@ select:-webkit-autofill:active {
         [type='text']:focus {
           box-shadow: none !important;
         }
+
+        .ui-icon {
+          display:none;
+        }
       }
     }
   }
-
 }
 
 
