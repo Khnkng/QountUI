@@ -84,6 +84,7 @@ export class BooksComponent{
   tempData:any;
   userAction:string;
   categoryData:any = JE_CATEGORIES;
+  searchString: string;
 
   //Dashboard related declarataions
   currentFiscalStart: any;
@@ -119,7 +120,6 @@ export class BooksComponent{
     this.currentCompanyId = Session.getCurrentCompany();
     this.dateFormat = dateFormater.getFormat();
     this.serviceDateformat = dateFormater.getServiceDateformat();
-    this.stateService.clearAllStates();
     this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
     let today = moment();
     let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
@@ -183,10 +183,22 @@ export class BooksComponent{
     });
     this.getBookBadges();
     this.companyCurrency = Session.getCurrentCompanyCurrency();
+    let state = this.stateService.pop();
+    if(state){
+      let data = state.data;
+      this.searchString = data.searchString;
+    }
   }
 
   addBookState(){
-    this.stateService.addState(new State('BOOKS', this._router.url, null, null, []));
+    let data = {
+      "searchString": this.searchString
+    };
+    this.stateService.addState(new State('BOOKS', this._router.url, data, null, []));
+  }
+
+  setSearchString($event){
+    this.searchString = $event || "";
   }
 
   getBookBadges(){
@@ -256,15 +268,14 @@ export class BooksComponent{
         this.depositService.deposits(this.currentCompanyId)
           .subscribe(deposits => {
             this.buildDepositTableData(deposits.deposits);
-            //this.depositsData = this.getDepositsData(deposits.deposits);
           }, error => this.handleError(error));
       }, error=> {
         this.loadingService.triggerLoadingEvent(false);
       });
   }
 
-
   selectTab(tabNo, color) {
+    this.searchString = "";
     this.selectedTab=tabNo;
     this.selectedColor=color;
     let base = this;
@@ -394,6 +405,8 @@ export class BooksComponent{
   buildExpenseTableData(data){
     let base = this;
     this.expensesTableData.search = true;
+    this.expensesTableData.defSearch = true;
+    this.expensesTableData.defSearchString = this.searchString;
     this.handleBadges(data.length, 1);
     this.expensesTableData.columns = [
       {"name": "title", "title": "Title"},
@@ -406,7 +419,7 @@ export class BooksComponent{
       {"name": "cash_only_journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
       {"name": "amount", "title": "Amount", "type":"number", "formatter": (amount)=>{
         amount = parseFloat(amount);
-        return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
       }, "sortValue": function(value){
         return base.numeralService.value(value);
       },
@@ -432,7 +445,7 @@ export class BooksComponent{
         }else if(key == 'due_date'){
           row[key] = (expense[key]) ? base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat) : expense[key];
         } else{
-           row[key] = expense[key];
+          row[key] = expense[key];
         }
         /*else if(key == 'is_paid'){
          if(expense.is_paid || expense.paid_date){
@@ -470,6 +483,8 @@ export class BooksComponent{
     let base = this;
     this.handleBadges(data.length, 0);
     this.depositsTableData.search = true;
+    this.depositsTableData.defSearch = true;
+    this.depositsTableData.defSearchString = this.searchString;
     this.depositsTableData.columns = [
       {"name": "title", "title": "Title"},
       {"name": "date", "title": "Date","type":"text","sortValue": function(value){
@@ -527,7 +542,6 @@ export class BooksComponent{
       this.hasDeposits = false;
       this.isLoading=false;
     }
-    // console.log("depositsData == ", base.depositsTableData.rows);
     /*this.hasDeposits = false;
      setTimeout(function(){
      base.hasDeposits = true;
@@ -537,6 +551,8 @@ export class BooksComponent{
   buildTableData(data){
     let base = this;
     this.handleBadges(data.length, 2);
+    this.jeTableData.defSearch = true;
+    this.jeTableData.defSearchString = this.searchString;
     this.jeTableData.columns = [
       {"name": "number", "title": "Number"},
       {"name": "date", "title": "Date","type":"text","sortValue": function(value){
@@ -1254,7 +1270,6 @@ export class BooksComponent{
     }
     this.detailedReportChartOptions.legend = {enabled: true};
   }
-
 
   getDepositsData(inputData) {
     let tempData = _.cloneDeep(inputData);

@@ -75,7 +75,7 @@ export class VendorComponent {
               private usersService: CompanyUsers,private titleService:pageTitleService, private reportsService: ReportService) {
     this.titleService.setPageTitle("Vendors");
     this.vendorForm = this._fb.group(_vendorForm.getForm());
-    this.companyId = Session.getCurrentCompany(); ;
+    this.companyId = Session.getCurrentCompany();
     this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteVendor(toast));
     this.loadingService.triggerLoadingEvent(true);
     this.companyService.companies().subscribe(companies => {
