@@ -280,7 +280,7 @@ export class DimensionsComponent{
     for( var i in  tempData) {
       tempJsonArray = {};
       tempJsonArray["Name"] = tempData[i].name;
-      tempJsonArray["Values"] = tempData[i].values;
+      tempJsonArray["Values"] = tempData[i].values.join();
       tempJsonArray["Description"] = tempData[i].desc;
 
       newTableData.push(tempJsonArray);

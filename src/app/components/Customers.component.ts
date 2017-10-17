@@ -394,7 +394,7 @@ export class CustomersComponent {
       tempJsonArray = {};
       tempJsonArray["Name"] = tempData[i].customer_name;
       tempJsonArray["EIN"] = tempData[i].customer_ein;
-      tempJsonArray["Email"] = tempData[i].email_ids;
+      tempJsonArray["Email"] = tempData[i].email_ids.join();
       tempJsonArray["Phone Number"] = tempData[i].phone_number;
 
       newTableData.push(tempJsonArray);
