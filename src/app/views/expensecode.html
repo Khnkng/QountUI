@@ -2,6 +2,13 @@
     <div class="column large-12 medium-12 small-12 foo-container">
         <div class="add-share-buttons add-share-adjust text-right">
             <span class="pointer" (click)="showAddItemCode()"><i class="icon ion-ios-plus-outline"></i><span>Expense Code</span></span>
+            <span class="footable-download">
+              <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
+              <div class="dropdown-pane bottom export-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation >
+                <div (click)="exportToExcel()" class="export-option">Export To Excel</div>
+                <div (click)="exportToPDF()" class="export-option">Export To PDF</div>
+              </div>
+            </span>
         </div>
         <foo-table #fooTableDir="fooTable" class="expense_search bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>

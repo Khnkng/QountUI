@@ -1,141 +1,149 @@
 <div>
-    <header>
-    </header>
-    <div class="column large-12 medium-12 small-12 foo-container">
-        <div class="row add-share-buttons add-share-adjust">
-            <div class="column medium-12 text-right">
-            <span class="pointer" (click)="showCreateTax()">
-                <i class="icon ion-ios-plus-outline"></i>
-                <span>Taxes</span>
-            </span>
-            </div>
-        </div>
-        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+  <header>
+  </header>
+  <div class="column large-12 medium-12 small-12 foo-container">
+    <div class="row add-share-buttons add-share-adjust">
+      <div class="column medium-12 text-right">
+        <span class="pointer" (click)="showCreateTax()">
+            <i class="icon ion-ios-plus-outline"></i>
+            <span>Taxes</span>
+        </span>
+        <span class="footable-download">
+          <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
+          <div class="dropdown-pane bottom export-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation >
+            <div (click)="exportToExcel()" class="export-option">Export To Excel</div>
+            <div (click)="exportToPDF()" class="export-option">Export To PDF</div>
+          </div>
+        </span>
+
+      </div>
     </div>
+    <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasItemCodes" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+  </div>
 
-    <div class="qount-off-canvas-menu">
-        <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
-            <section class="flyout-placeholder">
-                <div class="flyout-body flyout-shadow-effect">
-                    <!--here comes actual flyout code-->
-                    <div #createtaxes id="createtaxes" class="create-vendor">
-                        <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="TaxesForm">
+  <div class="qount-off-canvas-menu">
+    <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+      <section class="flyout-placeholder">
+        <div class="flyout-body flyout-shadow-effect">
+          <!--here comes actual flyout code-->
+          <div #createtaxes id="createtaxes" class="create-vendor">
+            <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="TaxesForm">
 
-                            <section class="form-section clearfix">
-                                <div class="row">
-                                    <div class="small-12 medium-12 columns">
-                                        <div class="form-section-left">
-                                            <header class="form-section-header">Basic Info</header>
-                                            <div class="row">
-                                                <div class="small-4 columns">
-                                                    <label class="text-right">Name</label>
-                                                </div>
-                                                <div class="small-6 columns">
-                                                    <input type="text" formControlName="name" placeholder="Name*">
-                                                    <div class="error" [hidden]="TaxesForm.controls.name.untouched || TaxesForm.controls.name.valid">Tax Name is required</div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="small-4 columns">
-                                                    <label class="text-right">TIN</label>
-                                                </div>
-                                                <div class="small-6 columns">
-                                                    <input type="text" formControlName="tin" placeholder="Tin*">
-                                                    <div class="error" [hidden]="TaxesForm.controls.tin.untouched || TaxesForm.controls.tin.valid">Tin is required</div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="small-4 columns">
-                                                    <label class="text-right">Tax Authority Name</label>
-                                                </div>
-                                                <div class="small-6 columns">
-                                                    <input type="text" formControlName="taxAuthorityName" placeholder="Tax Authority Name*">
-                                                    <div class="error" [hidden]="TaxesForm.controls.taxAuthorityName.untouched || TaxesForm.controls.taxAuthorityName.valid">TaxAuthority Name is required</div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="small-4 columns">
-                                                    <label class="text-right">Tax Authority Id</label>
-                                                </div>
-                                                <div class="small-6 columns">
-                                                    <input type="text" formControlName="taxAuthorityId" placeholder="Tax Authority Id*">
-                                                    <div class="error" [hidden]="TaxesForm.controls.taxAuthorityId.untouched || TaxesForm.controls.taxAuthorityId.valid">TaxAuthorityId is required</div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="small-4 columns">
-                                                    <label class="text-right">Tax Liability COA</label>
-                                                </div>
-                                                <div class="small-6 columns custom-qount-form-field">
-                                                    <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="taxLiabilityCoa" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
-                                                        <option *ngFor="let coa of chartOfAccounts" [value]="coa.name">{{coa.number}} - {{coa.name}}</option>
-                                                    </select>
-                                                    <div class="error" [hidden]="TaxesForm.controls.taxLiabilityCoa.untouched || TaxesForm.controls.taxLiabilityCoa.valid">TaxLiabilityCoa is required</div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="small-4 columns">
-                                                    <label class="text-right">Description</label>
-                                                </div>
-                                                <div class="small-6 columns">
-                                                    <input type="text" formControlName="description" placeholder="Description*">
-                                                    <div class="error" [hidden]="TaxesForm.controls.description.untouched || TaxesForm.controls.description.valid">Description is required</div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="small-4 columns">
-                                                    <label class="text-right">Tax Rate</label>
-                                                </div>
-                                                <div class="small-6 columns">
-                                                    <input type="text" formControlName="taxRate" placeholder="Tax Rate*" (change)="ratetax()">
-                                                    <div class="error" [hidden]="TaxesForm.controls.taxRate.untouched || TaxesForm.controls.taxRate.valid">TaxRate is required</div>
-                                                </div>
-                                            </div>
+              <section class="form-section clearfix">
+                <div class="row">
+                  <div class="small-12 medium-12 columns">
+                    <div class="form-section-left">
+                      <header class="form-section-header">Basic Info</header>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Name</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="name" placeholder="Name*">
+                          <div class="error" [hidden]="TaxesForm.controls.name.untouched || TaxesForm.controls.name.valid">Tax Name is required</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">TIN</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="tin" placeholder="Tin*">
+                          <div class="error" [hidden]="TaxesForm.controls.tin.untouched || TaxesForm.controls.tin.valid">Tin is required</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Tax Authority Name</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="taxAuthorityName" placeholder="Tax Authority Name*">
+                          <div class="error" [hidden]="TaxesForm.controls.taxAuthorityName.untouched || TaxesForm.controls.taxAuthorityName.valid">TaxAuthority Name is required</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Tax Authority Id</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="taxAuthorityId" placeholder="Tax Authority Id*">
+                          <div class="error" [hidden]="TaxesForm.controls.taxAuthorityId.untouched || TaxesForm.controls.taxAuthorityId.valid">TaxAuthorityId is required</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Tax Liability COA</label>
+                        </div>
+                        <div class="small-6 columns custom-qount-form-field">
+                          <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="taxLiabilityCoa" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
+                            <option *ngFor="let coa of chartOfAccounts" [value]="coa.name">{{coa.number}} - {{coa.name}}</option>
+                          </select>
+                          <div class="error" [hidden]="TaxesForm.controls.taxLiabilityCoa.untouched || TaxesForm.controls.taxLiabilityCoa.valid">TaxLiabilityCoa is required</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Description</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="description" placeholder="Description*">
+                          <div class="error" [hidden]="TaxesForm.controls.description.untouched || TaxesForm.controls.description.valid">Description is required</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Tax Rate</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="taxRate" placeholder="Tax Rate*" (change)="ratetax()">
+                          <div class="error" [hidden]="TaxesForm.controls.taxRate.untouched || TaxesForm.controls.taxRate.valid">TaxRate is required</div>
+                        </div>
+                      </div>
 
-                                        </div>
-                                        <div class="form-section-left">
-                                            <header class="form-section-header">Taxes Info</header>
-
-                                            <div class="row">
-                                                <div class="small-4 columns">
-                                                    <label class="text-right">Compound Tax</label>
-                                                </div>
-                                                <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="checkbox" formControlName="compoundTax" style="margin-top:6px;" />
-                                                    <div class="error" [hidden]="TaxesForm.controls.compoundTax.untouched || TaxesForm.controls.compoundTax.valid">CompoundTax is required</div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="small-4 columns">
-                                                    <label class="text-right">Recoverable Tax</label>
-                                                </div>
-                                                <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="checkbox" formControlName="recoverableTax" style="margin-top:6px;" />
-                                                    <div class="error" [hidden]="TaxesForm.controls.recoverableTax.untouched || TaxesForm.controls.recoverableTax.valid">RecoverableTax is required</div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="small-4 columns">
-                                                    <label class="text-right">On Invoices</label>
-                                                </div>
-                                                <div class="small-6 columns custom-qount-form-field">
-                                                    <input type="checkbox" formControlName="visibleOnInvoices" style="margin-top:6px;" />
-                                                    <div class="error" [hidden]="TaxesForm.controls.visibleOnInvoices.untouched || TaxesForm.controls.visibleOnInvoices.valid">visibleOnInvoices is required</div>
-                                                </div>
-                                            </div>
-                                            </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="small-12 medium-12 columns">
-                                        <button class="button create small float-right" [disabled]="!isValid(TaxesForm)" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
-                                    </div>
-                                </div>
-                            </section>
-                        </form>
                     </div>
+                    <div class="form-section-left">
+                      <header class="form-section-header">Taxes Info</header>
+
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Compound Tax</label>
+                        </div>
+                        <div class="small-6 columns custom-qount-form-field">
+                          <input type="checkbox" formControlName="compoundTax" style="margin-top:6px;" />
+                          <div class="error" [hidden]="TaxesForm.controls.compoundTax.untouched || TaxesForm.controls.compoundTax.valid">CompoundTax is required</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Recoverable Tax</label>
+                        </div>
+                        <div class="small-6 columns custom-qount-form-field">
+                          <input type="checkbox" formControlName="recoverableTax" style="margin-top:6px;" />
+                          <div class="error" [hidden]="TaxesForm.controls.recoverableTax.untouched || TaxesForm.controls.recoverableTax.valid">RecoverableTax is required</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">On Invoices</label>
+                        </div>
+                        <div class="small-6 columns custom-qount-form-field">
+                          <input type="checkbox" formControlName="visibleOnInvoices" style="margin-top:6px;" />
+                          <div class="error" [hidden]="TaxesForm.controls.visibleOnInvoices.untouched || TaxesForm.controls.visibleOnInvoices.valid">visibleOnInvoices is required</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-            </section>
+                <div class="row">
+                  <div class="small-12 medium-12 columns">
+                    <button class="button create small float-right" [disabled]="!isValid(TaxesForm)" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
+                  </div>
+                </div>
+              </section>
+            </form>
+          </div>
         </div>
+      </section>
     </div>
-    </div>
+  </div>
+</div>

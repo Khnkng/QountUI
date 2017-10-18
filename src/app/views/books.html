@@ -141,6 +141,17 @@
       <div *ngIf="tabDisplay[1].display == 'block'" class="column small-12 medium-12 large-12" id="deposits">
         <div class="row">
           <div class="column">
+            <div class="row float-right"  *ngIf="hasDeposits">
+              <div cass="column large-12 medium-12 small-12">
+                <div class="report-icon-header">
+                  <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
+                  <div class="dropdown-pane bottom export-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation >
+                    <div (click)="exportToExcel('deposits')" class="export-option">Export To Excel</div>
+                    <div (click)="exportToPDF('deposits')" class="export-option">Export To PDF</div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasDeposits" [data]="depositsTableData" [options]="depositsTableOptions" (onRowAction)="handleDepositAction($event)" (onSearch)="setSearchString($event)"></foo-table>
             <div class=" callout entry-callout text-center" [hidden]="isLoading" *ngIf="!hasDeposits">
               <div class="woo-woo">Woot Woot!</div>
@@ -152,6 +163,18 @@
       <div *ngIf="tabDisplay[2].display == 'block'" class="column small-12 medium-12 large-12" id="expenses">
         <div class="row">
           <div class="column">
+            <div class="row float-right" *ngIf="hasExpenses">
+              <div cass="column large-12 medium-12 small-12">
+                <div class="report-icon-header">
+                  <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
+                  <div class="dropdown-pane bottom export-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation>
+                    <div (click)="exportToExcel('expenses')" class="export-option">Export To Excel</div>
+                    <div (click)="exportToPDF('expenses')" class="export-option">Export To PDF</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <foo-table class="bigpay-dashboard bighalf-footable" *ngIf="hasExpenses" [data]="expensesTableData" [options]="expensesTableOptions" (onRowAction)="handleExpenseAction($event)" (onSearch)="setSearchString($event)"></foo-table>
             <div class=" callout entry-callout text-center" [hidden]="isLoading" *ngIf="!hasExpenses">
               <div class="woo-woo">Woot Woot!</div>
@@ -163,6 +186,17 @@
       <div *ngIf="tabDisplay[3].display == 'block'" class="column small-12 medium-12 large-12" id="journalEntries">
         <div class="row">
           <div class="column">
+            <div class="row float-right" *ngIf="hasJournalEntries">
+              <div cass="column large-12 medium-12 small-12">
+                <div class="report-icon-header">
+                  <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
+                  <div class="dropdown-pane bottom export-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation>
+                    <div (click)="exportToExcel('journalEntries')" class="export-option">Export To Excel</div>
+                    <div (click)="exportToPDF('journalEntries')" class="export-option">Export To PDF</div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <foo-table class="bigpay-dashboard bighalf-footable je-footable" *ngIf="hasJournalEntries" [data]="jeTableData" [options]="jeTableOptions" (onRowAction)="handleAction($event)" (onSearch)="setSearchString($event)"></foo-table>
             <div class=" callout entry-callout text-center" [hidden]="isLoading" *ngIf="!hasJournalEntries">
               <div class="woo-woo">Woot Woot!</div>

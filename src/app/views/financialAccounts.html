@@ -9,6 +9,13 @@
         <div class="row add-share-buttons add-share-adjust">
             <div class="column medium-12 text-right">
                 <span class="pointer"  (click)="showAddAccount()"><i class="icon ion-ios-plus-outline"></i><span>Account</span></span>
+                <span class="footable-download">
+                  <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
+                  <div class="dropdown-pane bottom export-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation >
+                    <div (click)="exportToExcel()" class="export-option">Export To Excel</div>
+                    <div (click)="exportToPDF()" class="export-option">Export To PDF</div>
+                  </div>
+                </span>
             </div>
         </div>
         <foo-table #fooTableDir="fooTable" class="bighalf-footable account_search" *ngIf="hasAccounts" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
