@@ -60,6 +60,7 @@ export class ToolsComponent {
       this.dimensionCount = badges.dimensions;
       this.accountsCount = badges.accounts;
       this.budgetsCount=badges.budgetsCount;
+      this.employeeCount = badges.employeesCount;
     }, error => this.handleError(error));
   }
 
