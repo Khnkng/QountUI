@@ -64,6 +64,7 @@ export class DepositComponent{
     routeSubscribe:any;
     formattedLineTotal:string;
     localeFormat:string='en-US';
+    selectedEntityID:string;
 
 
     /*mapping changes*/
@@ -134,6 +135,7 @@ export class DepositComponent{
                 base.accountComboBox.setValue(account, 'name');
             });
             this.setDueDate(this.defaultDate);
+            this.selectedEntityID=null;
             this.setDefaultDepositType();
         }else {
             let prevState = this.stateService.getPrevState();
@@ -460,9 +462,11 @@ export class DepositComponent{
             let data = this._depositLineForm.getData(itemForm);
             data.entity_id= entity.id;
             this._depositLineForm.updateForm(itemForm, data);
-        } else{
+            this.selectedEntityID= entity.id;
+        } else if(!entity || entity=='--None--'){
             let data = this._depositLineForm.getData(itemForm);
             data.entity_id= null;
+            this.selectedEntityID=null;
             this._depositLineForm.updateForm(itemForm, data);
         }
     }
@@ -841,7 +845,7 @@ export class DepositComponent{
          }
          this.mappingFlyoutCSS="expanded";
          this.loadingService.triggerLoadingEvent(true);
-         this.depositService.unMappedInvoices(this.currentCompanyId,"false",this.bankAccountID)
+         this.depositService.unMappedInvoices(this.currentCompanyId,"false",this.bankAccountID,this.selectedEntityID)
             .subscribe(mappings => {
               this.buildTableData(mappings || []);
             }, error => {
@@ -894,6 +898,7 @@ export class DepositComponent{
      data.mapping_id = this.selectedMappingID;
      this._depositForm.updateForm(this.depositForm, data);
      this.mappingFlyoutCSS="collapsed";
+     this.selectedEntityID=null;
      }
 
 
