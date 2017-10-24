@@ -463,7 +463,7 @@ export class DepositComponent{
             data.entity_id= entity.id;
             this._depositLineForm.updateForm(itemForm, data);
             this.selectedEntityID= entity.id;
-        } else{
+        } else if(!entity || entity=='--None--'){
             let data = this._depositLineForm.getData(itemForm);
             data.entity_id= null;
             this.selectedEntityID=null;
