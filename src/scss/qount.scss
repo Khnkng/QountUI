@@ -4661,3 +4661,107 @@ div.footable-loader {
     color: #384986;
   }
 }
+
+
+
+.collaboration {
+  .export-dropdown div {
+    padding: inherit !important;
+  }
+  .export-option {
+    span i {
+      margin-right:20px;
+    }
+  }
+  .dropdown-pane {
+    position: relative !important;
+    visibility: visible;
+    display: block;
+    padding:5px 5px 0 5px!important;
+    border-radius: 0 0 3px 3px;
+  }
+  .hr-text {
+    line-height: 1em;
+    position: relative;
+    outline: 0;
+    border: 0;
+    color: black;
+    text-align: center;
+    height: 1.5em;
+    &:before {
+      content: '';
+      // use the linear-gradient for the fading effect
+      // use a solid background color for a solid bar
+      background: linear-gradient(#818078, transparent);
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+    }
+    &:after {
+      content: attr(data-content);
+      position: relative;
+      display: inline-block;
+      color: black;
+      padding: 0 .5em;
+      line-height: 1.5em;
+      // this is really the only tricky part, you need to specify the background color of the container element...
+      background-color: #fcfcfa;
+    }
+  }
+  .post {
+    border:1px solid #DCDEDD;
+    padding: 10px 20px;
+  }
+  .post-user {
+    margin-top:20px;
+    span {
+      margin-right:10px;
+    }
+  }
+
+  .post-body {
+    padding-left:30px;
+  }
+
+  .post-header {
+    padding: 10px 0 10px 15px;
+    border: 1px solid #DCDEDD;
+    background-color: #E5E5E5;
+    span {
+      margin-right:20px;
+    }
+  }
+
+  .round {
+    padding: 7px;
+    background-color: #384986;
+    color:#ffffff;
+    border-radius: 50%;
+  }
+
+  .comments {
+    background-color: #e3e5e5;
+  }
+
+  .post-footer div{
+    margin-right: 20px;
+  }
+
+  .comments-count {
+    padding-left:45px;
+    color: #384986;
+    span{
+      margin-right:5px;
+    }
+  }
+
+  .user {
+    color: #384986;
+    font-size: 20px;
+  }
+
+}
+
+

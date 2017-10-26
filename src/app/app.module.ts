@@ -101,6 +101,7 @@ import {PaymentsPlan}from"./forms/PaymentsPlan.form";
 import {RDCreditsComponent} from "./components/RDCredits.component";
 import {RDcreditsService} from "./services/RDcredits.service";
 import {RDcreditsForm} from "./forms/RDcredits.form";
+import {CollaborationComponent} from "./components/Collaboration.component";
 
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
@@ -350,6 +351,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       path: 'rdCredits',
       component: RDCreditsComponent,
       canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'collaboration',
+      component: CollaborationComponent,
+      canActivate: [LoggedInActivator]
     }
   ]), PaymentsModule, ReportsModule, InvoicesModule
   ],
@@ -359,7 +365,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
     ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
     CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent,
-    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent],
+    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent,CollaborationComponent],
   exports: [RouterModule],
   bootstrap: [ AppComponent ],
   providers: [APP_BASE, COAForm,MetricsForm,MetricsLineForm,metricPeriodForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
