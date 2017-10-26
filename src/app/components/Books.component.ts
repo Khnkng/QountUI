@@ -1156,7 +1156,7 @@ export class BooksComponent{
                     }
                 },
                 title: {
-                    text: 'Revnue vs Expenses',
+                    text: 'Revenue vs Expenses',
                     align: 'left',
                     style: {
                         color: '#878787',
@@ -1227,11 +1227,12 @@ export class BooksComponent{
     }
 
     getDataArray(obj, categories){
-        let result = [];
-        _.each(obj, function(value, key){
-            result.push(value);
-        });
-        return result;
+      let result = [];
+      _.each(categories, function(category){
+        let value = obj[category] || 0;
+        result.push(value);
+      });
+      return result;
     }
 
     getFormattedAmount(amount){
