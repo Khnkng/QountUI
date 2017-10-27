@@ -4745,6 +4745,10 @@ div.footable-loader {
     background-color: #e3e5e5;
   }
 
+  .post-footer {
+    font-size: 14px;
+  }
+
   .post-footer div{
     margin-right: 20px;
   }
@@ -4752,6 +4756,7 @@ div.footable-loader {
   .comments-count {
     padding-left:45px;
     color: #384986;
+    font-size: 17px;
     span{
       margin-right:5px;
     }
@@ -4762,6 +4767,58 @@ div.footable-loader {
     font-size: 20px;
   }
 
+  .material-icons {
+    vertical-align: middle;
+    margin-right:5px;
+    color:#676c75;
+    font-size: 17px;
+  }
+
+  .likeOptions {
+    font-size: 14pt;
+    margin-right:5px;
+  }
+
+  .likeSeparator {
+    position: relative;
+    bottom:3px;
+  }
+
+  .commonColor1 {
+    color:#384986;
+  }
+
+  .commonColor2 {
+    color:#878787;
+  }
+
+  .commonColor3 {
+    color:#676c75 !important;
+  }
+
+
+  .inputContainer {
+    display:flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #dddfe2;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 16px;
+  }
+
+  .inputAttachments {
+    height: 32px;
+    margin-top: 0;
+    margin-bottom: 0;
+    align-self: flex-end;
+    display: flex;
+    margin: 4px 0 4px auto;
+    padding-right: 4px;
+    position: static;
+    bottom: 0;
+    right: 0;
+  }
 }
 
 
