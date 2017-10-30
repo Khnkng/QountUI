@@ -591,11 +591,20 @@ export class ExpenseComponent{
         }
     }
 
+    setUpdatedFlagInStates(){
+      if(this.stateService.states) {
+        _.each(this.stateService.states, function(state){
+          let data = state.data || {};
+          data.refreshData = true;
+        });
+      }
+    }
 
     updateExpenseDetails(){
         this.expenseService.updateExpense(this.tempData, this.currentCompanyId)
             .subscribe(response =>{
                 this.loadingService.triggerLoadingEvent(false);
+                this.setUpdatedFlagInStates();
                 this.toastService.pop(TOAST_TYPE.success, "Expense Updated successfully");
                 this.showExpensesPage();
             }, error => {
