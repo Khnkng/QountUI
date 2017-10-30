@@ -800,7 +800,8 @@ export class JournalEntryComponent{
 
     processJournalEntry(journalEntry){
         this.jeDetails=journalEntry;
-        this.onJETypeSelect(this.jeDetails.jeType);
+        let jeType = journalEntry.jeType? journalEntry.jeType: 'Other';
+        this.onJETypeSelect(jeType);
         this.setBadge();
         journalEntry.journalLines = _.orderBy(journalEntry.journalLines, ['entryType'], ['desc']);
         if(journalEntry.journalLines && journalEntry.journalLines.length == 0){
