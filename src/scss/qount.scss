@@ -4670,16 +4670,69 @@ div.footable-loader {
   }
   .export-option {
     span i {
-      margin-right:20px;
+      margin-right: 20px;
     }
   }
-  .dropdown-pane {
+  .dropdown-pane1 {
     position: relative !important;
     visibility: visible;
     display: block;
-    padding:5px 5px 0 5px!important;
+    padding: 5px 5px 0 5px !important;
     border-radius: 0 0 3px 3px;
   }
+
+
+
+
+
+  .badge-dropdown {
+    .dropdown-pane {
+      position: absolute !important;
+      padding: 0 !important;
+      border-radius: 0 0 3px 3px;
+    }
+    .export-option  {
+      padding:7px 7px !important;
+      margin-right:0 !important;
+      & :first-child, & :last-child {
+        input {
+          margin-bottom:0;
+        }
+      }
+      &:not(:first-child):not(:last-child) {
+        color: #FFFFFF !important;
+        .material-icons {
+          color: #FFFFFF;
+        }
+        input {
+          margin-bottom:0;
+          margin-left:20px;
+        }
+      }
+    }
+  }
+
+  .badgeIndicator {
+    span {
+      padding: 5px 4px;
+      border-radius: 50px;
+      position: relative;
+      .material-icons {
+        color:#FFFFFF;
+      }
+      &:not(:last-child) {
+        .material-icons {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+
+
+  .selectAll {
+    margin-left:20px;
+  }
+
   .hr-text {
     line-height: 1em;
     position: relative;
@@ -4723,6 +4776,19 @@ div.footable-loader {
 
   .post-body {
     padding-left:30px;
+
+    .attachment {
+      border:1px solid #676c75;
+      border-radius: 20px;
+      padding: 15px 20px 15px 0px;
+      margin-left:15px;
+
+      .material-icons {
+        font-size: 30px;
+        position: relative;
+        top:10px;
+      }
+    }
   }
 
   .post-header {
@@ -4796,6 +4862,11 @@ div.footable-loader {
     color:#676c75 !important;
   }
 
+  .comment-status {
+    border-radius: 20px;
+    padding: 0 10px;
+    margin:0;
+  }
 
   .inputContainer {
     display:flex;
@@ -4818,6 +4889,36 @@ div.footable-loader {
     position: static;
     bottom: 0;
     right: 0;
+  }
+
+  .inputContainer {
+    textarea {
+      border:none;
+      width:95%;
+      min-height: 10px;
+      margin-left: 20px !important;
+      margin-bottom:0;
+      resize: none;
+      padding-top:10px;
+    }
+
+    .presentation {
+      height: auto;
+      min-height: 32px;
+      padding-bottom: 7px;
+      padding-top: 7px;
+      display: block;
+      background-color: transparent !important;
+      line-height: 1.5;
+      border: 0 !important;
+      padding-left: 5px;
+      padding-right: 5px;
+      box-sizing: border-box;
+      cursor: text;
+      background: #fff;
+      word-break: break-word;
+    }
+
   }
 }
 

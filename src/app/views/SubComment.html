@@ -1,0 +1,42 @@
+<div class="row post comments" style="margin-left:20px;" *ngFor="let comment of comments;">
+  <div class="medium-12">
+    <div class="row post-user">
+      <div class="medium-11">
+        <span class="round">RT</span>
+        <span class="user">John CPA</span>
+        <span>Thank You for sending over,I will take a look at the document immediately!</span>
+      </div>
+      <div class="column medium-1 text-right">
+      </div>
+    </div>
+    <div class="row post-body" *ngIf="comment.documentName">
+      <div class="column medium-6 attachment">
+        <div class="row">
+          <div class="column medium-1">
+            <i class="material-icons commonColor1">attachment</i>
+          </div>
+          <div class="column medium-10 commonColor2" style="padding-left: 40px;">
+            <div>{{comment.documentName}}</div>
+            <div>001839</div>
+          </div>
+          <div class="column medium-1">
+            <i class="material-icons commonColor1">file_download</i>
+          </div>
+        </div>
+      </div>
+      <div class="column medium-6"></div>
+    </div>
+    <div class="row post-body">
+      <div class="column medium-11">
+        <span class="likeOptions commonColor1">Like</span>
+        <span class="likeSeparator likeOptions commonColor1">.</span>
+        <span class="likeOptions commonColor1">Replay</span>
+        <span class="likeSeparator likeOptions commonColor2">.</span>
+        <span class="likeOptions commonColor2">Yesterday at 4:16 PM</span>
+        <span class="likeOptions commonColor2"><a href="javascript:void (0)" class="button comment-status" [style.background-color]="getColor('task')">Task</a></span>
+      </div>
+      <div class="column medium-1"></div>
+    </div>
+    <sub-comment [data]="comment.children" *ngIf="comment.children.length>0"></sub-comment>
+  </div>
+</div>
