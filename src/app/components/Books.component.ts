@@ -1145,99 +1145,99 @@ export class BooksComponent{
     });
   }
 
-  getProfitTrendData(){
-    let base = this;
-    this.reportRequest.type = "incomeStatement";
-    this.reportRequest.metricsType = "profitTrend";
-    this.reportsService.generateMetricReport(this.reportRequest, this.currentCompanyId).subscribe(metricData => {
-      this.hasProfitTrendData = true;
-      this.profitTrendDataOptions = {
-        colors: this.chartColors,
-        chart: {
-          zoomType: 'xy',
-          style: {
-            fontFamily: 'NiveauGroteskRegular'
-          }
-        },
-        title: {
-          text: 'Revenue vs Expenses',
-          align: 'left',
-          style: {
-            color: '#878787',
-            fontFamily: 'NiveauGroteskLight',
-            fontSize: '24'
-          }
-        },
-        credits: {
-          enabled: false
-        },
-        legend: {
-          enabled: false
-        },
-        xAxis: [{
-          categories: metricData.categories,
-          crosshair: true,
-          labels: {
-            style: {
-              fontSize: '13px',
-              fontWeight: 'bold',
-              color: '#878787',
-              fill: '#878787'
-            }
-          }
-        }],
-        yAxis: [{ // Primary yAxis
-          labels: {
-            formatter: function () {
-              return base.getFormattedAmount(this.value);
-            },
-            style: {
-              fontSize: '13px',
-              color: '#878787',
-              fill: '#878787'
-            }
-          },
-          title: {
-            text: '',
-            style: {
-              color: Highcharts.getOptions().colors[2]
-            }
-          },
-        }],
-        tooltip: {
-          pointFormatter: function(){
-            return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.getFormattedAmount(this.y)+'</b><br/>'
-          },
-          shared: true
-        },
-        series: [{
-          name: 'Revenue',
-          type: 'column',
-          data: this.getDataArray(metricData.Income, metricData.categories),
-          tooltip: {
-            valuePrefix: metricData.currencySymbol
-          }
-        }, {
-          name: 'Expenses',
-          type: 'column',
-          data: this.getDataArray(metricData.Expenses, metricData.categories),
-          tooltip: {
-            valuePrefix: metricData.currencySymbol
-          }
-        }]
-      };
-      this.loadingService.triggerLoadingEvent(false);
-    }, error => {});
-  }
+    getProfitTrendData(){
+        let base = this;
+        this.reportRequest.type = "incomeStatement";
+        this.reportRequest.metricsType = "profitTrend";
+        this.reportsService.generateMetricReport(this.reportRequest, this.currentCompanyId).subscribe(metricData => {
+            this.hasProfitTrendData = true;
+            this.profitTrendDataOptions = {
+                colors: this.chartColors,
+                chart: {
+                    zoomType: 'xy',
+                    style: {
+                        fontFamily: 'NiveauGroteskRegular'
+                    }
+                },
+                title: {
+                    text: 'Revenue vs Expenses',
+                    align: 'left',
+                    style: {
+                        color: '#878787',
+                        fontFamily: 'NiveauGroteskLight',
+                        fontSize: '24'
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: [{
+                    categories: metricData.categories,
+                    crosshair: true,
+                    labels: {
+                        style: {
+                            fontSize: '13px',
+                            fontWeight: 'bold',
+                            color: '#878787',
+                            fill: '#878787'
+                        }
+                    }
+                }],
+                yAxis: [{ // Primary yAxis
+                    labels: {
+                        formatter: function () {
+                            return base.getFormattedAmount(this.value);
+                        },
+                        style: {
+                            fontSize: '13px',
+                            color: '#878787',
+                            fill: '#878787'
+                        }
+                    },
+                    title: {
+                        text: '',
+                        style: {
+                            color: Highcharts.getOptions().colors[2]
+                        }
+                    },
+                }],
+                tooltip: {
+                    pointFormatter: function(){
+                        return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.getFormattedAmount(this.y)+'</b><br/>'
+                    },
+                    shared: true
+                },
+                series: [{
+                    name: 'Revenue',
+                    type: 'column',
+                    data: this.getDataArray(metricData.Income, metricData.categories),
+                    tooltip: {
+                        valuePrefix: metricData.currencySymbol
+                    }
+                }, {
+                    name: 'Expenses',
+                    type: 'column',
+                    data: this.getDataArray(metricData.Expenses, metricData.categories),
+                    tooltip: {
+                        valuePrefix: metricData.currencySymbol
+                    }
+                }]
+            };
+            this.loadingService.triggerLoadingEvent(false);
+        }, error => {});
+    }
 
-  getDataArray(obj, categories){
-    let result = [];
-    _.each(categories, function(category){
-      let value = obj[category] || 0;
-      result.push(value);
-    });
-    return result;
-  }
+    getDataArray(obj, categories){
+      let result = [];
+      _.each(categories, function(category){
+        let value = obj[category] || 0;
+        result.push(value);
+      });
+      return result;
+    }
 
   getFormattedAmount(amount){
     return this.numeralService.format("$0,0.00", amount);

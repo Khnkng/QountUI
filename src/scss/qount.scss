@@ -2614,6 +2614,10 @@ table.footable-editing-right tr.footable-editing td {
         border-bottom: 3px solid #44B6E8;
         background-color: #fff;
       }
+      &:focus {
+        outline:none !important;
+        background: none !important;
+      }
     }
   }
 }
