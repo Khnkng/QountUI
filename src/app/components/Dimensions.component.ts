@@ -14,6 +14,7 @@ import {DimensionForm} from "../forms/Dimension.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {Router} from "@angular/router";
+import {ReportService} from "reportsUI/app/services/Reports.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -40,10 +41,13 @@ export class DimensionsComponent{
   dimensionName:any;
   tableColumns:Array<string> = ['name', 'id', 'values', 'desc'];
   routeSubscribe:any;
+  dimensionsTableColumns: Array<any> = ['Name', 'Values', 'Description'];
+  pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
 
   constructor(private _fb: FormBuilder, private _dimensionForm: DimensionForm, private dimensionService: DimensionService,private _router: Router,
                private loadingService:LoadingService,private switchBoard: SwitchBoard,
-        private toastService: ToastService, private companiesService: CompaniesService,private titleService:pageTitleService){
+        private toastService: ToastService, private companiesService: CompaniesService,private titleService:pageTitleService,
+              private reportsService: ReportService){
     this.titleService.setPageTitle("Dimensions");
     this.dimensionForm = this._fb.group(_dimensionForm.getForm());
     let companyId = Session.getCurrentCompany();
@@ -267,4 +271,64 @@ export class DimensionsComponent{
     }, 0)
     this.loadingService.triggerLoadingEvent(false);
   }
+
+  getDimensionsTableData(inputData) {
+    let tempData = _.cloneDeep(inputData);
+    let newTableData: Array<any> = [];
+    let tempJsonArray: any;
+
+    for( var i in  tempData) {
+      tempJsonArray = {};
+      tempJsonArray["Name"] = tempData[i].name;
+      tempJsonArray["Values"] = tempData[i].values.join();
+      tempJsonArray["Description"] = tempData[i].desc;
+
+      newTableData.push(tempJsonArray);
+    }
+
+    return newTableData;
+  }
+
+  buildPdfTabledata(fileType) {
+    this.pdfTableData['documentHeader'] = "Header";
+    this.pdfTableData['documentFooter'] = "Footer";
+    this.pdfTableData['fileType'] = fileType;
+    this.pdfTableData['name'] = "Name";
+
+    this.pdfTableData.tableHeader.values = this.dimensionsTableColumns;
+    this.pdfTableData.tableRows.rows = this.getDimensionsTableData(this.tableData.rows);
+  }
+
+  exportToExcel() {
+    this.buildPdfTabledata("excel");
+    this.reportsService.exportFooTableIntoFile(this.currentCompany, this.pdfTableData)
+      .subscribe(data =>{
+        let blob = new Blob([data._body], {type:"application/vnd.ms-excel"});
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link['download'] = "Dimensions.xls";
+        link.click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+      });
+    // jQuery('#example-dropdown').foundation('close');
+
+  }
+
+  exportToPDF() {
+    this.buildPdfTabledata("pdf");
+
+    this.reportsService.exportFooTableIntoFile(this.currentCompany, this.pdfTableData)
+      .subscribe(data =>{
+        var blob = new Blob([data._body], {type:"application/pdf"});
+        var link = jQuery('<a></a>');
+        link[0].href = URL.createObjectURL(blob);
+        link[0].download = "Dimensions.pdf";
+        link[0].click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+      });
+
+  }
+
 }

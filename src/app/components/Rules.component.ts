@@ -22,7 +22,7 @@ import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
-
+import {ReportService} from "reportsUI/app/services/Reports.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -73,13 +73,17 @@ export class RulesComponent {
     dateFormat:string;
     serviceDateformat:string;
     routeSubscribe:any;
+    rulesTableColumns: Array<any> = ['Source Type', 'Rule Name', 'COA', 'Effective Date'];
+    pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
 
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
     @ViewChild('selectedCOAComboBoxDir') selectedCOAComboBox: ComboBox;
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     constructor(private _router:Router, private customersService: CustomersService, private switchBoard:SwitchBoard,private companyService: CompaniesService,private _toastService: ToastService, private _fb: FormBuilder,private ruleservice:RulesService,private _ruleForm: RuleForm, private coaService: ChartOfAccountsService,
-        private dimensionService: DimensionService,private titleService:pageTitleService,private financialAccountsService: FinancialAccountsService, private _actionForm: RuleActionForm,private loadingService:LoadingService,private dateFormater: DateFormater) {
+        private dimensionService: DimensionService,private titleService:pageTitleService,private financialAccountsService: FinancialAccountsService,
+                private _actionForm: RuleActionForm,private loadingService:LoadingService,private dateFormater: DateFormater,
+                private reportsService: ReportService) {
         this.titleService.setPageTitle("Rules");
         this.companyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
@@ -848,4 +852,65 @@ cleanData(data){
                 this.dimensions = dimensions;
             });
     }
+
+  getRulesTableData(inputData) {
+    let tempData = _.cloneDeep(inputData);
+    let newTableData: Array<any> = [];
+    let tempJsonArray: any;
+
+    for( var i in  tempData) {
+      tempJsonArray = {};
+      tempJsonArray["Source Type"] = tempData[i].sourceType;
+      tempJsonArray["Rule Name"] = tempData[i].ruleName;
+      tempJsonArray["COA"] = tempData[i].chartOfAccount;
+      tempJsonArray["Effective Date"] = tempData[i].effectiveDate;
+
+      newTableData.push(tempJsonArray);
+    }
+
+    return newTableData;
+  }
+
+  buildPdfTabledata(fileType) {
+    this.pdfTableData['documentHeader'] = "Header";
+    this.pdfTableData['documentFooter'] = "Footer";
+    this.pdfTableData['fileType'] = fileType;
+    this.pdfTableData['name'] = "Name";
+
+    this.pdfTableData.tableHeader.values = this.rulesTableColumns;
+    this.pdfTableData.tableRows.rows = this.getRulesTableData(this.tableData.rows);
+  }
+
+  exportToExcel() {
+    this.buildPdfTabledata("excel");
+    this.reportsService.exportFooTableIntoFile(this.companyId, this.pdfTableData)
+      .subscribe(data =>{
+        let blob = new Blob([data._body], {type:"application/vnd.ms-excel"});
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link['download'] = "Rules.xls";
+        link.click();
+      }, error =>{
+        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+      });
+    // jQuery('#example-dropdown').foundation('close');
+
+  }
+
+  exportToPDF() {
+    this.buildPdfTabledata("pdf");
+
+    this.reportsService.exportFooTableIntoFile(this.companyId, this.pdfTableData)
+      .subscribe(data =>{
+        var blob = new Blob([data._body], {type:"application/pdf"});
+        var link = jQuery('<a></a>');
+        link[0].href = URL.createObjectURL(blob);
+        link[0].download = "Rules.pdf";
+        link[0].click();
+      }, error =>{
+        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+      });
+
+  }
+
 }
