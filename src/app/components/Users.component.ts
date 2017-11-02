@@ -44,6 +44,7 @@ export class UsersComponent {
   routeSubscribe:any;
   usersTableColumns: Array<any> = ['First Name', 'Last Name', 'Email', 'Role'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:string = "hidden";
 
   constructor(private _fb: FormBuilder, private usersService: CompanyUsers, private _usersForm:UsersForm,
               private _router: Router, private _toastService: ToastService, private loadingService:LoadingService,
@@ -116,7 +117,12 @@ export class UsersComponent {
     });
     setTimeout(function(){
       base.hasUsersList = true;
-    }, 0)
+    }, 0);
+    setTimeout(function() {
+      if(base.hasUsersList){
+        base.showDownloadIcon = "visible";
+      }
+    },600);
     this.loadingService.triggerLoadingEvent(false);
   }
 

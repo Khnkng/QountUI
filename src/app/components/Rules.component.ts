@@ -75,6 +75,7 @@ export class RulesComponent {
     routeSubscribe:any;
     rulesTableColumns: Array<any> = ['Source Type', 'Rule Name', 'COA', 'Effective Date'];
     pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+    showDownloadIcon:string = "hidden";
 
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     @ViewChild('vendorCountryComboBoxDir') vendorCountryComboBox: ComboBox;
@@ -394,6 +395,12 @@ export class RulesComponent {
         setTimeout(function(){
            base.hasRuleList = true;
         });
+        setTimeout(function() {
+          if(base.hasRuleList){
+            base.showDownloadIcon = "visible";
+          }
+        },600);
+
     }
     handleAction($event){
         let action = $event.action;

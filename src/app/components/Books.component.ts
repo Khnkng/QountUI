@@ -109,6 +109,7 @@ export class BooksComponent{
   expenseTableColumns: Array<any> = ['Title', 'Expense Date', 'Bank Account', 'Amount'];
   journalEntriesTableColumns: Array<any> = ['Number', 'Date', 'Category', 'Source'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:boolean = false;
 
   constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
               private toastService: ToastService,private switchBoard:SwitchBoard, private loadingService:LoadingService, private companiesService: CompaniesService,
@@ -157,12 +158,15 @@ export class BooksComponent{
       } else if(params['tabId']=='deposits'){
         this.selectTab(1,"");
         this.hasDeposits = false;
+        this.showDownloadIcon = false;
       } else if(params['tabId']=='expenses'){
         this.selectTab(2,"");
         this.hasExpenses = false;
+        this.showDownloadIcon = false;
       } else if(params['tabId']=='journalEntries'){
         this.selectTab(3,"");
         this.hasJournalEntries = false;
+        this.showDownloadIcon = false;
       }
       else{
         console.log("error");
@@ -467,6 +471,7 @@ export class BooksComponent{
     if(data.length > 0){
       this.hasExpenses = true;
       this.isLoading=false;
+      this.displayFooTableDropdown();
     }else {
       this.hasExpenses = false;
       this.isLoading=false;
@@ -537,6 +542,7 @@ export class BooksComponent{
     if(data.length > 0){
       this.hasDeposits = true;
       this.isLoading=false;
+      this.displayFooTableDropdown();
     }else {
       this.hasDeposits = false;
       this.isLoading=false;
@@ -615,11 +621,19 @@ export class BooksComponent{
     if(data.length > 0){
       this.hasJournalEntries = true;
       this.isLoading=false;
+      this.displayFooTableDropdown();
     }else{
       this.hasJournalEntries = false;
       this.isLoading=false;
     }
     this.loadingService.triggerLoadingEvent(false);
+  }
+
+  displayFooTableDropdown(){
+    let base = this;
+    setTimeout(function() {
+        base.showDownloadIcon = true;
+    },840);
   }
 
   isAlreadyReversed(journalId){
