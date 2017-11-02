@@ -634,6 +634,7 @@ export class DepositComponent{
         _.each(this.stateService.states, function(state){
           let data = state.data || {};
           data.refreshData = true;
+          state.data = data;
         });
       }
     }
