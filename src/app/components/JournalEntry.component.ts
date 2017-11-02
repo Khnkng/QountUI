@@ -724,9 +724,20 @@ export class JournalEntryComponent{
             this.journalService.updateJournalEntry(this.cleanData(data), this.companyId)
                 .subscribe(journalEntry => {
                     this.stopLoaderAndShowMessage(false, "Journal Entry updated successfully");
+                    this.setUpdatedFlagInStates();
                     this.showDashboard();
                 }, error=> this.handleError(error));
         }
+    }
+
+    setUpdatedFlagInStates(){
+      if(this.stateService.states) {
+        _.each(this.stateService.states, function(state){
+          let data = state.data || {};
+          data.refreshData = true;
+          state.data = data;
+        });
+      }
     }
 
     handleError(error){
