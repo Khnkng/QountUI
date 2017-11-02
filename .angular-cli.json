@@ -37,7 +37,6 @@
         "assets/footable-standalone/js/footable.js",
         "assets/jquery-combo.js",
         "assets/ripple.js",
-        "../node_modules/socket.io-client/dist/socket.io.slim.js",
         "assets/tag-it.js"
       ],
       "environmentSource": "environments/environment.ts",

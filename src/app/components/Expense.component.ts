@@ -74,6 +74,7 @@ export class ExpenseComponent{
     routeSubscribe:any;
     formattedLineTotal:string;
     localeFormat:string='en-US';
+    selectedEntityID:string;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
@@ -129,7 +130,7 @@ export class ExpenseComponent{
             this.mappingFlyoutCSS="expanded";
             this.titleService.setPageTitle("Payments");
             this.loadingService.triggerLoadingEvent(true);
-            this.paymentsService.mappings(this.currentCompanyId,this.expenseType,"false",this.bankAccountID)
+            this.paymentsService.mappings(this.currentCompanyId,this.expenseType,"false",this.bankAccountID,this.selectedEntityID)
                 .subscribe(mappings => {
                     this.buildTableData(mappings || []);
                 }, error => {
@@ -153,6 +154,7 @@ export class ExpenseComponent{
                 base.accountComboBox.setValue(account, 'name');
             });
             this.setDueDate(this.defaultDate);
+            this.selectedEntityID=null;
             this.setDefaultExpenseType();
         }else {
             let prevState = this.stateService.getPrevState();
@@ -462,8 +464,10 @@ export class ExpenseComponent{
         let data = this._expenseItemForm.getData(itemForm);
         if(entity && entity.id){
             data.entity_id = entity.id;
+            this.selectedEntityID=entity.id;
         }else if(!entity || entity=='--None--'){
             data.entity_id='--None--';
+            this.selectedEntityID=null;
         }
         this._expenseItemForm.updateForm(itemForm, data);
     }
@@ -587,11 +591,21 @@ export class ExpenseComponent{
         }
     }
 
+    setUpdatedFlagInStates(){
+      if(this.stateService.states) {
+        _.each(this.stateService.states, function(state){
+          let data = state.data || {};
+          data.refreshData = true;
+          state.data = data;
+        });
+      }
+    }
 
     updateExpenseDetails(){
         this.expenseService.updateExpense(this.tempData, this.currentCompanyId)
             .subscribe(response =>{
                 this.loadingService.triggerLoadingEvent(false);
+                this.setUpdatedFlagInStates();
                 this.toastService.pop(TOAST_TYPE.success, "Expense Updated successfully");
                 this.showExpensesPage();
             }, error => {
@@ -811,6 +825,7 @@ export class ExpenseComponent{
         data.mapping_id = this.selectedMappingID;
         this._expenseForm.updateForm(this.expenseForm, data);
         this.mappingFlyoutCSS="collapsed";
+        this.selectedEntityID=null;
     }
 
     validateData(data){

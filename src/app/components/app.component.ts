@@ -60,7 +60,7 @@ export class AppComponent  implements OnInit{
     currentEnvironment:any;
 
     constructor(_switchBoard:SwitchBoard, private _router:Router, private route: ActivatedRoute, private toastService: ToastService,
-                private socketService: SocketService,private titleService:pageTitleService, private companyService: CompaniesService,
+                private titleService:pageTitleService, private companyService: CompaniesService,
                 private loadingService:LoadingService,private loginService: LoginService, private _toastService:ToastService,
                 private numeralService: NumeralService) {
         let self = this;

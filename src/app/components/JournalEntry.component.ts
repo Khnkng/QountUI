@@ -724,9 +724,20 @@ export class JournalEntryComponent{
             this.journalService.updateJournalEntry(this.cleanData(data), this.companyId)
                 .subscribe(journalEntry => {
                     this.stopLoaderAndShowMessage(false, "Journal Entry updated successfully");
+                    this.setUpdatedFlagInStates();
                     this.showDashboard();
                 }, error=> this.handleError(error));
         }
+    }
+
+    setUpdatedFlagInStates(){
+      if(this.stateService.states) {
+        _.each(this.stateService.states, function(state){
+          let data = state.data || {};
+          data.refreshData = true;
+          state.data = data;
+        });
+      }
     }
 
     handleError(error){
@@ -800,7 +811,8 @@ export class JournalEntryComponent{
 
     processJournalEntry(journalEntry){
         this.jeDetails=journalEntry;
-        this.onJETypeSelect(this.jeDetails.jeType);
+        let jeType = journalEntry.jeType? journalEntry.jeType: 'Other';
+        this.onJETypeSelect(jeType);
         this.setBadge();
         journalEntry.journalLines = _.orderBy(journalEntry.journalLines, ['entryType'], ['desc']);
         if(journalEntry.journalLines && journalEntry.journalLines.length == 0){
