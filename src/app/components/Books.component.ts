@@ -633,7 +633,7 @@ export class BooksComponent{
     let base = this;
     setTimeout(function() {
         base.showDownloadIcon = true;
-    },840);
+    },800);
   }
 
   isAlreadyReversed(journalId){
