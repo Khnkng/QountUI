@@ -12,6 +12,7 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {UserProfileService} from "qCommon/app/services/UserProfile.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
+import {environment} from "../../environments/environment";
 
 declare let _:any;
 declare let jQuery:any;
@@ -34,6 +35,7 @@ export class SwitchCompanyComponent{
     compSubscription:any;
     hasCompanyList:boolean;
     routeSubscribe:any;
+    currentEnvironment:any;
 
     constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
                 private companiesService: CompaniesService, private loadingService: LoadingService, private userProfileService: UserProfileService,
@@ -163,6 +165,7 @@ export class SwitchCompanyComponent{
         Session.setCurrentCompanyName(company.name);
         Session.setFiscalStartDate(company.fiscalStartDate);
         Session.setCurrentCompanyCurrency(company.defaultCurrency);
+        this.updateCookie(company);
         this.numeralService.switchLocale(company.defaultCurrency);
         Session.setLockDate(company.lockDate);
         this.switchBoard.onSwitchCompany.next({});
@@ -173,5 +176,42 @@ export class SwitchCompanyComponent{
         this.setDefaultCompany(company.id);
         let link = ['/dashboard'];
         this._router.navigate(link);
+    }
+
+    updateCookie(company){
+      this.currentEnvironment = environment;
+      let cookieKey = this.currentEnvironment.production? "prod": "dev";
+      let data=this.getCookieData(cookieKey);
+      if(data){
+        let obj=JSON.parse(data);
+        if(obj){
+          obj.user['default_company']['lock_date']=company.lockDate;
+          obj.user.default_company.fiscalStartDate?obj.user.default_company.fiscalStartDate=company.fiscalStartDate:"";
+          obj.user.defaultCompany=company.id;
+          obj.user.default_company.name=company.name;
+          obj.user.default_company.defaultCurrency=company.defaultCurrency;
+          if(cookieKey=="dev"){
+            document.cookie="dev="+JSON.stringify(obj)+";path=/;domain=qount.io";
+          }else if(cookieKey=="prod"){
+            document.cookie="prod="+JSON.stringify(obj)+";path=/;domain=qount.io";
+          }
+        }
+      }
+    }
+
+    getCookieData(cname){
+      let name = cname + "=";
+      let decodedCookie = decodeURIComponent(document.cookie);
+      let ca = decodedCookie.split(';');
+      for(let i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+        }
+      }
+      return "";
     }
 }
