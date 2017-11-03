@@ -61,6 +61,7 @@ export class TaxesComponent {
     routeSubscribe:any;
     taxesTableColumns: Array<any> = ['Tax Name', 'Tax Number', 'Display Invoices', 'Tax Authority Name', 'Tax Rate', 'COA', 'Recoverable Tax', 'Compound Tax'];
     pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+    showDownloadIcon:string = "hidden";
 
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _taxesForm:TaxesForm,
                 private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
@@ -147,9 +148,13 @@ export class TaxesComponent {
         });
         base.hasItemCodes = false;
         setTimeout(function(){
-
             base.hasItemCodes = true;
-        }, 0)
+        }, 0);
+        setTimeout(function() {
+          if(base.hasItemCodes){
+            base.showDownloadIcon = "visible";
+          }
+        },650);
         this.loadingService.triggerLoadingEvent(false);
     }
     getCompanyName(companyId){

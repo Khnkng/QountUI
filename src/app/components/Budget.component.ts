@@ -73,6 +73,7 @@ export class BudgetComponent{
   formattedNetProfit:string;
   budgetTableColumns: Array<any> = ['Name', 'Gross profit', 'Net Profit'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:string = "hidden";
 
   constructor(private _fb: FormBuilder, private _budgetForm: BudgetForm, private switchBoard: SwitchBoard,private _router: Router,
               private budgetService: BudgetService, private toastService: ToastService, private loadingService:LoadingService,
@@ -353,6 +354,11 @@ export class BudgetComponent{
     setTimeout(function(){
       base.hasBudget = true;
     }, 0);
+    setTimeout(function() {
+      if(base.hasBudget){
+        base.showDownloadIcon = "visible";
+      }
+    },600);
     this.loadingService.triggerLoadingEvent(false);
   }
 

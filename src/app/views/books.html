@@ -141,7 +141,7 @@
       <div *ngIf="tabDisplay[1].display == 'block'" class="column small-12 medium-12 large-12" id="deposits">
         <div class="row">
           <div class="column">
-            <div class="row float-right"  *ngIf="hasDeposits">
+            <div class="row float-right"  *ngIf="showDownloadIcon">
               <div cass="column large-12 medium-12 small-12">
                 <div class="report-icon-header">
                   <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
@@ -163,7 +163,7 @@
       <div *ngIf="tabDisplay[2].display == 'block'" class="column small-12 medium-12 large-12" id="expenses">
         <div class="row">
           <div class="column">
-            <div class="row float-right" *ngIf="hasExpenses">
+            <div class="row float-right" *ngIf="showDownloadIcon">
               <div cass="column large-12 medium-12 small-12">
                 <div class="report-icon-header">
                   <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
@@ -186,7 +186,7 @@
       <div *ngIf="tabDisplay[3].display == 'block'" class="column small-12 medium-12 large-12" id="journalEntries">
         <div class="row">
           <div class="column">
-            <div class="row float-right" *ngIf="hasJournalEntries">
+            <div class="row float-right" *ngIf="showDownloadIcon">
               <div cass="column large-12 medium-12 small-12">
                 <div class="report-icon-header">
                   <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>

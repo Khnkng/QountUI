@@ -62,7 +62,7 @@ export class CustomersComponent {
     ContactLineArray:FormArray = new FormArray([]);
     customersTableColumns: Array<any> = ['Name', 'EIN', 'Email', 'Phone Number'];
     pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
-
+    showDownloadIcon:string = "hidden";
 
     constructor(private _fb: FormBuilder, private customersService: CustomersService,
                 private _customersForm:CustomersForm,private _contactLineForm:ContactLineForm, private _router: Router, private _toastService: ToastService,
@@ -139,6 +139,11 @@ export class CustomersComponent {
         setTimeout(function(){
             base.hasCustomersList = true;
         });
+        setTimeout(function() {
+          if(base.hasCustomersList){
+            base.showDownloadIcon = "visible";
+          }
+        },650);
         this.loadingService.triggerLoadingEvent(false);
     }
 

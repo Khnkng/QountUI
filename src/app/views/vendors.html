@@ -6,7 +6,7 @@
 </div>
 <div class="row" foundation>
   <div class="column large-12 medium-12 small-12 foo-container">
-    <div class="row add-share-buttons add-share-adjust">
+    <div class="row add-share-buttons add-share-adjust" [style.visibility]="showDownloadIcon">
       <div class="column medium-12 small-12 text-right">
         <span class="pointer recon-selected-count" (click)="inviteVendor()"><i class="icon ion-ios-redo-outline"></i><span class="recon-selected-count">Invite</span></span>
         <span class="pointer" (click)="showCreateVendor()"><i class="icon ion-ios-plus-outline"></i><span>Vendor</span></span>

@@ -1,6 +1,6 @@
 <div class="row chart-of-accounts" foundation>
     <div class="column large-12 medium-12 small-12 foo-container">
-        <div class="add-share-buttons add-share-adjust text-right">
+        <div class="add-share-buttons add-share-adjust text-right" [style.visibility]="showDownloadIcon">
             <span class="pointer" (click)="showAddItemCode()"><i class="icon ion-ios-plus-outline"></i><span>Expense Code</span></span>
             <span class="footable-download">
               <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
