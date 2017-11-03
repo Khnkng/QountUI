@@ -61,6 +61,7 @@ export class ChartOfAccountsComponent{
   routeSubscribe:any;
   coaTableColumns: Array<any> = ['Number', 'Name', 'Type', 'Sub Type', 'Parent', 'Debit', 'Credit'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:string = "hidden";
 
   constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard,private _router: Router,
               private coaService: ChartOfAccountsService, private loadingService:LoadingService,
@@ -447,7 +448,12 @@ export class ChartOfAccountsComponent{
     });
     setTimeout(function(){
       base.hasCOAList = true;
-    }, 0)
+    }, 0);
+    setTimeout(function() {
+      if(base.hasCOAList){
+        base.showDownloadIcon = "visible";
+      }
+    },650);
     this.loadingService.triggerLoadingEvent(false);
   }
 

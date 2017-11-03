@@ -69,6 +69,7 @@ export class FinancialAccountsComponent{
   routeSubscribe:any;
   finActTableColumns: Array<any> = ['Name', 'Chart of Account', 'Start Balance Date', 'Starting Balance', 'Current Balance'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:string = "hidden";
 
   constructor(private _router:Router,private _fb: FormBuilder, private _financialAccountForm: FinancialAccountForm, private coaService: ChartOfAccountsService, private loadingService:LoadingService,
               private financialAccountsService: FinancialAccountsService, private toastService: ToastService,
@@ -372,7 +373,12 @@ export class FinancialAccountsComponent{
     setTimeout(function(){
       base.hasAccounts = true;
       base.loadingService.triggerLoadingEvent(false);
-    }, 0)
+    }, 0);
+    setTimeout(function() {
+      if(base.hasAccounts){
+        base.showDownloadIcon = "visible";
+      }
+    },600);
 
   }
 

@@ -75,6 +75,7 @@ export class lockComponent {
   routeSubscribe:any;
   lockTableColumns: Array<any> = ['Lock', 'Created Date', 'Created By'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:string = "hidden";
 
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _lockform:LockForm,
               private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
@@ -158,6 +159,11 @@ export class lockComponent {
     setTimeout(function(){
       base.hasItemCodes = true;
     });
+    setTimeout(function() {
+      if(base.hasItemCodes){
+        base.showDownloadIcon = "visible";
+      }
+    },600);
     this.loadingService.triggerLoadingEvent(false);
   }
   handleAction($event){

@@ -68,6 +68,7 @@ export class VendorComponent {
   routeSubscribe:any;
   vendorsTableColumns: Array<any> = ['Name', 'Type', 'EIN/SSN', 'Email', 'Phone Number'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:string = "hidden";
 
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
               private _router: Router, private loadingService:LoadingService,
@@ -185,7 +186,12 @@ export class VendorComponent {
     });
     setTimeout(function(){
       base.hasVendorsList = true;
-    }, 0)
+    }, 0);
+    setTimeout(function() {
+      if(base.hasVendorsList){
+        base.showDownloadIcon = "visible";
+      }
+    },700);
     this.loadingService.triggerLoadingEvent(false);
   }
 

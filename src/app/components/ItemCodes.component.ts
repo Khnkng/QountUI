@@ -52,6 +52,7 @@ export class ItemCodesComponent{
   routeSubscribe:any;
   itemsTableColumns: Array<any> = ['Name', 'Payment COA', 'Invoice COA'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:string = "hidden";
 
   constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard,private _router: Router,
               private codeService: CodesService, private toastService: ToastService, private loadingService:LoadingService,
@@ -302,7 +303,12 @@ export class ItemCodesComponent{
     });
     setTimeout(function(){
       base.hasItemCodes = true;
-    }, 0)
+    }, 0);
+    setTimeout(function() {
+      if(base.hasItemCodes){
+        base.showDownloadIcon = "visible";
+      }
+    },650);
     this.loadingService.triggerLoadingEvent(false);
   }
 

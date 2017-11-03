@@ -48,6 +48,7 @@ export class PaymentsPlanComponent{
     serviceDateformat:string;
     paymentsPlanTableColumns: Array<any> = ['Name', 'Frequency', 'End Date'];
     pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+    showDownloadIcon:string = "hidden";
 
     constructor(private _fb: FormBuilder, private _paymentPlanForm: PaymentsPlan, private switchBoard: SwitchBoard,private _router: Router,
                 private codeService: PaymentsPlanService, private toastService: ToastService, private loadingService:LoadingService,
@@ -218,6 +219,11 @@ export class PaymentsPlanComponent{
         setTimeout(function(){
             base.hasPaymentPlans = true;
         }, 0);
+        setTimeout(function() {
+          if(base.hasPaymentPlans){
+            base.showDownloadIcon = "visible";
+          }
+        },600);
         this.loadingService.triggerLoadingEvent(false);
     }
 

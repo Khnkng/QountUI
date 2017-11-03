@@ -43,6 +43,7 @@ export class DimensionsComponent{
   routeSubscribe:any;
   dimensionsTableColumns: Array<any> = ['Name', 'Values', 'Description'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon: string = "hidden";
 
   constructor(private _fb: FormBuilder, private _dimensionForm: DimensionForm, private dimensionService: DimensionService,private _router: Router,
                private loadingService:LoadingService,private switchBoard: SwitchBoard,
@@ -268,7 +269,12 @@ export class DimensionsComponent{
     });
     setTimeout(function(){
       base.hasDimensions = true;
-    }, 0)
+    }, 0);
+    setTimeout(function() {
+      if(base.hasDimensions){
+        base.showDownloadIcon = "visible";
+      }
+    },600);
     this.loadingService.triggerLoadingEvent(false);
   }
 

@@ -64,6 +64,7 @@ export class MetricsComponent{
   routeSubscribe:any;
   metricsTableColumns: Array<any> = ['Name', 'Type', 'Sub Type', 'Parent'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:string = "hidden";
 
   constructor(private _fb: FormBuilder, private _metricsForm: MetricsForm, private switchBoard: SwitchBoard,private _router: Router,
               private coaService: ChartOfAccountsService,private metricService: MetricsService, private loadingService:LoadingService,
@@ -401,6 +402,11 @@ export class MetricsComponent{
     setTimeout(function(){
       base.hasMetricsList = true;
     }, 0);
+    setTimeout(function() {
+      if(base.hasMetricsList){
+        base.showDownloadIcon = "visible";
+      }
+    },600);
     this.loadingService.triggerLoadingEvent(false);
   }
 
