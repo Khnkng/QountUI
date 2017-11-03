@@ -949,8 +949,7 @@ export class JournalEntryComponent{
             this.stayFlyout = false;
             this.dimensionFlyoutCSS = "";
         }else {
-            let link = ['books', 'journalEntries'];
-            this._router.navigate(link);
+            this.goToPreviousPage();
         }
     }
 

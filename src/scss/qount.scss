@@ -4725,3 +4725,7 @@ div.footable-loader {
     }
   }
 }
+
+.footable.table > thead > tr > th, .footable.table > tbody > tr > td.wrap{
+  white-space: nowrap !important;
+}
