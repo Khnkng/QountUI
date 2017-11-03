@@ -471,7 +471,7 @@ export class BooksComponent{
     if(data.length > 0){
       this.hasExpenses = true;
       this.isLoading=false;
-      this.displayFooTableDropdown();
+      this.displayFooTableDropdown(700);
     }else {
       this.hasExpenses = false;
       this.isLoading=false;
@@ -542,7 +542,7 @@ export class BooksComponent{
     if(data.length > 0){
       this.hasDeposits = true;
       this.isLoading=false;
-      this.displayFooTableDropdown();
+      this.displayFooTableDropdown(730);
     }else {
       this.hasDeposits = false;
       this.isLoading=false;
@@ -621,7 +621,7 @@ export class BooksComponent{
     if(data.length > 0){
       this.hasJournalEntries = true;
       this.isLoading=false;
-      this.displayFooTableDropdown();
+      this.displayFooTableDropdown(800);
     }else{
       this.hasJournalEntries = false;
       this.isLoading=false;
@@ -629,11 +629,11 @@ export class BooksComponent{
     this.loadingService.triggerLoadingEvent(false);
   }
 
-  displayFooTableDropdown(){
+  displayFooTableDropdown(time){
     let base = this;
     setTimeout(function() {
         base.showDownloadIcon = true;
-    },800);
+    },time);
   }
 
   isAlreadyReversed(journalId){
