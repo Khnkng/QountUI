@@ -471,7 +471,7 @@ export class BooksComponent{
     if(data.length > 0){
       this.hasExpenses = true;
       this.isLoading=false;
-      this.displayFooTableDropdown(700);
+      this.displayFooTableDropdown(690);
     }else {
       this.hasExpenses = false;
       this.isLoading=false;
@@ -542,7 +542,7 @@ export class BooksComponent{
     if(data.length > 0){
       this.hasDeposits = true;
       this.isLoading=false;
-      this.displayFooTableDropdown(730);
+      this.displayFooTableDropdown(700);
     }else {
       this.hasDeposits = false;
       this.isLoading=false;
@@ -621,7 +621,7 @@ export class BooksComponent{
     if(data.length > 0){
       this.hasJournalEntries = true;
       this.isLoading=false;
-      this.displayFooTableDropdown(800);
+      this.displayFooTableDropdown(780);
     }else{
       this.hasJournalEntries = false;
       this.isLoading=false;
