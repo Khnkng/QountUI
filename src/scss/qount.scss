@@ -3487,6 +3487,7 @@ tbody{
         border-radius: 5px;
         &.popup-file-over{
           border: 2px solid  #3adb76;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.75);
         }
       }
       .files-to-upload-section{
