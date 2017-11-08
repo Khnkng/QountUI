@@ -12,49 +12,263 @@ import {StateService} from "qCommon/app/services/StateService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
+import {FileUploader, FileUploaderOptions} from "ng2-file-upload";
+import {CollaborationService} from "../services/Collaboration.service";
 
-declare let _:any;
-declare let jQuery:any;
-declare let moment:any;
+declare const _: any;
+declare const jQuery: any;
+declare const moment: any;
 
 @Component({
   selector: 'collaboration',
   templateUrl: '../views/Collaboration.html',
 })
 
-export class CollaborationComponent{
-  companyId:string;
-  routeSubscribe:any;
-  logoURL:string;
-  reconPeriod:string;
-  dateFormat:string;
-  serviceDateformat:string;
+export class CollaborationComponent {
+  companyId: string;
+  user: any;
+  routeSubscribe: any;
+  logoURL: string;
+  reconPeriod: string;
+  dateFormat: string;
+  serviceDateformat: string;
   filters: any = {'task': '#44B6E8', 'done': '#18457B', 'working': '#F06459', 'active': '#00B1A9', 'celebrating': '#22B473'};
-  posts: any = [{"postedBy":"uday.koorella@qount.io","createdDate":"10/09/2017","entityMetadata":[{"name":"name","value":"Expense Title"},{"name":"amount","value":"15.0000000000"},{"name":"date","value":"2017-07-06 00:00:00"},{"name":"bank_account","value":"Chase Checking FA"},{"name":"type","value":"other"},{"name":"referenceNumber","value":""}],"comments":[{"likesCount":6,"createdDate":"2017-10-30 09:34:44","children":[{"likesCount":6,"createdDate":"2017-10-30 09:38:40","children":[{"likesCount":6,"createdDate":"2017-10-30 09:42:19","children":[],"id":"8741054e-7c05-41a4-941d-e033a23a2845","updatedDate":"2017-10-30 09:42:19","postID":"5bc21608-2016-43ae-8180-63de47472dba","message":"111","commentedBy":"uday.koorella@qount.io","parentID":"cf51280f-5f39-4790-94aa-e3fb869989d4"}],"id":"cf51280f-5f39-4790-94aa-e3fb869989d4","updatedDate":"2017-10-30 09:38:40","documentName":"report.pdf","postID":"5bc21608-2016-43ae-8180-63de47472dba","message":"11","commentedBy":"uday.koorella@qount.io","parentID":"766ffb23-c9b7-454d-891c-658826a871aa"},{"likesCount":6,"createdDate":"2017-10-30 09:39:29","children":[],"id":"4eae085b-af81-4ce1-bc0f-124b05fa99f0","updatedDate":"2017-10-30 09:39:29","documentName":"report.pdf","postID":"5bc21608-2016-43ae-8180-63de47472dba","message":"12","commentedBy":"uday.koorella@qount.io","parentID":"766ffb23-c9b7-454d-891c-658826a871aa"}],"id":"766ffb23-c9b7-454d-891c-658826a871aa","updatedDate":"2017-10-30 09:34:44","documentName":"report.pdf","postID":"5bc21608-2016-43ae-8180-63de47472dba","message":"1","commentedBy":"uday.koorella@qount.io","parentID":""},{"likesCount":6,"createdDate":"2017-10-30 09:35:26","children":[],"id":"22d0e41e-f72c-4928-8b94-1d217b96ed12","updatedDate":"2017-10-30 09:35:26","documentName":"report.pdf","postID":"5bc21608-2016-43ae-8180-63de47472dba","message":"2","commentedBy":"uday.koorella@qount.io","parentID":""},{"likesCount":6,"createdDate":"2017-10-30 09:36:14","children":[{"likesCount":6,"createdDate":"2017-10-30 09:43:40","children":[],"id":"acc418c8-4dea-4877-985d-f7ca45e6742a","updatedDate":"2017-10-30 09:43:40","documentName":"report.pdf","postID":"5bc21608-2016-43ae-8180-63de47472dba","message":"33","commentedBy":"uday.koorella@qount.io","parentID":"233b84ae-6e17-4937-82d0-072f269689e8"}],"id":"233b84ae-6e17-4937-82d0-072f269689e8","updatedDate":"2017-10-30 09:36:14","documentName":"report.pdf","postID":"5bc21608-2016-43ae-8180-63de47472dba","message":"3","commentedBy":"uday.koorella@qount.io","parentID":""}],"entityType":"expense","description":"first expense testing","entityID":"00162263-7c72-4baa-8c6a-d110230d93d6","id":"5bc21608-2016-43ae-8180-63de47472dba","updatedDate":"10/09/2017","postedInCompanies":[]},{"postedBy":"uday.koorella@qount.io","createdDate":"10/10/2017","entityMetadata":[{"name":"name","value":"Expense Title"},{"name":"amount","value":"100.0000000000"},{"name":"date","value":"2017-09-25 00:00:00"},{"name":"bank_account","value":"Second Bank"},{"name":"line_title","value":""},{"name":"line_amount","value":"100.0000000000"},{"name":"line_notes","value":""}],"comments":[{"likesCount":7,"createdDate":"2017-10-30 09:53:31","children":[],"id":"518853e6-8a87-4975-aac3-52ec7036789d","updatedDate":"2017-10-30 09:53:31","documentName":"report.pdf","postID":"67e9fd00-6a51-49b5-8196-14337504ff52","message":"0001","commentedBy":"uday.koorella@qount.io","parentID":""}],"entityType":"expenseLine","description":"first expense testing","entityID":"79be094a-22ac-41b2-9e80-53327f4793bc","id":"67e9fd00-6a51-49b5-8196-14337504ff52","updatedDate":"10/10/2017","postedInCompanies":[]}];
-
-  constructor(private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
-              private loadingService: LoadingService, private companyService: CompaniesService,private numeralService:NumeralService,
-              private stateService: StateService, private titleService:pageTitleService,_switchBoard:SwitchBoard,
-              private dateFormater: DateFormater) {
+  posts: any = [];
+  newPost: any = {id: '', postedBy: '', message: '', entityType: 'expense', entityID: '4f96e2ba-dcda-498b-8cf3-03349c556c4d', badges: [], emoji: 'insert_emoticon', createdDate: '', updatedDate: ''};
+  newComment: any = {id: '', postID: '', parentID: '', commentedBy: '', message: '', badges: [], emoji: 'insert_emoticon', createdDate: '', updatedDate: ''};
+  badges: any = [{name: 'task', icon: 'grade', selected: false, color: '#44B6E8'}, {name: 'done', icon: 'check_circle', selected: false, color: '#18457B'}, {name: 'working', icon: 'watch_later', selected: false, color: '#F06459'}, {name: 'active', icon: 'alarm_add', selected: false, color: '#00B1A9'}, {name: 'celebrating', icon: 'insert_emoticon', selected: false, color: '#22B473'}];
+  updateOptions = ['update', 'delete'];
+  public uploader: FileUploader;
+  postUploadResp: any;
+  selectedCommentInput: string;
+  generatedId: string;
+  constructor(private toastService: ToastService, private _router: Router, private _route: ActivatedRoute,
+              private loadingService: LoadingService, private companyService: CompaniesService, private numeralService: NumeralService,
+              private stateService: StateService, private titleService: pageTitleService, _switchBoard: SwitchBoard,
+              private dateFormater: DateFormater,  private collaborationService: CollaborationService) {
     this.titleService.setPageTitle("Collaboration Wall");
     this.companyId = Session.getCurrentCompany();
     this.dateFormat = dateFormater.getFormat();
     this.serviceDateformat = dateFormater.getServiceDateformat();
+    this.user = Session.getUser();
+    this.getPosts();
+    this.uploader = new FileUploader(<FileUploaderOptions>{
+      url: collaborationService.getDocumentServiceUrl(this.companyId),
+      headers: [{
+        name: 'Authorization',
+        value: 'Bearer ' + Session.getToken()
+      }]
+    });
   }
 
+  getCommentTime(date) {
+    let startTime = moment.utc(date).toDate();
+    startTime = moment(startTime).format('YYYY-MM-DD HH:mm:ss');
+    const duration = moment(startTime).fromNow();
+    return moment(startTime).calendar(null, {
+      sameDay: function (now) {
+        if (this.isBefore(now)) {
+          return '[' + duration + ']';
+        } else {
+          return moment(startTime).calendar();
+        }
+      },
+      lastDay: function () {
+        return '[Yesterday]';
+      },
+      lastWeek: 'MM/DD/YYYY',
+      sameElse: 'MM/DD/YYYY'
+    });
+  }
+
+  getPosts() {
+    this.loadingService.triggerLoadingEvent(true);
+    this.collaborationService.getPosts()
+      .subscribe(response => {
+        this.posts = response.posts;
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+  }
+
+  updateBadges(badges) {
+    for (const i in this.badges) {
+      if (_.indexOf(badges, this.badges[i].name) !== -1) {
+        this.badges[i].selected = true;
+      } else {
+        this.badges[i].selected = false;
+      }
+    }
+  }
+
+  createPost() {
+    this.loadingService.triggerLoadingEvent(true);
+    this.newPost.postedBy = Session.getUser().id;
+    this.newPost.id = this.postUploadResp.sourceID;
+    if (!_.isEmpty(this.postUploadResp)) {
+      this.newPost["documentName"] = this.postUploadResp.name;
+      this.newPost["documentID"] = this.postUploadResp.id;
+    }else {
+      this.newPost["documentName"] = '';
+      this.newPost["documentID"] = '';
+    }
+
+    this.collaborationService.createPost(this.newPost)
+      .subscribe(response => {
+        this.getPosts();
+        this.postUploadResp = {};
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+  }
+
+  downloadDocument(id) {
+    this.loadingService.triggerLoadingEvent(true);
+    this.collaborationService.getDocument(id)
+      .subscribe(response => {
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+  }
 
   getColor(type) {
     return this.filters[type];
   }
 
-  getRight(index) {
-      return index * 5 + 'px';
+  getIcon(type) {
+    if (type !== null) {
+      return _.find(this.badges, {name: type}).icon;
+    }
   }
 
-  ngOnInit() {
+  getRight(index) {
+    return index * 5 + 'px';
   }
+
+  generateId() {
+    this.generatedId = this.guid();
+  }
+
+  getToggleId(id) {
+    jQuery('#' + id).addClass('is-open');
+  }
+
+  onCommentEnter(event, id) {
+    this.loadingService.triggerLoadingEvent(true);
+    this.newComment.commentedBy = this.user.id;
+    this.newComment.message = event.target.value;
+    this.newComment.postID = id;
+    this.newComment.id = this.guid();
+    if (!_.isEmpty(this.postUploadResp)) {
+      this.newComment["documentName"] = this.postUploadResp.name;
+      this.newComment["documentID"] = this.postUploadResp.id;
+    } else {
+      this.newComment["documentName"] = null;
+      this.newComment["documentID"] = null;
+    }
+    this.collaborationService.createComment(this.newComment)
+      .subscribe(response => {
+        //this.posts.push(response.posts);
+        this.getPosts();
+        this.postUploadResp = {};
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+    console.log(this.newComment);
+  }
+
+  onSubCommentEnter(event, id, parentId) {
+    this.loadingService.triggerLoadingEvent(true);
+    this.newComment.commentedBy = this.user.id;
+    this.newComment.message = event.target.value;
+    this.newComment.postID = id;
+    this.newComment.parentID = parentId;
+    this.newComment.id = this.guid();
+    if (!_.isEmpty(this.postUploadResp)) {
+      this.newComment["documentName"] = this.postUploadResp.name;
+      this.newComment["documentID"] = this.postUploadResp.id;
+    } else {
+      this.newComment["documentName"] = null;
+      this.newComment["documentID"] = null;
+    }
+    this.collaborationService.createComment(this.newComment)
+      .subscribe(response => {
+        //this.posts.push(response.posts);
+        this.getPosts();
+        this.postUploadResp = {};
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+    console.log(this.newComment);
+  }
+
+  showCommentInput(id) {
+    this.selectedCommentInput = 'comment_' + id;
+  }
+
+
+  postSelectBadge(badge,targetObj) {
+    if (typeof badge !== "string") {
+      if (badge.selected) {
+        targetObj.badges.push(badge.name);
+      } else {
+        targetObj.badges = _.without(targetObj.badges, badge.name);
+      }
+    }
+  }
+
+  s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+
+  guid() {
+    return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
+      this.s4() + '-' + this.s4() + this.s4() + this.s4();
+  }
+
+  startUpload($event, id) {
+    const base = this;
+    if (id.length > 0) {
+      this.generatedId = id;
+    } else {
+      this.generatedId = this.guid();
+    }
+    setTimeout(function(){
+      base.uploader.uploadAll();
+    }, 400);
+  }
+
+  ngOnInit () {
+    this.uploader.onBuildItemForm = (fileItem: any, form: any) => {
+      const payload: any = {};
+      payload.sourceID = this.generatedId;
+      payload.sourceType = 'POST';
+      form.append('payload', JSON.stringify(payload));
+    };
+
+    this.uploader.onCompleteItem = (item, response, status, header) => {
+      if (status === 200) {
+        this. postUploadResp = JSON.parse(response);
+        this.uploader.progress = 100;
+        this.uploader.queue.forEach(function(item){
+          item.remove();
+        });
+        /* this.document = JSON.parse(response);
+         this.billFileExist = true;
+         this.compileLink();*/
+        //Your code goes here
+      }
+    };
+  };
 
   ngOnDestroy() {
-  }
+  };
 
 }

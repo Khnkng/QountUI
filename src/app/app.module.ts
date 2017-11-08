@@ -103,6 +103,7 @@ import {RDcreditsService} from "./services/RDcredits.service";
 import {RDcreditsForm} from "./forms/RDcredits.form";
 import {CollaborationComponent} from "./components/Collaboration.component";
 import {SubCommentComponent} from "./components/SubComment.component";
+import {CollaborationService} from "./services/Collaboration.service";
 
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
@@ -372,7 +373,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
   providers: [APP_BASE, COAForm,MetricsForm,MetricsLineForm,metricPeriodForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
     TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm,ContactLineForm, DimensionForm, UsersForm, DocumentService,
     FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService,MetricsService,
-    BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan, RDcreditsService,RDcreditsForm],
+    BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan, RDcreditsService,RDcreditsForm, CollaborationService],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

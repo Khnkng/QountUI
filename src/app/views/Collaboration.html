@@ -1,41 +1,46 @@
-<div class="collaboration">
+<div class="collaboration" foundation>
 
+  <!--new post-->
   <div class="row" style="margin-bottom:30px;">
     <div class="column medium-12">
       <div class="post-header user"><span>Make Post</span><span>|</span><span>Photo/Video</span></div>
       <div class="dropdown-pane dropdown-pane1  bottom export-dropdown" style="width: 100% !important;" foundation>
         <div class="row">
           <div class="column medium-12">
-            <div class="export-option"><textarea style="border: none;resize: inherit;" placeholder="Comment on this conversation"></textarea></div>
+            <div class="export-option">
+              <textarea style="border: none;resize: inherit;" [(ngModel)]="newPost.message" placeholder="Comment on this conversation"></textarea>
+            </div>
             <hr style="margin-bottom: 0;">
             <div class="row badge-dropdown">
               <div class="column medium-10 post-footer commonColor3">
-                <div class="float-left"><span><i class="material-icons">attach_file</i></span><span class="commonColor3">Attach File</span></div>
-                <div class="float-left"><span><i class="material-icons">insert_emoticon</i></span><span class="commonColor3">EmoJi</span></div>
                 <div class="float-left">
-                  <span data-toggle="export-dropdown">
+                  <label for="nativeFileUpload" class="button upload_button">
+                    <span><i class="material-icons">attach_file</i></span>
+                    <span class="commonColor3">Attach File</span>
+                  </label>
+                  <input type="file" id="nativeFileUpload" (change)="startUpload($event,'')" value="null" class="show-for-sr" ng2FileSelect [uploader]="uploader" multiple/>
+                </div>
+                <div class="float-left"><span><i class="material-icons">insert_emoticon</i></span><span class="commonColor3">Emoji</span></div>
+                <div class="float-left">
+                  <span data-toggle="export-dropdown" (mouseenter) ="updateBadges(newPost.badges)">
                     <i class="material-icons">dns</i><span class="commonColor3">Badge</span>
                   </span>
                   <div class="dropdown-pane bottom export-dropdown badge-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation>
-                    <div class="export-option"><span><input type="checkbox" class="checkbox"></span><span class="selectAll">Select All</span></div>
-                    <div class="export-option" [style.background-color]="getColor('task')"><span><i class="material-icons">grade</i></span><span>Task</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('done')"><span><i class="material-icons">check_circle</i></span><span>Done</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('working')"><span><i class="material-icons">watch_later</i></span><span>Working</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('active')"><span><i class="material-icons">alarm_add</i></span><span>Active</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('celebrating')"><span><i class="material-icons">insert_emoticon</i></span><span>Celebrating</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option"><span><input type="checkbox" class="checkbox"></span><span class="selectAll">Remove All</span></div>
+                    <div class="export-option" [style.background-color]="badge.color" *ngFor="let badge of badges; let i = index;">
+                      <span><i class="material-icons">{{badge.icon}}</i></span>
+                      <span>{{badge.name}}</span>
+                      <span class="task-check float-right">
+                        <input type="checkbox" class="checkbox" name="badgeOptions" [(ngModel)]="badge.selected" (change)="postSelectBadge(badge,newPost)">
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <div class="float-left badgeIndicator">
-                  <span [style.background-color]="getColor('task')" [style.right]="getRight(1)"><i class="material-icons">grade</i></span>
-                  <span [style.background-color]="getColor('done')" [style.right]="getRight(2)"><i class="material-icons">check_circle</i></span>
-                  <span [style.background-color]="getColor('working')" [style.right]="getRight(3)"><i class="material-icons">watch_later</i></span>
-                  <span [style.background-color]="getColor('active')" [style.right]="getRight(4)"><i class="material-icons">alarm_add</i></span>
-                  <span [style.background-color]="getColor('celebrating')" [style.right]="getRight(5)"><i class="material-icons">insert_emoticon</i></span>
+                  <span [style.background-color]="getColor(badge)" [style.right]="getRight(i)" *ngFor="let badge of newPost.badges; let i = index;"><i class="material-icons">{{getIcon(badge)}}</i></span>
                   <span></span>
                 </div>
               </div>
-              <div class="column medium-2 text-right"><button class="button small">Post</button></div>
+              <div class="column medium-2 text-right" (click)="createPost()"><button class="button small">Post</button></div>
             </div>
           </div>
         </div>
@@ -44,26 +49,49 @@
   </div>
 
 
+  <!--created posts-->
   <div style="margin-bottom:30px;" *ngFor="let post of posts;">
     <div class="row">
       <div class="column medium-12">
-        <div class="row post">
+        <div class="row post post-border">
           <div class="medium-12">
             <div class="row post-user">
               <div class="medium-10">
-                <span class="round">RT</span>
-                <span class="user">{{post.postedBy}}</span>
-                <span class="commonColor2">4:13 PM</span>
+                <span class="round">{{post.user.firstName.charAt(0)}}{{post.user.lastName.charAt(0)}}</span>
+                <span class="user">{{post.user.firstName}}</span><span class="user">{{post.user.lastName}}</span>
+                <span class="commonColor2">{{getCommentTime(post.createdDate)}}</span>
                 <span class="commonColor2">|</span>
                 <span class="commonColor2">AAA Tire Service Proposal</span>
               </div>
-              <div class="column medium-2 text-right">
-                <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+              <div class="column medium-2 text-right update-dropdown">
+                <i class="fa fa-ellipsis-h" aria-hidden="true" attr.data-toggle="export-dropdown-postupdate{{post.id}}"></i>
+                <div class="dropdown-pane bottom export-dropdown" id="export-dropdown-postupdate{{post.id}}" data-dropdown data-hover="true" data-hover-pane="true" foundation>
+                  <div class="export-option text-left" *ngFor="let option of updateOptions; let i = index;">
+                    {{option}}
+                  </div>
+                </div>
               </div>
             </div>
+            <div class="row post-body" *ngIf="post.documentName">
+              <div class="column medium-4 attachment">
+                <div class="row">
+                  <div class="column medium-2">
+                    <i class="material-icons commonColor1">attachment</i>
+                  </div>
+                  <div class="column medium-9 commonColor2 text-center" attr.title="{{post.documentName}}">
+                    <div class="attachment_name">{{post.documentName}}</div>
+                  </div>
+                  <div class="medium-1" (click)="downloadDocument(post.documentID)">
+                    <i class="material-icons commonColor1">file_download</i>
+                  </div>
+                </div>
+              </div>
+              <div class="column medium-7"></div>
+            </div>
+
             <div class="row post-body">
               <div class="column medium-10">
-                Hello user,This perticular account is difficult due to line items 5 and 92.Please Review and resubmit by 10/12.2017. Thanks!
+                {{post.message}}
               </div>
               <div class="column medium-1"></div>
             </div>
@@ -71,20 +99,24 @@
             <div class="row">
               <div class="column medium-10 post-footer commonColor3">
                 <div class="float-left"><span><i class="material-icons">attach_file</i></span><span >Attach File</span></div>
-                <div class="float-left"><span><i class="material-icons">insert_emoticon</i></span><span>EmoJi</span></div>
+                <div class="float-left"><span><i class="material-icons">insert_emoticon</i></span><span>Emoji</span></div>
                 <div class="float-left">
-                   <span data-toggle="export-dropdown">
+                  <div attr.data-toggle="export-dropdown{{post.id}}" (mouseenter) ="updateBadges(post.badges)">
                     <i class="material-icons">dns</i><span class="commonColor3">Badge</span>
-                  </span>
-                  <div class="dropdown-pane bottom export-dropdown badge-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation>
-                    <div class="export-option"><span><input type="checkbox" class="checkbox"></span><span class="selectAll">Select All</span></div>
-                    <div class="export-option" [style.background-color]="getColor('task')"><span><i class="material-icons">grade</i></span><span>Task</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('done')"><span><i class="material-icons">check_circle</i></span><span>Done</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('working')"><span><i class="material-icons">watch_later</i></span><span>Working</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('active')"><span><i class="material-icons">alarm_add</i></span><span>Active</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('celebrating')"><span><i class="material-icons">insert_emoticon</i></span><span>Celebrating</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option"><span><input type="checkbox" class="checkbox"></span><span class="selectAll">Remove All</span></div>
                   </div>
+                  <div class="dropdown-pane bottom export-dropdown badge-dropdown" id="export-dropdown{{post.id}}" data-dropdown data-hover="true" data-hover-pane="true" foundation>
+                    <div class="export-option" [style.background-color]="badge.color" *ngFor="let badge of badges; let i = index;">
+                      <span><i class="material-icons">{{badge.icon}}</i></span>
+                      <span>{{badge.name}}</span>
+                      <span class="task-check float-right">
+                        <input type="checkbox" class="checkbox" name="badgeOptions" [(ngModel)]="badge.selected">
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div class="float-left badgeIndicator" *ngIf="post.badges.length > 0;">
+                  <span [style.background-color]="getColor(badge)" [style.right]="getRight(i)" *ngFor="let badge of post.badges; let i = index;"><i class="material-icons">{{getIcon(badge)}}</i></span>
+                  <span></span>
                 </div>
               </div>
               <div class="column medium-2"></div>
@@ -95,80 +127,139 @@
     </div>
 
 
+    <!--comments-->
     <div class="row">
       <div class="column medium-12">
-        <div class="row" style="background-color: #e3e5e5;">
+        <!--<div class="row" style="background-color: #F6F7F9;">
           <div class="column medium-10 comments-count pointer">
             <span>view</span><span>4</span><span>more comments ...</span>
           </div>
-        </div>
-        <div class="row post comments" *ngFor="let comment of post.comments;">
+        </div>-->
+        <div class="row post comments comment-border" *ngFor="let comment of post.comments;">
           <div class="medium-12">
             <div class="row post-user">
               <div class="medium-11">
-                <span class="round">RT</span>
-                <span class="user">John CPA</span>
-                <span>Thank You for sending over,I will take a look at the document immediately!</span>
+                <span class="round">{{comment.user.firstName.charAt(0)}}{{comment.user.lastName.charAt(0)}}</span>
+                <span class="user">{{comment.user.firstName}}</span><span class="user">{{comment.user.lastName}}</span>
+                <span>{{comment.message}}</span>
               </div>
-              <div class="column medium-1 text-right">
+              <div class="column medium-1 text-right update-dropdown">
+                <i class="fa fa-ellipsis-h" aria-hidden="true" attr.data-toggle="export-dropdown-commentupdate{{comment.id}}"></i>
+                <div class="dropdown-pane bottom export-dropdown" id="export-dropdown-commentupdate{{comment.id}}" data-dropdown data-hover="true" data-hover-pane="true" foundation>
+                  <div class="export-option text-left" *ngFor="let option of updateOptions; let i = index;">
+                    {{option}}
+                  </div>
+                </div>
               </div>
             </div>
             <div class="row post-body" *ngIf="comment.documentName">
-              <div class="column medium-5 attachment">
+              <div class="column medium-4 attachment">
                 <div class="row">
-                  <div class="column medium-1">
+                  <div class="column medium-2">
                     <i class="material-icons commonColor1">attachment</i>
                   </div>
-                  <div class="column medium-10 commonColor2" style="padding-left: 40px;">
-                    <div>{{comment.documentName}}</div>
-                    <div>001839</div>
+                  <div class="column medium-9 commonColor2 text-center" attr.title="{{comment.documentName}}">
+                    <div class="attachment_name">{{comment.documentName}}</div>
                   </div>
-                  <div class="column medium-1">
+                  <div class="medium-1" (click)="downloadDocument(comment.documentID)">
                     <i class="material-icons commonColor1">file_download</i>
                   </div>
                 </div>
               </div>
-              <div class="column medium-6"></div>
+              <div class="column medium-7"></div>
             </div>
             <div class="row post-body">
               <div class="column medium-11">
                 <span class="likeOptions commonColor1">Like</span>
                 <span class="likeSeparator likeOptions commonColor1">.</span>
-                <span class="likeOptions commonColor1">Replay</span>
+                <span class="likeOptions commonColor1" (click)="showCommentInput(comment.id)">Reply</span>
                 <span class="likeSeparator likeOptions commonColor2">.</span>
-                <span class="likeOptions commonColor2">Yesterday at 4:16 PM</span>
-                <span class="likeOptions commonColor2"><a href="javascript:void (0)" class="button comment-status" [style.background-color]="getColor('task')">Task</a></span>
+                <span class="likeOptions commonColor2">{{getCommentTime(comment.createdDate)}}</span>
+                <span class="likeOptions commonColor2" [style.right]="getRight(i)" *ngFor="let badge of comment.badges; let i = index;">
+                  <a href="javascript:void (0)" class="button comment-status" [style.background-color]="getColor(badge)">{{badge}}</a>
+                </span>
               </div>
               <div class="column medium-1"></div>
             </div>
+            <div class="row" id="comment_{{comment.id}}" *ngIf="selectedCommentInput === 'comment_'+comment.id" style="background-color: #F6F7F9;padding-bottom:10px;padding-top: 20px;">
+              <div class="column medium-12">
+                <div class="row">
+                  <div class="column medium-12">
+                    <div class="round" style="float: left;margin-right: 20px;padding: 4px 7px;">
+                      {{user.first_name.charAt(0)}}{{user.last_name.charAt(0)}}
+                    </div>
+                    <div class="inputContainer" style="    bottom: 5px;position: relative;">
+                      <div style="flex-grow: 1;min-width: 0;word-break: break-word;">
+                        <textarea placeholder="Write A comment..." (keyup.enter)="onSubCommentEnter($event,comment.postID,comment.id)"></textarea>
+                      </div>
+                      <div class="inputAttachments">
+                        <span><i class="material-icons">insert_emoticon</i></span>
+                        <span class="float-left">
+                      <label for="nativeFileUpload{{comment.id}}" class="button upload_button">
+                        <span><i class="material-icons">attach_file</i></span>
+                      </label>
+                      <input type="file" id="nativeFileUpload{{comment.id}}" (change)="startUpload($event, comment.postID)" value="null" class="show-for-sr" ng2FileSelect [uploader]="uploader" multiple/>
+                    </span>
+
+                        <span class="float-left new-comment">
+                          <div attr.data-toggle="export-dropdown{{comment.id}}" (mouseenter)="updateBadges([])">
+                            <i class="material-icons">dns</i>
+                          </div>
+                          <div class="dropdown-pane bottom export-dropdown badge-dropdown" id="export-dropdown{{comment.id}}" data-dropdown data-hover="true" data-hover-pane="true" foundation>
+                            <div class="export-option" [style.background-color]="badge.color" *ngFor="let badge of badges; let i = index;">
+                              <span><i class="material-icons">{{badge.icon}}</i></span>
+                              <span>{{badge.name}}</span>
+                              <span class="task-check float-right">
+                        <input type="checkbox" class="checkbox" name="badgeOptions" [(ngModel)]="badge.selected">
+                      </span>
+                            </div>
+                          </div>
+                        </span>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <sub-comment [data]="comment.children" *ngIf="comment.children.length>0"></sub-comment>
           </div>
         </div>
 
-        <div class="row" style="background-color: #e3e5e5;padding-bottom:10px;">
+        <div class="row comment-border" style="border-bottom:1px solid #e2e2e2;background-color: #F6F7F9;padding-bottom:10px;padding-top: 20px;">
           <div class="column medium-12">
             <div class="row">
-              <div class="column medium-12">
-                <div class="round" style="float: left;margin-right: 20px;padding: 4px 7px;">RT</div>
+              <div class="medium-12">
+                <div class="round" style="float: left;margin-right: 20px;margin-left:7px;padding: 4px 7px;">
+                  {{user.first_name.charAt(0)}}{{user.last_name.charAt(0)}}
+                </div>
                 <div class="inputContainer" style="    bottom: 5px;position: relative;">
                   <div style="flex-grow: 1;min-width: 0;word-break: break-word;">
-                    <textarea placeholder="Write A comment..."></textarea>
+                    <textarea placeholder="Write A comment..." (keyup.enter)="onCommentEnter($event,post.id)"></textarea>
                   </div>
                   <div class="inputAttachments">
                     <span><i class="material-icons">insert_emoticon</i></span>
-                    <span><i class="material-icons">attach_file</i></span>
-                    <span class="">
-                      <i class="material-icons" data-toggle="export-dropdown">dns</i>
-                      <!--<div style="right: 65px;" class="dropdown-pane bottom export-dropdown badge-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation>
-                    <div class="export-option"><span><input type="checkbox" class="checkbox"></span><span class="selectAll">Select All</span></div>
-                    <div class="export-option" [style.background-color]="getColor('task')"><span><i class="material-icons">grade</i></span><span>Task</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('done')"><span><i class="material-icons">check_circle</i></span><span>Done</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('working')"><span><i class="material-icons">watch_later</i></span><span>Working</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('active')"><span><i class="material-icons">alarm_add</i></span><span>Active</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('celebrating')"><span><i class="material-icons">insert_emoticon</i></span><span>Celebrating</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option"><span><input type="checkbox" class="checkbox"></span><span class="selectAll">Remove All</span></div>
-                  </div>-->
+                    <span class="float-left">
+                      <label for="nativeFileUpload{{post.id}}" class="button upload_button">
+                        <span><i class="material-icons">attach_file</i></span>
+                      </label>
+                      <input type="file" id="nativeFileUpload{{post.id}}" (change)="startUpload($event, post.id)" value="null" class="show-for-sr" ng2FileSelect [uploader]="uploader" multiple/>
                     </span>
+                    <span class="float-left new-comment">
+                          <div attr.data-toggle="export-dropdown-comment{{post.id}}" (mouseenter)="updateBadges([])">
+                            <i class="material-icons">dns</i>
+                          </div>
+                          <div class="dropdown-pane bottom export-dropdown badge-dropdown" id="export-dropdown-comment{{post.id}}" data-dropdown data-hover="true" data-hover-pane="true" foundation>
+                            <div class="export-option" [style.background-color]="badge.color" *ngFor="let badge of badges; let i = index;">
+                              <span><i class="material-icons">{{badge.icon}}</i></span>
+                              <span>{{badge.name}}</span>
+                              <span class="task-check float-right">
+                                <input type="checkbox" class="checkbox" name="badgeOptions" [(ngModel)]="badge.selected" (change)="postSelectBadge(badge,newComment)">
+                              </span>
+                            </div>
+                          </div>
+                        </span>
                   </div>
                 </div>
               </div>
@@ -181,251 +272,6 @@
   </div>
 
 
-  <!--back up-->
-  <div style="margin-bottom:30px;">
-    <div class="row">
-      <div class="column medium-12">
-        <div class="row post">
-          <div class="medium-12">
-            <div class="row post-user">
-              <div class="medium-10">
-                <span class="round">RT</span>
-                <span class="user">John CPA</span>
-                <span class="commonColor2">4:13 PM</span>
-                <span class="commonColor2">|</span>
-                <span class="commonColor2">AAA Tire Service Proposal</span>
-              </div>
-              <div class="column medium-2 text-right">
-                <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
-              </div>
-            </div>
-            <div class="row post-body">
-              <div class="column medium-10">
-                Hello user,This perticular account is difficult due to line items 5 and 92.Please Review and resubmit by 10/12.2017. Thanks!
-              </div>
-              <div class="column medium-1"></div>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="column medium-10 post-footer commonColor3">
-                <div class="float-left"><span><i class="material-icons">attach_file</i></span><span >Attach File</span></div>
-                <div class="float-left"><span><i class="material-icons">insert_emoticon</i></span><span>EmoJi</span></div>
-                <div class="float-left">
-                   <span data-toggle="export-dropdown">
-                    <i class="material-icons">dns</i><span class="commonColor3">Badge</span>
-                  </span>
-                  <div class="dropdown-pane bottom export-dropdown badge-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation>
-                    <div class="export-option"><span><input type="checkbox" class="checkbox"></span><span class="selectAll">Select All</span></div>
-                    <div class="export-option" [style.background-color]="getColor('task')"><span><i class="material-icons">grade</i></span><span>Task</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('done')"><span><i class="material-icons">check_circle</i></span><span>Done</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('working')"><span><i class="material-icons">watch_later</i></span><span>Working</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('active')"><span><i class="material-icons">alarm_add</i></span><span>Active</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('celebrating')"><span><i class="material-icons">insert_emoticon</i></span><span>Celebrating</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option"><span><input type="checkbox" class="checkbox"></span><span class="selectAll">Remove All</span></div>
-                  </div>
-                </div>
-              </div>
-              <div class="column medium-2"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="row">
-      <div class="column medium-12">
-        <div class="row post comments">
-
-          <div class="medium-12">
-            <div class="row">
-              <div class="column medium-10 comments-count pointer">
-                <span>view</span><span>4</span><span>more comments ...</span>
-              </div>
-            </div>
-            <div class="row post-user">
-              <div class="medium-11">
-                <span class="round">RT</span>
-                <span class="user">John CPA</span>
-                <span>Thank You for sending over,I will take a look at the document immediately!</span>
-              </div>
-              <div class="column medium-1 text-right">
-              </div>
-            </div>
-            <div class="row post-body">
-              <div class="column medium-11">
-                <span class="likeOptions commonColor1">Like</span>
-                <span class="likeSeparator likeOptions commonColor1">.</span>
-                <span class="likeOptions commonColor1">Replay</span>
-                <span class="likeSeparator likeOptions commonColor2">.</span>
-                <span class="likeOptions commonColor2">Yesterday at 4:16 PM</span>
-                <span class="likeOptions commonColor2"><a href="javascript:void (0)" class="button comment-status" [style.background-color]="getColor('task')">Task</a></span>
-              </div>
-              <div class="column medium-1"></div>
-            </div>
-          </div>
-
-          <div class="medium-12">
-            <div class="row post-user">
-              <div class="medium-11">
-                <span class="round">RT</span>
-                <span class="user">John CPA</span>
-                <span>Thank You for sending over,I will take a look at the document immediately!</span>
-              </div>
-              <div class="column medium-1 text-right">
-              </div>
-            </div>
-            <div class="row post-body">
-              <div class="column medium-11">
-                <span class="likeOptions commonColor1">Like</span>
-                <span class="likeSeparator likeOptions commonColor1">.</span>
-                <span class="likeOptions commonColor1">Replay</span>
-                <span class="likeSeparator likeOptions commonColor2">.</span>
-                <span class="likeOptions commonColor2">Yesterday at 4:16 PM</span>
-                <span class="likeOptions commonColor2"><a href="javascript:void (0)" class="button comment-status" [style.background-color]="getColor('working')">Working</a></span>
-              </div>
-              <div class="column medium-1"></div>
-            </div>
-          </div>
-
-          <div class="medium-12">
-            <div class="row post-user">
-              <div class="column medium-1"></div>
-              <div class="medium-10">
-                <span class="round">RT</span>
-                <span class="user">John CPA</span>
-                <span>Thank You for sending over,I will take a look at the document immediately!</span>
-              </div>
-              <div class="column medium-1 text-right">
-              </div>
-            </div>
-            <div class="row post-body">
-              <div class="column medium-1"></div>
-              <div class="column medium-5 attachment">
-                <div class="row">
-                  <div class="column medium-1">
-                    <i class="material-icons commonColor1">attachment</i>
-                  </div>
-                  <div class="column medium-10 commonColor2" style="padding-left: 40px;">
-                    <div>AAA Tire Service Re-Count</div>
-                    <div>001839</div>
-                  </div>
-                  <div class="column medium-1">
-                    <i class="material-icons commonColor1">file_download</i>
-                  </div>
-                </div>
-              </div>
-              <div class="column medium-6"></div>
-            </div>
-            <div class="row post-body">
-              <div class="column medium-1"></div>
-              <div class="column medium-10">
-                <span class="likeOptions commonColor1">Like</span>
-                <span class="likeSeparator likeOptions commonColor1">.</span>
-                <span class="likeOptions commonColor1">Replay</span>
-                <span class="likeSeparator likeOptions commonColor2">.</span>
-                <span class="likeOptions commonColor2">Yesterday at 4:16 PM</span>
-                <span class="likeOptions commonColor2"><a href="javascript:void (0)" class="button comment-status" [style.background-color]="getColor('active')">Active</a></span>
-              </div>
-              <div class="column medium-1"></div>
-            </div>
-          </div>
-
-          <div class="medium-12">
-            <div class="row post-user">
-              <div class="column medium-1"></div>
-              <div class="medium-10">
-                <span class="round">JC</span>
-                <span class="user">John CPA</span>
-                <span>4:13 PM</span>
-                <span>|</span>
-                <span>AAA Tire Service Proposal</span>
-              </div>
-              <div class="column medium-1 text-right">
-              </div>
-            </div>
-            <div class="row post-body">
-              <div class="column medium-1"></div>
-              <div class="column medium-6"></div>
-            </div>
-            <div class="row post-body">
-              <div class="column medium-1"></div>
-              <div class="column medium-10">
-                Hello user,This perticular account is difficult due to line items 5 and 92.Please Review and resubmit by 10/12.2017. Thanks!
-              </div>
-              <div class="column medium-1"></div>
-            </div>
-          </div>
-
-          <div class="medium-12">
-            <div class="row post-user">
-              <div class="medium-11">
-                <span class="round">AT</span>
-                <span class="user">John CPA</span>
-                <span>4:13 PM</span>
-                <span>|</span>
-                <span>AAA Tire Service Proposal</span>
-              </div>
-              <div class="column medium-1 text-right">
-              </div>
-            </div>
-            <div class="row post-body">
-              <div class="column medium-5 attachment">
-                <div class="row">
-                  <div class="column medium-1">
-                    <i class="material-icons commonColor1">attachment</i>
-                  </div>
-                  <div class="column medium-10 commonColor2" style="padding-left: 40px;">
-                    <div>AAA Tire Service Re-Count</div>
-                    <div>001839</div>
-                  </div>
-                  <div class="column medium-1">
-                    <i class="material-icons commonColor1">file_download</i>
-                  </div>
-                </div>
-              </div>
-              <div class="column medium-6"></div>
-            </div>
-            <div class="row post-body">
-              <div class="column medium-11">
-                Hello user,This perticular account is difficult due to line items 5 and 92.Please Review and resubmit by 10/12.2017. Thanks!
-              </div>
-              <div class="column medium-1"></div>
-            </div>
-          </div>
-
-          <div class="column medium-12">
-            <div class="row">
-              <div class="column medium-12">
-                <div class="inputContainer">
-                  <div style="flex-grow: 1;min-width: 0;word-break: break-word;">
-                    <textarea placeholder="Write A comment..."></textarea>
-                  </div>
-                  <div class="inputAttachments">
-                    <span><i class="material-icons">insert_emoticon</i></span>
-                    <span><i class="material-icons">attach_file</i></span>
-                    <span class="">
-                      <i class="material-icons" data-toggle="export-dropdown">dns</i>
-                      <!--<div style="right: 65px;" class="dropdown-pane bottom export-dropdown badge-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation>
-                    <div class="export-option"><span><input type="checkbox" class="checkbox"></span><span class="selectAll">Select All</span></div>
-                    <div class="export-option" [style.background-color]="getColor('task')"><span><i class="material-icons">grade</i></span><span>Task</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('done')"><span><i class="material-icons">check_circle</i></span><span>Done</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('working')"><span><i class="material-icons">watch_later</i></span><span>Working</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('active')"><span><i class="material-icons">alarm_add</i></span><span>Active</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option" [style.background-color]="getColor('celebrating')"><span><i class="material-icons">insert_emoticon</i></span><span>Celebrating</span><span class="task-check float-right"><input type="checkbox" class="checkbox"></span></div>
-                    <div class="export-option"><span><input type="checkbox" class="checkbox"></span><span class="selectAll">Remove All</span></div>
-                  </div>-->
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
 
 
 

@@ -4694,22 +4694,19 @@ div.footable-loader {
     .export-option  {
       padding:7px 7px !important;
       margin-right:0 !important;
-      & :first-child, & :last-child {
-        input {
-          margin-bottom:0;
-        }
+      color: #FFFFFF !important;
+      .material-icons {
+        color: #FFFFFF;
       }
-      &:not(:first-child):not(:last-child) {
-        color: #FFFFFF !important;
-        .material-icons {
-          color: #FFFFFF;
-        }
-        input {
-          margin-bottom:0;
-          margin-left:20px;
-        }
+      input {
+        margin-bottom:0;
+        margin-left:20px;
       }
     }
+
+
+
+
   }
 
   .badgeIndicator {
@@ -4764,8 +4761,17 @@ div.footable-loader {
     }
   }
   .post {
-    border:1px solid #DCDEDD;
+    //border:1px solid #E2E2E2;
     padding: 10px 20px;
+  }
+
+  .post-border {
+    border:1px solid #E2E2E2;
+  }
+
+  .comment-border {
+    border-left:1px solid #E2E2E2;
+    border-right:1px solid #E2E2E2;
   }
   .post-user {
     margin-top:20px;
@@ -4779,14 +4785,28 @@ div.footable-loader {
 
     .attachment {
       border:1px solid #676c75;
-      border-radius: 20px;
+      border-radius: 10px;
       padding: 15px 20px 15px 0px;
       margin-left:15px;
+      height: 75px;
 
       .material-icons {
         font-size: 30px;
         position: relative;
-        top:10px;
+        top:5px;
+      }
+
+      .attachment_name {
+        display: block;
+        display: -webkit-box;
+        max-width: 400px;
+        height: 35px;
+        margin: 0 auto;
+        line-height: 1.2;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
   }
@@ -4805,10 +4825,19 @@ div.footable-loader {
     background-color: #384986;
     color:#ffffff;
     border-radius: 50%;
+    text-transform: uppercase;
   }
 
   .comments {
-    background-color: #e3e5e5;
+    background-color: #F6F7F9;
+    & .fa-ellipsis-h {
+      visibility: hidden;
+    }
+    & :hover {
+      .text-right .fa-ellipsis-h {
+        visibility: visible;
+      }
+    }
   }
 
   .post-footer {
@@ -4831,6 +4860,7 @@ div.footable-loader {
   .user {
     color: #384986;
     font-size: 20px;
+    text-transform: capitalize;
   }
 
   .material-icons {
@@ -4918,7 +4948,46 @@ div.footable-loader {
       background: #fff;
       word-break: break-word;
     }
+  }
 
+  .upload_button {
+    background-color: transparent;
+    margin-bottom: 0!important;
+    padding: 0;
+  }
+
+  .new-comment {
+    .export-dropdown {
+      right: 1px !important;
+      &:before {
+        right: 11px;
+        left:inherit;
+      }
+
+      &:after {
+        right: 12px;
+        left:inherit;
+      }
+    }
+  }
+  .update-dropdown {
+    .export-dropdown {
+      right: 55px !important;
+      width: auto !important;
+
+      .export-option {
+        padding: 5px 10px !important;
+      }
+      &:before {
+        right: 11px;
+        left:inherit;
+      }
+
+      &:after {
+        right: 12px;
+        left:inherit;
+      }
+    }
   }
 }
 
