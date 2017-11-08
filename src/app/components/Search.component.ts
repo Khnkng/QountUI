@@ -350,6 +350,7 @@ export class SearchComponent{
             {"name": "title", "title": "Title"},
             {"name": "amount", "title": "Amount"},
             {"name": "date", "title": "Date"},
+            {"name":"entity", "title":"Entity"},
             {"name": "id", "title": "Id", "visible": false, "filterable": false},
             {"name": "actions", "title": "", "type": "html", "filterable": false}
         ];
