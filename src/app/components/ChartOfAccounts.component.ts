@@ -17,6 +17,7 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {Router} from "@angular/router";
+import {ReportService} from "reportsUI/app/services/Reports.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -58,10 +59,14 @@ export class ChartOfAccountsComponent{
   companyCurrency:string;
   localeFortmat:string='en-US';
   routeSubscribe:any;
+  coaTableColumns: Array<any> = ['Number', 'Name', 'Type', 'Sub Type', 'Parent', 'Debit', 'Credit'];
+  pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:string = "hidden";
 
   constructor(private _fb: FormBuilder, private _coaForm: COAForm, private switchBoard: SwitchBoard,private _router: Router,
               private coaService: ChartOfAccountsService, private loadingService:LoadingService,
-              private toastService: ToastService, private companiesService: CompaniesService,private numeralService:NumeralService,private titleService:pageTitleService){
+              private toastService: ToastService, private companiesService: CompaniesService,private numeralService:NumeralService,
+              private titleService:pageTitleService, private reportsService: ReportService){
     this.titleService.setPageTitle("CHART OF ACCOUNTS");
     this.coaForm = this._fb.group(_coaForm.getForm());
     let companyId = Session.getCurrentCompany();
@@ -98,6 +103,7 @@ export class ChartOfAccountsComponent{
     this.coaService.chartOfAccounts(this.currentCompany.id)
         .subscribe(chartOfAccounts => {
           this.buildTableData(chartOfAccounts);
+          // console.log("COA Data === ", chartOfAccounts);
         }, error=> this.handleError(error));
   }
 
@@ -352,6 +358,7 @@ export class ChartOfAccountsComponent{
   }
 
   buildTableData(coaList) {
+    let base = this;
     this.titleService.setPageTitle("Chart Of Accounts");
     this.sortChartOfAccounts(coaList);
     this.hasCOAList = false;
@@ -366,14 +373,15 @@ export class ChartOfAccountsComponent{
       {"name": "parentName", "title": "Parent"},
       {"name": "debit", "title": "Debit", "type":"number", "formatter": (debit)=>{
           debit = parseFloat(debit);
-          return base.numeralService.format("$0,0.00", debit);
+          // base.numeralService.format("$0,0.00", debit)
+          return debit.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }, "sortValue": function(value){
           return base.numeralService.value(value);
         },"classes": "currency-align currency-padding"
       },
       {"name": "credit", "title": "Credit", "type":"number", "formatter": (credit)=>{
           credit = parseFloat(credit);
-          return base.numeralService.format("$0,0.00", credit);
+          return credit.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }, "sortValue": function(value){
           return base.numeralService.value(value);
         },"classes": "currency-align currency-padding"
@@ -386,7 +394,7 @@ export class ChartOfAccountsComponent{
       {"name": "subAccount", "title": "Sub account","visible": false},
       {"name": "actions", "title": ""}
     ];
-    let base = this;
+
     this.chartOfAccounts.forEach(function(coa) {
       let row:any = {};
       coa.subAccount = coa.subAccount? coa.subAccount : false;
@@ -421,11 +429,12 @@ export class ChartOfAccountsComponent{
             row[key] = coa[key];
           }
         }else if(key == 'debit' || key == 'credit'){
+          let amount = parseFloat(coa[key]);
           row[key] = {
             'options': {
               "classes": "text-right"
             },
-            value : coa[key]
+            value : amount.toFixed(2)
           }
         }else{
           row[key] = coa[key];
@@ -439,7 +448,12 @@ export class ChartOfAccountsComponent{
     });
     setTimeout(function(){
       base.hasCOAList = true;
-    }, 0)
+    }, 0);
+    setTimeout(function() {
+      if(base.hasCOAList){
+        base.showDownloadIcon = "visible";
+      }
+    },650);
     this.loadingService.triggerLoadingEvent(false);
   }
 
@@ -497,4 +511,72 @@ export class ChartOfAccountsComponent{
     this.titleService.setPageTitle("CHART OF ACCOUNTS");
     this.showFlyout = !this.showFlyout;
   }
+
+  getCoaTableData(inputData) {
+    let tempData = _.cloneDeep(inputData);
+    let newTableData: Array<any> = [];
+    let tempJsonArray: any;
+
+    for( var i in  tempData) {
+      tempJsonArray = {};
+      tempData[i].debit = parseFloat(tempData[i].debit.value).toLocaleString(this.localeFortmat, { style: 'currency', currency: this.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      tempData[i].credit = parseFloat(tempData[i].credit.value).toLocaleString(this.localeFortmat, { style: 'currency', currency: this.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      tempJsonArray["Number"] = (tempData[i].number.value) ? tempData[i].number.value : tempData[i].number;
+
+      tempJsonArray["Name"] = (tempData[i].name.value) ? tempData[i].name.value : tempData[i].name;
+      tempJsonArray["Type"] = tempData[i].categoryType;
+      tempJsonArray["Sub Type"] = tempData[i].subTypeCode;
+      tempJsonArray["Parent"] = tempData[i].parentName;
+      tempJsonArray["Debit"] = tempData[i].debit;
+      tempJsonArray["Credit"] = tempData[i].credit;
+
+      newTableData.push(tempJsonArray);
+    }
+
+    return newTableData;
+  }
+
+  buildPdfTabledata(fileType) {
+    this.pdfTableData['documentHeader'] = "Header";
+    this.pdfTableData['documentFooter'] = "Footer";
+    this.pdfTableData['fileType'] = fileType;
+    this.pdfTableData['name'] = "Name";
+
+    this.pdfTableData.tableHeader.values = this.coaTableColumns;
+    this.pdfTableData.tableRows.rows = this.getCoaTableData(this.tableData.rows);
+  }
+
+  exportToExcel() {
+    this.buildPdfTabledata("excel");
+    this.reportsService.exportFooTableIntoFile(this.currentCompany, this.pdfTableData)
+      .subscribe(data =>{
+        let blob = new Blob([data._body], {type:"application/vnd.ms-excel"});
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link['download'] = "ChartOfAccounts.xls";
+        link.click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+      });
+    // jQuery('#example-dropdown').foundation('close');
+
+  }
+
+  exportToPDF() {
+    this.buildPdfTabledata("pdf");
+
+    this.reportsService.exportFooTableIntoFile(this.currentCompany, this.pdfTableData)
+      .subscribe(data =>{
+        var blob = new Blob([data._body], {type:"application/pdf"});
+        var link = jQuery('<a></a>');
+        link[0].href = URL.createObjectURL(blob);
+        link[0].download = "ChartOfAccounts.pdf";
+        link[0].click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+      });
+
+  }
+
 }

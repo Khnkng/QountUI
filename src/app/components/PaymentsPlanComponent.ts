@@ -12,6 +12,7 @@ import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {Router} from "@angular/router";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {DAYS_OF_WEEK, DAYS_OF_MONTH,WEEK_OF_MONTH,MONTH_OF_QUARTER,MONTH_OF_YEAR} from "qCommon/app/constants/Date.constants";
+import {ReportService} from "reportsUI/app/services/Reports.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -45,11 +46,13 @@ export class PaymentsPlanComponent{
     monthOfYear:Array<string>=MONTH_OF_YEAR;
     dateFormat:string;
     serviceDateformat:string;
-
+    paymentsPlanTableColumns: Array<any> = ['Name', 'Frequency', 'End Date'];
+    pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+    showDownloadIcon:string = "hidden";
 
     constructor(private _fb: FormBuilder, private _paymentPlanForm: PaymentsPlan, private switchBoard: SwitchBoard,private _router: Router,
                 private codeService: PaymentsPlanService, private toastService: ToastService, private loadingService:LoadingService,
-                private titleService:pageTitleService, private dateFormater:DateFormater){
+                private titleService:pageTitleService, private dateFormater:DateFormater, private reportsService: ReportService){
         this.dateFormat = dateFormater.getFormat();
         this.serviceDateformat = dateFormater.getServiceDateformat();
         this.titleService.setPageTitle("Payments Plan");
@@ -216,6 +219,11 @@ export class PaymentsPlanComponent{
         setTimeout(function(){
             base.hasPaymentPlans = true;
         }, 0);
+        setTimeout(function() {
+          if(base.hasPaymentPlans){
+            base.showDownloadIcon = "visible";
+          }
+        },600);
         this.loadingService.triggerLoadingEvent(false);
     }
 
@@ -229,4 +237,64 @@ export class PaymentsPlanComponent{
         let planEndDateControl:any = this.paymentPlanForm.controls['ends_after'];
         planEndDateControl.patchValue(date);
     }
+
+  getPaymentsPlanTableData(inputData) {
+    let tempData = _.cloneDeep(inputData);
+    let newTableData: Array<any> = [];
+    let tempJsonArray: any;
+
+    for( var i in  tempData) {
+      tempJsonArray = {};
+      tempJsonArray["Name"] = tempData[i].name;
+      tempJsonArray["Frequency"] = tempData[i].frequency;
+      tempJsonArray["End Date"] = tempData[i].ends_after;
+
+      newTableData.push(tempJsonArray);
+    }
+
+    return newTableData;
+  }
+
+  buildPdfTabledata(fileType){
+    this.pdfTableData['documentHeader'] = "Header";
+    this.pdfTableData['documentFooter'] = "Footer";
+    this.pdfTableData['fileType'] = fileType;
+    this.pdfTableData['name'] = "Name";
+
+    this.pdfTableData.tableHeader.values = this.paymentsPlanTableColumns;
+    this.pdfTableData.tableRows.rows = this.getPaymentsPlanTableData(this.tableData.rows);
+  }
+
+  exportToExcel() {
+    this.buildPdfTabledata("excel");
+    this.reportsService.exportFooTableIntoFile(this.companyID, this.pdfTableData)
+      .subscribe(data =>{
+        let blob = new Blob([data._body], {type:"application/vnd.ms-excel"});
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link['download'] = "PaymentsPlan.xls";
+        link.click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+      });
+    // jQuery('#example-dropdown').foundation('close');
+
+  }
+
+  exportToPDF() {
+    this.buildPdfTabledata("pdf");
+
+    this.reportsService.exportFooTableIntoFile(this.companyID, this.pdfTableData)
+      .subscribe(data =>{
+        var blob = new Blob([data._body], {type:"application/pdf"});
+        var link = jQuery('<a></a>');
+        link[0].href = URL.createObjectURL(blob);
+        link[0].download = "PaymentsPlan.pdf";
+        link[0].click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+      });
+
+  }
+
 }

@@ -16,6 +16,7 @@ import {ItemCodeForm} from "../forms/ItemCode.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {Router} from "@angular/router";
+import {ReportService} from "reportsUI/app/services/Reports.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -49,10 +50,14 @@ export class ItemCodesComponent{
   confirmSubscription:any;
   companyCurrency:string;
   routeSubscribe:any;
+  itemsTableColumns: Array<any> = ['Name', 'Payment COA', 'Invoice COA'];
+  pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:string = "hidden";
 
   constructor(private _fb: FormBuilder, private _itemCodeForm: ItemCodeForm, private switchBoard: SwitchBoard,private _router: Router,
               private codeService: CodesService, private toastService: ToastService, private loadingService:LoadingService,
-        private coaService: ChartOfAccountsService, private companiesService: CompaniesService,private titleService:pageTitleService){
+        private coaService: ChartOfAccountsService, private companiesService: CompaniesService,private titleService:pageTitleService,
+              private reportsService: ReportService){
     this.titleService.setPageTitle("Item Codes");
     this.itemcodeForm = this._fb.group(_itemCodeForm.getForm());
     this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteItemCode(toast));
@@ -298,7 +303,12 @@ export class ItemCodesComponent{
     });
     setTimeout(function(){
       base.hasItemCodes = true;
-    }, 0)
+    }, 0);
+    setTimeout(function() {
+      if(base.hasItemCodes){
+        base.showDownloadIcon = "visible";
+      }
+    },650);
     this.loadingService.triggerLoadingEvent(false);
   }
 
@@ -316,4 +326,64 @@ export class ItemCodesComponent{
     this.row = {};
     this.showFlyout = !this.showFlyout;
   }
+
+  getItemsTableData(inputData) {
+    let tempData = _.cloneDeep(inputData);
+    let newTableData: Array<any> = [];
+    let tempJsonArray: any;
+
+    for( var i in  tempData) {
+      tempJsonArray = {};
+      tempJsonArray["Name"] = tempData[i].name;
+      tempJsonArray["Payment COA"] = tempData[i].paymentCOAName;
+      tempJsonArray["Invoice COA"] = tempData[i].invoiceCOAName;
+
+      newTableData.push(tempJsonArray);
+    }
+
+    return newTableData;
+  }
+
+  buildPdfTabledata(fileType) {
+    this.pdfTableData['documentHeader'] = "Header";
+    this.pdfTableData['documentFooter'] = "Footer";
+    this.pdfTableData['fileType'] = fileType;
+    this.pdfTableData['name'] = "Name";
+
+    this.pdfTableData.tableHeader.values = this.itemsTableColumns;
+    this.pdfTableData.tableRows.rows = this.getItemsTableData(this.tableData.rows);
+  }
+
+  exportToExcel() {
+    this.buildPdfTabledata("excel");
+    this.reportsService.exportFooTableIntoFile(this.currentCompany, this.pdfTableData)
+      .subscribe(data =>{
+        let blob = new Blob([data._body], {type:"application/vnd.ms-excel"});
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link['download'] = "ItemCodes.xls";
+        link.click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+      });
+    // jQuery('#example-dropdown').foundation('close');
+
+  }
+
+  exportToPDF() {
+    this.buildPdfTabledata("pdf");
+
+    this.reportsService.exportFooTableIntoFile(this.currentCompany, this.pdfTableData)
+      .subscribe(data =>{
+        var blob = new Blob([data._body], {type:"application/pdf"});
+        var link = jQuery('<a></a>');
+        link[0].href = URL.createObjectURL(blob);
+        link[0].download = "ItemCodes.pdf";
+        link[0].click();
+      }, error =>{
+        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+      });
+
+  }
+
 }

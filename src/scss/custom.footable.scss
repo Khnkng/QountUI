@@ -32,13 +32,13 @@
   .bighalf-footable{
     .footable-filtering{
       .footable-filtering{
-        right: 125px;
+        right: 155px;
       }
     }
     &.search-right{
       .footable-filtering{
         .footable-filtering{
-          right: 0px;
+          right: 50px;
         }
       }
     }
@@ -88,7 +88,7 @@
   .footable-filtering{
     position: absolute;
     top: -50px;
-    right: 0px;
+    right: 50px;
     border: none !important;
     .footable-filtering-search{
       input.form-control{

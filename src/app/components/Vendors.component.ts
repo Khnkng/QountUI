@@ -22,6 +22,7 @@ import {Address} from "qCommon/app/directives/address.directive";
 import {CompanyUsers} from "qCommon/app/services/CompanyUsers.service";
 import {UsersModel} from "../models/Users.model";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {ReportService} from "reportsUI/app/services/Reports.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -65,15 +66,17 @@ export class VendorComponent {
   showFirstStep:boolean = true;
   showSecondStep:boolean = false;
   routeSubscribe:any;
-
+  vendorsTableColumns: Array<any> = ['Name', 'Type', 'EIN/SSN', 'Email', 'Phone Number'];
+  pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  showDownloadIcon:string = "hidden";
 
   constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _vendorForm:VendorForm,
               private _router: Router, private loadingService:LoadingService,
               private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService,
-              private usersService: CompanyUsers,private titleService:pageTitleService) {
+              private usersService: CompanyUsers,private titleService:pageTitleService, private reportsService: ReportService) {
     this.titleService.setPageTitle("Vendors");
     this.vendorForm = this._fb.group(_vendorForm.getForm());
-    this.companyId = Session.getCurrentCompany(); ;
+    this.companyId = Session.getCurrentCompany();
     this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteVendor(toast));
     this.loadingService.triggerLoadingEvent(true);
     this.companyService.companies().subscribe(companies => {
@@ -183,7 +186,12 @@ export class VendorComponent {
     });
     setTimeout(function(){
       base.hasVendorsList = true;
-    }, 0)
+    }, 0);
+    setTimeout(function() {
+      if(base.hasVendorsList){
+        base.showDownloadIcon = "visible";
+      }
+    },700);
     this.loadingService.triggerLoadingEvent(false);
   }
 
@@ -495,4 +503,66 @@ export class VendorComponent {
     this.showFirstStep = true;
     this.showSecondStep = false;
   }
+
+  getVendorsTableData(inputData) {
+    let tempData = _.cloneDeep(inputData);
+    let newTableData: Array<any> = [];
+    let tempJsonArray: any;
+
+    for( var i in  tempData) {
+      tempJsonArray = {};
+      tempJsonArray["Name"] = tempData[i].name;
+      tempJsonArray["Type"] = tempData[i].type;
+      tempJsonArray["EIN/SSN"] = tempData[i].einssn;
+      tempJsonArray["Email"] = tempData[i].email;
+      tempJsonArray["Phone Number"] = tempData[i].phoneNumber;
+
+      newTableData.push(tempJsonArray);
+    }
+
+    return newTableData;
+  }
+
+  buildPdfTabledata(fileType){
+    this.pdfTableData['documentHeader'] = "Header";
+    this.pdfTableData['documentFooter'] = "Footer";
+    this.pdfTableData['fileType'] = fileType;
+    this.pdfTableData['name'] = "Name";
+
+    this.pdfTableData.tableHeader.values = this.vendorsTableColumns;
+    this.pdfTableData.tableRows.rows = this.getVendorsTableData(this.tableData.rows);
+  }
+
+  exportToExcel() {
+    this.buildPdfTabledata("excel");
+    this.reportsService.exportFooTableIntoFile(this.companyId, this.pdfTableData)
+      .subscribe(data =>{
+        let blob = new Blob([data._body], {type:"application/vnd.ms-excel"});
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link['download'] = "Vendors.xls";
+        link.click();
+      }, error =>{
+        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+      });
+    // jQuery('#example-dropdown').foundation('close');
+
+  }
+
+  exportToPDF() {
+    this.buildPdfTabledata("pdf");
+
+    this.reportsService.exportFooTableIntoFile(this.companyId, this.pdfTableData)
+      .subscribe(data =>{
+        var blob = new Blob([data._body], {type:"application/pdf"});
+        var link = jQuery('<a></a>');
+        link[0].href = URL.createObjectURL(blob);
+        link[0].download = "Vendors.pdf";
+        link[0].click();
+      }, error =>{
+        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+      });
+
+  }
+
 }

@@ -20,6 +20,7 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {Address} from "qCommon/app/directives/address.directive";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
+import {ReportService} from "reportsUI/app/services/Reports.service";
 
 declare var jQuery:any;
 declare var _:any;
@@ -58,11 +59,14 @@ export class TaxesComponent {
     taxId:any;
     confirmSubscription:any;
     routeSubscribe:any;
-
+    taxesTableColumns: Array<any> = ['Tax Name', 'Tax Number', 'Display Invoices', 'Tax Authority Name', 'Tax Rate', 'COA', 'Recoverable Tax', 'Compound Tax'];
+    pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+    showDownloadIcon:string = "hidden";
 
     constructor(private _fb: FormBuilder, private companyService: CompaniesService, private _taxesForm:TaxesForm,
                 private _router: Router, private loadingService:LoadingService, private vendorService: CompaniesService,
-                private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService,private titleService:pageTitleService) {
+                private _toastService: ToastService, private switchBoard: SwitchBoard,private coaService: ChartOfAccountsService,
+                private titleService:pageTitleService, private reportsService: ReportService) {
         this.titleService.setPageTitle("Taxes");
         this.TaxesForm = this._fb.group(_taxesForm.getTax());
         this.companyId = Session.getCurrentCompany();
@@ -144,9 +148,13 @@ export class TaxesComponent {
         });
         base.hasItemCodes = false;
         setTimeout(function(){
-
             base.hasItemCodes = true;
-        }, 0)
+        }, 0);
+        setTimeout(function() {
+          if(base.hasItemCodes){
+            base.showDownloadIcon = "visible";
+          }
+        },650);
         this.loadingService.triggerLoadingEvent(false);
     }
     getCompanyName(companyId){
@@ -384,4 +392,69 @@ export class TaxesComponent {
 
         }, error => this.handleError(error));
     }
+
+  getTaxesTableData(inputData) {
+    let tempData = _.cloneDeep(inputData);
+    let newTableData: Array<any> = [];
+    let tempJsonArray: any;
+
+    for( var i in  tempData) {
+      tempJsonArray = {};
+      tempJsonArray["Tax Name"] = tempData[i].name;
+      tempJsonArray["Tax Number"] = tempData[i].tin;
+      tempJsonArray["Display Invoices"] = tempData[i].visibleOnInvoices;
+      tempJsonArray["Tax Authority Name"] = tempData[i].taxAuthorityName;
+      tempJsonArray["Tax Rate"] = tempData[i].taxRate;
+      tempJsonArray["COA"] = tempData[i].coa_name;
+      tempJsonArray["Recoverable Tax"] = tempData[i].recoverableTax;
+      tempJsonArray["Compound Tax"] = tempData[i].compoundTax;
+
+      newTableData.push(tempJsonArray);
+    }
+
+    return newTableData;
+  }
+
+  buildPdfTabledata(fileType) {
+    this.pdfTableData['documentHeader'] = "Header";
+    this.pdfTableData['documentFooter'] = "Footer";
+    this.pdfTableData['fileType'] = fileType;
+    this.pdfTableData['name'] = "Name";
+
+    this.pdfTableData.tableHeader.values = this.taxesTableColumns;
+    this.pdfTableData.tableRows.rows = this.getTaxesTableData(this.tableData.rows);
+  }
+
+  exportToExcel() {
+    this.buildPdfTabledata("excel");
+    this.reportsService.exportFooTableIntoFile(this.companyId, this.pdfTableData)
+      .subscribe(data =>{
+        let blob = new Blob([data._body], {type:"application/vnd.ms-excel"});
+        let link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link['download'] = "Taxes.xls";
+        link.click();
+      }, error =>{
+        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+      });
+    // jQuery('#example-dropdown').foundation('close');
+
+  }
+
+  exportToPDF() {
+    this.buildPdfTabledata("pdf");
+
+    this.reportsService.exportFooTableIntoFile(this.companyId, this.pdfTableData)
+      .subscribe(data =>{
+        var blob = new Blob([data._body], {type:"application/pdf"});
+        var link = jQuery('<a></a>');
+        link[0].href = URL.createObjectURL(blob);
+        link[0].download = "Taxes.pdf";
+        link[0].click();
+      }, error =>{
+        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+      });
+
+  }
+
 }

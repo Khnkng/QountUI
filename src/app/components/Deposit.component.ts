@@ -620,12 +620,23 @@ export class DepositComponent{
         this.depositService.updateDeposit(this.tempData, this.currentCompanyId)
             .subscribe(response =>{
                 this.toastService.pop(TOAST_TYPE.success, "Deposit Edited successfully");
+                this.setUpdatedFlagInStates();
                 this.loadingService.triggerLoadingEvent(false);
                 this.showDepositsPage();
             }, error => {
                 this.loadingService.triggerLoadingEvent(false);
                 console.log("updating deposit failed", error);
             });
+    }
+
+    setUpdatedFlagInStates(){
+      if(this.stateService.states) {
+        _.each(this.stateService.states, function(state){
+          let data = state.data || {};
+          data.refreshData = true;
+          state.data = data;
+        });
+      }
     }
 
 
