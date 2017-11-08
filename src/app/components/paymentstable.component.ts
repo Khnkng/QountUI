@@ -14,6 +14,7 @@ import {StateService} from "qCommon/app/services/StateService";
 import {State} from "qCommon/app/models/State";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -52,11 +53,16 @@ export class paymenttableComponent {
     @ViewChild('hChart1') hChart1:HighChart;
     @ViewChild('createtaxes') createtaxes;
     routeSubscribe:any;
+    dateFormat:string;
+    serviceDateformat:string;
 
     constructor(private _router: Router,private _route: ActivatedRoute,private companyService: CompaniesService,
-            private loadingService:LoadingService, private reportService: ReportService, private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard) {
+            private loadingService:LoadingService, private reportService: ReportService, private stateService: StateService,
+                private titleService:pageTitleService,_switchBoard:SwitchBoard, private dateFormater: DateFormater) {
         this.companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
         this.routeSub = this._route.params.subscribe(params => {
             this.currentpayment = params['PaymentstableID'];
             if(this.currentpayment=='totalpayable'){
@@ -156,6 +162,10 @@ export class paymenttableComponent {
                         },
                         value : amount.toFixed(2)
                     }
+                }else if(key == 'bill_date'){
+                  row[key] = base.convertDateIntoLocaleFormat(expense[key]);
+                }else if(key == 'due_date'){
+                  row[key] = base.convertDateIntoLocaleFormat(expense[key]);
                 }
                 else {
                     row[key] = expense[key];
@@ -196,6 +206,10 @@ export class paymenttableComponent {
 
     ngOnDestroy(){
         this.routeSubscribe.unsubscribe();
+    }
+
+    convertDateIntoLocaleFormat(input) {
+      return input ? this.dateFormater.formatDate(input, this.serviceDateformat, this.dateFormat) : input;
     }
 
 }
