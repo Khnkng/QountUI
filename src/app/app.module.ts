@@ -104,12 +104,12 @@ import {RDcreditsForm} from "./forms/RDcredits.form";
 import {CollaborationComponent} from "./components/Collaboration.component";
 import {SubCommentComponent} from "./components/SubComment.component";
 import {CollaborationService} from "./services/Collaboration.service";
-
+import { ScrollEventModule } from 'ngx-scroll-event';
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
 @NgModule({
-  imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
+  imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, ScrollEventModule, HttpModule, RouterModule.forRoot([
     {
       path: '',
       redirectTo: 'dashboard',
@@ -356,6 +356,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     },
     {
       path: 'collaboration',
+      component: CollaborationComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'collaboration/:entityType/:entityId',
       component: CollaborationComponent,
       canActivate: [LoggedInActivator]
     }

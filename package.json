@@ -36,6 +36,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "motion-ui": "^1.2.2",
+    "ngx-scroll-event": "^1.0.5",
     "ng2-file-upload": "^1.0.3",
     "numeral": "^2.0.6",
     "pikaday": "^1.5.1",

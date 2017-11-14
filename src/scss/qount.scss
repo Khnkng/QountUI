@@ -584,6 +584,16 @@ h1, h2, h3, h4, h5, h6 {
   padding: 4px 5px;
   font-size: 8px;
 }
+
+.comment-badge {
+  background-color: transparent;
+  i {
+    font-size: 18px;
+    vertical-align: middle;
+    color: #4554A4;
+  }
+}
+
 .payment-je-badge{
   background-color:#4554A4;
 }
@@ -4734,10 +4744,13 @@ div.footable-loader {
 
 
 .collaboration {
+  min-height:500px;
+  color: #636364;
   .export-dropdown div {
     padding: inherit !important;
   }
   .export-option {
+    text-transform: capitalize;
     span i {
       margin-right: 20px;
     }
@@ -4890,11 +4903,13 @@ div.footable-loader {
   }
 
   .round {
-    padding: 7px;
-    background-color: #384986;
+    padding: 2px 0 0px 0;
+    background-color: #3C628C;
     color:#ffffff;
     border-radius: 50%;
     text-transform: uppercase;
+    text-align: center;
+    font-size: 20px;
   }
 
   .comments {
@@ -4927,7 +4942,7 @@ div.footable-loader {
   }
 
   .user {
-    color: #384986;
+    color: #3C628C;
     font-size: 20px;
     text-transform: capitalize;
   }
@@ -4940,7 +4955,7 @@ div.footable-loader {
   }
 
   .likeOptions {
-    font-size: 14pt;
+    font-size: 12pt;
     margin-right:5px;
   }
 
@@ -4950,7 +4965,7 @@ div.footable-loader {
   }
 
   .commonColor1 {
-    color:#384986;
+    color:#3C628C;
   }
 
   .commonColor2 {
@@ -4963,7 +4978,7 @@ div.footable-loader {
 
   .comment-status {
     border-radius: 20px;
-    padding: 0 10px;
+    padding: 0 5px;
     margin:0;
   }
 
@@ -5057,6 +5072,40 @@ div.footable-loader {
         left:inherit;
       }
 
+    }
+  }
+
+  .fadeOut {
+    color: #e2e2e2;
+  }
+
+  .metaData {
+    color: #A5A5A5;
+    font-size: 18px;
+  }
+
+  .postAttachment {
+    width:200px;
+    border:1px solid #e2e2e2;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    background-color: rgb(224, 224, 224);
+
+    .attachment_name {
+      width: 150px;
+      height: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inherit;
+    }
+
+    i {
+      color: #FFFFFF;
+
+      &:hover {
+        color : #3C628C;
+      }
     }
   }
 }

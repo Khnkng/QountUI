@@ -6,14 +6,11 @@ import {Session} from "qCommon/app/services/Session";
 import {Router, ActivatedRoute} from "@angular/router";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
-import {CompaniesService} from "qCommon/app/services/Companies.service";
-import {NumeralService} from "qCommon/app/services/Numeral.service";
-import {StateService} from "qCommon/app/services/StateService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
-import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {FileUploader, FileUploaderOptions} from "ng2-file-upload";
 import {CollaborationService} from "../services/Collaboration.service";
+import { ScrollEvent } from 'ngx-scroll-event';
 
 declare const _: any;
 declare const jQuery: any;
@@ -27,31 +24,50 @@ declare const moment: any;
 export class CollaborationComponent {
   companyId: string;
   user: any;
-  routeSubscribe: any;
-  logoURL: string;
-  reconPeriod: string;
+  routeSub: any;
+  entityId: string;
+  entityType: string;
   dateFormat: string;
   serviceDateformat: string;
-  filters: any = {'task': '#44B6E8', 'done': '#18457B', 'working': '#F06459', 'active': '#00B1A9', 'celebrating': '#22B473'};
+  filters: any = {'task': '#4ab9e8', 'done': '#1CB3AB', 'working': '#FDB844', 'active': '#CD0814', 'celebrating': '#ef655d'};
   posts: any = [];
-  newPost: any = {id: '', postedBy: '', message: '', entityType: 'expense', entityID: '4f96e2ba-dcda-498b-8cf3-03349c556c4d', badges: [], emoji: 'insert_emoticon', createdDate: '', updatedDate: ''};
+  metaData: string;
+  newPost: any = {id: '', postedBy: '', message: '', badges: [], emoji: 'insert_emoticon', createdDate: '', updatedDate: ''};
   newComment: any = {id: '', postID: '', parentID: '', commentedBy: '', message: '', badges: [], emoji: 'insert_emoticon', createdDate: '', updatedDate: ''};
-  badges: any = [{name: 'task', icon: 'grade', selected: false, color: '#44B6E8'}, {name: 'done', icon: 'check_circle', selected: false, color: '#18457B'}, {name: 'working', icon: 'watch_later', selected: false, color: '#F06459'}, {name: 'active', icon: 'alarm_add', selected: false, color: '#00B1A9'}, {name: 'celebrating', icon: 'insert_emoticon', selected: false, color: '#22B473'}];
+  badges: any = [
+    {name: 'task', icon: 'grade', selected: false, color: '#4ab9e8'},
+    {name: 'done', icon: 'check_circle', selected: false, color: '#1CB3AB'},
+    {name: 'working', icon: 'watch_later', selected: false, color: '#FDB844'},
+    {name: 'active', icon: 'alarm_add', selected: false, color: '#CD0814'},
+    {name: 'celebrating', icon: 'insert_emoticon', selected: false, color: '#ef655d'}
+  ];
   updateOptions = ['update', 'delete'];
   public uploader: FileUploader;
   postUploadResp: any;
   selectedCommentInput: string;
   generatedId: string;
+  isNewPostAttachment = false;
+  postIndex = 0 ;
+
   constructor(private toastService: ToastService, private _router: Router, private _route: ActivatedRoute,
-              private loadingService: LoadingService, private companyService: CompaniesService, private numeralService: NumeralService,
-              private stateService: StateService, private titleService: pageTitleService, _switchBoard: SwitchBoard,
+              private loadingService: LoadingService, private titleService: pageTitleService,
               private dateFormater: DateFormater,  private collaborationService: CollaborationService) {
-    this.titleService.setPageTitle("Collaboration Wall");
+    this.titleService.setPageTitle("Wall");
     this.companyId = Session.getCurrentCompany();
     this.dateFormat = dateFormater.getFormat();
     this.serviceDateformat = dateFormater.getServiceDateformat();
     this.user = Session.getUser();
-    this.getPosts();
+    this.routeSub = this._route.params.subscribe(params => {
+      this.entityId = params['entityId'];
+      this.entityType = params['entityType'];
+      if (this.entityId) {
+        this.getEntityPosts();
+      } else {
+        this.getPosts();
+      }
+      this.loadingService.triggerLoadingEvent(true);
+    });
+
     this.uploader = new FileUploader(<FileUploaderOptions>{
       url: collaborationService.getDocumentServiceUrl(this.companyId),
       headers: [{
@@ -83,9 +99,25 @@ export class CollaborationComponent {
 
   getPosts() {
     this.loadingService.triggerLoadingEvent(true);
-    this.collaborationService.getPosts()
+    this.collaborationService.getPosts(this.postIndex)
       .subscribe(response => {
-        this.posts = response.posts;
+        //this.posts = response.posts;
+        this.posts = _.concat(this.posts, response.posts);
+        this.postIndex = this.postIndex + 10;
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+  }
+
+  getEntityPosts() {
+    this.loadingService.triggerLoadingEvent(true);
+    this.collaborationService.getEntityPosts(this.entityId, this.entityType, this.postIndex)
+      .subscribe(response => {
+        this.posts = _.concat(this.posts, response.posts);
+        //this.posts = response.posts;
+        this.postIndex = this.postIndex + 10;
+        this.metaData = response.metadata;
         this.loadingService.triggerLoadingEvent(false);
       }, error => {
         this.loadingService.triggerLoadingEvent(false);
@@ -105,29 +137,45 @@ export class CollaborationComponent {
   createPost() {
     this.loadingService.triggerLoadingEvent(true);
     this.newPost.postedBy = Session.getUser().id;
-    this.newPost.id = this.postUploadResp.sourceID;
+    this.newPost.entityID = this.entityId || 'Default';
+    this.newPost.entityType = this.entityType || 'Default';
     if (!_.isEmpty(this.postUploadResp)) {
       this.newPost["documentName"] = this.postUploadResp.name;
       this.newPost["documentID"] = this.postUploadResp.id;
+      this.newPost.id = this.postUploadResp.sourceID;
     }else {
-      this.newPost["documentName"] = '';
-      this.newPost["documentID"] = '';
+      /*this.newPost["documentName"] = '';
+       this.newPost["documentID"] = '';*/
+      this.newPost.id = this.guid();
     }
 
     this.collaborationService.createPost(this.newPost)
       .subscribe(response => {
-        this.getPosts();
+        if (this.entityId) {
+          this.getEntityPosts();
+        } else {
+          this.getPosts();
+        }
         this.postUploadResp = {};
-        this.loadingService.triggerLoadingEvent(false);
+        this.resetPostObj();
+        this.generatedId = '';
       }, error => {
         this.loadingService.triggerLoadingEvent(false);
       });
+  }
+
+  resetPostObj() {
+    this.newPost.message = '';
+    this.newPost.badges = [];
+    this.newPost.id = '';
   }
 
   downloadDocument(id) {
     this.loadingService.triggerLoadingEvent(true);
     this.collaborationService.getDocument(id)
       .subscribe(response => {
+        console.log(response);
+        window.open(response.temporaryURL);
         this.loadingService.triggerLoadingEvent(false);
       }, error => {
         this.loadingService.triggerLoadingEvent(false);
@@ -171,10 +219,13 @@ export class CollaborationComponent {
     }
     this.collaborationService.createComment(this.newComment)
       .subscribe(response => {
-        //this.posts.push(response.posts);
-        this.getPosts();
+        if (this.entityId) {
+          this.getEntityPosts();
+        } else {
+          this.getPosts();
+        }
         this.postUploadResp = {};
-        this.loadingService.triggerLoadingEvent(false);
+        this.generatedId = '';
       }, error => {
         this.loadingService.triggerLoadingEvent(false);
       });
@@ -197,28 +248,33 @@ export class CollaborationComponent {
     }
     this.collaborationService.createComment(this.newComment)
       .subscribe(response => {
-        //this.posts.push(response.posts);
-        this.getPosts();
+        this.selectedCommentInput = '';
+        this.isNewPostAttachment = false;
+        if (this.entityId) {
+          this.getEntityPosts();
+        } else {
+          this.getPosts();
+        }
         this.postUploadResp = {};
-        this.loadingService.triggerLoadingEvent(false);
+        this.generatedId = '';
       }, error => {
         this.loadingService.triggerLoadingEvent(false);
       });
-    console.log(this.newComment);
   }
 
   showCommentInput(id) {
-    this.selectedCommentInput = 'comment_' + id;
+    if (this.selectedCommentInput === 'comment_' + id) {
+      this.selectedCommentInput = '';
+    } else {
+      this.selectedCommentInput = 'comment_' + id;
+    }
   }
 
 
-  postSelectBadge(badge,targetObj) {
+  postSelectBadge(badge, targetObj) {
     if (typeof badge !== "string") {
-      if (badge.selected) {
-        targetObj.badges.push(badge.name);
-      } else {
-        targetObj.badges = _.without(targetObj.badges, badge.name);
-      }
+      const selectedBadges = _.filter(this.badges, {selected: true});
+      targetObj.badges = _.map(selectedBadges, 'name');
     }
   }
 
@@ -233,16 +289,113 @@ export class CollaborationComponent {
       this.s4() + '-' + this.s4() + this.s4() + this.s4();
   }
 
-  startUpload($event, id) {
+  startUpload($event, id?: string) {
     const base = this;
-    if (id.length > 0) {
+    if (id) {
       this.generatedId = id;
     } else {
       this.generatedId = this.guid();
+      this.isNewPostAttachment = true;
     }
     setTimeout(function(){
       base.uploader.uploadAll();
     }, 400);
+  }
+
+  handlePostAction(action, id) {
+    if (action === 'delete') {
+      this.deletePost(id);
+    }
+  }
+
+  handleCommentAction(action, commentId, postId) {
+    if (action === 'delete') {
+      this.deleteComment(commentId, postId);
+    }
+  }
+
+
+  deletePost(id) {
+    this.loadingService.triggerLoadingEvent(true);
+    this.collaborationService.deletePost(id)
+      .subscribe(response => {
+        this.posts = [];
+        this.postIndex = 0;
+        if (this.entityId) {
+          this.getEntityPosts();
+        } else {
+          this.getPosts();
+        }
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+  }
+
+  deleteComment(commentId, postId) {
+    this.loadingService.triggerLoadingEvent(true);
+    this.collaborationService.deleteComment(commentId, postId)
+      .subscribe(response => {
+        this.posts = [];
+        this.postIndex = 0;
+        if (this.entityId) {
+          this.getEntityPosts();
+        } else {
+          this.getPosts();
+        }
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+  }
+
+  like(comment, type) {
+    this.loadingService.triggerLoadingEvent(true);
+    const data = {};
+    data['entityID'] = comment.id;
+    data['entitytype'] = type;
+    data['id'] = '';
+    data['userID'] = Session.getUser().id;
+
+    this.collaborationService.like(data)
+      .subscribe(response => {
+        comment.likedByUser = true;
+        comment.likesCount++;
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+  }
+
+  unLike(comment) {
+    this.loadingService.triggerLoadingEvent(true);
+    this.collaborationService.unLike(comment.id)
+      .subscribe(response => {
+        comment.likedByUser = false;
+        comment.likesCount--;
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+  }
+
+
+  getPostsByIndex() {
+    console.log(this.postIndex);
+  }
+
+  handleScroll(event: ScrollEvent) {
+    //console.log('scroll occurred', event.originalEvent);
+    if (event.isReachingBottom) {
+      if (this.entityId) {
+        this.getEntityPosts();
+      } else {
+        this.getPosts();
+      }
+      console.log(`the user is reaching the bottom`);
+    }
+    /*if (event.isWindowEvent) {
+     console.log(`This event is fired on Window not on an element.`);
+     }*/
+
   }
 
   ngOnInit () {
@@ -260,10 +413,6 @@ export class CollaborationComponent {
         this.uploader.queue.forEach(function(item){
           item.remove();
         });
-        /* this.document = JSON.parse(response);
-         this.billFileExist = true;
-         this.compileLink();*/
-        //Your code goes here
       }
     };
   };

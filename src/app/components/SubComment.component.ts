@@ -17,19 +17,19 @@ declare let moment: any;
   templateUrl: '../views/SubComment.html',
 })
 
-export class SubCommentComponent{
-  filters: any = {'task': '#44B6E8', 'done': '#18457B', 'working': '#F06459', 'active': '#00B1A9', 'celebrating': '#22B473'};
+export class SubCommentComponent {
+  filters: any = {'task': '#4ab9e8', 'done': '#1CB3AB', 'working': '#FDB844', 'active': '#CD0814', 'celebrating': '#ef655d'};
   comments: any;
   selectedCommentInput: string;
   user: any;
   newComment: any = {id: '', postID: '', parentID: '', commentedBy: '', message: '', badges: [],
     emoji: 'insert_emoticon', createdDate: '', updatedDate: ''};
   badges: any = [
-    {name: 'task', icon: 'grade', selected: false, color: '#44B6E8'},
-    {name: 'done', icon: 'check_circle', selected: false, color: '#18457B'},
-    {name: 'working', icon: 'watch_later', selected: false, color: '#F06459'},
-    {name: 'active', icon: 'alarm_add', selected: false, color: '#00B1A9'},
-    {name: 'celebrating', icon: 'insert_emoticon', selected: false, color: '#22B473'}
+    {name: 'task', icon: 'grade', selected: false, color: '#4ab9e8'},
+    {name: 'done', icon: 'check_circle', selected: false, color: '#1CB3AB'},
+    {name: 'working', icon: 'watch_later', selected: false, color: '#FDB844'},
+    {name: 'active', icon: 'alarm_add', selected: false, color: '#CD0814'},
+    {name: 'celebrating', icon: 'insert_emoticon', selected: false, color: '#ef655d'}
   ];
   updateOptions = ['update', 'delete'];
 
@@ -67,16 +67,18 @@ export class SubCommentComponent{
     });
   }
 
-  getPosts() {
+
+  /*getEntityPosts() {
     this.loadingService.triggerLoadingEvent(true);
-    this.collaborationService.getPosts()
+    this.collaborationService.getEntityPosts(this.entityId, this.entityType)
       .subscribe(response => {
         this.posts = response.posts;
         this.loadingService.triggerLoadingEvent(false);
       }, error => {
         this.loadingService.triggerLoadingEvent(false);
       });
-  }
+  }*/
+
 
 
   getColor(type) {
@@ -88,7 +90,31 @@ export class SubCommentComponent{
   }
 
   showCommentInput(id) {
-    this.selectedCommentInput = 'comment_' + id;
+    if (this.selectedCommentInput === 'comment_' + id) {
+      this.selectedCommentInput = '';
+    } else {
+      this.selectedCommentInput = 'comment_' + id;
+    }
+  }
+
+  handleCommentAction(action, commentId, postId) {
+    if (action === 'delete') {
+      this.deleteComment(commentId, postId);
+    }
+  }
+
+  deleteComment(commentId, postId) {
+    this.loadingService.triggerLoadingEvent(true);
+    this.collaborationService.deleteComment(commentId, postId)
+      .subscribe(response => {
+        /*if (this.entityId) {
+          this.getEntityPosts();
+        } else {
+          this.getPosts();
+        }*/
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
   }
 
   onSubCommentEnter(event, id, parentId) {
@@ -108,7 +134,7 @@ export class SubCommentComponent{
     this.collaborationService.createComment(this.newComment)
       .subscribe(response => {
         //this.posts.push(response.posts);
-        this.getPosts();
+        //this.getEntityPosts();
         this.postUploadResp = {};
         this.loadingService.triggerLoadingEvent(false);
       }, error => {
@@ -146,6 +172,18 @@ export class SubCommentComponent{
   guid() {
     return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
       this.s4() + '-' + this.s4() + this.s4() + this.s4();
+  }
+
+  downloadDocument(id) {
+    this.loadingService.triggerLoadingEvent(true);
+    this.collaborationService.getDocument(id)
+      .subscribe(response => {
+        console.log(response);
+        window.open(response.temporaryURL);
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
   }
 
   startUpload($event) {

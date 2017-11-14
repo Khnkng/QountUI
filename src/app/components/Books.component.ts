@@ -345,6 +345,10 @@ export class BooksComponent{
         this._router.navigate(link);
 
       }
+    } else if (action === 'collaboration') {
+      console.log($event);
+      const link = ['collaboration', 'journalEntry', $event.id];
+      this._router.navigate(link);
     }
   }
 
@@ -459,12 +463,13 @@ export class BooksComponent{
          row[key] = expense.is_paid? "PAID": "UNPAID";
          }*/
       });
+      const postString = "<a class='action' data-action='collaboration'><span class='comment-badge'><i class='material-icons'>comment</i></span></a>";
       if(expense.journal_id&&expense.cash_only_journal_id){
-        row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='je2navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='je2navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>" + postString;
       }else if(expense.journal_id){
-        row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>" + postString;
       } else{
-        row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>" + postString;
       }
       base.expensesTableData.rows.push(row);
     });
@@ -530,12 +535,13 @@ export class BooksComponent{
           row[key] = expense[key];
         }
       });
+      const postString = "<a class='action' data-action='collaboration'><span class='comment-badge'><i class='material-icons'>comment</i></span></a>";
       if(expense.journal_id&&expense.cash_only_journal_id){
-        row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='je2navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='je2navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>"+ postString;
       }else if(expense.journal_id){
-        row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        row['actions'] = "<a class='action' data-action='navigation'><span class='icon badge je-badge'>JE</span></a><a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>"+ postString;
       } else{
-        row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+        row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>" + postString;
       }
       base.depositsTableData.rows.push(row);
     });
@@ -594,7 +600,9 @@ export class BooksComponent{
           row[key] = journalEntry[key];
         }
       });
-      let action="<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+      let action = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+      const postString = "<a class='action' data-action='collaboration'><span class='comment-badge'><i class='material-icons'>comment</i></span></a>";
+
       if(journalEntry['source'] === 'Manual'){
         action= action+"<a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       }
@@ -611,7 +619,7 @@ export class BooksComponent{
       }else if(journalEntry['sourceID'] && journalEntry['sourceType'] === 'credit'){
         action="<a class='action' data-action='Navigation'><span class='icon badge je-badge'>C</span></a>"+action;
       }
-      row['actions'] = action;
+      row['actions'] = action + postString;
 
       if(row['type'] == 'Original' && journalEntry['source'] === 'Manual' && !base.isAlreadyReversed(journalEntry['id']) && journalEntry['sourceID']){
         row['reverse'] = "<a style='font-size:0.1rem;color:#ffffff;margin:0px 5px 0px 0px;' class='button small action reverseButton' data-action='reverse'>Reverse</a>";
@@ -665,6 +673,10 @@ export class BooksComponent{
       this.addBookState();
       let link = ['journalEntry', $event.cash_only_journal_id];
       this._router.navigate(link);
+    } else if (action === 'collaboration') {
+      console.log($event);
+      const link = ['collaboration', 'expense', $event.id];
+      this._router.navigate(link);
     }
   }
 
@@ -689,6 +701,10 @@ export class BooksComponent{
     } else if(action == 'je2navigation'){
       this.addBookState();
       let link = ['journalEntry', $event.cash_only_journal_id];
+      this._router.navigate(link);
+    } else if (action === 'collaboration') {
+      console.log($event);
+      const link = ['collaboration', 'deposit', $event.id];
       this._router.navigate(link);
     }
   }

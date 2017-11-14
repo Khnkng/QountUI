@@ -17,14 +17,25 @@ export class CollaborationService extends  QountServices {
     super(http);
   }
 
-  getPosts(): Observable<any> {
-    const url = this.interpolateUrl(PATH.GET_POSTS, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany()});
+  getPosts(index): Observable<any> {
+    let indexInc = index;
+    if (index !== 0) {
+      indexInc = 1 + index;
+    }
+    indexInc = indexInc.toString();
+
+    const url = this.interpolateUrl(PATH.GET_POSTS, {from: indexInc}, {id: Session.getUser().id, companyId: Session.getCurrentCompany()});
     return this.query(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
       .catch(this.handleError);
   }
 
-
-
+  getEntityPosts(entityId, entityType, index): Observable<any> {
+    index = index.toString();
+    const url = this.interpolateUrl(PATH.GET_ENTITY_POSTS, {entityId: entityId, entityType: entityType, from: index},
+      {id: Session.getUser().id, companyId: Session.getCurrentCompany()});
+    return this.query(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+      .catch(this.handleError);
+  }
 
   createPost(data: any): Observable<any> {
     const url = this.interpolateUrl(PATH.CREATE_POST, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany()});
@@ -35,6 +46,18 @@ export class CollaborationService extends  QountServices {
   createComment(data: any): Observable<any> {
     const url = this.interpolateUrl(PATH.CREATE_COMMENT, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany(), postID: data.postID});
     return this.create(url, data, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+      .catch(this.handleError);
+  }
+
+  deletePost(id): Observable<any> {
+    const url = this.interpolateUrl(PATH.DELETE_POST, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany(), postID: id});
+    return this.delete(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+      .catch(this.handleError);
+  }
+
+  deleteComment(commentId, postId): Observable<any> {
+    const url = this.interpolateUrl(PATH.DELETE_COMMENT, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany(), postID: postId, commentID: commentId});
+    return this.delete(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
       .catch(this.handleError);
   }
 
@@ -49,6 +72,19 @@ export class CollaborationService extends  QountServices {
     return this.query(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
       .catch(this.handleError);
   }
+
+  like(data): Observable<any> {
+    const url = this.interpolateUrl(PATH.LIKE, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany()});
+    return this.create(url, data, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+      .catch(this.handleError);
+  }
+
+  unLike(id): Observable<any> {
+    const url = this.interpolateUrl(PATH.UNLIKE, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany(), entityID: id});
+    return this.delete(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+      .catch(this.handleError);
+  }
+
 
   private handleError (error: Response) {
     return Observable.throw(error.text());
