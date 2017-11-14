@@ -101,7 +101,7 @@ import {PaymentsPlan}from"./forms/PaymentsPlan.form";
 import {RDCreditsComponent} from "./components/RDCredits.component";
 import {RDcreditsService} from "./services/RDcredits.service";
 import {RDcreditsForm} from "./forms/RDcredits.form";
-
+import {DocumentsTypeComponent} from "./components/DocumentsType.component";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -313,7 +313,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       canActivate: [LoggedInActivator]
     },
     {
-      path: 'documents/:tabId',
+      path: 'documents',
       component: DocumentsComponent,
       canActivate: [LoggedInActivator]
     },
@@ -350,7 +350,13 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       path: 'rdCredits',
       component: RDCreditsComponent,
       canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'documents/:docType',
+      component: DocumentsTypeComponent,
+      canActivate: [LoggedInActivator]
     }
+
   ]), PaymentsModule, ReportsModule, InvoicesModule
   ],
   declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
@@ -359,7 +365,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
     ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
     CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent,
-    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent],
+    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent,DocumentsTypeComponent],
   exports: [RouterModule],
   bootstrap: [ AppComponent ],
   providers: [APP_BASE, COAForm,MetricsForm,MetricsLineForm,metricPeriodForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
