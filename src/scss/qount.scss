@@ -4730,3 +4730,18 @@ div.footable-loader {
 .footable.table > thead > tr > th, .footable.table > tbody > tr > td.wrap{
   white-space: nowrap !important;
 }
+
+.documents {
+  background-color: #E5E5E5;
+  padding-bottom: 15px;
+  .report-callout {
+    background-color: white;
+    border: none;
+    .fa-stack-1x {
+      font-size: medium;
+    }
+    .report-header {
+      padding-left: 15px;margin-top: 20px;
+    }
+  }
+}
