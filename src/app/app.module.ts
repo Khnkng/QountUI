@@ -50,6 +50,7 @@ import {JournalEntryForm, JournalLineForm} from "./forms/JournalEntry.form";
 import {ExpenseCodesForm} from "./forms/ExpenseCodes.form";
 import {PaymentsModule} from "billsUI/app/payments.module";
 import {InvoicesModule} from "invoicesUI/app/invoices.module";
+import {CollaborationModule} from "collaborationUI/src/app/app.module";
 import {RulesService} from "qCommon/app/services/Rules.service";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 import {CategorizationComponent} from "./components/Categorization.component";
@@ -101,15 +102,11 @@ import {PaymentsPlan}from"./forms/PaymentsPlan.form";
 import {RDCreditsComponent} from "./components/RDCredits.component";
 import {RDcreditsService} from "./services/RDcredits.service";
 import {RDcreditsForm} from "./forms/RDcredits.form";
-import {CollaborationComponent} from "./components/Collaboration.component";
-import {SubCommentComponent} from "./components/SubComment.component";
-import {CollaborationService} from "./services/Collaboration.service";
-import { ScrollEventModule } from 'ngx-scroll-event';
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
 @NgModule({
-  imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, ScrollEventModule, HttpModule, RouterModule.forRoot([
+  imports: [ BrowserModule, FormsModule, CommonModule, ReactiveFormsModule, ShareModule, HttpModule, RouterModule.forRoot([
     {
       path: '',
       redirectTo: 'dashboard',
@@ -353,18 +350,8 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       path: 'rdCredits',
       component: RDCreditsComponent,
       canActivate: [LoggedInActivator]
-    },
-    {
-      path: 'collaboration',
-      component: CollaborationComponent,
-      canActivate: [LoggedInActivator]
-    },
-    {
-      path: 'collaboration/:entityType/:entityId',
-      component: CollaborationComponent,
-      canActivate: [LoggedInActivator]
     }
-  ]), PaymentsModule, ReportsModule, InvoicesModule
+  ]), PaymentsModule, ReportsModule, InvoicesModule, CollaborationModule
   ],
   declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
     VendorComponent,TaxesComponent,VerificationComponent,paymenttableComponent,ChartOfAccountsComponent,MetricsComponent,CreateMetricComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
@@ -372,13 +359,13 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
     ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
     CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent,
-    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent,CollaborationComponent, SubCommentComponent],
+    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent],
   exports: [RouterModule],
   bootstrap: [ AppComponent ],
   providers: [APP_BASE, COAForm,MetricsForm,MetricsLineForm,metricPeriodForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
     TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm,ContactLineForm, DimensionForm, UsersForm, DocumentService,
     FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService,MetricsService,
-    BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan, RDcreditsService,RDcreditsForm, CollaborationService],
+    BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan, RDcreditsService,RDcreditsForm],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
