@@ -978,4 +978,12 @@ export class DepositComponent{
         return this.numeralService.format('$0,0.00', value)
     }
 
+  showPosts($event, index) {
+    $event.preventDefault();
+    let itemsControl:any = this.depositForm.controls['payments'];
+    let data = this._depositLineForm.getData(itemsControl.controls[index]);
+    const link = ['collaboration', 'depositLine', data.id];
+    this._router.navigate(link);
+  }
+
 }
