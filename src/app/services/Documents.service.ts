@@ -36,6 +36,12 @@ export class DocumentService extends  QountServices {
             .catch(this.handleError);
     }
 
+    getDocumentsByType(companyId: string, typeParam: string): Observable<any> {
+      var url = this.interpolateUrl(PATH.DOCUMENT_TYPE_SERVICE,null,{id: Session.getUser().id, companyId: companyId});
+      return this.query(url+"?docType="+typeParam, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+        .catch(this.handleError);
+    }
+
     private handleError (error: Response) {
         return Observable.throw(error.text());
     }

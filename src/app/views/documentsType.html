@@ -1,18 +1,82 @@
-<div>
-  <div class="row add-share-buttons">
-      <div class="column medium-12 text-right">
-          <span class="pointer">
-            <i class=" icon ion-ios-plus-outline"></i>
-            <span>Document</span>
-          </span>
-      </div>
+<div *ngIf="showPage">
+  <!--<section ng2FileDrop [uploader]="uploader" (fileOver)="fileOverBase($event)">-->
+<!--
+  <div class="row upload-choose-btn">
+    <div class="column medium-12 text-right">
+      <label class="button" for="nativeFileUpload">Upload Document</label>
+      <input class="show-for-sr" id="nativeFileUpload" type="file" value="null">
+    </div>
   </div>
+-->
+  <div class="row">
+    <div class="small-12 medium-12 columns" style="padding: 0px">
+      <div class="file-upload-modal">
+        <section class="upload-area" style="margin: 0px" ng2FileDrop [uploader]="uploader" (fileOver)="fileOverBase($event)">
+          <div class="row upload-choose-btn" style="background: #e5e5e5;padding: 0px;border: 1.5px dashed  #848484;" [ngClass]="{'popup-file-over': hasBaseDropZoneOver}">
+            <div class="column text-center">
+              <label class="button" for="nativeFileUpload" style="background: transparent;text-decoration: underline;padding: 0px;margin-top: 1rem;color: #4b4b9e !important;font-size: 14px">Upload a document</label>
+              <span>or Drag and Drop</span>
+              <input class="show-for-sr" id="nativeFileUpload" (change)="startUpload($event)" type="file" value="null" ng2FileSelect [uploader]="uploader">
+            </div>
+          </div>
+          <div class="row files-to-upload-section">
+            <ul *ngIf="uploader.queue.length>0">
+              <li *ngFor="let item of uploader.queue">
+                <div class="row">
+                  <div class="column small-10 medium-10" [ngClass]="{'item-uploaded':item.isSuccess}">
+                                                        <span *ngIf="!(item.isReady || item.isUploading || item.isSuccess)">
+                                                          <i class="ion-ios-cloud-upload-outline" (click)="item.upload()"></i>
+                                                        </span>
+                    {{ item?.file?.name }} &nbsp;({{ item?.file?.size/1024/1024 | number:'.2' }} MB)
+                  </div>
+                  <div class="column small-2 text-right">
+                    <i *ngIf="(item.isUploading)" class="ion-ios-close-outline" (click)="item.cancel()"></i>
+                    <i class="ion-ios-minus-outline" (click)="removeUploadItem(item)"></i>
+                  </div>
+                </div>
+                <div *ngIf="item.isUploading">
+                  <div class="progress">
+                    <div class="progress-meter" [ngStyle]="{ 'width': item.progress + '%' }"></div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <div style="background-color: #F1F1F1;height: 500px;border-radius: 5px">
+  <div class="row">
+    <div class="small-12 medium-4 large-4 columns pointer" *ngFor="let document of documentsData">
+      <div class="report-callout" style="background-color: white;border: none;">
+        <div class="row">
+            <i class="fa fa-file-o" style="padding-right: 10px;font-size: x-large;vertical-align: middle;color: #24B574;"></i>
+          <div class="report-header"><a class="link-overflow" href="{{document.temporaryURL}}">{{document.name}}</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="small-12 medium-4 large-4 columns pointer" *ngFor="let attachment of attachments">
+      <div class="report-callout" style="background-color: white;border: none;">
+        <div class="row">
+          <i class="fa fa-file-o" style="padding-right: 10px;font-size: x-large;vertical-align: middle;color: #24B574;"></i>
+          <div class="report-header"><a class="link-overflow" href="{{attachment.temporaryURL}}">{{attachment.name}}</a></div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+  </div>
+<!--
   <div class="row">
     <div class="small-12 medium-4 large-4 columns pointer">
       <div class="report-callout">
         <div class="row">
           <i class="fa fa-file" style="padding-right: 10px;font-size: x-large;vertical-align: middle;color: #0FB45A;"></i>
-          <div class="report-header">Doc1</div>
+          <div class="report-header">Doc2</div>
         </div>
       </div>
     </div>
@@ -77,4 +141,6 @@
       </div>
     </div>
   </div>
+-->
+  <!--</section>-->
 </div>

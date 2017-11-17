@@ -4732,8 +4732,10 @@ div.footable-loader {
 }
 
 .documents {
-  background-color: #E5E5E5;
+  background-color: #F1F1F1;
+  height: 530px;
   padding-bottom: 15px;
+  border-radius: 5px;
   .report-callout {
     background-color: white;
     border: none;
@@ -4744,4 +4746,12 @@ div.footable-loader {
       padding-left: 15px;margin-top: 20px;
     }
   }
+}
+
+.link-overflow {
+  width: 15em;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
