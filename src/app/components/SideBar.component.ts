@@ -30,6 +30,7 @@ export class SideBarComponent {
   isTaxes:boolean = false;
   isTools:boolean = false;
   isReports:boolean=false;
+  isCollaboration:boolean=false;
 
   allBoards:any;
   currentBoardName = null;
@@ -64,6 +65,7 @@ export class SideBarComponent {
     this.isTaxes = false;
     this.isTools = false;
     this.isPayments=false;
+    this.isCollaboration = false;
     this.stateService.clearAllStates();
     let base = this;
     switch (page) {
@@ -107,6 +109,12 @@ export class SideBarComponent {
         let link = ['payments/dashboard','dashboard'];
         this._router.navigate(link);
         base.isPayments = true;
+      }
+        break;
+      case PAGES.COLLABORATION: {
+        let link = ['collaboration'];
+        this._router.navigate(link);
+        base.isCollaboration = true;
       }
         break;
     }
