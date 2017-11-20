@@ -346,7 +346,7 @@ export class BooksComponent{
 
       }
     } else if (action === 'collaboration') {
-      console.log($event);
+      this.addBookState();
       const link = ['collaboration', 'journalEntry', $event.id];
       this._router.navigate(link);
     }
@@ -674,7 +674,7 @@ export class BooksComponent{
       let link = ['journalEntry', $event.cash_only_journal_id];
       this._router.navigate(link);
     } else if (action === 'collaboration') {
-      console.log($event);
+      this.addBookState();
       const link = ['collaboration', 'expense', $event.id];
       this._router.navigate(link);
     }
@@ -703,7 +703,7 @@ export class BooksComponent{
       let link = ['journalEntry', $event.cash_only_journal_id];
       this._router.navigate(link);
     } else if (action === 'collaboration') {
-      console.log($event);
+      this.addBookState();
       const link = ['collaboration', 'deposit', $event.id];
       this._router.navigate(link);
     }
