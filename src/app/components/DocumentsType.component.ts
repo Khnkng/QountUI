@@ -13,7 +13,6 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {DocumentService} from "../services/Documents.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {FileUploader, FileUploaderOptions} from "ng2-file-upload";
-import {InvoicesService} from "invoicesUI/app/services/Invoices.service";
 
 declare var jQuery: any;
 declare var _: any;
@@ -38,7 +37,7 @@ export class DocumentsTypeComponent {
 
   constructor(private _router: Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
               private loadingService: LoadingService, private companiesService: CompaniesService, private documentsService: DocumentService,
-              private titleService: pageTitleService, private invoiceService: InvoicesService) {
+              private titleService: pageTitleService) {
     this.titleService.setPageTitle("Documents");
     this.companyId = Session.getCurrentCompany();
     this.companyCurrency = Session.getCurrentCompanyCurrency();
@@ -47,13 +46,13 @@ export class DocumentsTypeComponent {
 
       this.currentDocType = params['docType'];
       this.uploader = new FileUploader(<FileUploaderOptions>{
-        url: invoiceService.getDocumentServiceUrl(),
+        // url: this.documentsService.getDocumentServiceUrl(this.companyId, this.currentDocType),
         headers: [{
           name: 'Authorization',
           value: 'Bearer ' + Session.getToken()
         }]
       });
-
+console.log("Uploader === ", this.uploader);
       this.documentsService.getDocumentsByType(this.companyId, this.currentDocType)
         .subscribe(documentsData  => {
           this.documentsData = documentsData;
@@ -76,7 +75,6 @@ export class DocumentsTypeComponent {
       let payload: any = {};
       // payload.sourceID = this.sourceId;
       payload.sourceType = 'documents';
-      payload.docType = this.currentDocType;
       form.append('payload', JSON.stringify(payload));
     };
     this.uploader.onCompleteItem = (item, response, status, header) => {
@@ -121,6 +119,10 @@ export class DocumentsTypeComponent {
     this.deleteDocument();
   }
 
+  closeModal(modal) {
+    _.modal.close();
+    //fdvdfvv
+  }
   deleteDocument() {
     //Invoke delete document service
   }
