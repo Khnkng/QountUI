@@ -50,6 +50,7 @@ import {JournalEntryForm, JournalLineForm} from "./forms/JournalEntry.form";
 import {ExpenseCodesForm} from "./forms/ExpenseCodes.form";
 import {PaymentsModule} from "billsUI/app/payments.module";
 import {InvoicesModule} from "invoicesUI/app/invoices.module";
+import {CollaborationModule} from "collaborationUI/src/app/app.module";
 import {RulesService} from "qCommon/app/services/Rules.service";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 import {CategorizationComponent} from "./components/Categorization.component";
@@ -101,7 +102,6 @@ import {PaymentsPlan}from"./forms/PaymentsPlan.form";
 import {RDCreditsComponent} from "./components/RDCredits.component";
 import {RDcreditsService} from "./services/RDcredits.service";
 import {RDcreditsForm} from "./forms/RDcredits.form";
-
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -351,7 +351,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       component: RDCreditsComponent,
       canActivate: [LoggedInActivator]
     }
-  ]), PaymentsModule, ReportsModule, InvoicesModule
+  ]), PaymentsModule, ReportsModule, InvoicesModule, CollaborationModule
   ],
   declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
     VendorComponent,TaxesComponent,VerificationComponent,paymenttableComponent,ChartOfAccountsComponent,MetricsComponent,CreateMetricComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
