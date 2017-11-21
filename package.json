@@ -41,7 +41,7 @@
     "pikaday": "^1.5.1",
     "qCommon": "git+https://Qount:b2da10194989666d043efdd95d7302dd85bc1cd1@github.com/Qount/qCommon.git#master-angular4",
     "reportsUI": "git+https://Qount:b2da10194989666d043efdd95d7302dd85bc1cd1@github.com/Qount/ReportsUI.git#master-angular4",
-    "collaborationUI": "git+https://Qount:b2da10194989666d043efdd95d7302dd85bc1cd1@github.com/Qount/CollaborationUI.git#master",
+    "collaborationUI": "git+https://Qount:b2da10194989666d043efdd95d7302dd85bc1cd1@github.com/Qount/CollaborationUI.git#developement",
     "rxjs": "^5.1.0",
     "socket.io": "^2.0.1",
     "socket.io-client": "^1.5.1",
