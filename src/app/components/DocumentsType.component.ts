@@ -6,7 +6,6 @@ import {Component} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {ToastService} from "qCommon/app/services/Toast.service";
-import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {LoadingService} from "qCommon/app/services/LoadingService";
@@ -35,7 +34,7 @@ export class DocumentsTypeComponent {
   showPage: boolean = false;
   currentDocType: string;
   documentName: string;
-  documentNotes: string;
+  documentNotes: string = '';
 
   constructor(private _router: Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
               private loadingService: LoadingService, private companiesService: CompaniesService, private documentsService: DocumentService,
@@ -127,6 +126,10 @@ export class DocumentsTypeComponent {
   }
 
   uploadDocument() {
+    let base = this;
+    this.uploader.queue.forEach(function (item) {
+      item.file.name = base.documentName;
+    });
     this.loadingService.triggerLoadingEvent(true);
     this.uploader.uploadAll();
   }
