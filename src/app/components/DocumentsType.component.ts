@@ -75,6 +75,7 @@ export class DocumentsTypeComponent {
       // payload.sourceID = this.sourceId;
       payload.sourceType = 'documents';
       payload.documentNotes = this.documentNotes;
+      payload.docType = this.currentDocType;
       form.append('payload', JSON.stringify(payload));
     };
     this.uploader.onCompleteItem = (item, response, status, header) => {
