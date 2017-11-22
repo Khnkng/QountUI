@@ -17,7 +17,7 @@ declare var jQuery:any;
 declare var _:any;
 
 @Component({
-    selector: 'employees',
+    selector: 'documents',
     templateUrl: '../views/documents.html'
 })
 

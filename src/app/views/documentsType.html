@@ -1,46 +1,7 @@
 <div *ngIf="showPage">
-  <section class="upload-area" style="margin: 0px;height: 535px" ng2FileDrop [uploader]="uploader" (fileOver)="fileOverBase($event)">
+  <section class="upload-area" style="margin: 0px;height: 535px" ng2FileDrop [uploader]="uploader" (onFileDrop)="fileDropOver($event)">
 
-  <!--<div class="row">
-    <div class="small-12 medium-12 columns" style="padding: 0px">
-      <div class="file-upload-modal">
-        <section class="upload-area" style="margin: 0px" ng2FileDrop [uploader]="uploader" (fileOver)="fileOverBase($event)">
-          <div class="row upload-choose-btn" style="background: #e5e5e5;padding: 0px;border: 1.5px dashed  #848484;" [ngClass]="{'popup-file-over': hasBaseDropZoneOver}">
-            <div class="column text-center">
-              <label class="button" for="nativeFileUpload" style="background: transparent;text-decoration: underline;padding: 0px;margin-top: 1rem;color: #4b4b9e !important;font-size: 14px">Upload a document</label>
-              <span>or Drag and Drop</span>
-              <input class="show-for-sr" id="nativeFileUpload" (change)="startUpload($event)" type="file" value="null" ng2FileSelect [uploader]="uploader">
-            </div>
-          </div>
-          <div class="row files-to-upload-section">
-            <ul *ngIf="uploader.queue.length>0">
-              <li *ngFor="let item of uploader.queue">
-                <div class="row">
-                  <div class="column small-10 medium-10" [ngClass]="{'item-uploaded':item.isSuccess}">
-                                                        <span *ngIf="!(item.isReady || item.isUploading || item.isSuccess)">
-                                                          <i class="ion-ios-cloud-upload-outline" (click)="item.upload()"></i>
-                                                        </span>
-                    {{ item?.file?.name }} &nbsp;({{ item?.file?.size/1024/1024 | number:'.2' }} MB)
-                  </div>
-                  <div class="column small-2 text-right">
-                    <i *ngIf="(item.isUploading)" class="ion-ios-close-outline" (click)="item.cancel()"></i>
-                    <i class="ion-ios-minus-outline" (click)="removeUploadItem(item)"></i>
-                  </div>
-                </div>
-                <div *ngIf="item.isUploading">
-                  <div class="progress">
-                    <div class="progress-meter" [ngStyle]="{ 'width': item.progress + '%' }"></div>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </section>
-      </div>
-    </div>
-  </div>
-  -->
-  <div class="row" [ngClass]="{'popup-file-over': hasBaseDropZoneOver}">
+    <div class="row">
       <div class="column medium-12 text-right">
         <label class="pointer" for="nativeFileUpload">
           <i class=" icon ion-ios-plus-outline"></i>
@@ -48,70 +9,57 @@
         </label>
         <input class="show-for-sr" id="nativeFileUpload" (change)="startUpload($event)" type="file" value="null" ng2FileSelect [uploader]="uploader">
       </div>
-  </div>
-
-    <div class="row files-to-upload-section">
-      <div *ngIf="uploader.queue.length>0">
-              <div id="myModal" class="modal">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <span class="close">&times;</span>
-                    <h4>Upload a document?</h4>
-                  </div>
-                  <div class="modal-body">
-                    <div class="row">
-                      <div class="small-4 columns">
-                        <label class="text-right">Name</label>
-                      </div>
-                      <div class="small-6 columns">
-                        <input name="doc_name" type="text"/>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="small-4 columns">
-                        <label class="text-right">Notes</label>
-                      </div>
-                      <div class="small-6 columns">
-                        <textarea name="doc_notes" rows="3"></textarea>
-                      </div>
-                    </div>
-                    <div class="modal-footer">
-                      <div class="row">
-                        <div class="small-12 medium-12 columns">
-                          <button class="button small float-right" style="margin-left: 5px">Upload</button>
-                          <button class="button small float-right" (click)="closeModal($event)">Cancel</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-      </div>
     </div>
 
-  <div class="documents-type">
-    <div class="row">
-      <div class="small-12 medium-4 large-4 columns pointer" *ngFor="let document of documentsData">
-        <div class="report-callout">
-          <div class="row">
-            <i class="fa fa-file-o"></i>
-            <div class="report-header"><a class="link-overflow" href="{{document.temporaryURL}}">{{document.name}}</a></div>
+    <div class="documents-type">
+      <div class="row">
+        <div class="small-12 medium-4 large-4 columns pointer" *ngFor="let document of documentsData">
+          <div class="report-callout">
+            <div class="row">
+              <i class="fa fa-file-o"></i>
+              <div class="report-header"><a class="link-overflow" href="{{document.temporaryURL}}">{{document.name}}</a></div>
+            </div>
+          </div>
+        </div>
+        <div class="small-12 medium-4 large-4 columns pointer" *ngFor="let attachment of attachments">
+          <div class="report-callout">
+            <div class="row">
+              <i class="fa fa-file-o"></i>
+              <div class="report-header"><a class="link-overflow" href="{{attachment.temporaryURL}}">{{attachment.name}}</a></div>
+            </div>
           </div>
         </div>
       </div>
+    </div>
 
-<!--
-      <div class="small-12 medium-4 large-4 columns pointer" *ngFor="let attachment of attachments">
-        <div class="report-callout">
-          <div class="row">
-            <i class="fa fa-file-o"></i>
-            <div class="report-header"><a class="link-overflow" href="{{attachment.temporaryURL}}">{{attachment.name}}</a></div>
-          </div>
+    <div class="reveal small bill-modal-container" style="width: 40%;padding: 0;border: 1px;margin-top: 6rem;" id="document-upload-conformation" data-reveal foundation  data-close-on-click="false">
+      <div class="row">
+        <div class="small-12 medium-12 columns" style="padding: 0; background: #00B1A9;height: 3rem;">
+          <label style="margin-left: 1rem;text-align: left;margin-top: 0.5rem;color: white;font-size: 13pt;">Upload a document?</label>
         </div>
       </div>
--->
+      <div class="row" style="padding: 1rem 1rem 0 1rem;margin-top: 1rem;">
+        <div class="small-4 columns">
+          <label class="text-right">Name</label>
+        </div>
+        <div class="small-6 columns">
+          <input type="text" value="{{documentName}}"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="small-4 columns">
+          <label class="text-right">Notes</label>
+        </div>
+        <div class="small-6 columns">
+          <textarea rows="2" [(ngModel)]="documentNotes"></textarea>
+        </div>
+      </div>
 
+      <div class="text-right" style="padding-right:1rem">
+        <button class="button small" style="background: #00B1A9;" (click)="uploadDocument()">Upload</button>
+        <button class="button small" style="background-color: white !important;color: #878787;" (click)="closeUploadModalDailog()">Cancel</button>
+      </div>
     </div>
-  </div>
+
   </section>
 </div>

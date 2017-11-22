@@ -18,7 +18,7 @@ declare var jQuery: any;
 declare var _: any;
 
 @Component({
-  selector: 'employees',
+  selector: 'documentsType',
   templateUrl: '../views/documentsType.html'
 })
 
@@ -34,6 +34,8 @@ export class DocumentsTypeComponent {
   hasBaseDropZoneOver: boolean = false;
   showPage: boolean = false;
   currentDocType: string;
+  documentName: string;
+  documentNotes: string;
 
   constructor(private _router: Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
               private loadingService: LoadingService, private companiesService: CompaniesService, private documentsService: DocumentService,
@@ -46,13 +48,12 @@ export class DocumentsTypeComponent {
 
       this.currentDocType = params['docType'];
       this.uploader = new FileUploader(<FileUploaderOptions>{
-        // url: this.documentsService.getDocumentServiceUrl(this.companyId, this.currentDocType),
+        url: this.documentsService.getDocumentServiceUrl(this.companyId, this.currentDocType),
         headers: [{
           name: 'Authorization',
           value: 'Bearer ' + Session.getToken()
         }]
       });
-console.log("Uploader === ", this.uploader);
       this.documentsService.getDocumentsByType(this.companyId, this.currentDocType)
         .subscribe(documentsData  => {
           this.documentsData = documentsData;
@@ -69,12 +70,12 @@ console.log("Uploader === ", this.uploader);
 
   }
 
-  ngOnInit(){
-    // this.sourceId=this.invoiceID?this.invoiceID:UUID.UUID();
+  ngOnInit() {
     this.uploader.onBuildItemForm = (fileItem: any, form: any) => {
       let payload: any = {};
       // payload.sourceID = this.sourceId;
       payload.sourceType = 'documents';
+      payload.documentNotes = this.documentNotes;
       form.append('payload', JSON.stringify(payload));
     };
     this.uploader.onCompleteItem = (item, response, status, header) => {
@@ -86,8 +87,11 @@ console.log("Uploader === ", this.uploader);
         });
         this.document = JSON.parse(response);
         this.compileLink();
+        this.documentNotes = "";
+        this.loadingService.triggerLoadingEvent(false);
+        jQuery('#document-upload-conformation').foundation('close');
       }
-    }
+    };
   }
 
   compileLink() {
@@ -100,31 +104,48 @@ console.log("Uploader === ", this.uploader);
     }
   }
 
-  fileOverBase(e: any) {
-    this.hasBaseDropZoneOver = e;
+  openUploadModalDailog() {
+    jQuery('#document-upload-conformation').foundation('open');
+  }
+
+  closeUploadModalDailog() {
     this.uploader.queue.forEach(function (item) {
-      item.upload();
+      item.remove();
     });
+    this.documentNotes = "";
+    jQuery('#document-upload-conformation').foundation('close');
   }
 
   startUpload($event) {
     let base = this;
+    this.uploader.queue.forEach(function (item) {
+      base.documentName = item.file.name;
+    });
     setTimeout(function () {
-      base.uploader.uploadAll();
+      base.openUploadModalDailog();
     }, 500);
   }
 
-  removeUploadItem(item) {
-    item.remove();
-    this.deleteDocument();
+  uploadDocument() {
+    this.loadingService.triggerLoadingEvent(true);
+    this.uploader.uploadAll();
   }
 
-  closeModal(modal) {
-    _.modal.close();
-    //fdvdfvv
+  ngOnDestroy() {
+    if (jQuery('#document-upload-conformation')) {
+      jQuery('#document-upload-conformation').remove();
+    }
+    if (this.routeSubscribe) {
+      this.routeSubscribe.unsubscribe();
+    }
   }
-  deleteDocument() {
-    //Invoke delete document service
+
+  fileDropOver(val) {
+    let base = this;
+    this.uploader.queue.forEach(function (item) {
+      base.documentName = item.file.name;
+    });
+    base.openUploadModalDailog();
   }
 
 }
