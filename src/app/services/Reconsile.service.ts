@@ -70,6 +70,12 @@ export class ReconcileService extends  QountServices{
             .catch(this.handleError)
     }
 
+  filterReconActivity(period): Observable<any> {
+    var url = this.interpolateUrl(PATH.RECONCILE_FILTER, null, {id: Session.getUser().id, companyId: Session.getCurrentCompany(), bankAccountId: '', reconPeriod: period});
+    return this.query(url, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+      .catch(this.handleError);
+  }
+
     private handleError (error: Response) {
         return Observable.throw(error.text());
     }
