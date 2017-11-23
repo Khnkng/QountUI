@@ -8,7 +8,7 @@ import {QountServices} from "qCommon/app/services/QountServices";
 import {PATH, SOURCE_TYPE} from "qCommon/app/constants/Qount.constants";
 import {Session} from "qCommon/app/services/Session";
 import {Observable} from "rxjs/Rx";
-
+import {UrlService} from "qCommon/app/services/UrlService";
 
 
 @Injectable()
@@ -34,6 +34,18 @@ export class DocumentService extends  QountServices {
         var url = this.interpolateUrl(PATH.DOCUMENT_ID_SERVICE,null,{id: Session.getUser().id, companyId: companyId, documentId: document.id});
         return this.update(url, document, SOURCE_TYPE.JAVA).map(res => <any> res.json())
             .catch(this.handleError);
+    }
+
+    getDocumentsByType(companyId: string, typeParam: string): Observable<any> {
+      var url = this.interpolateUrl(PATH.DOCUMENT_TYPE_SERVICE,null,{id: Session.getUser().id, companyId: companyId});
+      return this.query(url+"?docType="+typeParam, SOURCE_TYPE.JAVA).map(res => <any> res.json())
+        .catch(this.handleError);
+    }
+
+    getDocumentServiceUrl(companyId: string, typeParam: string): string {
+      let url = this.interpolateUrl(PATH.DOCUMENT_SERVICE, null, {id: Session.getUser().id, companyId: companyId});
+      url = UrlService.getBaseUrl('DOCUMENT') + url + "?docType=" + typeParam;
+      return url;
     }
 
     private handleError (error: Response) {
