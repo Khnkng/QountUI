@@ -50,6 +50,7 @@ import {JournalEntryForm, JournalLineForm} from "./forms/JournalEntry.form";
 import {ExpenseCodesForm} from "./forms/ExpenseCodes.form";
 import {PaymentsModule} from "billsUI/app/payments.module";
 import {InvoicesModule} from "invoicesUI/app/invoices.module";
+import {CollaborationModule} from "collaborationUI/src/app/app.module";
 import {RulesService} from "qCommon/app/services/Rules.service";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 import {CategorizationComponent} from "./components/Categorization.component";
@@ -356,9 +357,9 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       component: DocumentsTypeComponent,
       canActivate: [LoggedInActivator]
     }
-
-  ]), PaymentsModule, ReportsModule, InvoicesModule
+  ]), PaymentsModule, ReportsModule, InvoicesModule, CollaborationModule
   ],
+
   declarations: [ AppComponent, CanvasComponent, HeaderComponent, SideBarComponent, ToolsComponent, LogInComponent, SignUpComponent,
     VendorComponent,TaxesComponent,VerificationComponent,paymenttableComponent,ChartOfAccountsComponent,MetricsComponent,CreateMetricComponent,ItemCodesComponent, JournalEntryComponent, BooksComponent, ExpensesCodesComponent,
     CustomersComponent, DimensionsComponent, UsersComponent, SwitchCompanyComponent,CurrentCompanyComponent, FinancialAccountsComponent,
