@@ -347,7 +347,7 @@ export class BooksComponent{
       }
     } else if (action === 'collaboration') {
       this.addBookState();
-      const link = ['collaboration', 'journalEntry', $event.id];
+      const link = ['collaboration', 'journal', $event.id];
       this._router.navigate(link);
     }
   }
