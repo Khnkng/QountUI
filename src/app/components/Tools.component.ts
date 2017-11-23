@@ -152,7 +152,7 @@ export class ToolsComponent {
       }
         break;
       case 'documents': {
-        let link = ['documents', 'receipts'];
+        let link = ['documents'];
         this._router.navigate(link);
       }
         break;

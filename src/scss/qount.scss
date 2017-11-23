@@ -4741,7 +4741,41 @@ div.footable-loader {
   white-space: nowrap !important;
 }
 
+.documents {
+  .report-callout {
+    background-color: #F1F1F1;
+    border: none;
+    .fa-stack-1x {
+      font-size: medium;
+    }
+    .report-header {
+      padding-left: 15px;margin-top: 20px;
+    }
+  }
+}
 
+.documents-type {
+  .report-callout {
+    background-color: #F1F1F1;
+    border: none;
+
+    i {
+      padding-right: 10px;
+      font-size: x-large;
+      vertical-align: middle;
+      color: #24B574;
+    }
+
+    .link-overflow {
+      width: 15em;
+      display: block;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+}
 
 .collaboration {
   min-height:500px;
@@ -5109,6 +5143,7 @@ div.footable-loader {
       }
     }
   }
+
 }
 
 .recon_filter_input {
