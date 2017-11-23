@@ -5110,3 +5110,19 @@ div.footable-loader {
     }
   }
 }
+
+.recon_filter_input {
+  margin-bottom: 0;
+  width: 140px;
+  float: right;
+  height: 2.25em;
+  position: relative;
+  top: 4px;
+}
+
+
+.metricsAlign {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
