@@ -4743,8 +4743,8 @@ div.footable-loader {
 
 .documents {
   .report-callout {
-    background-color: #F1F1F1;
-    border: none;
+    //background-color: #F1F1F1;
+    //border: none;
     .fa-stack-1x {
       font-size: medium;
     }
@@ -4756,14 +4756,17 @@ div.footable-loader {
 
 .documents-type {
   .report-callout {
-    background-color: #F1F1F1;
-    border: none;
+    //background-color: #F1F1F1;
+    //border: none;
 
     i {
       padding-right: 10px;
       font-size: x-large;
       vertical-align: middle;
-      color: #24B574;
+      color: #384986;
+    }
+    a {
+      color: #696E73;
     }
 
     .link-overflow {
