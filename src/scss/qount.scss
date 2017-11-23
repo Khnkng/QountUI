@@ -5119,3 +5119,10 @@ div.footable-loader {
   position: relative;
   top: 4px;
 }
+
+
+.metricsAlign {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
