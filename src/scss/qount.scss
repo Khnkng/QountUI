@@ -92,6 +92,10 @@
   font-size: 11px;
   font-weight: bold;
 }
+.gender-donut .highcharts-data-label text{
+  color:#FFFFFF !important;
+  fill:#FFFFFF !important;
+}
 [type='password']:focus, [type='date']:focus, [type='datetime']:focus, [type='datetime-local']:focus, [type='month']:focus, [type='week']:focus, [type='email']:focus, [type='number']:focus, [type='search']:focus, [type='tel']:focus, [type='time']:focus, [type='url']:focus, [type='color']:focus, textarea:focus {
   box-shadow: 0 0 5px #44B6E8 !important;
 }
