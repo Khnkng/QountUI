@@ -4747,29 +4747,39 @@ div.footable-loader {
 
 .documents {
   .report-callout {
-    background-color: #F1F1F1;
-    border: none;
+    border: 1px solid #DCDEDD;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
     .fa-stack-1x {
       font-size: medium;
     }
+
     .report-header {
       padding-left: 15px;margin-top: 20px;
     }
   }
 }
 
+.report-callout:hover {
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+
 .documents-type {
   .report-callout {
-    background-color: #F1F1F1;
-    border: none;
-
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2);
+    border: 1px solid #DCDEDD;
     i {
       padding-right: 10px;
       font-size: x-large;
       vertical-align: middle;
-      color: #24B574;
+      color: #384986;
     }
-
+    a {
+      color: #696E73;
+    }
+    .report-header {
+      font-weight: normal;
+    }
     .link-overflow {
       width: 15em;
       display: block;
