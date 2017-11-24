@@ -53,8 +53,10 @@ export class DocumentsTypeComponent {
           value: 'Bearer ' + Session.getToken()
         }]
       });
+      this.loadingService.triggerLoadingEvent(true);
       this.documentsService.getDocumentsByType(this.companyId, this.currentDocType)
         .subscribe(documentsData  => {
+          this.loadingService.triggerLoadingEvent(false);
           this.documentsData = documentsData;
           this.showPage = true;
         }, error =>{
