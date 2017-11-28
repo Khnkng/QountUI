@@ -229,7 +229,7 @@
                       </td>
                       <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Payroll')" (keydown.Tab)="handleKeyEvent( $event,index,'Arrow Down')">
                         <select id="employee-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Employee" [listObject]="employees" (valueChanged)="updateLineEntity($event, index)">
-                          <option *ngFor="let employee of employees" [value]="employee.id">{{employee.name}}</option>
+                          <option *ngFor="let employee of employees" [value]="employee.id">{{employee.first_name}} {{employee.last_name}}</option>
                         </select>
                       </td>
                       <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Invoice')" (keydown.Tab)="handleKeyEvent( $event,index,'Arrow Down')">
@@ -350,7 +350,7 @@
               </label>
               <label *ngIf="!isSystemCreatedJE && !reversed && !haveSourceId && isJournalEntry('Payroll')">Entity
                 <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Employee" [listObject]="employees" (valueChanged)="updateEntity($event)">
-                  <option *ngFor="let employee of employees" [value]="employee.id">{{employee.name}}</option>
+                  <option *ngFor="let employee of employees" [value]="employee.id">{{employee.first_name}} {{employee.last_name}}</option>
                 </select>
               </label>
               <label *ngIf="!isSystemCreatedJE && !reversed && !haveSourceId && isJournalEntry('Invoice')">Entity

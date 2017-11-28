@@ -588,7 +588,7 @@ export class JournalEntryComponent{
       return vendor? vendor.name: '';
     } else if(data.jeType == 'Payroll'){
       let employee = _.find(this.employees, {'id': controls.entity.value});
-      return employee? employee.name: '';
+      return employee? employee.first_name+' '+employee.last_name: '';
     } else if(data.jeType == 'Invoice'){
       let customer = _.find(this.customers, {'customer_id': controls.entity.value});
       return customer? customer.customer_name: '';
