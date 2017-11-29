@@ -515,7 +515,8 @@ export class BudgetComponent{
     let total=0;
     for(let i=0;i<this.lineItemNames.length-1;i++){
       let val=this.lineItemNames[i];
-      total=total+this.checkNumber(form.controls[val].value)
+      let formVal=form.controls[val].value?form.controls[val].value:0;
+      total=total+this.checkNumber(formVal);
     }
     form.controls['total'].patchValue(total);
     this.updateTotals(total,type);
