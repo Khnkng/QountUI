@@ -122,6 +122,7 @@ export class JournalEntryComponent{
     this.employeeService.employees(this.companyId).subscribe(employees => {
       _.forEach(employees, function(employee) {
         employee['entityType']="employee";
+        employee['name']=employee.first_name+' '+employee.last_name;
       });
       this.employees = employees;
     }, error => this.handleError(error));
@@ -588,7 +589,7 @@ export class JournalEntryComponent{
       return vendor? vendor.name: '';
     } else if(data.jeType == 'Payroll'){
       let employee = _.find(this.employees, {'id': controls.entity.value});
-      return employee? employee.first_name+' '+employee.last_name: '';
+      return employee? employee.name: '';
     } else if(data.jeType == 'Invoice'){
       let customer = _.find(this.customers, {'customer_id': controls.entity.value});
       return customer? customer.customer_name: '';
