@@ -122,6 +122,7 @@ export class JournalEntryComponent{
     this.employeeService.employees(this.companyId).subscribe(employees => {
       _.forEach(employees, function(employee) {
         employee['entityType']="employee";
+        employee['name']=employee.first_name+' '+employee.last_name;
       });
       this.employees = employees;
     }, error => this.handleError(error));
