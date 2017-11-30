@@ -4781,11 +4781,14 @@ div.footable-loader {
       font-weight: normal;
     }
     .link-overflow {
-      width: 15em;
+      width: 14em;
       display: block;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
+    }
+    .document-download {
+      font-size: large;
     }
   }
 
@@ -5175,3 +5178,11 @@ div.footable-loader {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.doc-hover {
+  &:hover {
+    .document-download {
+      visibility: visible !important;
+    }
+  }
+}
+

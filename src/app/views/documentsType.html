@@ -2,37 +2,63 @@
   <section class="upload-area" style="margin: 0px;height: 535px" ng2FileDrop [uploader]="uploader" (onFileDrop)="fileDropOver($event)">
 
     <div class="row">
-      <div class="column medium-12 text-right">
-        <label for="nativeFileUpload">
-          <i class=" icon ion-ios-plus-outline pointer"></i>
-          <span class="pointer">Document</span>
-        </label>
-        <input class="show-for-sr" id="nativeFileUpload" (change)="startUpload($event)" type="file" value="null" ng2FileSelect [uploader]="uploader">
+      <div class="column medium-10"></div>
+      <div class="column medium-2 text-right">
+        <div class="row">
+          <div class="column medium-4"></div>
+          <div class="column medium-8" style="padding-right: 0px">
+            <label for="nativeFileUpload" class="pointer">
+              <i class=" icon ion-ios-plus-outline"></i>
+              <span>Document</span>
+            </label>
+            <input class="show-for-sr" id="nativeFileUpload" (change)="startUpload($event)" type="file" value="null" ng2FileSelect [uploader]="uploader">
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="documents-type">
       <div class="row">
-        <div class="small-12 medium-4 large-4 columns pointer" *ngFor="let document of documentsData">
-          <a href="{{document.temporaryURL}}">
+        <div class="small-12 medium-4 large-4 columns doc-hover" *ngFor="let document of documentsData">
           <div class="report-callout">
-            <div class="row">
-              <i class="fa fa-file-o"></i>
-              <div class="report-header link-overflow">{{document.name}}</div>
+          <div class="row">
+            <div class="column medium-10 pointer" style="padding-left: 0px" (click)="openPreviewWindow($event,document)">
+                <div class="row">
+                  <i class="fa fa-file-o"></i>
+                  <div class="report-header link-overflow">{{document.name}}</div>
+                </div>
+              </div>
+            <div class="column medium-2">
+              <div style="padding-left: 18px;visibility: hidden;">
+                <a [href]="document.temporaryURL">
+                  <i class="icon ion-ios-cloud-download-outline document-download"></i>
+                </a>
+              </div>
             </div>
           </div>
-          </a>
+          </div>
         </div>
-        <div class="small-12 medium-4 large-4 columns pointer" *ngFor="let attachment of attachments">
-          <a href="{{attachment.temporaryURL}}">
+<!--
+        <div class="small-12 medium-4 large-4 columns doc-hover" *ngFor="let attachment of attachments">
           <div class="report-callout">
             <div class="row">
-              <i class="fa fa-file-o"></i>
-              <div class="report-header link-overflow">{{attachment.name}}</div>
+              <div class="column medium-10 pointer" style="padding-left: 0px" (click)="openPreviewWindow($event,attachment)">
+                <div class="row">
+                  <i class="fa fa-file-o"></i>
+                  <div class="report-header link-overflow">{{attachment.name}}</div>
+                </div>
+              </div>
+              <div class="column medium-2">
+                <div  style="padding-left: 18px;visibility: hidden;">
+                  <a [href]="attachment.temporaryURL">
+                    <i class="icon ion-ios-cloud-download-outline document-download"></i>
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
-          </a>
         </div>
+-->
       </div>
     </div>
 
