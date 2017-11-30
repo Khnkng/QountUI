@@ -29,8 +29,6 @@ export class DocumentsTypeComponent {
   uploader: FileUploader;
   docUploadResp: any;
   document: any;
-  attachments: Array<any> = [];
-  hasBaseDropZoneOver: boolean = false;
   showPage: boolean = false;
   currentDocType: string;
   documentName: string;
@@ -55,11 +53,11 @@ export class DocumentsTypeComponent {
       });
       this.loadingService.triggerLoadingEvent(true);
       this.documentsService.getDocumentsByType(this.companyId, this.currentDocType)
-        .subscribe(documentsData  => {
+        .subscribe(documentsData => {
           this.loadingService.triggerLoadingEvent(false);
           this.documentsData = documentsData;
           this.showPage = true;
-        }, error =>{
+        }, error => {
           this.loadingService.triggerLoadingEvent(false);
         });
     });
@@ -98,11 +96,13 @@ export class DocumentsTypeComponent {
 
   compileLink() {
     if (this.document && this.document.temporaryURL) {
-      let data = {id: this.document.id,
+      let data = {
+        id: this.document.id,
         name: this.document.name,
-        temporaryURL: this.document.temporaryURL
+        temporaryURL: this.document.temporaryURL,
+        viewDocContentURL: this.document.viewDocContentURL
       };
-      this.attachments.push(data);
+      this.documentsData.push(data);
     }
   }
 
@@ -154,4 +154,11 @@ export class DocumentsTypeComponent {
     base.openUploadModalDailog();
   }
 
+  openPreviewWindow($event, targetDocument) {
+    let link = targetDocument.viewDocContentURL;
+    if(targetDocument.name.indexOf(".pdf") != -1) {
+      link = 'https://drive.google.com/viewerng/viewer?url=' + encodeURIComponent(link);
+    }
+    window.open(link);
+  }
 }
