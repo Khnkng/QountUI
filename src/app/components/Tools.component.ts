@@ -116,6 +116,11 @@ export class ToolsComponent {
         this._router.navigate(link);
       }
         break;
+      case 'lateFees': {
+        let link = ['lateFees'];
+        this._router.navigate(link);
+      }
+        break;
       case 'expensecode': {
         let link = ['expensecode'];
         this._router.navigate(link);

@@ -43,7 +43,9 @@ import {MetricsForm,MetricsLineForm,metricPeriodForm} from "./forms/Metrics.form
 import {DashBoardActivator} from "qCommon/app/services/DashBoardActivator";
 import {ToolsComponent} from "./components/Tools.component";
 import {ItemCodesComponent} from "./components/ItemCodes.component";
+import {LateFeesComponent} from "./components/LateFees.component";
 import {ItemCodeForm} from "./forms/ItemCode.form";
+import {LateFeeForm} from "./forms/LateFee.form";
 import {BooksComponent} from "./components/Books.component";
 import {JournalEntryComponent} from "./components/JournalEntry.component";
 import {JournalEntryForm, JournalLineForm} from "./forms/JournalEntry.form";
@@ -235,6 +237,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       canActivate: [LoggedInActivator]
     },
     {
+      path: 'lateFees',
+      component: LateFeesComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
       path: 'expensecode',
       component: ExpensesCodesComponent,
       canActivate: [LoggedInActivator]
@@ -366,13 +373,13 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
     ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
     CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent,
-    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent,DocumentsTypeComponent],
+    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent,DocumentsTypeComponent,LateFeesComponent],
   exports: [RouterModule],
   bootstrap: [ AppComponent ],
   providers: [APP_BASE, COAForm,MetricsForm,MetricsLineForm,metricPeriodForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
     TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm,ContactLineForm, DimensionForm, UsersForm, DocumentService,
     FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService,MetricsService,
-    BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan, RDcreditsService,RDcreditsForm],
+    BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan, RDcreditsService,RDcreditsForm, LateFeeForm],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {
