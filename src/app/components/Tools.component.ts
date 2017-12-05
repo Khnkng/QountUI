@@ -184,6 +184,11 @@ export class ToolsComponent {
         let link = ['rdCredits'];
         this._router.navigate(link);
       }
+        break;
+      case 'lateFees': {
+        let link = ['late-fee'];
+        this._router.navigate(link);
+      }
     }
   }
 }
