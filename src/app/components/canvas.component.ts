@@ -127,7 +127,7 @@ export class CanvasComponent {
           }
         },
         title: {
-          text: 'Indicators Comparision',
+          text: "KPI's Actual Vs Budget",
           align:'left',
           style: {
             color: '#878787',
@@ -186,7 +186,7 @@ export class CanvasComponent {
             valuePrefix: metricData.currencySymbol
           }
         }, {
-          name: 'Target',
+          name: 'Budget',
           type: 'column',
           data: this.getDataArray(metricData.target, metricData.categories),
           marker: {
