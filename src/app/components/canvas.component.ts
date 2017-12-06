@@ -10,7 +10,7 @@ import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {Session} from "qCommon/app/services/Session";
 import {StateService} from "qCommon/app/services/StateService";
 import {Observable} from "rxjs/Rx";
-import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {TOAST_TYPE, DEFAULT_PLOT_OPTIONS} from "qCommon/app/constants/Qount.constants";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {InvoicesService} from "invoicesUI/app/services/Invoices.service";
@@ -47,6 +47,8 @@ export class CanvasComponent {
     arApCashBalanceChartOptions: any;
     hasGPNPData: boolean = false;
     gpNpChartDataOptions: any;
+    hasIndicatorData: boolean = false;
+    indicatorChartOptions: any;
 
     detailedReportChartOptions:any;
     chartColors:Array<any> = ['#44B6E8','#18457B','#00B1A9','#F06459','#22B473','#384986','#4554A4','#808CC5'];
@@ -89,6 +91,7 @@ export class CanvasComponent {
     getData(){
         this.loadingService.triggerLoadingEvent(true);
         this.getBoxData();
+        this.getIndicatorGraphData();
         this.getARAPCashBalanceData();
         this.getProfitTrendData();
         this.getGrossAndNetProfitData();
@@ -96,6 +99,135 @@ export class CanvasComponent {
         this.getAgingByCustomer();
         this.getAgingByVendor();
     }
+
+  getIndicatorGraphData(){
+    let base = this;
+    let report = _.cloneDeep(this.reportRequest);
+    report.type = "incomeStatement";
+    report.metricsType = "indicatorComparision";
+    this.reportService.generateMetricReport(report, this.currentCompanyId).subscribe(metricData => {
+      if(!metricData){
+        metricData = {
+          categories: [],
+          actual: [],
+          target: []
+        };
+      }
+      let catNames = [];
+      _.each(metricData.categories, function(category){
+        catNames.push(base.getCategoryName(category));
+      });
+      this.hasIndicatorData = true;
+      this.indicatorChartOptions = {
+        colors: this.chartColors,
+        chart: {
+          zoomType: 'xy',
+          style: {
+            fontFamily: 'NiveauGroteskRegular'
+          }
+        },
+        title: {
+          text: 'Indicators Comparision',
+          align:'left',
+          style: {
+            color: '#878787',
+            fontFamily: 'NiveauGroteskLight',
+            fontSize:'24'
+          }
+        },
+        credits: {
+          enabled: false
+        },
+        legend: {
+          enabled: false
+        },
+        xAxis: [{
+          categories: catNames,
+          crosshair: true,
+          labels: {
+            style: {
+              fontSize:'13px',
+              fontWeight:'bold',
+              color:'#878787',
+              fill:'#878787'
+            }
+          }
+        }],
+        yAxis: [{
+          labels: {
+            formatter: function(){
+              return base.formatAmount(this.value);
+            },
+            style: {
+              fontSize:'13px',
+              color:'#878787',
+              fill:'#878787'
+            }
+          },
+          title: {
+            text: '',
+            style: {
+              color: Highcharts.getOptions().colors[1]
+            }
+          }
+        }],
+        tooltip: {
+          shared: true,
+          pointFormatter: function(){
+            return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
+          }
+        },
+        plotOptions: DEFAULT_PLOT_OPTIONS,
+        series: [{
+          name: 'Actual',
+          type: 'column',
+          data: this.getDataArray(metricData.actual, metricData.categories),
+          tooltip: {
+            valuePrefix: metricData.currencySymbol
+          }
+        }, {
+          name: 'Target',
+          type: 'column',
+          data: this.getDataArray(metricData.target, metricData.categories),
+          marker: {
+            enabled: false
+          },
+          dashStyle: 'shortdot',
+          tooltip: {
+            valuePrefix: metricData.currencySymbol
+          },
+          color:'#00B1A9'
+        }]
+      };
+
+      //this.exportHighchartData(this.indicatorChartOptions, "Revenue");
+
+      this.loadingService.triggerLoadingEvent(false);
+    }, error => {
+      this.loadingService.triggerLoadingEvent(false);
+    });
+  }
+
+  getCategoryName(category){
+    if(category == 'revenue'){
+      return "Revenue";
+    } else if(category == 'cogs'){
+      return "Cost Of Goods Sold";
+    } else if(category == 'grossProfit'){
+      return "Gross Profit";
+    } else if(category == 'ebitda'){
+      return "EBITDA";
+    } else if(category == 'ebit'){
+      return "EBIT";
+    } else if(category == 'pbit'){
+      return "PBIT";
+    } else if(category == 'opex'){
+      return "Opex";
+    } else if(category == 'netProfit'){
+      return "Net Profit";
+    }
+    return category;
+  }
 
     getBoxData(){
         let base = this;
@@ -242,6 +374,7 @@ export class CanvasComponent {
                         return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
                     }
                 },
+                plotOptions: DEFAULT_PLOT_OPTIONS,
                 series: [{
                     name: 'Acc. Receivable',
                     type: 'column',
@@ -368,6 +501,7 @@ export class CanvasComponent {
                         return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
                     }
                 },
+                plotOptions: DEFAULT_PLOT_OPTIONS,
                 series: [{
                     name: 'Income',
                     type: 'column',
@@ -494,6 +628,7 @@ export class CanvasComponent {
                         return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
                     }
                 },
+                plotOptions: DEFAULT_PLOT_OPTIONS,
                 series: [{
                     name: 'Gross Profit',
                     type: 'column',
@@ -614,6 +749,7 @@ export class CanvasComponent {
                     },
                     opposite: true
                 }],
+                plotOptions: DEFAULT_PLOT_OPTIONS,
                 series: [{
                     name: 'Cash Burn',
                     type: 'line',
@@ -900,6 +1036,9 @@ export class CanvasComponent {
         } else if (type == 'grossAndNetProfit') {
             this.detailedReportChartOptions = this.gpNpChartDataOptions;
             this.detailedReportChartOptions.legend = {enabled: true};
+        } else if (type == 'indicatorChart') {
+          this.detailedReportChartOptions = this.indicatorChartOptions;
+          this.detailedReportChartOptions.legend = {enabled: true};
         }
     }
 

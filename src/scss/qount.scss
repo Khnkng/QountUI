@@ -5186,3 +5186,37 @@ div.footable-loader {
   }
 }
 
+.filter-dropdown{
+  height: 200px;
+  width: 200px;
+  overflow-y: auto;
+  &.no-padding{
+    padding: 0 !important;
+  }
+  .filter-line{
+    padding-left: 20px;
+    &:hover {
+      color: #878787 !important;
+    }
+  }
+  .heading{
+    padding-left: 10px;
+    font-size: 16px;
+    color: #808CC5;
+    font-weight: 800;
+  }
+  .sub-heading{
+    padding-left: 20px;
+    font-size: 14px;
+    color: #00B1A9;
+    font-weight: 800;
+  }
+  .value{
+    padding-left: 35px;
+    font-size: 13px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+}
+
