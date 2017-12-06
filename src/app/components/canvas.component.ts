@@ -10,7 +10,7 @@ import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {Session} from "qCommon/app/services/Session";
 import {StateService} from "qCommon/app/services/StateService";
 import {Observable} from "rxjs/Rx";
-import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {TOAST_TYPE, DEFAULT_PLOT_OPTIONS} from "qCommon/app/constants/Qount.constants";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {InvoicesService} from "invoicesUI/app/services/Invoices.service";
@@ -242,6 +242,7 @@ export class CanvasComponent {
                         return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
                     }
                 },
+                plotOptions: DEFAULT_PLOT_OPTIONS,
                 series: [{
                     name: 'Acc. Receivable',
                     type: 'column',
@@ -368,6 +369,7 @@ export class CanvasComponent {
                         return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
                     }
                 },
+                plotOptions: DEFAULT_PLOT_OPTIONS,
                 series: [{
                     name: 'Income',
                     type: 'column',
@@ -494,6 +496,7 @@ export class CanvasComponent {
                         return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
                     }
                 },
+                plotOptions: DEFAULT_PLOT_OPTIONS,
                 series: [{
                     name: 'Gross Profit',
                     type: 'column',
