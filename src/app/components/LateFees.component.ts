@@ -196,7 +196,7 @@ export class LateFeesComponent{
         if(key=='type'){
           row[key] = base.getEventTypeName(lateFee[key]);
         }else if(key=='value'){
-          if(lateFee[key]=='flat_fee'){
+          if(lateFee['type']=='flat_fee'){
             let amount=lateFee['value']?Number(lateFee['value']):0;
             row[key]=amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: Session.getCurrentCompanyCurrency(), minimumFractionDigits: 2, maximumFractionDigits: 2 });
           }else {
