@@ -49,6 +49,17 @@
                       </div>
                       <div class="row">
                         <div class="small-4 columns">
+                          <label class="text-right">Chart of Account</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="coa" [listObject]="chartOfAccounts" (valueChanged)="updateChartOfAccount($event)">
+                            <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.number}} - {{coa.name}}</option>
+                          </select>
+                          <div class="error" [hidden]="lateFeeForm.controls.coa.untouched || lateFeeForm.controls.coa.valid">COA is required</div>
+                        </div>
+                      </div>
+                      <div class="row" style="margin-top: 1rem;">
+                        <div class="small-4 columns">
                           <label class="text-right">Type</label>
                         </div>
                         <div class="small-6 columns">

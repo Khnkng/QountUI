@@ -15,6 +15,7 @@ export class LateFeeForm extends abstractForm{
       "description": [model?model.description:'', Validators.required],
       "type": [model?model.type:'', Validators.required],
       "value": [model?model.value:0, Validators.required],
+      "coa":[model?model.coa:'', Validators.required]
     }
   }
 
