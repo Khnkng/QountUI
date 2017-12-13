@@ -143,11 +143,11 @@ export class DepositComponent{
         this.accounts=data.bankAccounts;
         this.selectedRows=data.selectedRows;
         this.bankAccountID=data.depositdata.bank_account_id;
-        this.dateFormater.formatDate(data.depositdata.date,this.dateFormat,this.serviceDateformat);
+        data.depositdata.date=this.dateFormater.formatDate(data.depositdata.date,this.dateFormat,this.serviceDateformat);
         setTimeout(function(){
           base.processDeposits(data.depositdata);
           base.showMappingPage();
-        },100)
+        },200)
     }
   }
 
