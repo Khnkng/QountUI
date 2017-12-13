@@ -87,6 +87,7 @@ export class JournalEntryComponent{
   badgeText:string="B";
   showBadge:boolean=false;
   routeSubscribe:any;
+  isDuplicate:boolean;
 
   constructor(private _jeForm: JournalEntryForm, private _fb: FormBuilder, private coaService: ChartOfAccountsService, private _lineListForm: JournalLineForm,
               private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
@@ -106,13 +107,18 @@ export class JournalEntryComponent{
         if(tempReverse){
           this.isReverse = true;
           this.newJournalEntry = true;
-          this.titleService.setPageTitle("CREATE JOURNAL ENTRY");
         } else{
           this.newJournalEntry = false;
           this.titleService.setPageTitle("UPDATE JOURNAL ENTRY");
         }
       }
     });
+    if(this._router.url.indexOf('duplicate')!=-1){
+      this.titleService.setPageTitle("CREATE JOURNAL ENTRY");
+      this.isReverse = false;
+      this.newJournalEntry = true;
+      this.isDuplicate=true;
+    };
     this.companiesService.vendors(this.companyId).subscribe(vendors => {
       _.forEach(vendors, function(vendor) {
         vendor['entityType']="vendor";
@@ -912,7 +918,7 @@ export class JournalEntryComponent{
     let _lineForm = this._lineListForm.getForm();
     this.lineForm = this._fb.group(_lineForm);
 
-    if(this.newJournalEntry){
+    if(this.newJournalEntry&&!this.isDuplicate){
       this.addDefaultLine(2);
     }
 
@@ -932,7 +938,7 @@ export class JournalEntryComponent{
           _.sortBy(this.chartOfAccounts, ['number', 'name']);
           this.toggleAutoReverse();
           this.toggleRecurring();
-          if(!this.newJournalEntry || this.isReverse){
+          if(!this.newJournalEntry || this.isReverse || this.isDuplicate){
             this.journalService.journalEntry(this.journalID, this.companyId)
               .subscribe(journalEntry => this.processJournalEntry(journalEntry),
                 error => this.handleError(error));
