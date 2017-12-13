@@ -136,6 +136,11 @@ export class DepositComponent{
     }
   gotoPreviousState(){
     let base=this;
+    if(this.newDeposit){
+      this.titleService.setPageTitle("Create Deposit");
+    }else {
+      this.titleService.setPageTitle("Update Deposit");
+    }
     let prevState = this.stateService.getPrevState();
     this.stateService.pop();
       let data = prevState.data || [];
@@ -143,11 +148,11 @@ export class DepositComponent{
         this.accounts=data.bankAccounts;
         this.selectedRows=data.selectedRows;
         this.bankAccountID=data.depositdata.bank_account_id;
-        this.dateFormater.formatDate(data.depositdata.date,this.dateFormat,this.serviceDateformat);
+        data.depositdata.date=this.dateFormater.formatDate(data.depositdata.date,this.dateFormat,this.serviceDateformat);
         setTimeout(function(){
           base.processDeposits(data.depositdata);
           base.showMappingPage();
-        },100)
+        },200)
     }
   }
 
@@ -1056,6 +1061,7 @@ export class DepositComponent{
       this.stateService.addState(new State('showMappingPage', this._router.url, persistData, null));
       let link = ['payments/edit', event.id];
       this._router.navigate(link);
+      this.titleService.setPageTitle("Payments");
     }
   }
 
