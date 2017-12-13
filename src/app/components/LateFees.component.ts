@@ -14,6 +14,8 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {Router} from "@angular/router";
 import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
+import {ComboBox} from "qCommon/app/directives/comboBox.directive";
+import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -39,10 +41,12 @@ export class LateFeesComponent{
   confirmSubscription:any;
   routeSubscribe:any;
   localeFortmat:string='en-US';
+  @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
+  chartOfAccounts:Array<any>=[];
 
   constructor(private _fb: FormBuilder, private _lateFeeForm: LateFeeForm, private switchBoard: SwitchBoard,private _router: Router,
               private lateFeesService: LateFeesService, private toastService: ToastService, private loadingService:LoadingService,
-              private titleService:pageTitleService){
+              private titleService:pageTitleService, private coaService: ChartOfAccountsService){
     this.lateFeeForm = this._fb.group(this._lateFeeForm.getForm());
     this.titleService.setPageTitle("Late Fees");
     this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
@@ -58,6 +62,14 @@ export class LateFeesComponent{
     });
     this.lateFeesService.lateFees(this.companyId)
       .subscribe(lateFees => this.buildTableData(lateFees), error=> this.handleError(error));
+    this.coaService.chartOfAccounts(Session.getCurrentCompany())
+      .subscribe(chartOfAccounts => {
+        let revenueCOA = _.filter(chartOfAccounts, {'category': 'Revenue'});
+        this.chartOfAccounts = revenueCOA;
+      }, error =>{
+        this.loadingService.triggerLoadingEvent(false);
+        this.toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
+      });
   }
 
   toolsRedirect(){
@@ -96,6 +108,10 @@ export class LateFeesComponent{
     this.lateFeesService.getLateFee(this.companyId, row.id)
       .subscribe(lateFee => {
         this.row=lateFee;
+        let coa = _.find(this.chartOfAccounts, {'id': lateFee.coa});
+        setTimeout(function(){
+          base.coaComboBox.setValue(coa, 'name');
+        },0);
         this._lateFeeForm.updateForm(this.lateFeeForm, lateFee);
         this.loadingService.triggerLoadingEvent(false);
       }, error => this.handleError(error));
@@ -145,7 +161,10 @@ export class LateFeesComponent{
     let base = this;
     $event && $event.preventDefault();
     let data = this._lateFeeForm.getData(this.lateFeeForm);
-
+    if(data.coa=='--None--'||data.coa==''){
+      this.toastService.pop(TOAST_TYPE.warning, "Please select Chart of Account");
+      return;
+    }
     this.loadingService.triggerLoadingEvent(true);
     if(this.editMode){
       data.id = this.row.id;
@@ -226,6 +245,16 @@ export class LateFeesComponent{
   getEventTypeName(type){
     let eventTypes={flat_fee:'Flat Fee',percentage:'Percentage'};
     return eventTypes[type];
+  }
+
+  updateChartOfAccount(coa){
+    let data = this._lateFeeForm.getData(this.lateFeeForm);
+    if(coa && coa.id){
+      data.coa = coa.id;
+    }else if(!coa||coa=='--None--'){
+      data.coa='--None--';
+    }
+    this._lateFeeForm.updateForm(this.lateFeeForm, data);
   }
 
 }
