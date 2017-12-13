@@ -935,7 +935,7 @@ export class DepositComponent{
      });
        row['actions'] = "<a class='action' data-action='navigatePayment'><span class='icon badge je-badge'>P</span></a>"
        if(payment.mapping){
-         base.selectedRows.push(payment);
+         //base.selectedRows.push(payment);
        }
      base.tableData.rows.push(row);
      });
@@ -953,8 +953,8 @@ export class DepositComponent{
        _.each(event, function(payment){
          base.selectedRows.push(payment);
        });
-       this.selectedRows = _.uniqBy(this.selectedRows, 'id');
        _.remove(this.selectedRows, {'tempIsSelected': false});
+       this.selectedRows = _.uniqBy(this.selectedRows, 'id');
      }
 
      saveMappingID(){
