@@ -200,6 +200,10 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       path: 'journalEntry/:journalID',
       component: JournalEntryComponent,
       canActivate: [LoggedInActivator]
+    },{
+      path: 'journalEntry/duplicate/:journalID',
+      component: JournalEntryComponent,
+      canActivate: [LoggedInActivator]
     },
     {
       path: 'journalEntry/:journalID/:reverse',

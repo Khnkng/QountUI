@@ -321,6 +321,9 @@ export class BooksComponent{
     if(action == 'edit') {
       this.addBookState();
       this.showJournalEntry($event);
+    }else if(action=='je-duplicate'){
+      let link = ['journalEntry/duplicate', $event.id];
+      this._router.navigate(link);
     } else if(action == 'reverse'){
       this.addBookState();
       this.showReverseBill($event);
@@ -601,6 +604,9 @@ export class BooksComponent{
         }
       });
       let action = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+      if(row['createdBY']!='system'){
+        action= action+"<a class='action' data-action='je-duplicate' style='margin:0px 0px 0px 5px;color: #44B6E8 !important'><i class='icon ion-ios-copy'></i></a>";
+      }
       const postString = "<a class='action' data-action='collaboration'><span class='comment-badge'><i class='material-icons'>comment</i></span></a>";
 
       if(journalEntry['source'] === 'Manual'){
