@@ -90,6 +90,7 @@ export class DepositComponent{
     @ViewChild('depositsMapping') mappingelement:ElementRef;
     selectedRows:Array<any> = [];
     depositData:any;
+    isMappingsModified:boolean;
 
 
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _depositForm: DepositsForm,
@@ -645,6 +646,9 @@ export class DepositComponent{
                     console.log("deposit creation failed", error);
                 });
         } else{
+            if(!this.isMappingsModified){
+              data.mapping_ids=this.depositData.mapping_ids;
+            }
             this.tempData=data;
             this.checkLockDate();
         }
@@ -963,8 +967,8 @@ export class DepositComponent{
      }
 
      saveMappingID(){
-       let mappingData=_.map(this.selectedRows, 'id')
-
+       let mappingData=_.map(this.selectedRows, 'id');
+       this.isMappingsModified=true;
        let mappings = this.depositForm.controls['mapping_ids'];
        mappings.patchValue(mappingData);
        let data = this._depositForm.getData(this.depositForm);
