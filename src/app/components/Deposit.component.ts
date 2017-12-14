@@ -944,7 +944,8 @@ export class DepositComponent{
      });
        row['actions'] = "<a class='action' data-action='navigatePayment'><span class='icon badge je-badge'>P</span></a>"
        if(payment.mapping){
-         //base.selectedRows.push(payment);
+         payment['isPushVal']=true;
+         base.selectedRows.push(payment);
        }
      base.tableData.rows.push(row);
      });
@@ -955,10 +956,13 @@ export class DepositComponent{
      }
      handleSelect(event:any) {
        let base = this;
-       if(event.length==0){
-         this.selectedRows=[];
-         return;
-       }
+       _.each(this.selectedRows, function(payment){
+         _.each(event, function(selectedPayment){
+           if(selectedPayment.id==payment.id&&payment.isPushVal){
+             payment.tempIsSelected=selectedPayment.tempIsSelected;
+           }
+         });
+       });
        _.each(event, function(payment){
          base.selectedRows.push(payment);
        });
