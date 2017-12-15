@@ -18,7 +18,7 @@ export class DepositsForm extends abstractForm{
             "notes": [''],
             "id": [''],
             "deposit_type":[''],
-            "mapping_id":['']
+            "mapping_ids":[[]]
 
         }
     }
