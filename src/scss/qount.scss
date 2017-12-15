@@ -5220,3 +5220,10 @@ div.footable-loader {
 
 }
 
+textarea {
+  overflow-x: hidden;
+}
+
+tbody tr:nth-child(even){
+  border-bottom: 1px solid #DCDEDD;
+}
