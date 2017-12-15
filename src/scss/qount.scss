@@ -3958,6 +3958,10 @@ dropdown-content.dropdown-content:before {
   width:100%;
   background-color: $qount-table-tr-hover;
   color:#696E73;
+
+  .button {
+    padding: 12px;
+  }
 }
 
 .recon-main label {
