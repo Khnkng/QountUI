@@ -91,6 +91,8 @@ export class DepositComponent{
     selectedRows:Array<any> = [];
     depositData:any;
     isMappingsModified:boolean;
+    vendorList:Array<any>=[];
+    customersList:Array<any>=[];
 
 
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _depositForm: DepositsForm,
@@ -102,6 +104,7 @@ export class DepositComponent{
         this.currentCompanyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
         this.localeFormat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
+        this.loadEntityData();
         this.serviceDateformat = dateFormater.getServiceDateformat();
         this.routeSub = this._route.params.subscribe(params => {
             this.depositID=params['depositID'];
@@ -171,6 +174,7 @@ export class DepositComponent{
             this.setDueDate(this.defaultDate);
             this.selectedEntityID=null;
             this.setDefaultDepositType();
+            this.loadEntities('other');
         }else {
             let prevState = this.stateService.getPrevState();
             if(prevState){
@@ -225,6 +229,7 @@ export class DepositComponent{
         let data = this._depositLineForm.getData(this.editItemForm);
         if(entity && entity.id){
             data.entity_id = entity.id;
+            data.entity_type = entity.entityType;
         }else if(!entity||entity=='--None--'){
             data.entity_id='--None--';
         }
@@ -475,6 +480,7 @@ export class DepositComponent{
         itemControl.controls['chart_of_account_id'].patchValue(data.chart_of_account_id);
         itemControl.controls['entity_id'].patchValue(data.entity_id);
         itemControl.controls['invoice_id'].patchValue(data.invoice_id);
+        itemControl.controls['entity_type'].patchValue(data.entity_type);
         itemControl.controls['notes'].patchValue(data.notes);
         itemForm.editable = !itemForm.editable;
     }
@@ -499,6 +505,7 @@ export class DepositComponent{
         if(entity && entity.id){
             let data = this._depositLineForm.getData(itemForm);
             data.entity_id= entity.id;
+            data.entity_type=entity.entityType;
             this._depositLineForm.updateForm(itemForm, data);
             this.selectedEntityID= entity.id;
         } else if(!entity || entity=='--None--'){
@@ -741,26 +748,36 @@ export class DepositComponent{
         });
     }
 
+  loadEntityData(){
+    this.vendorService.vendors(this.currentCompanyId)
+      .subscribe(vendors=> {
+        _.forEach(vendors, function(vendor) {
+          vendor['entityType']="vendor";
+        });
+        this.vendorList  = vendors;
+      }, error => {
+      });
+
+    this.customersService.customers(this.currentCompanyId)
+      .subscribe(customers=> {
+        _.forEach(customers, function(customer) {
+          customer['id']=customer.customer_id;
+          customer['name']=customer.customer_name;
+          customer['entityType']="customer";
+        });
+        this.customersList  = customers;
+      }, error => {
+      });
+  }
+
     loadEntities(type){
         this.entities=[];
-        // this.expenseType=type;
         if(type=='expenseRefund'){
-            this.vendorService.vendors(this.currentCompanyId)
-                .subscribe(vendors=> {
-                    this.entities  = vendors;
-                }, error => {
-                });
+          this.entities=this.vendorList;
         }else if (type=='invoice'){
-            this.customersService.customers(this.currentCompanyId)
-                .subscribe(customers=> {
-                    _.forEach(customers, function(customer) {
-                        customer['id']=customer.customer_id;
-                        customer['name']=customer.customer_name;
-                    });
-                    this.entities  = customers;
-                }, error => {
-                });
+          this.entities=this.customersList;
         }else if (type=='other'){
+          this.entities=this.entities.concat(this.vendorList).concat(this.customersList);
         }
     }
 
@@ -823,6 +840,7 @@ export class DepositComponent{
         return data;
     }
     loaddeposit(){
+      let base=this;
         if(!this.newDeposit){
             this.titleService.setPageTitle("UPDATE DEPOSIT");
             this.depositService.deposit(this.depositID, this.currentCompanyId)
@@ -836,6 +854,9 @@ export class DepositComponent{
             this.titleService.setPageTitle("CREATE DEPOSIT");
             this.setDueDate(this.defaultDate);
             this.setDefaultDepositType();
+            setTimeout(function(){
+              base.loadEntities('other');
+            },1000);
             this.loadingService.triggerLoadingEvent(false);
         }
     }
@@ -844,7 +865,7 @@ export class DepositComponent{
         let data = this._depositForm.getData(this.depositForm);
         data.deposit_type = 'other';
         this._depositForm.updateForm(this.depositForm, data);
-        this.loadEntities('other');
+        //this.loadEntities('other');
     }
 
     validateData(data){
