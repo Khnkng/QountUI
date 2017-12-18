@@ -213,7 +213,7 @@ export class ExpenseComponent{
     let data = this._expenseItemForm.getData(this.editItemForm);
     if(entity && entity.id){
       data.entity_id = entity.id;
-      data.entity_id = entity.entityType;
+      data.entity_type = entity.entityType;
     }
     this._expenseItemForm.updateForm(this.editItemForm, data);
   }
