@@ -121,6 +121,7 @@ export class LogInComponent implements OnInit {
         Session.setCurrentCompany(defaultCompany.id);
         Session.setCurrentCompanyName(defaultCompany.name);
         Session.setCurrentCompanyCurrency(defaultCompany.defaultCurrency);
+        Session.setCompanyReportCurrency(defaultCompany.reportCurrency);
         if(defaultCompany.defaultCurrency){
           this.numeralService.switchLocale(defaultCompany.defaultCurrency);
         } else{

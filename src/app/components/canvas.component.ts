@@ -32,6 +32,7 @@ export class CanvasComponent {
     asOfDate: string;
     reportRequest: any;
     companyCurrency: string;
+    reportCurrency: string;
     metrics:any = {};
     routeSubscribe:any;
 
@@ -61,6 +62,8 @@ export class CanvasComponent {
         this.titleService.setPageTitle("Dashboard");
         this.currentCompanyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+        this.reportCurrency = Session.getCompanyReportCurrency();
+        this.numeralService.switchLocale(this.reportCurrency);
         let today = moment();
         let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
         this.currentFiscalStart = moment([today.get('year'),fiscalStartDate.get('month'),1]);
@@ -86,6 +89,10 @@ export class CanvasComponent {
         setTimeout(function(){
             base.getData();
         });
+    }
+
+    ngOnDestroy() {
+      this.numeralService.switchLocale(this.companyCurrency);
     }
 
     getData(){

@@ -78,6 +78,7 @@ export class AppComponent  implements OnInit{
                 Session.setCurrentCompany(obj.user.defaultCompany);
                 Session.setCurrentCompanyName(obj.user.default_company.name);
                 Session.setCurrentCompanyCurrency(obj.user.default_company.defaultCurrency);
+                Session.setCompanyReportCurrency(obj.user.default_company.reportCurrency);
                 this.numeralService.switchLocale(Session.getCurrentCompanyCurrency());
                 Session.setFiscalStartDate(obj.user.default_company.fiscalStartDate?obj.user.default_company.fiscalStartDate:"");
                 this.refreshToken();
