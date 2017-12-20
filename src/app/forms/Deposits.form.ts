@@ -18,7 +18,7 @@ export class DepositsForm extends abstractForm{
             "notes": [''],
             "id": [''],
             "deposit_type":[''],
-            "mapping_id":['']
+            "mapping_ids":[[]]
 
         }
     }
@@ -37,7 +37,8 @@ export class DepositsLineForm extends abstractForm{
             invoice_id: [model? model.invoice_id: ''],
             notes: [model? model.notes: ''],
             "destroy": [model? model.destroy: false],
-            "dimensions": [model? model.dimensions: []]
+            "dimensions": [model? model.dimensions: []],
+            "entity_type":[model? model.entity_type:'']
         };
     }
 

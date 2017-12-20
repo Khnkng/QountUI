@@ -103,6 +103,8 @@ import {RDCreditsComponent} from "./components/RDCredits.component";
 import {RDcreditsService} from "./services/RDcredits.service";
 import {RDcreditsForm} from "./forms/RDcredits.form";
 import {DocumentsTypeComponent} from "./components/DocumentsType.component";
+import {LateFeesComponent} from "./components/LateFees.component";
+import {LateFeeForm} from "./forms/LateFee.form";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -196,6 +198,10 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     },
     {
       path: 'journalEntry/:journalID',
+      component: JournalEntryComponent,
+      canActivate: [LoggedInActivator]
+    },{
+      path: 'journalEntry/duplicate/:journalID',
       component: JournalEntryComponent,
       canActivate: [LoggedInActivator]
     },
@@ -356,7 +362,12 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       path: 'documents/:docType',
       component: DocumentsTypeComponent,
       canActivate: [LoggedInActivator]
-    }
+    },
+    {
+          path: 'late-fee',
+        component: LateFeesComponent,
+        canActivate: [LoggedInActivator]
+    },
   ]), PaymentsModule, ReportsModule, InvoicesModule, CollaborationModule
   ],
 
@@ -366,13 +377,13 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
     ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
     CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent,
-    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent,DocumentsTypeComponent],
+    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent,DocumentsTypeComponent,LateFeesComponent],
   exports: [RouterModule],
   bootstrap: [ AppComponent ],
   providers: [APP_BASE, COAForm,MetricsForm,MetricsLineForm,metricPeriodForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
     TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm,ContactLineForm, DimensionForm, UsersForm, DocumentService,
     FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService,MetricsService,
-    BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan, RDcreditsService,RDcreditsForm],
+    BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan, RDcreditsService,RDcreditsForm,LateFeeForm],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

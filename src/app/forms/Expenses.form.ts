@@ -39,7 +39,8 @@ export class ExpenseItemForm extends abstractForm{
             "chart_of_account_id": [item? item.chart_of_account_id: ''],
             "id": [item? item.id: null],
             "destroy": [item? item.destroy: false],
-            "dimensions": [item? item.dimensions: []]
+            "dimensions": [item? item.dimensions: []],
+            "entity_type":[item? item.entity_type:'']
         }
     }
 }

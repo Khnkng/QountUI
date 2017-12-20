@@ -75,6 +75,9 @@ export class ExpenseComponent{
   formattedLineTotal:string;
   localeFormat:string='en-US';
   selectedEntityID:string;
+  vendorList:Array<any>=[];
+  customersList:Array<any>=[];
+  employeesList:Array<any>=[];
 
   @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
   @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
@@ -89,6 +92,7 @@ export class ExpenseComponent{
               private employeeService:EmployeeService,private paymentsService:PaymentsService,private dateFormater:DateFormater,
               private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService){
     this.currentCompanyId = Session.getCurrentCompany();
+    this.loadEntitiesData();
     this.dateFormat = dateFormater.getFormat();
     this.serviceDateformat = dateFormater.getServiceDateformat();
     this.localeFormat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
@@ -156,6 +160,7 @@ export class ExpenseComponent{
       this.setDueDate(this.defaultDate);
       this.selectedEntityID=null;
       this.setDefaultExpenseType();
+      this.loadEntities('other');
     }else {
       let prevState = this.stateService.getPrevState();
       if(prevState){
@@ -208,6 +213,7 @@ export class ExpenseComponent{
     let data = this._expenseItemForm.getData(this.editItemForm);
     if(entity && entity.id){
       data.entity_id = entity.id;
+      data.entity_type = entity.entityType;
     }
     this._expenseItemForm.updateForm(this.editItemForm, data);
   }
@@ -440,6 +446,7 @@ export class ExpenseComponent{
     itemControl.controls['amount'].patchValue(data.amount);
     itemControl.controls['chart_of_account_id'].patchValue(data.chart_of_account_id);
     itemControl.controls['entity_id'].patchValue(data.entity_id);
+    itemControl.controls['entity_type'].patchValue(data.entity_type);
     itemControl.controls['notes'].patchValue(data.notes);
     itemForm.editable = !itemForm.editable;
   }
@@ -464,6 +471,7 @@ export class ExpenseComponent{
     let data = this._expenseItemForm.getData(itemForm);
     if(entity && entity.id){
       data.entity_id = entity.id;
+      data.entity_type=entity.entityType;
       this.selectedEntityID=entity.id;
     }else if(!entity || entity=='--None--'){
       data.entity_id='--None--';
@@ -668,35 +676,47 @@ export class ExpenseComponent{
     });
   }
 
+  loadEntitiesData(){
+    this.vendorService.vendors(Session.getCurrentCompany())
+      .subscribe(vendors=> {
+        _.forEach(vendors, function(vendor) {
+          vendor['entityType']="vendor";
+        });
+        this.vendorList  = vendors;
+      }, error => {
+      });
+    this.customerService.customers(Session.getCurrentCompany())
+      .subscribe(customers=> {
+        _.forEach(customers, function(customer) {
+          customer['id']=customer.customer_id;
+          customer['name']=customer.customer_name;
+          customer['entityType']="customer";
+        });
+        this.customersList  = customers;
+      }, error => {
+      });
+    this.employeeService.employees(Session.getCurrentCompany())
+      .subscribe(employees=> {
+        _.forEach(employees, function(employee) {
+          employee['name']=employee.first_name+""+employee.last_name;
+          employee['entityType']="employee";
+        });
+        this.employeesList  = employees;
+      }, error => {
+      });
+  }
+
   loadEntities(type){
     this.entities=[];
     this.expenseType=type;
     if(type=='bill'){
-      this.vendorService.vendors(this.currentCompanyId)
-        .subscribe(vendors=> {
-          this.entities  = vendors;
-        }, error => {
-        });
+    this.entities=this.vendorList;
     }else if (type=='payroll'){
-      this.employeeService.employees(this.currentCompanyId)
-        .subscribe(employees=> {
-          _.forEach(employees, function(employee) {
-            employee['name']=employee.first_name+""+employee.last_name;
-          });
-          this.entities  = employees;
-        }, error => {
-        });
+      this.entities=this.employeesList;
     }else if (type=='salesRefund'){
-      this.customerService.customers(this.currentCompanyId)
-        .subscribe(customers=> {
-          _.forEach(customers, function(customer) {
-            customer['id']=customer.customer_id;
-            customer['name']=customer.customer_name;
-          });
-          this.entities  = customers;
-        }, error => {
-        });
+      this.entities=this.customersList;
     }else if (type=='other'){
+      this.entities=this.entities.concat(this.vendorList).concat(this.employeesList).concat(this.customersList);
     }
   }
 
@@ -759,6 +779,7 @@ export class ExpenseComponent{
     return data;
   }
   loadExpense(){
+    let base=this;
     if(!this.newExpense){
       this.titleService.setPageTitle("UPDATE EXPENSE");
       this.expenseService.expense(this.expenseID, this.currentCompanyId)
@@ -771,6 +792,9 @@ export class ExpenseComponent{
     } else{
       this.titleService.setPageTitle("CREATE EXPENSE");
       this.setDueDate(this.defaultDate);
+      setTimeout(function(){
+        base.loadEntities('other');
+      },1000);
       this.setDefaultExpenseType();
       this.loadingService.triggerLoadingEvent(false);
     }
@@ -780,7 +804,7 @@ export class ExpenseComponent{
     let data = this._expenseForm.getData(this.expenseForm);
     data.expense_type = 'other';
     this._expenseForm.updateForm(this.expenseForm, data);
-    this.loadEntities('other');
+    //this.loadEntities('other');
   }
 
   buildTableData(mappings) {

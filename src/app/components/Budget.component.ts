@@ -663,7 +663,11 @@ export class BudgetComponent{
       this.showFirstStep = false;
       this.showSecondStep = true;
     }else {
-      this.toastService.pop(TOAST_TYPE.error, "Duplicate budget exists with these dimensions");
+      if(this.selectedDimensions.length>0){
+              this.toastService.pop(TOAST_TYPE.error, "Duplicate budget exists with these dimensions");
+            }else {
+              this.toastService.pop(TOAST_TYPE.error, "Duplicate budget exists");
+        }
     }
   }
 
