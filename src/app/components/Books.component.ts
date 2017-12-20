@@ -121,11 +121,11 @@ export class BooksComponent{
     let today = moment();
     this.currentCompanyId = Session.getCurrentCompany();
     this.companyCurrency = Session.getCurrentCompanyCurrency();
-    this.reportCurrency = Session.getCompanyReportCurrency();
+    this.reportCurrency = Session.getCompanyReportCurrency()? Session.getCompanyReportCurrency(): this.companyCurrency;
     this.numeralService.switchLocale(this.reportCurrency);
     this.dateFormat = dateFormater.getFormat();
     this.serviceDateformat = dateFormater.getServiceDateformat();
-    this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
+    this.localeFortmat=CURRENCY_LOCALE_MAPPER[this.companyCurrency]?CURRENCY_LOCALE_MAPPER[this.companyCurrency]:'en-US';
     let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
     this.currentFiscalStart = moment([today.get('year'),fiscalStartDate.get('month'),1]);
     if(today < fiscalStartDate){

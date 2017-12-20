@@ -62,7 +62,7 @@ export class CanvasComponent {
         this.titleService.setPageTitle("Dashboard");
         this.currentCompanyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
-        this.reportCurrency = Session.getCompanyReportCurrency();
+        this.reportCurrency = Session.getCompanyReportCurrency()? Session.getCompanyReportCurrency(): this.companyCurrency;
         this.numeralService.switchLocale(this.reportCurrency);
         let today = moment();
         let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
