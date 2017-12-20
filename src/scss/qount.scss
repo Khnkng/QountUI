@@ -5062,14 +5062,14 @@ div.footable-loader {
   }
 
   .inputContainer {
-    textarea {
+    input {
+      width:98%;
       border:none;
-      width:95%;
-      min-height: 10px;
-      margin-left: 20px !important;
-      margin-bottom:0;
-      resize: none;
-      padding-top:10px;
+      padding-left: 20px !important;
+      outline: none;
+      & :focus {
+        outline: none;
+      }
     }
 
     .presentation {
@@ -5149,11 +5149,12 @@ div.footable-loader {
     background-color: rgb(224, 224, 224);
 
     .attachment_name {
-      width: 150px;
+      width: 190px;
       height: 20px;
       overflow: hidden;
       text-overflow: ellipsis;
       display: inherit;
+      white-space: nowrap;
     }
 
     i {
@@ -5166,6 +5167,7 @@ div.footable-loader {
   }
 
 }
+
 
 .recon_filter_input {
   margin-bottom: 0;
