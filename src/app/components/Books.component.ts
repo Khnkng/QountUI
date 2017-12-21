@@ -1182,11 +1182,7 @@ export class BooksComponent{
           name: 'Cash Burn',
           type: 'line',
           yAxis: 1,
-          data: this.getDataArray(metricData["CashFlowMOM"], categories),
-          tooltip: {
-            valueDecimals: 2,
-            valuePrefix: metricData.currencySymbol
-          }
+          data: this.getDataArray(metricData["CashFlowMOM"], categories)
         }]
       };
       this.loadingService.triggerLoadingEvent(false);
@@ -1263,17 +1259,11 @@ export class BooksComponent{
                 series: [{
                     name: 'Revenue',
                     type: 'column',
-                    data: this.getDataArray(metricData.Income, metricData.categories),
-                    tooltip: {
-                        valuePrefix: metricData.currencySymbol
-                    }
+                    data: this.getDataArray(metricData.Income, metricData.categories)
                 }, {
                     name: 'Expenses',
                     type: 'column',
-                    data: this.getDataArray(metricData.Expenses, metricData.categories),
-                    tooltip: {
-                        valuePrefix: metricData.currencySymbol
-                    }
+                    data: this.getDataArray(metricData.Expenses, metricData.categories)
                 }]
             };
             this.loadingService.triggerLoadingEvent(false);
