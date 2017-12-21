@@ -164,9 +164,9 @@ export class SwitchCompanyComponent{
         Session.setCurrentCompany(company.id);
         Session.setCurrentCompanyName(company.name);
         Session.setFiscalStartDate(company.fiscalStartDate);
-        Session.setCurrentCompanyCurrency(company.defaultCurrency);
         this.updateCookie(company);
         this.numeralService.switchLocale(company.defaultCurrency);
+        Session.setCompanyReportCurrency(company.reportCurrency);
         Session.setLockDate(company.lockDate);
         this.switchBoard.onSwitchCompany.next({});
         this.currentCompanyName = company.name;
@@ -189,7 +189,8 @@ export class SwitchCompanyComponent{
           obj.user.default_company.fiscalStartDate?obj.user.default_company.fiscalStartDate=company.fiscalStartDate:"";
           obj.user.defaultCompany=company.id;
           obj.user.default_company.name=company.name;
-          obj.user.default_company.defaultCurrency=company.defaultCurrency;
+          obj.user.default_company.defaultCurrency= company.defaultCurrency;
+          obj.user.default_company.reportCurrency= company.reportCurrency;
           if(cookieKey=="dev"){
             document.cookie="dev="+JSON.stringify(obj)+";path=/;domain=qount.io";
           }else if(cookieKey=="prod"){
