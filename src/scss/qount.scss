@@ -5145,7 +5145,6 @@ div.footable-loader {
     background-color: rgb(224, 224, 224);
 
     .attachment_name {
-      width: 190px;
       height: 20px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -5154,7 +5153,7 @@ div.footable-loader {
     }
 
     i {
-      color: #FFFFFF;
+      color: #868686;
 
       &:hover {
         color : #3C628C;
