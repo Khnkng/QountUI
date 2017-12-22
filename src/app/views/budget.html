@@ -18,7 +18,7 @@
         <foo-table #fooTableDir="fooTable" class="bighalf-footable employee_search" *ngIf="hasBudget" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
 
-    <div class="qount-off-canvas-menu">
+    <div class="create-budget qount-off-canvas-menu">
         <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
             <section class="flyout-placeholder">
                 <div class="flyout-body flyout-shadow-effect">
@@ -101,14 +101,14 @@
                                                 </label>
                                             </div>
                                         </div>
-                                        <div style="margin-top: 12px;" >
+                                        <div style="margin-top: 12px; overflow-x: auto;" >
                                             <table class="budget-table">
                                                 <thead>
                                                 <tr>
                                                     <th width="14%">COA</th>
                                                     <template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
-                                                        <th width="6.5%" style="text-transform: capitalize;" *ngIf="month!='total'">{{month}}</th>
-                                                        <th width="7%" style="text-transform: capitalize;" *ngIf="month=='total'">{{month}}</th>
+                                                        <th style="text-transform: capitalize;" *ngIf="month!='total'">{{month}}</th>
+                                                        <th style="text-transform: capitalize;" *ngIf="month=='total'">{{month}}</th>
                                                     </template>
                                                     <th></th>
                                                 </tr>
