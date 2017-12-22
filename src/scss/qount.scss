@@ -5233,3 +5233,11 @@ textarea {
 tbody tr:nth-child(even){
   border-bottom: 1px solid #DCDEDD;
 }
+
+.create-budget{
+  table{
+    input{
+      min-width: 75px;
+    }
+  }
+}
