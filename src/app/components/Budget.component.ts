@@ -523,14 +523,16 @@ export class BudgetComponent{
   }
 
   updateBudgetLineAmount(_val,form,type){
-    let total=this.checkNumber(form.controls['total'].value);
-    if(total){
-      let avgVal=Math.round((total/12) * 100) / 100;
-      for(let i=0;i<this.lineItemNames.length-1;i++){
-        let val=this.lineItemNames[i];
-        form.controls[val].patchValue(avgVal);
+    if(_val.code!="Tab"){
+      let total=this.checkNumber(form.controls['total'].value);
+      if(total){
+        let avgVal=Math.round((total/12) * 100) / 100;
+        for(let i=0;i<this.lineItemNames.length-1;i++){
+          let val=this.lineItemNames[i];
+          form.controls[val].patchValue(avgVal);
+        }
+        this.updateTotals(total,type);
       }
-      this.updateTotals(total,type);
     }
   }
 
