@@ -163,7 +163,7 @@ export class SwitchCompanyComponent{
         Session.setCurrentCompanyName(company.name);
         Session.setFiscalStartDate(company.fiscalStartDate);
         Session.setCurrentCompanyCurrency(company.defaultCurrency);
-        this.numeralService.switchLocale(company.defaultCurrency);
+        Session.setCompanyReportCurrency(company.reportCurrency);
         Session.setLockDate(company.lockDate);
         this.switchBoard.onSwitchCompany.next({});
         this.currentCompanyName = company.name;

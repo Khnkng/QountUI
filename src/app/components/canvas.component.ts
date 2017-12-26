@@ -32,6 +32,7 @@ export class CanvasComponent {
     asOfDate: string;
     reportRequest: any;
     companyCurrency: string;
+    reportCurrency: string;
     metrics:any = {};
     routeSubscribe:any;
 
@@ -61,6 +62,8 @@ export class CanvasComponent {
         this.titleService.setPageTitle("Dashboard");
         this.currentCompanyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+        this.reportCurrency = Session.getCompanyReportCurrency()? Session.getCompanyReportCurrency(): this.companyCurrency;
+        this.numeralService.switchLocale(this.reportCurrency);
         let today = moment();
         let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
         this.currentFiscalStart = moment([today.get('year'),fiscalStartDate.get('month'),1]);
@@ -86,6 +89,10 @@ export class CanvasComponent {
         setTimeout(function(){
             base.getData();
         });
+    }
+
+    ngOnDestroy() {
+      this.numeralService.switchLocale(this.companyCurrency);
     }
 
     getData(){
@@ -181,10 +188,7 @@ export class CanvasComponent {
         series: [{
           name: 'Actual',
           type: 'column',
-          data: this.getDataArray(metricData.actual, metricData.categories),
-          tooltip: {
-            valuePrefix: metricData.currencySymbol
-          }
+          data: this.getDataArray(metricData.actual, metricData.categories)
         }, {
           name: 'Budget',
           type: 'column',
@@ -193,9 +197,6 @@ export class CanvasComponent {
             enabled: false
           },
           dashStyle: 'shortdot',
-          tooltip: {
-            valuePrefix: metricData.currencySymbol
-          },
           color:'#00B1A9'
         }]
       };
@@ -820,7 +821,9 @@ export class CanvasComponent {
                     },
                     tooltip: {
                         headerFormat: '<b>{point.x}</b><br/>',
-                        pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y:,.2f}</span><br/>',
+                        pointFormatter: function(){
+                          return '<span style="color:'+this.series.color+'">'+this.series.name+': '+base.formatAmount(this.y)+'</span><br/>'
+                        },
                         shared: true
                     },
                     yAxis: {
@@ -865,7 +868,7 @@ export class CanvasComponent {
                             stacking: 'normal',
                             dataLabels: {
                                 enabled: false,
-                                format: '${y}',
+                                format: '{y}',
                                 fontSize:'13px',
                                 color:'#878787',
                                 fill:'#878787',
@@ -946,7 +949,9 @@ export class CanvasComponent {
                 },
                 tooltip: {
                     headerFormat: '<b>{point.x}</b><br/>',
-                    pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y:,.2f}</span><br/>',
+                    pointFormatter: function(){
+                      return '<span style="color:'+this.series.color+'">'+this.series.name+': '+base.formatAmount(this.y)+'</span><br/>'
+                    },
                     shared: true
                 },
                 yAxis: {
@@ -991,7 +996,7 @@ export class CanvasComponent {
                         stacking: 'normal',
                         dataLabels: {
                             enabled: false,
-                            format: '${y}',
+                            format: '{y}',
                             fontSize:'13px',
                             color:'#878787',
                             fill:'#878787',

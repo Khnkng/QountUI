@@ -53,6 +53,7 @@ export class BooksComponent{
   expensesTableOptions:any = {search:true, pageSize:7};
   jeTableData:any = {};
   jeTableOptions:any = {search:true, pageSize:7};
+  reportCurrency: string;
 
   tabHeight:string;
   badges:any = [];
@@ -117,11 +118,14 @@ export class BooksComponent{
               private badgesService: BadgeService, private reconcileService: ReconcileService,private dateFormater: DateFormater,
               private numeralService:NumeralService, private stateService: StateService, private titleService:pageTitleService,
               private reportsService: ReportService) {
+    let today = moment();
     this.currentCompanyId = Session.getCurrentCompany();
+    this.companyCurrency = Session.getCurrentCompanyCurrency();
+    this.reportCurrency = Session.getCompanyReportCurrency()? Session.getCompanyReportCurrency(): this.companyCurrency;
+    this.numeralService.switchLocale(this.reportCurrency);
     this.dateFormat = dateFormater.getFormat();
     this.serviceDateformat = dateFormater.getServiceDateformat();
-    this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
-    let today = moment();
+    this.localeFortmat=CURRENCY_LOCALE_MAPPER[this.companyCurrency]?CURRENCY_LOCALE_MAPPER[this.companyCurrency]:'en-US';
     let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
     this.currentFiscalStart = moment([today.get('year'),fiscalStartDate.get('month'),1]);
     if(today < fiscalStartDate){
@@ -153,7 +157,9 @@ export class BooksComponent{
       }
     });
     this.routeSub = this._route.params.subscribe(params => {
+      this.setBookCurrency();
       if(params['tabId']=='dashboard'){
+        this.setReportCurrency();
         this.selectTab(0,"");
       } else if(params['tabId']=='deposits'){
         this.selectTab(1,"");
@@ -185,12 +191,19 @@ export class BooksComponent{
       }
     });
     this.getBookBadges();
-    this.companyCurrency = Session.getCurrentCompanyCurrency();
     let state = this.stateService.pop();
     if(state){
       let data = state.data;
       this.searchString = data.searchString;
     }
+  }
+
+  setBookCurrency(){
+    this.numeralService.switchLocale(this.companyCurrency);
+  }
+
+  setReportCurrency(){
+    this.numeralService.switchLocale(this.reportCurrency);
   }
 
   addBookState(){
@@ -827,6 +840,7 @@ export class BooksComponent{
   ngOnDestroy(){
     this.routeSub.unsubscribe();
     this.confirmSubscription.unsubscribe();
+    this.setBookCurrency();
     jQuery('#password-conformation').remove();
   }
 
@@ -1168,11 +1182,7 @@ export class BooksComponent{
           name: 'Cash Burn',
           type: 'line',
           yAxis: 1,
-          data: this.getDataArray(metricData["CashFlowMOM"], categories),
-          tooltip: {
-            valueDecimals: 2,
-            valuePrefix: metricData.currencySymbol
-          }
+          data: this.getDataArray(metricData["CashFlowMOM"], categories)
         }]
       };
       this.loadingService.triggerLoadingEvent(false);
@@ -1249,17 +1259,11 @@ export class BooksComponent{
                 series: [{
                     name: 'Revenue',
                     type: 'column',
-                    data: this.getDataArray(metricData.Income, metricData.categories),
-                    tooltip: {
-                        valuePrefix: metricData.currencySymbol
-                    }
+                    data: this.getDataArray(metricData.Income, metricData.categories)
                 }, {
                     name: 'Expenses',
                     type: 'column',
-                    data: this.getDataArray(metricData.Expenses, metricData.categories),
-                    tooltip: {
-                        valuePrefix: metricData.currencySymbol
-                    }
+                    data: this.getDataArray(metricData.Expenses, metricData.categories)
                 }]
             };
             this.loadingService.triggerLoadingEvent(false);
