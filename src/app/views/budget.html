@@ -102,7 +102,7 @@
                                             </div>
                                         </div>
                                         <div style="margin-top: 12px; overflow-x: auto;" >
-                                            <table class="budget-table">
+                                            <table class="budget-table coa-list-indent">
                                                 <thead>
                                                 <tr>
                                                     <th width="14%">COA</th>
@@ -121,7 +121,7 @@
                                                     <td colspan="15"><span style="font-weight: bold;color:#5d9cec;margin-left: -6px">Income</span></td>
                                                 </tr>
                                                 <tr *ngFor="let itemForm of budgetForm.controls.income.controls;let index=index;"  (click)="editItem(index, itemForm,'income')">
-                                                    <td class="truncate">{{getCOAName(itemForm.controls.coaID.value)}}</td>
+                                                    <td class="truncate wrap" [ngClass]="'coa-child-'+coaLevels[itemForm.controls.coaID.value]">{{getCOAName(itemForm.controls.coaID.value)}}</td>
                                                     <template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
                                                         <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.controls[month].value?formatAmount(itemForm.controls[month].value):null}}</td>
                                                         <td *ngIf="itemForm.editable&&month!='total'">
@@ -147,7 +147,7 @@
                                                     <td colspan="15" class="text-center">Chart of accounts not found</td>
                                                 </tr>
                                                 <tr *ngFor="let itemForm of budgetForm.controls.costOfGoodsSold.controls;let index=index;" (click)="editItem(index, itemForm,'costOfGoodsSold')">
-                                                    <td class="truncate" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.coaID.value)}}</td>
+                                                    <td class="truncate wrap" [ngClass]="'coa-child-'+coaLevels[itemForm.controls.coaID.value]" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.coaID.value)}}</td>
                                                     <td  *ngIf="itemForm.editable">{{getCOAName(itemForm.controls.coaID.value)}}</td>
                                                     <template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
                                                         <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.controls[month].value?formatAmount(itemForm.controls[month].value):null}}</td>
@@ -174,7 +174,7 @@
                                                     <td colspan="15" class="text-center">Chart of accounts not found</td>
                                                 </tr>
                                                 <tr *ngFor="let itemForm of budgetForm.controls.expenses.controls;let index=index;" (click)="editItem(index, itemForm,'expenses')">
-                                                    <td class="truncate" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.coaID.value)}}</td>
+                                                    <td class="truncate wrap" [ngClass]="'coa-child-'+coaLevels[itemForm.controls.coaID.value]" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.coaID.value)}}</td>
                                                     <td  *ngIf="itemForm.editable">{{getCOAName(itemForm.controls.coaID.value)}}</td>
                                                     <template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
                                                         <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.controls[month].value? formatAmount(itemForm.controls[month].value):null}}</td>
