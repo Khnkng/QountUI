@@ -74,6 +74,7 @@ export class BudgetComponent{
   budgetTableColumns: Array<any> = ['Name', 'Gross profit', 'Net Profit'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
   showDownloadIcon:string = "hidden";
+  coaLevels: any = {};
 
   constructor(private _fb: FormBuilder, private _budgetForm: BudgetForm, private switchBoard: SwitchBoard,private _router: Router,
               private budgetService: BudgetService, private toastService: ToastService, private loadingService:LoadingService,
@@ -106,16 +107,13 @@ export class BudgetComponent{
     this.coaService.chartOfAccounts(this.currentCompany)
       .subscribe(chartOfAccounts=> {
         chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
-        this.chartOfAccounts = chartOfAccounts;
-        this.revenueCOA = _.filter(chartOfAccounts, {'category': 'Revenue'});
-        _.sortBy(this.revenueCOA, ['name']);
-        this.expenseCOA =_.filter(chartOfAccounts, function(coa) {
-          return coa.category=='Expenses'&&coa.type!='costOfGoodsSold';
+        this.sortChartOfAccounts(chartOfAccounts);
+        this.revenueCOA = _.filter(this.chartOfAccounts, {'category': 'Revenue'});
+        this.expenseCOA =_.filter(this.chartOfAccounts, function(coa) {
+          return coa.category=='Expenses' && coa.type!='costOfGoodsSold';
         });
-        this.expenseCOA=_.sortBy(this.expenseCOA, ['name']);
         _.filter(chartOfAccounts, {'category': 'Expenses'});
-        this.cogsCOA = _.filter(chartOfAccounts, {'type': 'costOfGoodsSold'});
-        this.cogsCOA=_.sortBy(this.cogsCOA, ['name']);
+        this.cogsCOA = _.filter(this.chartOfAccounts, {'type': 'costOfGoodsSold'});
       }, error => {
 
       });
@@ -207,18 +205,24 @@ export class BudgetComponent{
     let base=this;
     this.budgetId=budget.id;
     let revenueItemsControl:any = this.budgetForm.controls['income'];
-    _.each(budget.budget.income, function(revenueItem){
-      base.incomeTotal=base.incomeTotal+revenueItem.total;
+    _.each(this.revenueCOA, function(item){
+      let revenueItem = _.find(budget.budget.income, {'coaID': item.id});
+      let itemTotal = revenueItem? revenueItem.total: 0;
+      base.incomeTotal=base.incomeTotal+ itemTotal;
       revenueItemsControl.controls.push(base._fb.group(base._budgetItemForm.getForm(revenueItem)));
     });
     let cogsItemsControl:any = this.budgetForm.controls['costOfGoodsSold'];
-    _.each(budget.budget.costOfGoodsSold, function(cogsItem){
-      base.cogsTotal=base.cogsTotal+cogsItem.total;
+    _.each(this.cogsCOA, function(item){
+      let cogsItem = _.find(budget.budget.costOfGoodsSold, {'coaID': item.id});
+      let itemTotal = cogsItem? cogsItem.total: 0;
+      base.cogsTotal=base.cogsTotal+ itemTotal;
       cogsItemsControl.controls.push(base._fb.group(base._budgetItemForm.getForm(cogsItem)));
     });
     let expenseItemsControl:any = this.budgetForm.controls['expenses'];
-    _.each(budget.budget.expenses, function(expenseItem){
-      base.expenseTotal=base.expenseTotal+expenseItem.total;
+    _.each(this.expenseCOA, function(item){
+      let expenseItem = _.find(budget.budget.expenses, {'coaID': item.id});
+      let itemTotal = expenseItem? expenseItem.total: 0;
+      base.expenseTotal=base.expenseTotal+ itemTotal;
       expenseItemsControl.controls.push(base._fb.group(base._budgetItemForm.getForm(expenseItem)));
     });
     this.selectedDimensions=budget.dimensions;
@@ -791,6 +795,44 @@ export class BudgetComponent{
         this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
       });
 
+  }
+
+  sortChartOfAccounts(coaList){
+    let base = this;
+    let parents = _.filter(coaList, function(coa){
+      return !coa.parentID || coa.subAccount == false;
+    });
+    _.each(parents, function(parent){
+      parent.level = 0;
+      base.coaLevels[parent.id] = 1;
+      base.chartOfAccounts.push(parent);
+      base.addChildren(coaList, parent);
+    });
+  }
+
+  addChildren(coaList, coa){
+    let base = this;
+    let children = this.getChildren(coaList, coa.id);
+    if(children.length == 0 && coa.subAccount){
+      return;
+    } else{
+      _.each(children, function(child){
+        child.level = coa.level+1;
+        base.coaLevels[child.id] = child.level+1;
+        base.chartOfAccounts.push(child);
+        base.addChildren(coaList, child);
+      });
+    }
+  }
+
+  getChildren(coaList, parentID){
+    let data = [];
+    _.each(coaList, function(child){
+      if(child.parentID == parentID){
+        data.push(child);
+      }
+    });
+    return data;
   }
 
 }
