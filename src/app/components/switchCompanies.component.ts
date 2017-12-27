@@ -167,6 +167,7 @@ export class SwitchCompanyComponent{
         this.updateCookie(company);
         this.numeralService.switchLocale(company.defaultCurrency);
         Session.setCompanyReportCurrency(company.reportCurrency);
+        Session.setCurrentCompanyCurrency(company.defaultCurrency);
         Session.setLockDate(company.lockDate);
         this.switchBoard.onSwitchCompany.next({});
         this.currentCompanyName = company.name;

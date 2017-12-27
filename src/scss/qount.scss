@@ -3575,6 +3575,27 @@ tbody{
   }
 }
 
+.coa-list-indent{
+  td.coa-child-2{
+    padding-left: 20px !important;
+  }
+  td.coa-child-3{
+    padding-left: 40px !important;
+  }
+  td.coa-child-4{
+    padding-left: 50px !important;
+  }
+  td.coa-child-5{
+    padding-left: 60px !important;
+  }
+  td.coa-child-6{
+    padding-left: 70px !important;
+  }
+  td.coa-child-7{
+    padding-left: 80px !important;
+  }
+}
+
 .ui-menu .ui-menu-item{
   text-align: left;
 }
@@ -4428,6 +4449,11 @@ select:-webkit-autofill:active {
   height: 430px;
 }
 
+.budget-table{
+  .wrap{
+    white-space: nowrap;
+  }
+}
 
 .budget-table tbody tr td .ion-edit {
   visibility: hidden;
