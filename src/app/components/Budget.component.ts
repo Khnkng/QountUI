@@ -802,6 +802,7 @@ export class BudgetComponent{
     let parents = _.filter(coaList, function(coa){
       return !coa.parentID || coa.subAccount == false;
     });
+    parents = _.sortBy(parents, ['name']);
     _.each(parents, function(parent){
       parent.level = 0;
       base.coaLevels[parent.id] = 1;
@@ -832,6 +833,7 @@ export class BudgetComponent{
         data.push(child);
       }
     });
+    data = _.sortBy(data, 'name');
     return data;
   }
 
