@@ -102,6 +102,7 @@ export class SwitchCompanyComponent{
       {"name": "owner", "title": "Owner"},
       {"name": "accountManager", "title": "Account Manager"},
       {"name": "defaultCurrency", "title": "Currency","visible": false},
+      {"name": "reportCurrency", "title": "Currency","visible": false},
       {"name": "fiscalStartDate", "title": "Fiscal Date","visible": false},
       {"name": "lockDate", "title": "Lock Date","visible": false},
       {"name": "actions", "title": "", "type": "html", "filterable": false}
@@ -126,6 +127,7 @@ export class SwitchCompanyComponent{
       row.companyType=company.companyType;
       row.accountManager=company.accountManager;
       row.defaultCurrency=company.defaultCurrency;
+      row.reportCurrency = company.reportCurrency;
       row.lockDate=company.lock_date;
       row.fiscalStartDate = company.fiscalStartDate;
       if(row.id != base.currentCompanyId){
@@ -166,7 +168,7 @@ export class SwitchCompanyComponent{
     Session.setFiscalStartDate(company.fiscalStartDate);
     this.updateCookie(company);
     this.numeralService.switchLocale(company.defaultCurrency);
-    Session.setCompanyReportCurrency(company.reportCurrency);
+    Session.setCompanyReportCurrency(company.reportCurrency || "");
     Session.setCurrentCompanyCurrency(company.defaultCurrency);
     Session.setLockDate(company.lockDate);
     this.switchBoard.onSwitchCompany.next({});
