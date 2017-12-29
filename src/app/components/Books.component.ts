@@ -739,7 +739,10 @@ export class BooksComponent{
         this.getBookBadges();
       }, error=>{
         this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
+        if(error&&JSON.parse(error))
+          this.toastService.pop(TOAST_TYPE.error, JSON.parse(error).message);
+        else
+        this.toastService.pop(TOAST_TYPE.error, "Failed to delete deposit");
       });
   }
   removeDeposit(row:any){
@@ -761,7 +764,10 @@ export class BooksComponent{
         this.getBookBadges();
       }, error=>{
         this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
+        if(error&&JSON.parse(error))
+          this.toastService.pop(TOAST_TYPE.error, JSON.parse(error).message);
+        else
+          this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
       });
   }
 
