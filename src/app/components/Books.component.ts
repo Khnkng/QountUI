@@ -126,12 +126,7 @@ export class BooksComponent{
     this.dateFormat = dateFormater.getFormat();
     this.serviceDateformat = dateFormater.getServiceDateformat();
     this.localeFortmat=CURRENCY_LOCALE_MAPPER[this.companyCurrency]?CURRENCY_LOCALE_MAPPER[this.companyCurrency]:'en-US';
-    let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
-    this.currentFiscalStart = moment([today.get('year'),fiscalStartDate.get('month'),1]);
-    if(today < fiscalStartDate){
-      this.currentFiscalStart = moment([today.get('year')-1,fiscalStartDate.get('month'),1]);
-    }
-    this.currentFiscalStart = this.currentFiscalStart.format('MM/DD/YYYY');
+    this.currentFiscalStart = moment().subtract(11, 'months').startOf('month').format("MM/DD/YYYY");
     this.asOfDate = moment().format('MM/DD/YYYY');
     this.reportRequest = {
       "basis":"accrual",
