@@ -64,13 +64,7 @@ export class CanvasComponent {
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.reportCurrency = Session.getCompanyReportCurrency()? Session.getCompanyReportCurrency(): this.companyCurrency;
         this.numeralService.switchLocale(this.reportCurrency);
-        let today = moment();
-        let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
-        this.currentFiscalStart = moment([today.get('year'),fiscalStartDate.get('month'),1]);
-        if(today < fiscalStartDate){
-            this.currentFiscalStart = moment([today.get('year')-1,fiscalStartDate.get('month'),1]);
-        }
-        this.currentFiscalStart = this.currentFiscalStart.format('MM/DD/YYYY');
+        this.currentFiscalStart = moment().subtract(11, 'months').startOf('month').format("MM/DD/YYYY");
         this.asOfDate = moment().format('MM/DD/YYYY');
         this.reportRequest = {
             "basis":"accrual",
