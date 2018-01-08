@@ -50,6 +50,8 @@ export class CanvasComponent {
     gpNpChartDataOptions: any;
     hasIndicatorData: boolean = false;
     indicatorChartOptions: any;
+    hasMonthlyExpenseData: boolean = false;
+    monthlyExpenseChartOptions: any;
 
     detailedReportChartOptions:any;
     chartColors:Array<any> = ['#44B6E8','#18457B','#00B1A9','#F06459','#22B473','#384986','#4554A4','#808CC5'];
@@ -99,6 +101,99 @@ export class CanvasComponent {
         this.getCashBurnData();
         this.getAgingByCustomer();
         this.getAgingByVendor();
+        this.getMonthlyExpensesGraphData();
+    }
+
+    getMonthlyExpensesGraphData(){
+      let base = this;
+      let report = _.cloneDeep(this.reportRequest);
+      report.type = 'incomeStatement';
+      report.metricsType = "monthlyExpenseTrend";
+      this.reportService.generateMetricReport(report, this.currentCompanyId).subscribe(metricData => {
+        this.hasMonthlyExpenseData = true;
+        this.monthlyExpenseChartOptions = {
+          colors: this.chartColors,
+          chart: {
+            zoomType: 'xy',
+            style: {
+              fontFamily: 'NiveauGroteskRegular'
+            }
+          },
+          title: {
+            text: 'Monthly Expense Trend',
+            align:'left',
+            style: {
+              color: '#878787',
+              fontFamily: 'NiveauGroteskLight',
+              fontSize:'24'
+            }
+          },
+          credits: {
+            enabled: false
+          },
+          legend: {
+            enabled: false
+          },
+          xAxis: [{
+            categories: metricData.categories,
+            crosshair: true,
+            labels: {
+              style: {
+                fontSize:'13px',
+                fontWeight:'bold',
+                color:'#878787',
+                fill:'#878787'
+              }
+            }
+          }],
+          yAxis: [{ // Primary yAxis
+            labels: {
+              formatter: function(){
+                return base.formatAmount(this.value);
+              },
+              style: {
+                fontSize:'13px',
+                color:'#878787',
+                fill:'#878787'
+              }
+
+            },
+            title: {
+              text: '',
+              style: {
+                color: Highcharts.getOptions().colors[2]
+              }
+            },
+          }],
+          tooltip: {
+            shared: true,
+            pointFormatter: function(){
+              return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
+            }
+          },
+          series: base.getMonthlyExpenseData(metricData)
+        };
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+    }
+
+    getMonthlyExpenseData(data){
+      let result = [];
+      _.each(data.coas, function(coa){
+        let coaData = data[coa] || {};
+        let coaDataArray = [];
+        _.each(data.categories, function(category){
+          coaDataArray.push(coaData[category]);
+        });
+        result.push({
+          name: coa,
+          type: 'area',
+          data: coaDataArray
+        });
+      });
+      return result;
     }
 
   getIndicatorGraphData(){
@@ -1037,6 +1132,9 @@ export class CanvasComponent {
             this.detailedReportChartOptions.legend = {enabled: true};
         } else if (type == 'indicatorChart') {
           this.detailedReportChartOptions = this.indicatorChartOptions;
+          this.detailedReportChartOptions.legend = {enabled: true};
+        } else if (type == 'monthlyExpenseChart') {
+          this.detailedReportChartOptions = this.monthlyExpenseChartOptions;
           this.detailedReportChartOptions.legend = {enabled: true};
         }
     }

@@ -133,16 +133,26 @@
                         </div>
                     </div>
 
-                    <div class="row expanded">
-                        <div class="column medium-12 expanded charts-main">
-                            <div *ngIf="hasIndicatorData" style="min-width: 300px;height:400px;">
-                                <high-chart #hChart2=highChart [options]="indicatorChartOptions"></high-chart>
-                            </div>
+                    <div class="row expanded books-dashboard-top-charts">
+                        <div class="column medium-6 expanded charts-main" style="border-right:1px solid #e1e1e1;">
+                          <div *ngIf="hasIndicatorData" style="min-width: 300px;height:400px;">
+                            <high-chart #hChart2=highChart [options]="indicatorChartOptions"></high-chart>
+                          </div>
+                        </div>
+                        <div class="column medium-6 expanded charts-main">
+                          <div *ngIf="hasMonthlyExpenseData" style="min-width: 300px;height:400px;">
+                            <high-chart #hChart2=highChart [options]="monthlyExpenseChartOptions"></high-chart>
+                          </div>
                         </div>
                     </div>
                     <div class="row chart-margin">
-                        <div class="column medium-12 detailed-chart-icons">
+                        <div class="column medium-6 detailed-chart-icons">
                             <span *ngIf="hasIndicatorData" class="text-right float-right" (click)="expandChart('indicatorChart')">
+                                <i class="icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i>
+                            </span>
+                        </div>
+                        <div class="column medium-6 detailed-chart-icons">
+                            <span *ngIf="hasMonthlyExpenseData" class="text-right float-right" (click)="expandChart('monthlyExpenseChart')">
                                 <i class="icon ion-arrow-expand" [ngClass]="detailedChartIcons"></i>
                             </span>
                         </div>
