@@ -889,7 +889,7 @@ export class ExpenseComponent{
         row[key] = pyment[key];
         if(key == 'amount'){
           let amount = parseFloat(pyment[key]);
-          row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          row[key] = amount.toLocaleString(base.localeFormat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
       });
       row['actions'] = "<a class='action' data-action='navigatePayment'><span class='icon badge je-badge'>P</span></a>"
