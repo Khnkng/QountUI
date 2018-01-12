@@ -165,6 +165,7 @@ export class CanvasComponent {
               }
             },
           }],
+          plotOptions: DEFAULT_PLOT_OPTIONS,
           tooltip: {
             shared: true,
             pointFormatter: function(){
