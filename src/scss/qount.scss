@@ -5242,3 +5242,40 @@ tbody tr:nth-child(even){
     }
   }
 }
+
+.medcillary-footable {
+  .footable .footable-filtering {
+    left: 0px !important;
+    right: auto;
+  }
+
+  .footable-paging > td {
+    text-align: left !important;
+    position: fixed;
+  }
+
+  i.recon-status{
+    margin-left: 15px;
+    font-size: 14px;
+  }
+}
+
+.medcillary {
+  .add-share-adjust {
+    width: 60%;
+    top: 33px;
+    & i {
+      top:inherit;
+    }
+  }
+}
+
+.applyContainerWidth {
+  overflow: auto;
+  .medcillary-footable div {
+    width: max-content;
+  }
+  .export-dropdown{
+    width: 180px !important;
+  }
+}
