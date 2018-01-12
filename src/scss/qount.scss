@@ -4950,9 +4950,12 @@ div.footable-loader {
     .attachment {
       padding: 15px 20px 15px 0px;
       margin-left:15px;
-
+      .icon {
+        visibility: hidden;
+      }
       &:hover {
         .icon {
+          visibility: visible;
           color: #3C628C;
         }
       }
