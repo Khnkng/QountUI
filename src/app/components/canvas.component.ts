@@ -182,6 +182,7 @@ export class CanvasComponent {
 
     getMonthlyExpenseData(data){
       let result = [];
+      let colorArray = ["#44B6E8", "#00B3A9", "#F06459", "#18457B", "#808CC5"];
       _.each(data.coas, function(coa){
         let coaData = data[coa] || {};
         let coaDataArray = [];
@@ -191,7 +192,8 @@ export class CanvasComponent {
         result.push({
           name: coa,
           type: 'area',
-          data: coaDataArray
+          data: coaDataArray,
+          fillColor: colorArray[result.length]
         });
       });
       return result;
