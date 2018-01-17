@@ -3,6 +3,9 @@
         <section class="flyout-placeholder categorize-flyout flyout-table-alignment">
             <div class="row">
                 <div class="column large-12 medium-12 small-12 foo-container">
+                  <div class="add-share-buttons text-right">
+                    <span class="pointer"><i class="icon ion-clipboard"></i></span>
+                  </div>
                     <foo-table class="bighalf-footable" *ngIf="hasEntries" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)">
                     </foo-table>
                 </div>
