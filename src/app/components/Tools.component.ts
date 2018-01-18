@@ -36,12 +36,16 @@ export class ToolsComponent {
   ruleCount:number = 0;
   employeesCount:number = 0;
   budgetsCount:number=0;
+  showFarmForce: boolean = false;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private badgeService: BadgeService,private titleService:pageTitleService) {
     this.titleService.setPageTitle("TOOLS");
     let currentCompany = Session.getCurrentCompany();
     if(currentCompany){
       this.refreshCompany({id: currentCompany});
+      if(['9987b686-9352-4f32-9958-a8cec3d74cf9', '2b5cf392-9153-4182-8e2a-b97c4ece766c'].indexOf(currentCompany) != -1){
+        this.showFarmForce = true;
+      }
     }
   }
 
@@ -189,6 +193,12 @@ export class ToolsComponent {
         let link = ['late-fee'];
         this._router.navigate(link);
       }
+      break;
+      case 'socialImpact': {
+        let link = ['reports','SocialImpactDataEntry'];
+        this._router.navigate(link);
+      }
+        break;
     }
   }
 }
