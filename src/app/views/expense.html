@@ -254,7 +254,7 @@
   <div class="sidenav customization-panel" [ngClass]="mappingFlyoutCSS" foundation>
     <div class="row chart-of-accounts" foundation>
       <div class="column large-12 medium-12 small-12 foo-container">
-        <foo-table #fooTableDir="fooTable" class="bighalf-footable search-right" *ngIf="hasMappings" [data]="tableData" [options]="tableOptions" (onRowSelect)="handleSelect($event)"></foo-table>
+        <foo-table #fooTableDir="fooTable" (onRowAction)="handleRedirect($event)" class="bighalf-footable search-right" *ngIf="hasMappings" [data]="tableData" [options]="tableOptions" (onRowSelect)="handleSelect($event)"></foo-table>
       </div>
     </div>
     <div class="row" *ngIf="hasMappings">

@@ -4844,9 +4844,10 @@ div.footable-loader {
     border-radius: 0 0 3px 3px;
   }
 
-
-
-
+  .post-dateTime-dropdown {
+    padding: 5px !important;
+    height: inherit !important;
+  }
 
   .badge-dropdown {
     .dropdown-pane {
@@ -4948,29 +4949,21 @@ div.footable-loader {
     padding-left:30px;
 
     .attachment {
-      border:1px solid #676c75;
-      border-radius: 10px;
       padding: 15px 20px 15px 0px;
       margin-left:15px;
-      height: 75px;
-
-      .material-icons {
-        font-size: 30px;
-        position: relative;
-        top:5px;
+      .icon {
+        visibility: hidden;
       }
-
+      &:hover {
+        .icon {
+          visibility: visible;
+          color: #3C628C;
+        }
+      }
       .attachment_name {
-        display: block;
-        display: -webkit-box;
-        max-width: 400px;
-        height: 35px;
-        margin: 0 auto;
-        line-height: 1.2;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }
@@ -5167,28 +5160,14 @@ div.footable-loader {
   }
 
   .postAttachment {
-    width:200px;
-    border:1px solid #e2e2e2;
-    -webkit-border-radius: 20px;
-    -moz-border-radius: 20px;
-    border-radius: 20px;
-    background-color: rgb(224, 224, 224);
-
     .attachment_name {
-      width: 190px;
-      height: 20px;
       overflow: hidden;
       text-overflow: ellipsis;
       display: inherit;
       white-space: nowrap;
     }
-
-    i {
-      color: #FFFFFF;
-
-      &:hover {
-        color : #3C628C;
-      }
+    &:hover {
+      color : #3C628C;
     }
   }
 
@@ -5266,4 +5245,45 @@ tbody tr:nth-child(even){
       min-width: 100px;
     }
   }
+}
+
+.medcillary-footable {
+  .footable .footable-filtering {
+    left: 0px !important;
+    right: auto;
+  }
+
+  .footable-paging > td {
+    text-align: left !important;
+    position: fixed;
+  }
+
+  i.recon-status{
+    margin-left: 15px;
+    font-size: 14px;
+  }
+}
+
+.medcillary {
+  .add-share-adjust {
+    width: 60%;
+    top: 33px;
+    & i {
+      top:inherit;
+    }
+  }
+}
+
+.applyContainerWidth {
+  overflow: auto;
+  .medcillary-footable div {
+    width: max-content;
+  }
+  .export-dropdown{
+    width: 180px !important;
+  }
+}
+
+.footable-wrapper{
+  width: 100% !important;
 }
