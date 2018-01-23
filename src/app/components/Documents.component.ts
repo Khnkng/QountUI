@@ -38,7 +38,8 @@ export class DocumentsComponent {
       {"name": "Refunds", "folder_display_name": "Rf", "color": "#04B2AB", "linkAddr": "refunds"},
       {"name": "Timesheets", "folder_display_name": "Ts", "color": "#4655A5", "linkAddr": "timesheets"},
       {"name": "Deposit", "folder_display_name": "Dp", "color": "#AA4540", "linkAddr": "deposit"},
-      {"name": "Others", "folder_display_name": "Oth", "color": "#038256", "linkAddr": "others"}
+      {"name": "Others", "folder_display_name": "Oth", "color": "#038256", "linkAddr": "others"},
+      {"name": "Krover", "folder_display_name": "Kr", "color": "#F1645A ", "linkAddr": "krover"}
     ];
 
     constructor(private _router: Router, private _route: ActivatedRoute,
