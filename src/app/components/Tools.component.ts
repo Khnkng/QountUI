@@ -36,15 +36,15 @@ export class ToolsComponent {
   ruleCount:number = 0;
   employeesCount:number = 0;
   budgetsCount:number=0;
-  showFarmForce: boolean = false;
+  showSocialImpact: boolean = false;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private badgeService: BadgeService,private titleService:pageTitleService) {
     this.titleService.setPageTitle("TOOLS");
     let currentCompany = Session.getCurrentCompany();
     if(currentCompany){
       this.refreshCompany({id: currentCompany});
-      if(['9987b686-9352-4f32-9958-a8cec3d74cf9', '2b5cf392-9153-4182-8e2a-b97c4ece766c'].indexOf(currentCompany) != -1){
-        this.showFarmForce = true;
+      if(['9987b686-9352-4f32-9958-a8cec3d74cf9', '22502de2-3c61-4e6c-9d84-37dd631cc3f4', '2b5cf392-9153-4182-8e2a-b97c4ece766c', '6e61b1fb-e8b2-40ee-8502-2dc756f8aa52', '72f9ea00-488a-4775-b657-553860341fe2'].indexOf(companyID) != -1){
+        this.showSocialImpact = true;
       }
     }
   }
