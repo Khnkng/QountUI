@@ -10,7 +10,7 @@ import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {Session} from "qCommon/app/services/Session";
 import {StateService} from "qCommon/app/services/StateService";
 import {Observable} from "rxjs/Rx";
-import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {TOAST_TYPE, DEFAULT_PLOT_OPTIONS} from "qCommon/app/constants/Qount.constants";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {InvoicesService} from "invoicesUI/app/services/Invoices.service";
@@ -32,6 +32,7 @@ export class CanvasComponent {
     asOfDate: string;
     reportRequest: any;
     companyCurrency: string;
+    reportCurrency: string;
     metrics:any = {};
     routeSubscribe:any;
 
@@ -47,6 +48,10 @@ export class CanvasComponent {
     arApCashBalanceChartOptions: any;
     hasGPNPData: boolean = false;
     gpNpChartDataOptions: any;
+    hasIndicatorData: boolean = false;
+    indicatorChartOptions: any;
+    hasMonthlyExpenseData: boolean = false;
+    monthlyExpenseChartOptions: any;
 
     detailedReportChartOptions:any;
     chartColors:Array<any> = ['#44B6E8','#18457B','#00B1A9','#F06459','#22B473','#384986','#4554A4','#808CC5'];
@@ -59,13 +64,9 @@ export class CanvasComponent {
         this.titleService.setPageTitle("Dashboard");
         this.currentCompanyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
-        let today = moment();
-        let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
-        this.currentFiscalStart = moment([today.get('year'),fiscalStartDate.get('month'),1]);
-        if(today < fiscalStartDate){
-            this.currentFiscalStart = moment([today.get('year')-1,fiscalStartDate.get('month'),1]);
-        }
-        this.currentFiscalStart = this.currentFiscalStart.format('MM/DD/YYYY');
+        this.reportCurrency = Session.getCompanyReportCurrency()? Session.getCompanyReportCurrency(): this.companyCurrency;
+        this.numeralService.switchLocale(this.reportCurrency);
+        this.currentFiscalStart = moment().subtract(11, 'months').startOf('month').format("MM/DD/YYYY");
         this.asOfDate = moment().format('MM/DD/YYYY');
         this.reportRequest = {
             "basis":"accrual",
@@ -86,16 +87,240 @@ export class CanvasComponent {
         });
     }
 
+    ngOnDestroy() {
+      this.numeralService.switchLocale(this.companyCurrency);
+    }
+
     getData(){
         this.loadingService.triggerLoadingEvent(true);
         this.getBoxData();
+        this.getIndicatorGraphData();
         this.getARAPCashBalanceData();
         this.getProfitTrendData();
         this.getGrossAndNetProfitData();
         this.getCashBurnData();
         this.getAgingByCustomer();
         this.getAgingByVendor();
+        this.getMonthlyExpensesGraphData();
     }
+
+    getMonthlyExpensesGraphData(){
+      let base = this;
+      let report = _.cloneDeep(this.reportRequest);
+      report.type = 'incomeStatement';
+      report.metricsType = "monthlyExpenseTrend";
+      this.reportService.generateMetricReport(report, this.currentCompanyId).subscribe(metricData => {
+        this.hasMonthlyExpenseData = true;
+        this.monthlyExpenseChartOptions = {
+          colors: this.chartColors,
+          chart: {
+            zoomType: 'xy',
+            style: {
+              fontFamily: 'NiveauGroteskRegular'
+            }
+          },
+          title: {
+            text: 'Monthly Expense Trend',
+            align:'left',
+            style: {
+              color: '#878787',
+              fontFamily: 'NiveauGroteskLight',
+              fontSize:'24'
+            }
+          },
+          credits: {
+            enabled: false
+          },
+          legend: {
+            enabled: false
+          },
+          xAxis: [{
+            categories: metricData.categories,
+            crosshair: true,
+            labels: {
+              style: {
+                fontSize:'13px',
+                fontWeight:'bold',
+                color:'#878787',
+                fill:'#878787'
+              }
+            }
+          }],
+          yAxis: [{ // Primary yAxis
+            labels: {
+              formatter: function(){
+                return base.formatAmount(this.value);
+              },
+              style: {
+                fontSize:'13px',
+                color:'#878787',
+                fill:'#878787'
+              }
+
+            },
+            title: {
+              text: '',
+              style: {
+                color: Highcharts.getOptions().colors[2]
+              }
+            },
+          }],
+          plotOptions: DEFAULT_PLOT_OPTIONS,
+          tooltip: {
+            shared: true,
+            pointFormatter: function(){
+              return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
+            }
+          },
+          series: base.getMonthlyExpenseData(metricData)
+        };
+        this.loadingService.triggerLoadingEvent(false);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+      });
+    }
+
+    getMonthlyExpenseData(data){
+      let result = [];
+      let colorArray = ["#44B6E8", "#00B3A9", "#F06459", "#18457B", "#808CC5"];
+      _.each(data.coas, function(coa){
+        let coaData = data[coa] || {};
+        let coaDataArray = [];
+        _.each(data.categories, function(category){
+          coaDataArray.push(coaData[category]);
+        });
+        result.push({
+          name: coa,
+          type: 'area',
+          data: coaDataArray,
+          fillColor: colorArray[result.length]
+        });
+      });
+      return result;
+    }
+
+  getIndicatorGraphData(){
+    let base = this;
+    let report = _.cloneDeep(this.reportRequest);
+    report.type = "incomeStatement";
+    report.metricsType = "indicatorComparision";
+    this.reportService.generateMetricReport(report, this.currentCompanyId).subscribe(metricData => {
+      if(!metricData){
+        metricData = {
+          categories: [],
+          actual: [],
+          target: []
+        };
+      }
+      let catNames = [];
+      _.each(metricData.categories, function(category){
+        catNames.push(base.getCategoryName(category));
+      });
+      this.hasIndicatorData = true;
+      this.indicatorChartOptions = {
+        colors: this.chartColors,
+        chart: {
+          zoomType: 'xy',
+          style: {
+            fontFamily: 'NiveauGroteskRegular'
+          }
+        },
+        title: {
+          text: "KPI's Actual Vs Budget",
+          align:'left',
+          style: {
+            color: '#878787',
+            fontFamily: 'NiveauGroteskLight',
+            fontSize:'24'
+          }
+        },
+        credits: {
+          enabled: false
+        },
+        legend: {
+          enabled: false
+        },
+        xAxis: [{
+          categories: catNames,
+          crosshair: true,
+          labels: {
+            style: {
+              fontSize:'13px',
+              fontWeight:'bold',
+              color:'#878787',
+              fill:'#878787'
+            }
+          }
+        }],
+        yAxis: [{
+          labels: {
+            formatter: function(){
+              return base.formatAmount(this.value);
+            },
+            style: {
+              fontSize:'13px',
+              color:'#878787',
+              fill:'#878787'
+            }
+          },
+          title: {
+            text: '',
+            style: {
+              color: Highcharts.getOptions().colors[1]
+            }
+          }
+        }],
+        tooltip: {
+          shared: true,
+          pointFormatter: function(){
+            return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
+          }
+        },
+        plotOptions: DEFAULT_PLOT_OPTIONS,
+        series: [{
+          name: 'Actual',
+          type: 'column',
+          data: this.getDataArray(metricData.actual, metricData.categories)
+        }, {
+          name: 'Budget',
+          type: 'column',
+          data: this.getDataArray(metricData.target, metricData.categories),
+          marker: {
+            enabled: false
+          },
+          dashStyle: 'shortdot',
+          color:'#00B1A9'
+        }]
+      };
+
+      //this.exportHighchartData(this.indicatorChartOptions, "Revenue");
+
+      this.loadingService.triggerLoadingEvent(false);
+    }, error => {
+      this.loadingService.triggerLoadingEvent(false);
+    });
+  }
+
+  getCategoryName(category){
+    if(category == 'revenue'){
+      return "Revenue";
+    } else if(category == 'cogs'){
+      return "Cost Of Goods Sold";
+    } else if(category == 'grossProfit'){
+      return "Gross Profit";
+    } else if(category == 'ebitda'){
+      return "EBITDA";
+    } else if(category == 'ebit'){
+      return "EBIT";
+    } else if(category == 'pbit'){
+      return "PBIT";
+    } else if(category == 'opex'){
+      return "Opex";
+    } else if(category == 'netProfit'){
+      return "Net Profit";
+    }
+    return category;
+  }
 
     getBoxData(){
         let base = this;
@@ -242,6 +467,7 @@ export class CanvasComponent {
                         return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
                     }
                 },
+                plotOptions: DEFAULT_PLOT_OPTIONS,
                 series: [{
                     name: 'Acc. Receivable',
                     type: 'column',
@@ -368,6 +594,7 @@ export class CanvasComponent {
                         return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
                     }
                 },
+                plotOptions: DEFAULT_PLOT_OPTIONS,
                 series: [{
                     name: 'Income',
                     type: 'column',
@@ -494,6 +721,7 @@ export class CanvasComponent {
                         return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: <b>'+base.formatAmount(this.y)+'</b><br/>'
                     }
                 },
+                plotOptions: DEFAULT_PLOT_OPTIONS,
                 series: [{
                     name: 'Gross Profit',
                     type: 'column',
@@ -614,6 +842,7 @@ export class CanvasComponent {
                     },
                     opposite: true
                 }],
+                plotOptions: DEFAULT_PLOT_OPTIONS,
                 series: [{
                     name: 'Cash Burn',
                     type: 'line',
@@ -684,7 +913,9 @@ export class CanvasComponent {
                     },
                     tooltip: {
                         headerFormat: '<b>{point.x}</b><br/>',
-                        pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y:,.2f}</span><br/>',
+                        pointFormatter: function(){
+                          return '<span style="color:'+this.series.color+'">'+this.series.name+': '+base.formatAmount(this.y)+'</span><br/>'
+                        },
                         shared: true
                     },
                     yAxis: {
@@ -729,7 +960,7 @@ export class CanvasComponent {
                             stacking: 'normal',
                             dataLabels: {
                                 enabled: false,
-                                format: '${y}',
+                                format: '{y}',
                                 fontSize:'13px',
                                 color:'#878787',
                                 fill:'#878787',
@@ -810,7 +1041,9 @@ export class CanvasComponent {
                 },
                 tooltip: {
                     headerFormat: '<b>{point.x}</b><br/>',
-                    pointFormat: '<span style="color:{series.color}">{series.name}: ${point.y:,.2f}</span><br/>',
+                    pointFormatter: function(){
+                      return '<span style="color:'+this.series.color+'">'+this.series.name+': '+base.formatAmount(this.y)+'</span><br/>'
+                    },
                     shared: true
                 },
                 yAxis: {
@@ -855,7 +1088,7 @@ export class CanvasComponent {
                         stacking: 'normal',
                         dataLabels: {
                             enabled: false,
-                            format: '${y}',
+                            format: '{y}',
                             fontSize:'13px',
                             color:'#878787',
                             fill:'#878787',
@@ -900,6 +1133,12 @@ export class CanvasComponent {
         } else if (type == 'grossAndNetProfit') {
             this.detailedReportChartOptions = this.gpNpChartDataOptions;
             this.detailedReportChartOptions.legend = {enabled: true};
+        } else if (type == 'indicatorChart') {
+          this.detailedReportChartOptions = this.indicatorChartOptions;
+          this.detailedReportChartOptions.legend = {enabled: true};
+        } else if (type == 'monthlyExpenseChart') {
+          this.detailedReportChartOptions = this.monthlyExpenseChartOptions;
+          this.detailedReportChartOptions.legend = {enabled: true};
         }
     }
 

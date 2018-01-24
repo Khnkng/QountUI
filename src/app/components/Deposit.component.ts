@@ -22,6 +22,7 @@ import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
+import {State} from "qCommon/app/models/State";
 
 declare let jQuery:any;
 declare let _:any;
@@ -69,7 +70,7 @@ export class DepositComponent{
 
     /*mapping changes*/
     mappingFlyoutCSS:any;
-     tableColumns:Array<string> = [ 'id', 'amountPaid', 'paymentDate','customerName'];
+     tableColumns:Array<string> = [ 'id', 'amountPaid', 'paymentDate','customerName','mapping'];
      mappings = [];
      hasMappings: boolean = false;
      tableData:any = {};
@@ -78,12 +79,20 @@ export class DepositComponent{
      selectedMappingID:string;
      expenseType:string;
      bankAccountID:string;
+     isMappingPrevious:boolean;
 
     @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
     @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
     @ViewChild("editEntityComboBoxDir") editEntityComboBox: ComboBox;
     @ViewChild("editInvoiceComboBoxDir") editInvoiceComboBox: ComboBox;
     @ViewChild('list') el:ElementRef;
+
+    @ViewChild('depositsMapping') mappingelement:ElementRef;
+    selectedRows:Array<any> = [];
+    depositData:any;
+    isMappingsModified:boolean;
+    vendorList:Array<any>=[];
+    customersList:Array<any>=[];
 
 
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _depositForm: DepositsForm,
@@ -95,6 +104,7 @@ export class DepositComponent{
         this.currentCompanyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
         this.localeFormat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
+        this.loadEntityData();
         this.serviceDateformat = dateFormater.getServiceDateformat();
         this.routeSub = this._route.params.subscribe(params => {
             this.depositID=params['depositID'];
@@ -103,13 +113,7 @@ export class DepositComponent{
                 this.defaultDate=moment(new Date()).format(this.dateFormat);
             }
         });
-        this.accountsService.financialAccounts(this.currentCompanyId)
-            .subscribe(accounts=> {
-                this.accounts = accounts.accounts;
-                this.loaddeposit();
-            }, error => {
-
-            });
+        this.loadAllServices();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
         this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => {
             if(this.itemActive){
@@ -120,8 +124,41 @@ export class DepositComponent{
                 this.showDepositsPage()
             }
         });
-    }
+      let state = this.stateService.getPrevState();
+      if(state && state.key == 'showMappingPage'){
+        this.isMappingPrevious=true;
+        this.gotoPreviousState();
+      }else {
+        this.accountsService.financialAccounts(this.currentCompanyId)
+          .subscribe(accounts=> {
+            this.accounts = accounts.accounts;
+            this.loaddeposit();
+          }, error => {
 
+          });
+      }
+    }
+  gotoPreviousState(){
+    let base=this;
+    if(this.newDeposit){
+      this.titleService.setPageTitle("Create Deposit");
+    }else {
+      this.titleService.setPageTitle("Update Deposit");
+    }
+    let prevState = this.stateService.getPrevState();
+    this.stateService.pop();
+      let data = prevState.data || [];
+      if(data){
+        this.accounts=data.bankAccounts;
+        this.selectedRows=data.selectedRows;
+        this.bankAccountID=data.depositdata.bank_account_id;
+        data.depositdata.date=this.dateFormater.formatDate(data.depositdata.date,this.dateFormat,this.serviceDateformat);
+        setTimeout(function(){
+          base.processDeposits(data.depositdata);
+          base.showMappingPage();
+        },200)
+    }
+  }
 
     showDepositsPage(bankID?){
         if(this.stayFlyout){
@@ -137,6 +174,7 @@ export class DepositComponent{
             this.setDueDate(this.defaultDate);
             this.selectedEntityID=null;
             this.setDefaultDepositType();
+            this.loadEntities('other');
         }else {
             let prevState = this.stateService.getPrevState();
             if(prevState){
@@ -191,6 +229,7 @@ export class DepositComponent{
         let data = this._depositLineForm.getData(this.editItemForm);
         if(entity && entity.id){
             data.entity_id = entity.id;
+            data.entity_type = entity.entityType;
         }else if(!entity||entity=='--None--'){
             data.entity_id='--None--';
         }
@@ -234,6 +273,7 @@ export class DepositComponent{
 
     processDeposits(deposits){
         let base = this;
+        this.depositData=deposits;
         let itemsControl:any = this.depositForm.controls['payments'];
         this.selectedMappingID=deposits.mapping_id;
         deposits.date = this.dateFormater.formatDate(deposits.date,this.serviceDateformat,this.dateFormat);
@@ -246,6 +286,9 @@ export class DepositComponent{
         setTimeout(function(){
             base.accountComboBox.setValue(account, 'name');
         });
+        if(deposits.payments.length>0&&deposits.payments[0].entity_id){
+          this.selectedEntityID=deposits.payments[0].entity_id;
+        }
         this._depositForm.updateForm(this.depositForm, deposits);
         this.updateLineTotal();
         this.loadingService.triggerLoadingEvent(false);
@@ -437,6 +480,7 @@ export class DepositComponent{
         itemControl.controls['chart_of_account_id'].patchValue(data.chart_of_account_id);
         itemControl.controls['entity_id'].patchValue(data.entity_id);
         itemControl.controls['invoice_id'].patchValue(data.invoice_id);
+        itemControl.controls['entity_type'].patchValue(data.entity_type);
         itemControl.controls['notes'].patchValue(data.notes);
         itemForm.editable = !itemForm.editable;
     }
@@ -461,6 +505,7 @@ export class DepositComponent{
         if(entity && entity.id){
             let data = this._depositLineForm.getData(itemForm);
             data.entity_id= entity.id;
+            data.entity_type=entity.entityType;
             this._depositLineForm.updateForm(itemForm, data);
             this.selectedEntityID= entity.id;
         } else if(!entity || entity=='--None--'){
@@ -578,10 +623,17 @@ export class DepositComponent{
         return data;
     }
 
+  getDepositData(){
+    let data = this._depositForm.getData(this.depositForm);
+    data.payments=this.getDepositLineData(this.depositForm);
+    data.amount=this.roundOffValue(data.amount);
+    this.updateDepositLinesData(data);
+    return data;
+  }
+
     submit($event){
         $event && $event.preventDefault();
         let data = this._depositForm.getData(this.depositForm);
-       // data.payments = this.getDepositItemData(this.depositForm.controls['payments']);
             data.payments=this.getDepositLineData(this.depositForm);
         data.amount=this.roundOffValue(data.amount);
         this.updateDepositLinesData(data);
@@ -601,6 +653,9 @@ export class DepositComponent{
                     console.log("deposit creation failed", error);
                 });
         } else{
+            if(!this.isMappingsModified){
+              data.mapping_ids=this.depositData.mapping_ids;
+            }
             this.tempData=data;
             this.checkLockDate();
         }
@@ -641,7 +696,6 @@ export class DepositComponent{
 
 
     initialize(){
-        let state;
         let _form = this._depositForm.getForm();
         _form['payments'] = new FormArray([]); //this.depositItemsArray;
         this.depositForm = this._fb.group(_form);
@@ -649,37 +703,41 @@ export class DepositComponent{
         let _itemForm = this._depositLineForm.getForm();
         this.newItemForm = this._fb.group(_itemForm);
 
-        if(this.newDeposit){
+        if(this.newDeposit&&!this.isMappingPrevious){
             this.addDefaultLine(2);
         }
-        this.currentCompanyId = Session.getCurrentCompany();
-        this.loadingService.triggerLoadingEvent(true);
-        this.dimensionService.dimensions(this.currentCompanyId)
-            .subscribe(dimensions =>{
-                this.dimensions = dimensions;
-            }, error => {
-
-            });
-        this.coaService.chartOfAccounts(this.currentCompanyId)
-            .subscribe(chartOfAccounts=> {
-                chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
-                _.forEach(chartOfAccounts, function(coa) {
-                    coa['displayName']=coa.number+' - '+coa.name;
-                });
-                this.chartOfAccounts = chartOfAccounts;
-            }, error => {
-
-            });
-        this.invoiceService.invoices(state)
-            .subscribe(invoices=> {
-                this.invoices = invoices.invoices || [];
-            }, error => {
-
-            });
         if(this.stayFlyout){
             this.loadingService.triggerLoadingEvent(false);
             this.stayFlyout = false;
         }
+    }
+
+    loadAllServices(){
+      let state;
+      this.currentCompanyId = Session.getCurrentCompany();
+      this.loadingService.triggerLoadingEvent(true);
+      this.dimensionService.dimensions(this.currentCompanyId)
+        .subscribe(dimensions =>{
+          this.dimensions = dimensions;
+        }, error => {
+
+        });
+      this.coaService.chartOfAccounts(this.currentCompanyId)
+        .subscribe(chartOfAccounts=> {
+          chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
+          _.forEach(chartOfAccounts, function(coa) {
+            coa['displayName']=coa.number+' - '+coa.name;
+          });
+          this.chartOfAccounts = chartOfAccounts;
+        }, error => {
+
+        });
+      this.invoiceService.invoices(state)
+        .subscribe(invoices=> {
+          this.invoices = invoices.invoices || [];
+        }, error => {
+
+        });
     }
 
     selectDepositType(type){
@@ -690,26 +748,36 @@ export class DepositComponent{
         });
     }
 
+  loadEntityData(){
+    this.vendorService.vendors(this.currentCompanyId)
+      .subscribe(vendors=> {
+        _.forEach(vendors, function(vendor) {
+          vendor['entityType']="vendor";
+        });
+        this.vendorList  = vendors;
+      }, error => {
+      });
+
+    this.customersService.customers(this.currentCompanyId)
+      .subscribe(customers=> {
+        _.forEach(customers, function(customer) {
+          customer['id']=customer.customer_id;
+          customer['name']=customer.customer_name;
+          customer['entityType']="customer";
+        });
+        this.customersList  = customers;
+      }, error => {
+      });
+  }
+
     loadEntities(type){
         this.entities=[];
-        // this.expenseType=type;
         if(type=='expenseRefund'){
-            this.vendorService.vendors(this.currentCompanyId)
-                .subscribe(vendors=> {
-                    this.entities  = vendors;
-                }, error => {
-                });
+          this.entities=this.vendorList;
         }else if (type=='invoice'){
-            this.customersService.customers(this.currentCompanyId)
-                .subscribe(customers=> {
-                    _.forEach(customers, function(customer) {
-                        customer['id']=customer.customer_id;
-                        customer['name']=customer.customer_name;
-                    });
-                    this.entities  = customers;
-                }, error => {
-                });
+          this.entities=this.customersList;
         }else if (type=='other'){
+          this.entities=this.entities.concat(this.vendorList).concat(this.customersList);
         }
     }
 
@@ -772,6 +840,7 @@ export class DepositComponent{
         return data;
     }
     loaddeposit(){
+      let base=this;
         if(!this.newDeposit){
             this.titleService.setPageTitle("UPDATE DEPOSIT");
             this.depositService.deposit(this.depositID, this.currentCompanyId)
@@ -785,6 +854,9 @@ export class DepositComponent{
             this.titleService.setPageTitle("CREATE DEPOSIT");
             this.setDueDate(this.defaultDate);
             this.setDefaultDepositType();
+            setTimeout(function(){
+              base.loadEntities('other');
+            },1000);
             this.loadingService.triggerLoadingEvent(false);
         }
     }
@@ -793,7 +865,7 @@ export class DepositComponent{
         let data = this._depositForm.getData(this.depositForm);
         data.deposit_type = 'other';
         this._depositForm.updateForm(this.depositForm, data);
-        this.loadEntities('other');
+        //this.loadEntities('other');
     }
 
     validateData(data){
@@ -846,23 +918,19 @@ export class DepositComponent{
 
     /*mapping changes*/
     showMappingPage(){
-     if(this.selectedMappingID){
-       let link = ['payments/edit', this.selectedMappingID];
-       this._router.navigate(link);
-     }else {
-         if(!this.bankAccountID){
-             this.toastService.pop(TOAST_TYPE.error, "Please select bank account.");
-             return
-         }
-         this.mappingFlyoutCSS="expanded";
-         this.loadingService.triggerLoadingEvent(true);
-         this.depositService.unMappedInvoices(this.currentCompanyId,"false",this.bankAccountID,this.selectedEntityID)
-            .subscribe(mappings => {
-              this.buildTableData(mappings || []);
-            }, error => {
-            this.loadingService.triggerLoadingEvent(false);
-         });
-       }
+      if(!this.bankAccountID){
+        this.toastService.pop(TOAST_TYPE.error, "Please select bank account.");
+        return
+      }
+      this.mappingFlyoutCSS="expanded";
+      this.loadingService.triggerLoadingEvent(true);
+      let mappingId=this.newDeposit?null:this.depositID;
+      this.depositService.unMappedInvoices(this.currentCompanyId,"false",this.bankAccountID,this.selectedEntityID,mappingId)
+        .subscribe(mappings => {
+          this.buildTableData(mappings || []);
+        }, error => {
+          this.loadingService.triggerLoadingEvent(false);
+        });
      }
      hideMappingPage(){
      this.mappingFlyoutCSS="collapsed";
@@ -871,16 +939,19 @@ export class DepositComponent{
      buildTableData(mappings) {
      this.hasMappings = false;
      this.mappings = mappings;
+     this.selectedRows=[];
      this.tableData.rows = [];
      this.tableOptions.search = true;
-     this.tableOptions.singleSelectable = true;
+     this.tableOptions.multiSelectable = true;
      this.tableOptions.pageSize = 9;
      this.tableData.columns = [
      {"name": "id", "title": "Id","visible":false,"filterable": false},
      {"name": "amountPaid", "title": "Amount"},
      {"name": "paymentDate", "title": "Date"},
      {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
-     {"name": "customerName", "title": "Customer"}
+     {"name": "customerName", "title": "Customer"},
+     {"name": "mapping", "title": "mapping","visible":false,"filterable": false},
+     {"name": "actions", "title": "", "type": "html", "filterable": false}
      ];
      let base = this;
      mappings.forEach(function(payment) {
@@ -892,6 +963,11 @@ export class DepositComponent{
      row[key] = amount.toLocaleString(base.localeFormat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
      }
      });
+       row['actions'] = "<a class='action' data-action='navigatePayment'><span class='icon badge je-badge'>P</span></a>"
+       if(payment.mapping){
+         payment['isPushVal']=true;
+         base.selectedRows.push(payment);
+       }
      base.tableData.rows.push(row);
      });
      setTimeout(function(){
@@ -900,18 +976,29 @@ export class DepositComponent{
      this.loadingService.triggerLoadingEvent(false);
      }
      handleSelect(event:any) {
-     if(event&&event[0])
-     this.selectedMappingID=event[0]['id'];
+       let base = this;
+       _.each(this.selectedRows, function(payment){
+         _.each(event, function(selectedPayment){
+           if(selectedPayment.id==payment.id&&payment.isPushVal){
+             payment.tempIsSelected=selectedPayment.tempIsSelected;
+           }
+         });
+       });
+       _.each(event, function(payment){
+         base.selectedRows.push(payment);
+       });
+       _.remove(this.selectedRows, {'tempIsSelected': false});
+       this.selectedRows = _.uniqBy(this.selectedRows, 'id');
      }
 
      saveMappingID(){
-     let data = this._depositForm.getData(this.depositForm);
-     data.mapping_id = this.selectedMappingID;
-     this._depositForm.updateForm(this.depositForm, data);
-     this.mappingFlyoutCSS="collapsed";
-     this.selectedEntityID=null;
+       let mappingData=_.map(this.selectedRows, 'id');
+       this.isMappingsModified=true;
+       let mappings = this.depositForm.controls['mapping_ids'];
+       mappings.patchValue(mappingData);
+       let data = this._depositForm.getData(this.depositForm);
+       this.mappingFlyoutCSS="collapsed";
      }
-
 
     checkLockDate(){
         if(Session.getLockDate()){
@@ -984,6 +1071,27 @@ export class DepositComponent{
     let data = this._depositLineForm.getData(itemsControl.controls[index]);
     const link = ['collaboration', 'depositLine', data.id];
     this._router.navigate(link);
+  }
+
+  handleRedirect(event){
+    let action = event.action;
+    let data;
+    if(action=="navigatePayment"){
+      if(this.newDeposit){
+        data=this.getDepositData();
+      }else {
+        data=this.depositData;
+      }
+      let persistData={
+        depositdata:data,
+        bankAccounts:this.accounts,
+        selectedRows:this.selectedRows
+      }
+      this.stateService.addState(new State('showMappingPage', this._router.url, persistData, null));
+      let link = ['payments/edit', event.id];
+      this._router.navigate(link);
+      this.titleService.setPageTitle("Payments");
+    }
   }
 
 }

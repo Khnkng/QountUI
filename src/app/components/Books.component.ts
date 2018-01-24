@@ -53,6 +53,7 @@ export class BooksComponent{
   expensesTableOptions:any = {search:true, pageSize:7};
   jeTableData:any = {};
   jeTableOptions:any = {search:true, pageSize:7};
+  reportCurrency: string;
 
   tabHeight:string;
   badges:any = [];
@@ -117,17 +118,15 @@ export class BooksComponent{
               private badgesService: BadgeService, private reconcileService: ReconcileService,private dateFormater: DateFormater,
               private numeralService:NumeralService, private stateService: StateService, private titleService:pageTitleService,
               private reportsService: ReportService) {
+    let today = moment();
     this.currentCompanyId = Session.getCurrentCompany();
+    this.companyCurrency = Session.getCurrentCompanyCurrency();
+    this.reportCurrency = Session.getCompanyReportCurrency()? Session.getCompanyReportCurrency(): this.companyCurrency;
+    this.numeralService.switchLocale(this.reportCurrency);
     this.dateFormat = dateFormater.getFormat();
     this.serviceDateformat = dateFormater.getServiceDateformat();
-    this.localeFortmat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
-    let today = moment();
-    let fiscalStartDate = moment(Session.getFiscalStartDate(), 'MM/DD/YYYY');
-    this.currentFiscalStart = moment([today.get('year'),fiscalStartDate.get('month'),1]);
-    if(today < fiscalStartDate){
-      this.currentFiscalStart = moment([today.get('year')-1,fiscalStartDate.get('month'),1]);
-    }
-    this.currentFiscalStart = this.currentFiscalStart.format('MM/DD/YYYY');
+    this.localeFortmat=CURRENCY_LOCALE_MAPPER[this.companyCurrency]?CURRENCY_LOCALE_MAPPER[this.companyCurrency]:'en-US';
+    this.currentFiscalStart = moment().subtract(11, 'months').startOf('month').format("MM/DD/YYYY");
     this.asOfDate = moment().format('MM/DD/YYYY');
     this.reportRequest = {
       "basis":"accrual",
@@ -153,7 +152,9 @@ export class BooksComponent{
       }
     });
     this.routeSub = this._route.params.subscribe(params => {
+      this.setBookCurrency();
       if(params['tabId']=='dashboard'){
+        this.setReportCurrency();
         this.selectTab(0,"");
       } else if(params['tabId']=='deposits'){
         this.selectTab(1,"");
@@ -185,12 +186,19 @@ export class BooksComponent{
       }
     });
     this.getBookBadges();
-    this.companyCurrency = Session.getCurrentCompanyCurrency();
     let state = this.stateService.pop();
     if(state){
       let data = state.data;
       this.searchString = data.searchString;
     }
+  }
+
+  setBookCurrency(){
+    this.numeralService.switchLocale(this.companyCurrency);
+  }
+
+  setReportCurrency(){
+    this.numeralService.switchLocale(this.reportCurrency);
   }
 
   addBookState(){
@@ -321,6 +329,9 @@ export class BooksComponent{
     if(action == 'edit') {
       this.addBookState();
       this.showJournalEntry($event);
+    }else if(action=='je-duplicate'){
+      let link = ['journalEntry/duplicate', $event.id];
+      this._router.navigate(link);
     } else if(action == 'reverse'){
       this.addBookState();
       this.showReverseBill($event);
@@ -601,6 +612,9 @@ export class BooksComponent{
         }
       });
       let action = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
+      if(row['createdBY']!='system'){
+        action= action+"<a class='action' data-action='je-duplicate' style='margin:0px 0px 0px 5px;color: #44B6E8 !important'><i class='icon ion-ios-copy'></i></a>";
+      }
       const postString = "<a class='action' data-action='collaboration'><span class='comment-badge'><i class='material-icons'>comment</i></span></a>";
 
       if(journalEntry['source'] === 'Manual'){
@@ -720,7 +734,10 @@ export class BooksComponent{
         this.getBookBadges();
       }, error=>{
         this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
+        if(error&&JSON.parse(error))
+          this.toastService.pop(TOAST_TYPE.error, JSON.parse(error).message);
+        else
+        this.toastService.pop(TOAST_TYPE.error, "Failed to delete deposit");
       });
   }
   removeDeposit(row:any){
@@ -742,7 +759,10 @@ export class BooksComponent{
         this.getBookBadges();
       }, error=>{
         this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
+        if(error&&JSON.parse(error))
+          this.toastService.pop(TOAST_TYPE.error, JSON.parse(error).message);
+        else
+          this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
       });
   }
 
@@ -821,6 +841,7 @@ export class BooksComponent{
   ngOnDestroy(){
     this.routeSub.unsubscribe();
     this.confirmSubscription.unsubscribe();
+    this.setBookCurrency();
     jQuery('#password-conformation').remove();
   }
 
@@ -1162,11 +1183,7 @@ export class BooksComponent{
           name: 'Cash Burn',
           type: 'line',
           yAxis: 1,
-          data: this.getDataArray(metricData["CashFlowMOM"], categories),
-          tooltip: {
-            valueDecimals: 2,
-            valuePrefix: metricData.currencySymbol
-          }
+          data: this.getDataArray(metricData["CashFlowMOM"], categories)
         }]
       };
       this.loadingService.triggerLoadingEvent(false);
@@ -1243,17 +1260,11 @@ export class BooksComponent{
                 series: [{
                     name: 'Revenue',
                     type: 'column',
-                    data: this.getDataArray(metricData.Income, metricData.categories),
-                    tooltip: {
-                        valuePrefix: metricData.currencySymbol
-                    }
+                    data: this.getDataArray(metricData.Income, metricData.categories)
                 }, {
                     name: 'Expenses',
                     type: 'column',
-                    data: this.getDataArray(metricData.Expenses, metricData.categories),
-                    tooltip: {
-                        valuePrefix: metricData.currencySymbol
-                    }
+                    data: this.getDataArray(metricData.Expenses, metricData.categories)
                 }]
             };
             this.loadingService.triggerLoadingEvent(false);
