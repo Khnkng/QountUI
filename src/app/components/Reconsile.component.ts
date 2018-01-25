@@ -98,6 +98,7 @@ export class ReconcileComponent{
   dateFormat:string;
   serviceDateformat:string;
   reconFilterDate: any;
+  reconStatus:string;
 
   constructor(private _fb: FormBuilder, private _reconcileForm: ReconcileForm,private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
               private loadingService: LoadingService, private reconcileService: ReconcileService, private accountsService: FinancialAccountsService,
@@ -315,6 +316,7 @@ export class ReconcileComponent{
         this.reconCompletedOn= reconcileDetails.recon_done_date;
         this.reconDate = reconcileDetails.last_Recon_date;
         this.previousReconDate = reconcileDetails.previous_recon_date;
+        this.reconStatus = reconcileDetails.status;
         this.reconPeriod = this.processReportPeriod(reconcileDetails.previous_recon_date,reconcileDetails.last_Recon_date);
         this.buildDepositsTableData();
         this.buildExpensesTableData();
@@ -448,9 +450,9 @@ export class ReconcileComponent{
       this.outflow = 0;
     }
     if(this.isCreditAccount){
-      this.endingBalance = this.startingBalance-this.inflow+this.outflow;
+      this.endingBalance = this.startingBalance - this.inflow + this.outflow;
     }else{
-      this.endingBalance = this.startingBalance+this.inflow-this.outflow;
+      this.endingBalance = this.startingBalance + this.inflow - this.outflow;
     }
   };
 
@@ -595,6 +597,7 @@ export class ReconcileComponent{
       {"name": "last_Recon_date", "title": "Recon Date"},
       {"name": "recon_done_date", "title": "Recon Completed On"},
       {"name": "id", "title": "Entry ID", "visible": false,'filterable': false},
+      {"name": "status", "title": "Status"},
       {"name": "ending_balance", "title": "Ending Balance", "formatter": (amount)=>{
         amount = parseFloat(amount);
         return amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -632,7 +635,7 @@ export class ReconcileComponent{
     });
   };
 
-  submitReconcile(){
+  submitReconcile(status){
     let base = this;
     this.hasData = false;
     if(base.selectedDepositRows.length>0 || base.selectedExpenseRows.length > 0) {
@@ -666,6 +669,7 @@ export class ReconcileComponent{
       selected["starting_balance"] = this.startingBalance;
       selected["sum_of_deposits"] = this.inflow;
       selected["sum_of_expenses"] = this.outflow;
+      selected["status"] = status;
       this.reconcileService.createReconcile(selected,base.selectedBank)
         .subscribe(response => {
           base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successfull");
@@ -680,6 +684,22 @@ export class ReconcileComponent{
     }else{
       this.toastService.pop(TOAST_TYPE.success,"No Records Selected");
     }
+  }
+
+
+  draftToComplete() {
+    const base = this;
+    const data = {status: 'completed'};
+    this.reconcileService.changeStatus(this.reconcileData.id, data)
+      .subscribe(response => {
+        base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successfull");
+        this.resetReconcileForm();
+        this.getAccounts();
+        this.fetchReconActivityData();
+      }, error => {
+        base.toastService.pop(TOAST_TYPE.error, "Failed to reconcile data");
+        this.loadingService.triggerLoadingEvent(false);
+      });
   }
 
   updateStartingBalance(){
@@ -720,6 +740,7 @@ export class ReconcileComponent{
     this.isCreditAccount = false;
     this.switchPage = 'Books';
     this.hasReconcileData = false;
+    this.reconStatus = '';
   }
   getAccounts() {
     this.accountsService.financialAccounts(this.companyId)
