@@ -4847,6 +4847,7 @@ div.footable-loader {
 
   .post-dateTime-dropdown {
     .date-time-export-dropdown {
+      margin-top:15px;
       padding: 3px !important;
       height: inherit !important;
       width: inherit !important;
@@ -5206,7 +5207,23 @@ div.footable-loader {
     }
   }
 
+  .suggestion-export {
+    .export-option {
+      padding:5px !important;
+      cursor: pointer;
+    }
+
+    .suggestion-search {
+      padding: 5px !important;
+      input {
+        height: 30px;
+        box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+        margin-top: 5px !important;
+      }
+    }
+  }
 }
+
 
 
 .recon_filter_input {
