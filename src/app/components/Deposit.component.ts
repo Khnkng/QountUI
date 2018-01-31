@@ -70,7 +70,7 @@ export class DepositComponent{
 
     /*mapping changes*/
     mappingFlyoutCSS:any;
-     tableColumns:Array<string> = [ 'id', 'amountPaid', 'paymentDate','customerName','mapping'];
+     tableColumns:Array<string> = [ 'id', 'invoiceNumber', 'invoiceDate', 'amountPaid', 'paymentDate','customerName','mapping'];
      mappings = [];
      hasMappings: boolean = false;
      tableData:any = {};
@@ -946,8 +946,10 @@ export class DepositComponent{
      this.tableOptions.pageSize = 9;
      this.tableData.columns = [
      {"name": "id", "title": "Id","visible":false,"filterable": false},
+     {"name":"invoiceNumber","title":"Invoice Number"},
+     {"name":"invoiceDate","title":"Invoice Date"},
      {"name": "amountPaid", "title": "Amount"},
-     {"name": "paymentDate", "title": "Date"},
+     {"name": "paymentDate", "title": "Payment Date"},
      {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
      {"name": "customerName", "title": "Customer"},
      {"name": "mapping", "title": "mapping","visible":false,"filterable": false},
