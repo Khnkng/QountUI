@@ -61,7 +61,7 @@ export class ExpensesCodesComponent {
               private coaService: ChartOfAccountsService, private expensesSerice:ExpensesService,
               private companiesService: CompaniesService, private loadingService:LoadingService,private titleService:pageTitleService,
               private reportsService: ReportService){
-    this.titleService.setPageTitle("Expense Codes");
+    this.titleService.setPageTitle("Account Codes");
     this.expensesForm = this._fb.group(_expensesForm.getForm());
     this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteExpense(toast));
     let companyId = Session.getCurrentCompany();
@@ -73,7 +73,7 @@ export class ExpensesCodesComponent {
       } else if(this.allCompanies.length> 0){
         this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
       }
-      this.coaService.filterdChartOfAccounts(this.currentCompany.id,"?categories=Expenses")
+      this.coaService.chartOfAccounts(this.currentCompany.id)
           .subscribe(chartOfAccounts => {
             chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
             this.filterChartOfAccounts(chartOfAccounts);
@@ -109,7 +109,7 @@ export class ExpensesCodesComponent {
   }
 
   showAddItemCode() {
-    this.titleService.setPageTitle("CREATE EXPENSE CODE");
+    this.titleService.setPageTitle("CREATE ACCOUNT CODE");
     this.editMode = false;
     this.expensesForm = this._fb.group(this._expensesForm.getForm());
     this.newForm();
@@ -117,7 +117,7 @@ export class ExpensesCodesComponent {
   }
 
   showEditExpense(row: any){
-    this.titleService.setPageTitle("UPDATE EXPENSE CODE");
+    this.titleService.setPageTitle("UPDATE ACCOUNT CODE");
     let base = this;
     this.editMode = true;
     this.newForm();
@@ -139,7 +139,7 @@ export class ExpensesCodesComponent {
           //   this.loadingService.triggerLoadingEvent(false);
           this.expensesSerice.getAllExpenses(this.currentCompany.id)
               .subscribe(expenseCodes => this.buildTableData(expenseCodes), error=> this.handleError(error));
-          this.toastService.pop(TOAST_TYPE.success, "Expense code deleted successfully");
+          this.toastService.pop(TOAST_TYPE.success, "Account code deleted successfully");
         }, error => this.handleError(error));
   }
   removeExpense(row: any){
@@ -275,7 +275,7 @@ export class ExpensesCodesComponent {
   }
 
   hideFlyout(){
-    this.titleService.setPageTitle("Expense Codes");
+    this.titleService.setPageTitle("Account Codes");
     this.row = {};
     this.showFlyout = false;
   }
