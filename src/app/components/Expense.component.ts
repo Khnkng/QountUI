@@ -23,6 +23,7 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {State} from "qCommon/app/models/State";
+import {Shareholders} from "qCommon/app/services/Shareholders.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -79,6 +80,8 @@ export class ExpenseComponent{
   vendorList:Array<any>=[];
   customersList:Array<any>=[];
   employeesList:Array<any>=[];
+  allList:Array<any>=[];
+  shareHoldersList:Array<any>=[];
 
   @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
   @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
@@ -95,7 +98,7 @@ export class ExpenseComponent{
               private vendorService: CompaniesService, private expenseService: ExpenseService, private toastService: ToastService,
               private loadingService: LoadingService, private dimensionService: DimensionService,private customerService:CustomersService,
               private employeeService:EmployeeService,private paymentsService:PaymentsService,private dateFormater:DateFormater,
-              private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService){
+              private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService,private shareholdersService: Shareholders){
     this.currentCompanyId = Session.getCurrentCompany();
     this.loadEntitiesData();
     this.dateFormat = dateFormater.getFormat();
@@ -760,6 +763,15 @@ export class ExpenseComponent{
         this.employeesList  = employees;
       }, error => {
       });
+    this.shareholdersService.shareholders()
+      .subscribe(shareholders=> {
+        _.forEach(shareholders, function(customer) {
+          customer['name']=customer['firstName']+" "+customer['lastName'];
+          customer['entityType']="shareholder";
+        });
+        this.shareHoldersList  = shareholders;
+      }, error => {
+      });
   }
 
   loadEntities(type){
@@ -771,8 +783,10 @@ export class ExpenseComponent{
       this.entities=this.employeesList;
     }else if (type=='salesRefund'){
       this.entities=this.customersList;
+    }else if(type=='shareholder'){
+      this.entities=this.shareHoldersList;
     }else if (type=='other'){
-      this.entities=this.entities.concat(this.vendorList).concat(this.employeesList).concat(this.customersList);
+      this.entities=this.entities.concat(this.vendorList).concat(this.employeesList).concat(this.customersList).concat(this.shareHoldersList);
     }
   }
 
