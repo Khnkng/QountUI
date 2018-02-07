@@ -37,6 +37,7 @@ export class ToolsComponent {
   employeesCount:number = 0;
   budgetsCount:number=0;
   showSocialImpact: boolean = false;
+  shareholdersCount: number = 0;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private badgeService: BadgeService,private titleService:pageTitleService) {
     this.titleService.setPageTitle("TOOLS");
@@ -65,6 +66,7 @@ export class ToolsComponent {
       this.accountsCount = badges.accounts;
       this.budgetsCount=badges.budgetsCount;
       this.employeeCount = badges.employeesCount;
+      this.shareholdersCount = badges.shareholdersCount;
     }, error => this.handleError(error));
   }
 
@@ -196,6 +198,11 @@ export class ToolsComponent {
       break;
       case 'socialImpact': {
         let link = ['reports','SocialImpactDataEntry'];
+        this._router.navigate(link);
+      }
+        break;
+      case 'shareholders': {
+        let link = ['shareholders'];
         this._router.navigate(link);
       }
         break;
