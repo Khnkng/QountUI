@@ -23,6 +23,7 @@ import {State} from "qCommon/app/models/State";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
+import {Shareholders} from "qCommon/app/services/Shareholders.service";
 
 declare let _:any;
 declare let jQuery:any;
@@ -55,6 +56,7 @@ export class JournalEntryComponent{
   employees:Array<any> = [];
   customers:Array<any> = [];
   allEntities:Array<any> = [];
+  shareHoldersList:Array<any>=[];
 
   filteredChartOfAccounts:Array<any> = [];
   lines:Array<any> = [];
@@ -93,7 +95,7 @@ export class JournalEntryComponent{
               private journalService: JournalEntriesService, private toastService: ToastService, private _router:Router, private _route: ActivatedRoute,
               private companiesService: CompaniesService, private dimensionService: DimensionService, private loadingService: LoadingService,
               private employeeService: EmployeeService, private customerService: CustomersService,private dateFormater:DateFormater,
-              private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService) {
+              private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService,private shareholdersService: Shareholders) {
     this.titleService.setPageTitle("CREATE JOURNAL ENTRY");
     this.companyCurrency = Session.getCurrentCompanyCurrency();
     this.dateFormat = dateFormater.getFormat();
@@ -140,6 +142,16 @@ export class JournalEntryComponent{
       });
       this.customers = customers;
     }, error => this.handleError(error));
+
+    this.shareholdersService.shareholders()
+      .subscribe(shareholders=> {
+        _.forEach(shareholders, function(shareholder) {
+          shareholder['name']=shareholder['firstName']+" "+shareholder['lastName'];
+          shareholder['entityType']="shareholder";
+        });
+        this.shareHoldersList  = shareholders;
+      }, error => {
+      });
 
     this.routeSubscribe  = _switchBoard.onClickPrev.subscribe(title => {
       if(this.dimensionFlyoutCSS == "expanded"){
@@ -322,6 +334,8 @@ export class JournalEntryComponent{
       entity = _.find(this.employees, {'id': lineData.entity});
     } else if(data.jeType == 'Invoice'){
       entity = _.find(this.customers, {'customer_id': lineData.entity});
+    } else if(data.jeType == 'shareholder'){
+      entity = _.find(this.shareHoldersList, {'id': lineData.entity});
     } else if(data.jeType == 'Other'){
       entity = _.find(this.allEntities, {'id': lineData.entity});
     }
@@ -423,6 +437,7 @@ export class JournalEntryComponent{
     jQuery('#employee-'+index).siblings().children('input').val(this.getEntityName(controls));
     jQuery('#invoice-'+index).siblings().children('input').val(this.getEntityName(controls));
     jQuery('#entity-'+index).siblings().children('input').val(this.getEntityName(controls));
+    jQuery('#shareholder-'+index).siblings().children('input').val(this.getEntityName(controls));
     if(index == this.getLastActiveLineIndex(linesControl)){
       this.addDefaultLine(1);
     }
@@ -596,6 +611,9 @@ export class JournalEntryComponent{
     } else if(data.jeType == 'Payroll'){
       let employee = _.find(this.employees, {'id': controls.entity.value});
       return employee? employee.name: '';
+    } else if(data.jeType == 'shareholder'){
+      let shareholder = _.find(this.shareHoldersList, {'id': controls.entity.value});
+      return shareholder? shareholder.name: '';
     } else if(data.jeType == 'Invoice'){
       let customer = _.find(this.customers, {'customer_id': controls.entity.value});
       return customer? customer.customer_name: '';
@@ -1046,7 +1064,7 @@ export class JournalEntryComponent{
   onJETypeSelect(jeType){
     if(jeType=="Other"){
       let allArray=[];
-      this.allEntities=allArray.concat(this.vendors).concat(this.customers).concat(this.employees);
+      this.allEntities=allArray.concat(this.vendors).concat(this.customers).concat(this.employees).concat(this.shareHoldersList);
     }
   }
 
