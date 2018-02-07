@@ -85,11 +85,13 @@
                             <option value="Bill">Bill</option>
                             <option value="Payroll">Payroll</option>
                             <option value="Invoice">Invoice</option>
+                            <option value="shareholder">Shareholder</option>
                             <option value="Other">Other</option>
                           </select>
                           <select class="jeSelect" formControlName="jeType" *ngIf="isSystemCreatedJE|| (!isSystemCreatedJE&&reversed)|| (!isSystemCreatedJE&&haveSourceId)" disabled>
                             <option value="Bill">Bill</option>
                             <option value="Payroll">Payroll</option>
+                            <option value="shareholder">Shareholder</option>
                             <option value="Other">Other</option>
                           </select>
                         </label>
@@ -232,6 +234,11 @@
                           <option *ngFor="let employee of employees" [value]="employee.id">{{employee.name}}</option>
                         </select>
                       </td>
+                      <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('shareholder')" (keydown.Tab)="handleKeyEvent( $event,index,'Arrow Down')">
+                        <select id="shareholder-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select shareholder" [listObject]="shareHoldersList" (valueChanged)="updateLineEntity($event, index)">
+                          <option *ngFor="let shareholder of shareHoldersList" [value]="shareholder.id">{{shareholder.name}}</option>
+                        </select>
+                      </td>
                       <td [hidden]="!lineListItem.editable" *ngIf="isJournalEntry('Invoice')" (keydown.Tab)="handleKeyEvent( $event,index,'Arrow Down')">
                         <select id="invoice-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Customer" [listObject]="customers" (valueChanged)="updateLineEntity($event, index)">
                           <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
@@ -356,6 +363,11 @@
               <label *ngIf="!isSystemCreatedJE && !reversed && !haveSourceId && isJournalEntry('Invoice')">Entity
                 <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select Customer" [listObject]="customers" (valueChanged)="updateEntity($event)">
                   <option *ngFor="let customer of customers" [value]="customer.customer_id">{{customer.customer_name}}</option>
+                </select>
+              </label>
+              <label *ngIf="!isSystemCreatedJE && !reversed && !haveSourceId && isJournalEntry('shareholder')">Entity
+                <select combo-box #newEntityComboBoxDir="comboBox" data-placeholder="Select shareholder" [listObject]="shareHoldersList" (valueChanged)="updateEntity($event)">
+                  <option *ngFor="let shareholder of shareHoldersList" [value]="shareholder.id">{{shareholder.name}}</option>
                 </select>
               </label>
               <label *ngIf="!isSystemCreatedJE && !reversed && !haveSourceId && isJournalEntry('Other')">Entity
