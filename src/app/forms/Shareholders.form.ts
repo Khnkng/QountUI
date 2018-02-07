@@ -16,7 +16,7 @@ export class ShareholdersForm extends abstractForm {
       "lastName": ['', Validators.required],
       "email": ['', Validators.required],
       "ssn": ['', Validators.required],
-      "percentage": ['', Validators.required],
+      "percentage": [''],
       "phoneNumber": ['', Validators.required],
       "createdDate": [],
       "modifiedDate": []
