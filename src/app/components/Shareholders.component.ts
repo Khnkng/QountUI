@@ -114,7 +114,9 @@ export class ShareholdersComponent {
   }
 
   getPercentageString(inputString) {
-    return (inputString.indexOf('%') !== -1) ? inputString : (inputString + '%');
+    if (inputString) {
+      return (inputString.indexOf('%') !== -1) ? inputString : (inputString + '%');
+    }
   }
 
   showCreateShareholder() {
@@ -160,7 +162,9 @@ export class ShareholdersComponent {
     this.editMode = true;
     this.showFlyout = true;
     this.row = row;
-    row.percentage = (row.percentage.indexOf('%') !== -1) ? row.percentage.replace('%', '') : row.percentage;
+    if (row.percentage) {
+      row.percentage = (row.percentage.indexOf('%') !== -1) ? row.percentage.replace('%', '') : row.percentage;
+    }
     // this.newForm1();
     this._shareholdersForm.updateForm(this.shareholdersForm, row);
   }
