@@ -1,0 +1,106 @@
+
+<div class="row" foundation>
+</div>
+<div class="row" foundation>
+  <div class="column large-12 medium-12 small-12 foo-container">
+    <div class="add-share-buttons add-share-adjust text-right" [style.visibility]="showDownloadIcon">
+      <span class="pointer" (click)="showCreateShareholder()"><i class="icon ion-ios-plus-outline"></i><span>Shareholder</span></span>
+      <span class="footable-download">
+              <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
+              <div class="dropdown-pane bottom export-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation >
+                <div (click)="exportToExcel()" class="export-option pointer">Export To Excel</div>
+                <div (click)="exportToPDF()" class="export-option pointer">Export To PDF</div>
+              </div>
+            </span>
+    </div>
+    <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasShareholdersList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+  </div>
+  <div class="qount-off-canvas-menu">
+    <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+      <section class="flyout-placeholder">
+        <div class="flyout-body flyout-shadow-effect">
+          <!--here comes actual flyout code-->
+          <div #createUser id="createUser" class="create-vendor">
+            <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="shareholdersForm">
+
+              <section class="form-section clearfix">
+                <div class="row">
+                  <div class="small-12 medium-12 columns">
+                    <div class="form-section-left">
+                      <header class="form-section-header">Basic Info</header>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">First Name</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="firstName" placeholder="First Name*" />
+                          <div class="error" [hidden]="shareholdersForm.controls.firstName.untouched || shareholdersForm.controls.firstName.valid">First Name is required.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Last Name</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="lastName" placeholder="Last Name*"/>
+                          <div class="error" [hidden]="shareholdersForm.controls.lastName.untouched || shareholdersForm.controls.lastName.valid">Last Name is required.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Email</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="email" placeholder="Email*"/>
+                          <div class="error" [hidden]="shareholdersForm.controls.email.untouched || shareholdersForm.controls.email.valid">Email is required.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">SSN</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="ssn" placeholder="SSN*" pattern="[0-9]{9}$"/>
+                          <!--<div class="error" [hidden]="shareholdersForm.controls.ssn.untouched || shareholdersForm.controls.ssn.valid">SSN is required.</div>-->
+                          <div class="error" *ngIf="shareholdersForm.controls.ssn.touched && shareholdersForm.controls.ssn.hasError('required')">SSN is required.</div>
+                          <div class="error" *ngIf="shareholdersForm.controls.ssn.touched && shareholdersForm.controls.ssn.hasError('pattern')">SSN should have 9 digits only.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Percentage</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="percentage" placeholder="Percentage*"/>
+                          <div class="error" [hidden]="shareholdersForm.controls.percentage.untouched || shareholdersForm.controls.percentage.valid">Percentage is required.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Phone</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="phoneNumber" placeholder="Phone Number*"/>
+                          <div class="error" [hidden]="shareholdersForm.controls.phoneNumber.untouched || shareholdersForm.controls.phoneNumber.valid">Phone Number is required.</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-section-left">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="small-12 medium-12 columns">
+                    <button class="button create small float-right" [disabled]="!shareholdersForm.valid" type="submit" (click)="submit($event)" data-close>{{editMode?"Update":"Add"}}</button>
+                  </div>
+                </div>
+              </section>
+            </form>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+</div>

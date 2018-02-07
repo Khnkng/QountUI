@@ -5372,7 +5372,24 @@ tbody tr:nth-child(even){
   height: 25px;
 }
 
-.sortable-wrapper{
+.sortable-wrapper {
   overflow: scroll;
   height: 90%;
+}
+
+.addCard {
+  .hollow {
+    font-size: 16px !important;
+  }
+  .changeStatus {
+    background-color: #00B1A9 !important;
+    color: #ffffff !important;
+  }
+
+  .hollow {
+    & :hover {
+      background-color: #00B1A9 !important;
+      color: #ffffff !important;
+    }
+  }
 }

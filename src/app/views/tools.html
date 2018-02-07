@@ -161,12 +161,18 @@
               <div class="thumb-label">Late Fee</div>
             </div>
         </div>
-        <div class="row tools-grids" *ngIf="showSocialImpact">
-          <div class="column tool-grid" (click)="showPage('socialImpact', $event)">
+        <div class="row tools-grids">
+          <div class="column tool-grid"  *ngIf="showSocialImpact" (click)="showPage('socialImpact', $event)">
             <div class="grid-icon chart-of-accounts" ></div>
             <span class="grid-qount" [hidden]="true"></span>
             <div class="clear"></div>
             <div class="thumb-label">Social Impact</div>
+          </div>
+          <div class="column tool-grid" (click)="showPage('shareholders', $event)">
+            <div class="grid-icon employees"></div>
+            <span class="grid-qount" [hidden]="shareholdersCount == 0">{{shareholdersCount}}</span>
+            <div class="clear"></div>
+            <div class="thumb-label">Shareholders</div>
           </div>
         </div>
     </div>
