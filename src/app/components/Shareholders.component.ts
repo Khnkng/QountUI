@@ -41,7 +41,7 @@ export class ShareholdersComponent {
   confirmSubscription: any;
   userId: any;
   routeSubscribe: any;
-  shareholderTableColumns: Array<any> = ['First Name', 'Last Name', 'Email', 'Percentage', 'Phone Number'];
+  shareholderTableColumns: Array<any> = ['First Name', 'Last Name', 'Email', 'SSN', 'Percentage', 'Phone Number'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
   showDownloadIcon: string = "hidden";
 
@@ -56,7 +56,6 @@ export class ShareholdersComponent {
 
     this.shareholdersService.shareholders().subscribe(shareholders => {
       this.shareholders = shareholders;
-      console.log(shareholders);
       this.buildTableData();
     }, error => {});
 
@@ -89,6 +88,7 @@ export class ShareholdersComponent {
       {"name": "firstName", "title": "First Name"},
       {"name": "lastName", "title": "Last Name"},
       {"name": "email", "title": "Email"},
+      {"name": "ssn", "title": "SSN"},
       {"name": "percentage", "title": "Percentage"},
       {"name": "phoneNumber", "title": "Phone Number"},
       {"name": "actions", "title": "", "type": "html", "filterable": false}
@@ -97,7 +97,7 @@ export class ShareholdersComponent {
     this.shareholders.forEach(function(customers) {
       let row: any = {};
       for(let key in base.shareholders[0]) {
-        row[key] = customers[key];
+        row[key] = (key == 'percentage') ? base.getPercentageString(customers[key]) : customers[key];
         row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
       }
       base.tableData.rows.push(row);
@@ -111,6 +111,12 @@ export class ShareholdersComponent {
       }
     },600);
     this.loadingService.triggerLoadingEvent(false);
+  }
+
+  getPercentageString(inputString) {
+    if (inputString) {
+      return (inputString.indexOf('%') !== -1) ? inputString : (inputString + '%');
+    }
   }
 
   showCreateShareholder() {
@@ -156,6 +162,9 @@ export class ShareholdersComponent {
     this.editMode = true;
     this.showFlyout = true;
     this.row = row;
+    if (row.percentage) {
+      row.percentage = (row.percentage.indexOf('%') !== -1) ? row.percentage.replace('%', '') : row.percentage;
+    }
     // this.newForm1();
     this._shareholdersForm.updateForm(this.shareholdersForm, row);
   }
@@ -232,12 +241,12 @@ export class ShareholdersComponent {
       tempJsonArray["First Name"] = tempData[i].firstName;
       tempJsonArray["Last Name"] = tempData[i].lastName;
       tempJsonArray["Email"] = tempData[i].email;
+      tempJsonArray["SSN"] = tempData[i].ssn;
       tempJsonArray["Percentage"] = tempData[i].percentage;
       tempJsonArray["Phone Number"] = tempData[i].phoneNumber;
 
       newTableData.push(tempJsonArray);
     }
-
     return newTableData;
   }
 
