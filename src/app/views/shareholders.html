@@ -57,12 +57,23 @@
                       </div>
                       <div class="row">
                         <div class="small-4 columns">
+                          <label class="text-right">COA</label>
+                        </div>
+                        <div class="small-6 columns custom-qount-form-field">
+                          <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="COA*" formControlName="coaId" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
+                            <option *ngFor="let coa of chartOfAccounts" [value]="coa.name">{{coa.number}} - {{coa.name}}</option>
+                          </select>
+                          <div class="error" [hidden]="shareholdersForm.controls.coaId.untouched || shareholdersForm.controls.coaId.valid">COA is required</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
                           <label class="text-right">SSN</label>
                         </div>
                         <div class="small-6 columns">
-                          <input type="text" formControlName="ssn" placeholder="SSN*" pattern="[0-9]{9}$"/>
+                          <input type="text" formControlName="ssn" placeholder="SSN" pattern="[0-9]{9}$"/>
                           <!--<div class="error" [hidden]="shareholdersForm.controls.ssn.untouched || shareholdersForm.controls.ssn.valid">SSN is required.</div>-->
-                          <div class="error" *ngIf="shareholdersForm.controls.ssn.touched && shareholdersForm.controls.ssn.hasError('required')">SSN is required.</div>
+                          <!--<div class="error" *ngIf="shareholdersForm.controls.ssn.touched && shareholdersForm.controls.ssn.hasError('required')">SSN is required.</div>-->
                           <div class="error" *ngIf="shareholdersForm.controls.ssn.touched && shareholdersForm.controls.ssn.hasError('pattern')">SSN should have 9 digits only.</div>
                         </div>
                       </div>

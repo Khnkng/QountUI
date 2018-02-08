@@ -13,6 +13,7 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {ReportService} from "reportsUI/app/services/Reports.service";
 import {Shareholders} from "qCommon/app/services/Shareholders.service";
+import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 
 declare let jQuery: any;
 declare let _: any;
@@ -29,7 +30,7 @@ export class ShareholdersComponent {
   shareholders: Array<any>;
   editMode: boolean = false;
   @ViewChild('createUser') createUser;
-  @ViewChild('userRoleComboBoxDir') userRoleComboBox: ComboBox;
+  @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
   row: any;
   shareholdersForm: FormGroup;
   @ViewChild('fooTableDir') fooTableDir: FTable;
@@ -44,10 +45,12 @@ export class ShareholdersComponent {
   shareholderTableColumns: Array<any> = ['First Name', 'Last Name', 'Email', 'SSN', 'Percentage', 'Phone Number'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
   showDownloadIcon: string = "hidden";
+  chartOfAccounts: any;
 
   constructor(private _fb: FormBuilder, private _shareholdersForm: ShareholdersForm, private _router: Router,
               private _toastService: ToastService, private loadingService: LoadingService, private switchBoard: SwitchBoard,
-              private titleService: pageTitleService, private reportsService: ReportService, private shareholdersService: Shareholders) {
+              private titleService: pageTitleService, private reportsService: ReportService, private shareholdersService: Shareholders,
+              private coaService: ChartOfAccountsService) {
     this.titleService.setPageTitle("Shareholders");
     this.shareholdersForm = this._fb.group(_shareholdersForm.getForm());
     this.companyId = Session.getCurrentCompany();
@@ -59,6 +62,12 @@ export class ShareholdersComponent {
       this.buildTableData();
     }, error => {});
 
+    this.coaService.chartOfAccounts(this.companyId)
+      .subscribe(chartOfAccounts => {
+        chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
+        this.chartOfAccounts = chartOfAccounts ? _.filter(chartOfAccounts, {'type': 'accountsPayable'}) : [];
+        _.sortBy(this.chartOfAccounts, ['number', 'name']);
+      }, error => this.handleError(error));
     this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
       if (this.showFlyout) {
         this.hideFlyout();
@@ -84,10 +93,11 @@ export class ShareholdersComponent {
     this.tableOptions.pageSize = 9;
     this.tableData.rows = [];
     this.tableData.columns = [
-      {"name": "id", "title": "ID","filterable": false,"visible": false},
+      {"name": "id", "title": "ID", "filterable": false, "visible": false},
       {"name": "firstName", "title": "First Name"},
       {"name": "lastName", "title": "Last Name"},
       {"name": "email", "title": "Email"},
+      {"name": "coaId", "title": "COA", "filterable": false, "visible": false},
       {"name": "ssn", "title": "SSN"},
       {"name": "percentage", "title": "Percentage"},
       {"name": "phoneNumber", "title": "Phone Number"},
@@ -167,6 +177,14 @@ export class ShareholdersComponent {
     }
     // this.newForm1();
     this._shareholdersForm.updateForm(this.shareholdersForm, row);
+    let coa = _.find(this.chartOfAccounts, function(_coa) {
+      console.log("_coa : ", _coa);
+      return _coa.id == row.coaId;
+    });
+    var base = this;
+    setTimeout(function () {
+      base.coaComboBox.setValue(coa, 'name');
+    },100);
   }
 
   submit($event) {
@@ -288,6 +306,16 @@ export class ShareholdersComponent {
         this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
       });
 
+  }
+
+  showCOA(coa: any) {
+    let data = this._shareholdersForm.getData(this.shareholdersForm);
+    if (coa && coa.id) {
+      data.coaId = coa.id;
+    }else if (!coa || coa=='--None--') {
+      data.coaId = '--None--';
+    }
+    this._shareholdersForm.updateForm(this.shareholdersForm, data);
   }
 
 
