@@ -70,7 +70,7 @@ export class AppComponent  implements OnInit{
         let data= this.getCookie(cookieKey);
         if(data){
             let obj=JSON.parse(data);
-            if(obj){
+            if (obj && !Session.hasSession()) {
                 Session.create(obj.user, obj.token);
                 Session.setLockDate(obj.user['default_company']['lock_date']);
                 Session.setTTL(obj['ttl']*1000);
