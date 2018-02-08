@@ -39,6 +39,7 @@
                         <select formControlName="deposit_type" placeholder="Deposit Type" (change)="selectDepositType($event.target.value)" (keydown.Tab)="enableLines()">
                           <option [value]="'invoice'">Invoice</option>s
                           <option [value]="'expenseRefund'">Expense Refund</option>
+                          <option [value]="'shareholder'">Shareholder</option>
                           <option [value]="'other'">Other</option>
                         </select>
                         <div class="error" [hidden]="depositForm.controls.deposit_type.untouched || depositForm.controls.deposit_type.valid">Deposit Type is required</div>
