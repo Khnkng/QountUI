@@ -56,7 +56,7 @@ export class ShareholdersComponent {
     this.companyId = Session.getCurrentCompany();
     this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteShareholder(toast));
     let defaultCompany: any = Session.getUser().default_company || {};
-
+    this.loadingService.triggerLoadingEvent(true);
     this.shareholdersService.shareholders().subscribe(shareholders => {
       this.shareholders = shareholders;
       this.buildTableData();
