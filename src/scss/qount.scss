@@ -5350,6 +5350,31 @@ tbody tr:nth-child(even){
   color: #18457B;
 }
 
+.ui-state-default{
+  list-style: none;
+  padding: 3px 5px 0px 6px;
+  background: none;
+  border-radius: 5px;
+  width: auto;
+  margin-left: 5px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.ui-state-highlight, .ui-sortable-placeholder{
+  list-style: none;
+  background: #44B6E8 !important;
+}
+
+.drilldown-column{
+  height: 25px;
+}
+
+.sortable-wrapper {
+  overflow: scroll;
+  height: 90%;
+}
+
 .addCard {
   .hollow {
     font-size: 16px !important;
@@ -5365,5 +5390,4 @@ tbody tr:nth-child(even){
       color: #ffffff !important;
     }
   }
-
 }

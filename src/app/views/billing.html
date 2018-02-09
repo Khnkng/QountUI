@@ -3,8 +3,7 @@
     <div class="small-12 medium-2 columns">
       <div class="input-group">
         <label>
-          <span>{{companyCurrency}}</span>
-          <span>{{savedCardData.amount}}</span>
+          <span>{{formatAmount(savedCardData.amount)}}</span>
           <span>/</span>
           <span>{{savedCardData.frequency}}</span>
         </label>
@@ -13,8 +12,8 @@
   </div>
   <div class="row">
     <div class="small-12 medium-12 columns">
-      <input type="button" class="button hollow grey" value="Credit Card" style="width: 10.6rem;" [ngClass]="{'changeStatus' : isCreditCard}" (click)="changePaymentType('credit')" />
-      <input type="button" class="button hollow grey" value="Bank Account" style="margin-left: 0.7rem;width: 10.6rem;" [ngClass]="{'changeStatus' : !isCreditCard}" (click)="changePaymentType('bank')" />
+      <input type="button" class="button hollow grey" value="Credit Card" style="width: 10.6rem;"  *ngIf="savedCardData.credit_card_enabled" [ngClass]="{'changeStatus' : isCreditCard}" (click)="changePaymentType('credit')" />
+      <input type="button" class="button hollow grey" value="Bank Account" style="margin-left: 0.7rem;width: 10.6rem;" *ngIf="!savedCardData.credit_card_enabled" [ngClass]="{'changeStatus' : !isCreditCard}" (click)="changePaymentType('bank')" />
     </div>
   </div>
 
@@ -103,8 +102,7 @@
     <div class="small-12 medium-2 columns">
       <div class="input-group">
         <label>
-          <span>{{companyCurrency}}</span>
-          <span>{{savedCardData.amount}}</span>
+          <span>{{formatAmount(savedCardData.amount)}}</span>
           <span>/</span>
           <span>{{savedCardData.frequency}}</span>
         </label>
