@@ -93,6 +93,7 @@ export class BillingComponent {
   }
 
   getToken() {
+    this.loadingService.triggerLoadingEvent(true);
     this.customersService.getPaymentSpringKeys()
       .subscribe(res  => {
         if(!_.isEmpty(res)) {
@@ -136,6 +137,8 @@ export class BillingComponent {
         }else {
           this.editMode = false;
         }
+        this.loadingService.triggerLoadingEvent(false);
+        this._toastService.pop(TOAST_TYPE.success, "Transaction Successful");
       }, error =>  {
         const err = JSON.parse(error);
         this.loadingService.triggerLoadingEvent(false);
