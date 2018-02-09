@@ -196,6 +196,11 @@ export class ToolsComponent {
         this._router.navigate(link);
       }
       break;
+      case 'billing': {
+        let link = ['billing'];
+        this._router.navigate(link);
+      }
+      break;
       case 'socialImpact': {
         let link = ['reports','SocialImpactDataEntry'];
         this._router.navigate(link);
