@@ -95,7 +95,7 @@ import {DocumentsComponent} from "./components/Documents.component";
 import {DocumentService} from "./services/Documents.service";
 import {DocumentComponent} from "./components/Document.component";
 import {BudgetComponent} from "./components/Budget.component";
-import {BudgetForm,BudgetItemForm} from "./forms/Budget.form";
+import {BudgetForm, BudgetItemForm} from "./forms/Budget.form";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {PaymentsPlanComponent} from "./components/PaymentsPlanComponent";
 import {PaymentsPlan}from"./forms/PaymentsPlan.form";
@@ -105,6 +105,11 @@ import {RDcreditsForm} from "./forms/RDcredits.form";
 import {DocumentsTypeComponent} from "./components/DocumentsType.component";
 import {LateFeesComponent} from "./components/LateFees.component";
 import {LateFeeForm} from "./forms/LateFee.form";
+import {BillingComponent} from "./components/Billing.component";
+import {BillingService} from "./services/Billing.service";
+import {BillingForm} from "./forms/Billing.form";
+import {ShareholdersComponent} from "./components/Shareholders.component";
+import {ShareholdersForm} from "./forms/Shareholders.form";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -364,10 +369,20 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       canActivate: [LoggedInActivator]
     },
     {
-          path: 'late-fee',
-        component: LateFeesComponent,
-        canActivate: [LoggedInActivator]
+      path: 'late-fee',
+      component: LateFeesComponent,
+      canActivate: [LoggedInActivator]
     },
+    {
+      path: 'billing',
+      component: BillingComponent,
+      canActivate: [LoggedInActivator]
+    },
+    {
+        path: 'shareholders',
+        component: ShareholdersComponent,
+        canActivate: [LoggedInActivator]
+    }
   ]), PaymentsModule, ReportsModule, InvoicesModule, CollaborationModule
   ],
 
@@ -377,13 +392,16 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     OffCanvasMenuComponent, LoadingComponent, ModulesComponent,ChangePasswordComponent, TermsAndConditionsComponent,
     ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
     CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent,
-    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent,DocumentsTypeComponent,LateFeesComponent],
+    DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent,DocumentsTypeComponent,LateFeesComponent,
+    ShareholdersComponent, BillingComponent],
   exports: [RouterModule],
   bootstrap: [ AppComponent ],
-  providers: [APP_BASE, COAForm,MetricsForm,MetricsLineForm,metricPeriodForm, SignUpService, LoginForm, SignUpForm, ForgotPassword, ItemCodeForm, ExpenseCodesForm,
-    TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm,ContactLineForm, DimensionForm, UsersForm, DocumentService,
-    FinancialAccountForm, LoadingService,LockForm,VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm, ExpenseItemForm,DepositsForm,DepositsLineForm,EmployeesForm,YodleeService,ReconcileForm,ReconcileService,MetricsService,
-    BudgetForm,BudgetItemForm,pageTitleService,PaymentsPlan, RDcreditsService,RDcreditsForm,LateFeeForm],
+  providers: [APP_BASE, COAForm, MetricsForm, MetricsLineForm, metricPeriodForm, SignUpService, LoginForm, SignUpForm, ForgotPassword,
+    ItemCodeForm, ExpenseCodesForm, TaxesForm, JournalEntryForm, JournalLineForm, RulesService, CustomersForm, ContactLineForm, DimensionForm,
+    UsersForm, DocumentService, FinancialAccountForm, LoadingService, LockForm, VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm,
+    ExpenseItemForm, DepositsForm, DepositsLineForm, EmployeesForm, YodleeService, ReconcileForm, ReconcileService, MetricsService,
+    BudgetForm, BudgetItemForm, pageTitleService, PaymentsPlan, RDcreditsService, RDcreditsForm, LateFeeForm, ShareholdersForm,
+    BillingService, BillingForm],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

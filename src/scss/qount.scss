@@ -5206,6 +5206,21 @@ div.footable-loader {
     }
   }
 
+  .suggestion-export {
+    .export-option {
+      padding:5px !important;
+      cursor: pointer;
+    }
+
+    .suggestion-search {
+      padding: 5px !important;
+      input {
+        height: 30px;
+        box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+        margin-top: 5px !important;
+      }
+    }
+  }
 }
 
 
@@ -5355,7 +5370,24 @@ tbody tr:nth-child(even){
   height: 25px;
 }
 
-.sortable-wrapper{
+.sortable-wrapper {
   overflow: scroll;
   height: 90%;
+}
+
+.addCard {
+  .hollow {
+    font-size: 16px !important;
+  }
+  .changeStatus {
+    background-color: #00B1A9 !important;
+    color: #ffffff !important;
+  }
+
+  .hollow {
+    & :hover {
+      background-color: #00B1A9 !important;
+      color: #ffffff !important;
+    }
+  }
 }
