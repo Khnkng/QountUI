@@ -27,7 +27,7 @@
                 <div class="row">
                   <div class="small-12 medium-12 columns">
                     <div class="form-section-left">
-                      <header class="form-section-header">Basic Info</header>
+                      <!--<header class="form-section-header">Basic Info</header>-->
                       <div class="row">
                         <div class="small-4 columns">
                           <label class="text-right">First Name</label>
@@ -53,6 +53,15 @@
                         <div class="small-6 columns">
                           <input type="text" formControlName="email" placeholder="Email*"/>
                           <div class="error" [hidden]="shareholdersForm.controls.email.untouched || shareholdersForm.controls.email.valid">Email is required.</div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="small-4 columns">
+                          <label class="text-right">Phone</label>
+                        </div>
+                        <div class="small-6 columns">
+                          <input type="text" formControlName="phoneNumber" placeholder="Phone Number*"/>
+                          <div class="error" [hidden]="shareholdersForm.controls.phoneNumber.untouched || shareholdersForm.controls.phoneNumber.valid">Phone Number is required.</div>
                         </div>
                       </div>
                       <div class="row">
@@ -84,15 +93,6 @@
                         <div class="small-6 columns">
                           <input type="text" formControlName="percentage" placeholder="Percentage"/>
                           <!--<div class="error" [hidden]="shareholdersForm.controls.percentage.untouched || shareholdersForm.controls.percentage.valid">Percentage is required.</div>-->
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="small-4 columns">
-                          <label class="text-right">Phone</label>
-                        </div>
-                        <div class="small-6 columns">
-                          <input type="text" formControlName="phoneNumber" placeholder="Phone Number*"/>
-                          <div class="error" [hidden]="shareholdersForm.controls.phoneNumber.untouched || shareholdersForm.controls.phoneNumber.valid">Phone Number is required.</div>
                         </div>
                       </div>
                     </div>

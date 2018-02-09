@@ -65,7 +65,7 @@ export class ShareholdersComponent {
     this.coaService.chartOfAccounts(this.companyId)
       .subscribe(chartOfAccounts => {
         chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
-        this.chartOfAccounts = chartOfAccounts ? _.filter(chartOfAccounts, {'type': 'accountsPayable'}) : [];
+        this.chartOfAccounts = chartOfAccounts ? chartOfAccounts : [];
         _.sortBy(this.chartOfAccounts, ['number', 'name']);
       }, error => this.handleError(error));
     this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
@@ -97,10 +97,10 @@ export class ShareholdersComponent {
       {"name": "firstName", "title": "First Name"},
       {"name": "lastName", "title": "Last Name"},
       {"name": "email", "title": "Email"},
+      {"name": "phoneNumber", "title": "Phone Number"},
       {"name": "coaId", "title": "COA", "filterable": false, "visible": false},
       {"name": "ssn", "title": "SSN"},
       {"name": "percentage", "title": "Percentage"},
-      {"name": "phoneNumber", "title": "Phone Number"},
       {"name": "actions", "title": "", "type": "html", "filterable": false}
     ];
     let base = this;
@@ -178,7 +178,6 @@ export class ShareholdersComponent {
     // this.newForm1();
     this._shareholdersForm.updateForm(this.shareholdersForm, row);
     let coa = _.find(this.chartOfAccounts, function(_coa) {
-      console.log("_coa : ", _coa);
       return _coa.id == row.coaId;
     });
     var base = this;
