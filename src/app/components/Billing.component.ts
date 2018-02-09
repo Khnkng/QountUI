@@ -12,6 +12,7 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 import {CustomersService} from "qCommon/app/services/Customers.service";
+import {NumeralService} from "qCommon/app/services/Numeral.service";
 
 declare var jQuery: any;
 declare var _: any;
@@ -43,7 +44,7 @@ export class BillingComponent {
   constructor(private _fb: FormBuilder, private billingService: BillingService,
               private billingForm: BillingForm, private _router: Router, private _toastService: ToastService,
               private switchBoard: SwitchBoard, private loadingService: LoadingService, private titleService: pageTitleService,
-              private dateFormater: DateFormater, private customersService: CustomersService) {
+              private dateFormater: DateFormater, private customersService: CustomersService, private numeralService: NumeralService) {
     this.dateFormat = dateFormater.getFormat();
     this.serviceDateFormat = dateFormater.getServiceDateformat();
     this.companyCurrency = Session.getCurrentCompanyCurrency();
@@ -92,7 +93,7 @@ export class BillingComponent {
   }
 
   getToken() {
-    this.customersService.getPaymentSpringToken(this.companyId)
+    this.customersService.getPaymentSpringKeys()
       .subscribe(res  => {
         if(!_.isEmpty(res)) {
           this.publicKey = res.public_key;
@@ -158,6 +159,10 @@ export class BillingComponent {
           }
         }
       }, error =>  this.handleError(error));
+  }
+
+  formatAmount(value){
+    return this.numeralService.format('$0,0.00', value);
   }
 
   handleError(error) {
