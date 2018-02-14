@@ -191,11 +191,20 @@
             <div><label><u>Difference</u></label></div>
           </div>
         </div>
-        <div class="row" *ngIf="!showForm && editable && reconType == 'new'">
-          <div class="small-12 medium-12 columns">
-            <button class="button create small float-right"  [ngClass]="{'reconSubmit': reconDifference == 0}" style="margin-top:10px;"  type="submit" (click)="submitReconcile()" data-close [disabled]="reconDifference !== 0">Reconcile</button>
+        <div class="row" style="margin-left:20px;">
+          <div class="small-12 medium-6" *ngIf="!showForm && editable && reconType == 'new'">
+            <button class="button create small"  [ngClass]="{'reconSubmit': reconDifference == 0}" style="margin-top:10px;"  type="submit" (click)="submitReconcile('draft')" data-close [disabled]="reconDifference !== 0">Save Draft</button>
+          </div>
+
+          <div class="small-12 medium-6" *ngIf="!showForm && editable && reconType == 'new'">
+            <button class="button create small"  [ngClass]="{'reconSubmit': reconDifference == 0}" style="margin-top:10px;"  type="submit" (click)="submitReconcile('completed')" data-close [disabled]="reconDifference !== 0">Reconcile</button>
+          </div>
+
+          <div class="small-12 medium-6" *ngIf="!showForm && reconStatus === 'draft'">
+            <button class="button create small"  [ngClass]="{'reconSubmit': reconDifference == 0}" style="margin-top:10px;"  type="submit" (click)="draftToComplete()" data-close [disabled]="reconDifference !== 0">Reconcile</button>
           </div>
         </div>
+
       </div>
     </div>
   </div>

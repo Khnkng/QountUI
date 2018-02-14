@@ -22,6 +22,8 @@ import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
+import {State} from "qCommon/app/models/State";
+import {Shareholders} from "qCommon/app/services/Shareholders.service";
 
 declare let jQuery:any;
 declare let _:any;
@@ -56,7 +58,7 @@ export class ExpenseComponent{
   stayFlyout:boolean = false;
   entities:Array<any>=[];
   mappingFlyoutCSS:any;
-  tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName'];
+  tableColumns:Array<string> = [ 'groupID','title', 'amount', 'date','journalID','vendorName','mapping','id'];
   mappings = [];
   hasMappings: boolean = false;
   tableData:any = {};
@@ -78,19 +80,25 @@ export class ExpenseComponent{
   vendorList:Array<any>=[];
   customersList:Array<any>=[];
   employeesList:Array<any>=[];
+  allList:Array<any>=[];
+  shareHoldersList:Array<any>=[];
 
   @ViewChild("accountComboBoxDir") accountComboBox: ComboBox;
   @ViewChild("editCOAComboBoxDir") editCOAComboBox: ComboBox;
   @ViewChild("editEntityComboBoxDir") editEntityComboBox: ComboBox;
   @ViewChild('list') el:ElementRef;
 
+  selectedRows:Array<any> = [];
+  expenseData:any;
+  isMappingsModified:boolean;
+  isMappingPrevious:boolean;
 
   constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _expenseForm: ExpenseForm,
               private _expenseItemForm: ExpenseItemForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
               private vendorService: CompaniesService, private expenseService: ExpenseService, private toastService: ToastService,
               private loadingService: LoadingService, private dimensionService: DimensionService,private customerService:CustomersService,
               private employeeService:EmployeeService,private paymentsService:PaymentsService,private dateFormater:DateFormater,
-              private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService){
+              private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService,private shareholdersService: Shareholders){
     this.currentCompanyId = Session.getCurrentCompany();
     this.loadEntitiesData();
     this.dateFormat = dateFormater.getFormat();
@@ -103,13 +111,7 @@ export class ExpenseComponent{
         this.defaultDate=moment(new Date()).format(this.dateFormat);
       }
     });
-    this.accountsService.financialAccounts(this.currentCompanyId)
-      .subscribe(accounts=> {
-        this.accounts = accounts.accounts;
-        this.loadExpense();
-      }, error => {
 
-      });
     this.companyCurrency = Session.getCurrentCompanyCurrency();
     this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => {
       if(this.itemActive){
@@ -120,17 +122,41 @@ export class ExpenseComponent{
         this.showExpensesPage();
       }
     });
+
+    let state = this.stateService.getPrevState();
+    if(state && state.key == 'showMappingPage'){
+      this.isMappingPrevious=true;
+      this.gotoPreviousState();
+    }else {
+      this.accountsService.financialAccounts(this.currentCompanyId)
+        .subscribe(accounts=> {
+          this.accounts = accounts.accounts;
+          this.loadExpense();
+        }, error => {
+
+        });
+    }
   }
 
   showMappingPage(){
-    if(this.selectedMappingID){
+    if(!this.bankAccountID){
+      this.toastService.pop(TOAST_TYPE.error, "Please select bank account.");
+      return
+    }
+    this.mappingFlyoutCSS="expanded";
+    this.loadingService.triggerLoadingEvent(true);
+    let mappingId=this.newExpense?null:this.expenseID;
+    this.paymentsService.mappings(this.currentCompanyId,this.expenseType,"false",this.bankAccountID,this.selectedEntityID,mappingId)
+      .subscribe(mappings => {
+        this.buildTableData(mappings || []);
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+    });
+
+    /*if(this.selectedMappingID){
       let link = ['/payments', this.selectedMappingID];
       this._router.navigate(link);
     }else {
-      if(!this.bankAccountID){
-        this.toastService.pop(TOAST_TYPE.error, "Please select bank account.");
-        return
-      }
       this.mappingFlyoutCSS="expanded";
       this.titleService.setPageTitle("Payments");
       this.loadingService.triggerLoadingEvent(true);
@@ -140,8 +166,26 @@ export class ExpenseComponent{
         }, error => {
           this.loadingService.triggerLoadingEvent(false);
         });
+    }*/
+  }
+
+  gotoPreviousState(){
+    let base=this;
+    let prevState = this.stateService.getPrevState();
+    this.stateService.pop();
+    let data = prevState.data || [];
+    if(data){
+      this.accounts=data.bankAccounts;
+      this.selectedRows=data.selectedRows;
+      this.bankAccountID=data.expenseData.bank_account_id;
+      data.expenseData.date=this.dateFormater.formatDate(data.expenseData.date,this.dateFormat,this.serviceDateformat);
+      setTimeout(function(){
+        base.processExpense(data.expenseData);
+        base.showMappingPage();
+      },200)
     }
   }
+
   hideMappingPage(){
     this.mappingFlyoutCSS="collapsed";
   }
@@ -257,9 +301,13 @@ export class ExpenseComponent{
 
   processExpense(expense){
     let base = this;
+    this.expenseData=expense;
     let itemsControl:any = this.expenseForm.controls['expense_items'];
     this.selectedMappingID=expense.mapping_id;
     expense.due_date = this.dateFormater.formatDate(expense.due_date,this.serviceDateformat,this.dateFormat);
+    if(expense.expense_items.length>0&&expense.expense_items[0].entity_id){
+                this.selectedEntityID=expense.expense_items[0].entity_id;
+    }
     this.loadEntities(expense.expense_type);
     _.each(expense.expense_items, function(expenseItem){
       expenseItem.amount = parseFloat(expenseItem.amount);
@@ -272,6 +320,14 @@ export class ExpenseComponent{
     this._expenseForm.updateForm(this.expenseForm, expense);
     this.updateLineTotal();
     this.loadingService.triggerLoadingEvent(false);
+  }
+
+  getExpenseData(){
+    let data = this._expenseForm.getData(this.expenseForm);
+    data.payments=this.getExpenseLineData(this.expenseForm);
+    data.amount=this.roundOffValue(data.amount);
+    this.updateExpenseLinesData(data);
+    return data;
   }
 
   editItem(index, itemForm){
@@ -594,6 +650,9 @@ export class ExpenseComponent{
           console.log("expense creation failed", error);
         });
     } else{
+      if(!this.isMappingsModified){
+        data.mapping_ids=this.expenseData.mapping_ids;
+      }
       this.tempData=data;
       this.checkLockDate();
     }
@@ -639,7 +698,7 @@ export class ExpenseComponent{
     let _itemForm = this._expenseItemForm.getForm();
     this.newItemForm = this._fb.group(_itemForm);
 
-    if(this.newExpense){
+    if(this.newExpense&&!this.isMappingPrevious){
       this.addDefaultLine(2);
     }
 
@@ -704,6 +763,15 @@ export class ExpenseComponent{
         this.employeesList  = employees;
       }, error => {
       });
+    this.shareholdersService.shareholders()
+      .subscribe(shareholders=> {
+        _.forEach(shareholders, function(customer) {
+          customer['name']=customer['firstName']+" "+customer['lastName'];
+          customer['entityType']="shareholder";
+        });
+        this.shareHoldersList  = shareholders;
+      }, error => {
+      });
   }
 
   loadEntities(type){
@@ -715,8 +783,10 @@ export class ExpenseComponent{
       this.entities=this.employeesList;
     }else if (type=='salesRefund'){
       this.entities=this.customersList;
+    }else if(type=='shareholder'){
+      this.entities=this.shareHoldersList;
     }else if (type=='other'){
-      this.entities=this.entities.concat(this.vendorList).concat(this.employeesList).concat(this.customersList);
+      this.entities=this.entities.concat(this.vendorList).concat(this.employeesList).concat(this.customersList).concat(this.shareHoldersList);
     }
   }
 
@@ -809,10 +879,11 @@ export class ExpenseComponent{
 
   buildTableData(mappings) {
     this.hasMappings = false;
+    this.selectedRows=[];
     this.mappings = mappings;
     this.tableData.rows = [];
     this.tableOptions.search = true;
-    this.tableOptions.singleSelectable = true;
+    this.tableOptions.multiSelectable = true;
     this.tableOptions.pageSize = 9;
     this.tableData.columns = [
       {"name": "groupID", "title": "Id","visible":false,"filterable": false},
@@ -820,7 +891,10 @@ export class ExpenseComponent{
       {"name": "amount", "title": "Amount"},
       {"name": "date", "title": "Date"},
       {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
-      {"name": "vendorName", "title": "Vendor"}
+      {"name": "vendorName", "title": "Vendor"},
+      {"name": "mapping", "title": "mapping","visible":false,"filterable": false},
+      {"name": "actions", "title": "", "type": "html", "filterable": false},
+      {"name": "id", "title": "id","visible":false,"filterable": false}
     ];
     let base = this;
     mappings.forEach(function(pyment) {
@@ -829,9 +903,14 @@ export class ExpenseComponent{
         row[key] = pyment[key];
         if(key == 'amount'){
           let amount = parseFloat(pyment[key]);
-          row[key] = amount.toLocaleString(base.companyCurrency, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          row[key] = amount.toLocaleString(base.localeFormat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
         }
       });
+      row['actions'] = "<a class='action' data-action='navigatePayment'><span class='icon badge je-badge'>P</span></a>"
+      if(pyment.mapping){
+        pyment['isPushVal']=true;
+        base.selectedRows.push(pyment);
+      }
       base.tableData.rows.push(row);
     });
     setTimeout(function(){
@@ -840,16 +919,36 @@ export class ExpenseComponent{
     this.loadingService.triggerLoadingEvent(false);
   }
   handleSelect(event:any) {
-    if(event&&event[0])
-      this.selectedMappingID=event[0]['groupID'];
+    /*if(event&&event[0])
+      this.selectedMappingID=event[0]['groupID'];*/
+    let base = this;
+    _.each(this.selectedRows, function(payment){
+      _.each(event, function(selectedPayment){
+        if(selectedPayment.id==payment.id&&payment.isPushVal){
+          payment.tempIsSelected=selectedPayment.tempIsSelected;
+        }
+      });
+    });
+    _.each(event, function(payment){
+      base.selectedRows.push(payment);
+    });
+    _.remove(this.selectedRows, {'tempIsSelected': false});
+    this.selectedRows = _.uniqBy(this.selectedRows, 'groupID');
   }
 
   saveMappingID(){
-    let data = this._expenseForm.getData(this.expenseForm);
+    let mappingData=_.map(this.selectedRows, 'groupID');
+    this.isMappingsModified=true;
+    let mappings = this.expenseForm.controls['mapping_ids'];
+    mappings.patchValue(mappingData);
+//    let data = this._expenseForm.getData(this.expenseForm);
+    this.mappingFlyoutCSS="collapsed";
+
+    /*let data = this._expenseForm.getData(this.expenseForm);
     data.mapping_id = this.selectedMappingID;
     this._expenseForm.updateForm(this.expenseForm, data);
     this.mappingFlyoutCSS="collapsed";
-    this.selectedEntityID=null;
+    this.selectedEntityID=null;*/
   }
 
   validateData(data){
@@ -962,6 +1061,27 @@ export class ExpenseComponent{
    // const data = this.expenseForm.value;
     const link = ['collaboration', 'expenseLine', data.id];
     this._router.navigate(link);
+  }
+
+  handleRedirect(event){
+    let action = event.action;
+    let data;
+    if(action=="navigatePayment"){
+      if(this.newExpense){
+        data=this.getExpenseData();
+      }else {
+        data=this.expenseData;
+      }
+      let persistData={
+        expenseData:data,
+        bankAccounts:this.accounts,
+        selectedRows:this.selectedRows
+      };
+      this.stateService.addState(new State('showMappingPage', this._router.url, persistData, null));
+      let link = ['/payments', event.groupID];
+      this._router.navigate(link);
+      this.titleService.setPageTitle("Payments");
+    }
   }
 
 }

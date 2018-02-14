@@ -59,6 +59,7 @@
                           <option [value]="'bill'">Bill</option>
                           <option [value]="'payroll'">Payroll</option>
                           <option [value]="'salesRefund'">Sales Refund</option>
+                          <option [value]="'shareholder'">Shareholder</option>
                           <option [value]="'other'">Other</option>
                         </select>
                         <div class="error" [hidden]="expenseForm.controls.expense_type.untouched || expenseForm.controls.expense_type.valid">Expense Type is required</div>
@@ -254,7 +255,7 @@
   <div class="sidenav customization-panel" [ngClass]="mappingFlyoutCSS" foundation>
     <div class="row chart-of-accounts" foundation>
       <div class="column large-12 medium-12 small-12 foo-container">
-        <foo-table #fooTableDir="fooTable" class="bighalf-footable search-right" *ngIf="hasMappings" [data]="tableData" [options]="tableOptions" (onRowSelect)="handleSelect($event)"></foo-table>
+        <foo-table #fooTableDir="fooTable" (onRowAction)="handleRedirect($event)" class="bighalf-footable search-right" *ngIf="hasMappings" [data]="tableData" [options]="tableOptions" (onRowSelect)="handleSelect($event)"></foo-table>
       </div>
     </div>
     <div class="row" *ngIf="hasMappings">

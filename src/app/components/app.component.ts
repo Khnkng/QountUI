@@ -70,7 +70,7 @@ export class AppComponent  implements OnInit{
         let data= this.getCookie(cookieKey);
         if(data){
             let obj=JSON.parse(data);
-            if(obj){
+            if (obj && !Session.hasSession()) {
                 Session.create(obj.user, obj.token);
                 Session.setLockDate(obj.user['default_company']['lock_date']);
                 Session.setTTL(obj['ttl']*1000);
@@ -78,6 +78,7 @@ export class AppComponent  implements OnInit{
                 Session.setCurrentCompany(obj.user.defaultCompany);
                 Session.setCurrentCompanyName(obj.user.default_company.name);
                 Session.setCurrentCompanyCurrency(obj.user.default_company.defaultCurrency);
+                Session.setCompanyReportCurrency(obj.user.default_company.reportCurrency || "");
                 this.numeralService.switchLocale(Session.getCurrentCompanyCurrency());
                 Session.setFiscalStartDate(obj.user.default_company.fiscalStartDate?obj.user.default_company.fiscalStartDate:"");
                 this.refreshToken();

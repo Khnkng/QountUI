@@ -23,6 +23,8 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {CURRENCY_LOCALE_MAPPER} from "qCommon/app/constants/Currency.constants";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {State} from "qCommon/app/models/State";
+import {Shareholders} from "qCommon/app/services/Shareholders.service";
+
 
 declare let jQuery:any;
 declare let _:any;
@@ -70,7 +72,7 @@ export class DepositComponent{
 
     /*mapping changes*/
     mappingFlyoutCSS:any;
-     tableColumns:Array<string> = [ 'id', 'amountPaid', 'paymentDate','customerName','mapping'];
+     tableColumns:Array<string> = [ 'id', 'invoiceNumber', 'invoiceDate', 'amountPaid', 'paymentDate','customerName','mapping'];
      mappings = [];
      hasMappings: boolean = false;
      tableData:any = {};
@@ -93,6 +95,7 @@ export class DepositComponent{
     isMappingsModified:boolean;
     vendorList:Array<any>=[];
     customersList:Array<any>=[];
+    shareHoldersList:Array<any>=[];
 
 
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _depositForm: DepositsForm,
@@ -100,7 +103,8 @@ export class DepositComponent{
                 private depositService: DepositService, private toastService: ToastService,
                 private loadingService: LoadingService, private dimensionService: DimensionService,private customersService: CustomersService,
                 private invoiceService:InvoicesService,private vendorService: CompaniesService,private paymentsService:PaymentsService,
-                private dateFormater:DateFormater, private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService){
+                private dateFormater:DateFormater, private stateService: StateService,private titleService:pageTitleService,_switchBoard:SwitchBoard,private numeralService:NumeralService,
+                private shareholdersService: Shareholders){
         this.currentCompanyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
         this.localeFormat=CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]?CURRENCY_LOCALE_MAPPER[Session.getCurrentCompanyCurrency()]:'en-US';
@@ -768,6 +772,15 @@ export class DepositComponent{
         this.customersList  = customers;
       }, error => {
       });
+    this.shareholdersService.shareholders()
+      .subscribe(shareholders=> {
+        _.forEach(shareholders, function(customer) {
+          customer['name']=customer['firstName']+" "+customer['lastName'];
+          customer['entityType']="shareholder";
+        });
+        this.shareHoldersList  = shareholders;
+      }, error => {
+      });
   }
 
     loadEntities(type){
@@ -776,8 +789,10 @@ export class DepositComponent{
           this.entities=this.vendorList;
         }else if (type=='invoice'){
           this.entities=this.customersList;
+        }else if(type=='shareholder'){
+          this.entities=this.shareHoldersList;
         }else if (type=='other'){
-          this.entities=this.entities.concat(this.vendorList).concat(this.customersList);
+          this.entities=this.entities.concat(this.vendorList).concat(this.customersList).concat(this.shareHoldersList);
         }
     }
 
@@ -946,8 +961,10 @@ export class DepositComponent{
      this.tableOptions.pageSize = 9;
      this.tableData.columns = [
      {"name": "id", "title": "Id","visible":false,"filterable": false},
+     {"name":"invoiceNumber","title":"Invoice Number"},
+     {"name":"invoiceDate","title":"Invoice Date"},
      {"name": "amountPaid", "title": "Amount"},
-     {"name": "paymentDate", "title": "Date"},
+     {"name": "paymentDate", "title": "Payment Date"},
      {"name": "journalID", "title": "journalId","visible":false,"filterable": false},
      {"name": "customerName", "title": "Customer"},
      {"name": "mapping", "title": "mapping","visible":false,"filterable": false},

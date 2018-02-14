@@ -83,7 +83,7 @@ export class LateFeesComponent{
 
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
-    this.row = {};
+    //this.row = {};
     this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
   }
 
@@ -99,10 +99,12 @@ export class LateFeesComponent{
     this.titleService.setPageTitle("CREATE LATE FEE");
     this.editMode = false;
     this.newForm();
+    this.lateFeeForm = this._fb.group(this._lateFeeForm.getForm());
     this.showFlyout = true;
   }
 
   showEditLateFee(row: any){
+    let base = this;
     this.titleService.setPageTitle("UPDATE LATE FEE");
     this.loadingService.triggerLoadingEvent(true);
     this.lateFeesService.getLateFee(this.companyId, row.id)
@@ -115,7 +117,6 @@ export class LateFeesComponent{
         this._lateFeeForm.updateForm(this.lateFeeForm, lateFee);
         this.loadingService.triggerLoadingEvent(false);
       }, error => this.handleError(error));
-    let base = this;
     this.editMode = true;
     this.newForm();
     this.showFlyout = true;
@@ -130,7 +131,13 @@ export class LateFeesComponent{
         //this.itemCodes.splice(_.findIndex(this.itemCodes, {id: this.itemCodeId}, 1));
         this.lateFeesService.lateFees(this.companyId)
           .subscribe(lateFees => this.buildTableData(lateFees), error=> this.handleError(error));
-      }, error => this.handleError(error));
+      }, error => {
+        this.loadingService.triggerLoadingEvent(false);
+        if(error&&JSON.parse(error))
+          this.toastService.pop(TOAST_TYPE.error, JSON.parse(error).message);
+        else
+          this.toastService.pop(TOAST_TYPE.success, "Failed to delete the late fee");
+      });
   }
   removeLateFee(row: any){
     this.lateFeeId = row.id;
@@ -177,7 +184,13 @@ export class LateFeesComponent{
           base.lateFees[index] = lateFee;
           base.buildTableData(base.lateFees);
           this.showFlyout = false;
-        }, error => this.handleError(error));
+        }, error => {
+            this.loadingService.triggerLoadingEvent(false);
+          if(error&&JSON.parse(error))
+            this.toastService.pop(TOAST_TYPE.error, JSON.parse(error).message);
+          else
+          this.toastService.pop(TOAST_TYPE.success, "Failed to update the late fee");
+        });
     } else{
       this.lateFeesService.addlateFee(this.companyId, data)
         .subscribe(newLateFee => {
