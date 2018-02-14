@@ -1,6 +1,31 @@
-<div class="qount-flyout SwitchCompany-reveal">
+<!--
+<div foundation class="reports">
+  <ul class="reports tabs" data-tabs id="report-tabs">
+    <li class="reports tabs-title"><a aria-selected="true"><h6>Business</h6></a></li>
+    <li class="reports tabs-title"><a aria-selected="false"><h6>Individual</h6></a></li>
+  </ul>
+</div>
+-->
+
+<div class="tab-container books-tab-container">
+  <div class="row">
+    <div class="column medium-9 resetPaddings">
+      <div class="row tabber">
+        <div class="column medium-3 tab">
+          <label><span>Business</span></label>
+        </div>
+        <div class="column medium-3 tab">
+          <label><span>Individual</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row collapse tab-content" style="margin: 0 15px;">
+<div class="column medium-12 qount-flyout SwitchCompany-reveal">
     <div class="column large-12 medium-12 small-12">
         <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCompanyList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
 </div>
-
+</div>
