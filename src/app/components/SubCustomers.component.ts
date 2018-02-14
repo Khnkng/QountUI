@@ -20,6 +20,7 @@ import {YEARS, MONTHS} from "qCommon/app/constants/Date.constants";
 import {CreditCardType} from "qCommon/app/models/CreditCardType";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {ReportService} from "reportsUI/app/services/Reports.service";
+import {StateService} from "qCommon/app/services/StateService";
 
 declare var jQuery: any;
 declare var _: any;
@@ -69,7 +70,8 @@ export class SubCustomersComponent {
   constructor(private _fb: FormBuilder, private customersService: CustomersService, private _customersForm: CustomersForm,
               private _contactLineForm: ContactLineForm, private _router: Router, private _toastService: ToastService,
                 private switchBoard: SwitchBoard, private loadingService: LoadingService, private coaService: ChartOfAccountsService,
-              private titleService: pageTitleService, private reportsService: ReportService, private _route: ActivatedRoute) {
+              private titleService: pageTitleService, private reportsService: ReportService, private _route: ActivatedRoute,
+              private stateService: StateService) {
         this.titleService.setPageTitle("Sub Customers");
 
         let _form: any = this._customersForm.getForm();
@@ -97,12 +99,22 @@ export class SubCustomersComponent {
             this._toastService.pop(TOAST_TYPE.error, "Please add company first");
         }
         this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
-            if(this.showFlyout) {
+            if (this.showFlyout) {
                 this.hideFlyout();
             }else {
-                this.toolsRedirect();
+              this.showPreviousPage();
             }
         });
+    }
+
+    showPreviousPage() {
+      const prevState = this.stateService.getPrevState();
+      if (prevState) {
+        this.stateService.pop();
+        this._router.navigate([prevState.url]);
+      } else {
+        this.toolsRedirect();
+      }
     }
 
     toolsRedirect() {

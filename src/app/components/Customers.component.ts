@@ -20,6 +20,8 @@ import {YEARS, MONTHS} from "qCommon/app/constants/Date.constants";
 import {CreditCardType} from "qCommon/app/models/CreditCardType";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {ReportService} from "reportsUI/app/services/Reports.service";
+import {StateService} from "qCommon/app/services/StateService";
+import {State} from "qCommon/app/models/State";
 
 declare var jQuery:any;
 declare var _:any;
@@ -64,11 +66,12 @@ export class CustomersComponent {
     pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
     showDownloadIcon:string = "hidden";
     displaySubCustomer: boolean = false;
+    searchString: string;
 
-    constructor(private _fb: FormBuilder, private customersService: CustomersService,
+  constructor(private _fb: FormBuilder, private customersService: CustomersService,
                 private _customersForm:CustomersForm,private _contactLineForm:ContactLineForm, private _router: Router, private _toastService: ToastService,
                 private switchBoard: SwitchBoard, private loadingService:LoadingService,private coaService: ChartOfAccountsService,private titleService:pageTitleService,
-                private reportsService: ReportService) {
+                private reportsService: ReportService, private stateService: StateService) {
         this.titleService.setPageTitle("Customers");
 
         let _form:any = this._customersForm.getForm();
@@ -98,6 +101,12 @@ export class CustomersComponent {
                 this.toolsRedirect();
             }
         });
+
+        let state = this.stateService.pop();
+        if (state) {
+          let data = state.data;
+          this.searchString = data.searchString;
+        }
     }
 
     toolsRedirect(){
@@ -453,6 +462,11 @@ export class CustomersComponent {
   }
 
   showSubCustomers() {
+    let data = {
+      "searchString": this.searchString
+    };
+    this.stateService.addState(new State('CUSTOMERS', this._router.url, data, null, []));
+
     let link = ['customers', this.row.customer_id, 'subCustomers'];
     this._router.navigate(link);
   }
