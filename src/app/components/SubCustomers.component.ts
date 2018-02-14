@@ -86,7 +86,7 @@ export class SubCustomersComponent {
         this.coaService.chartOfAccounts(this.companyId)
             .subscribe(chartOfAccounts => {
                 chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
-                this.chartOfAccounts = chartOfAccounts ? _.filter(chartOfAccounts, {'type': 'accountsReceivable'}) : [];
+                this.chartOfAccounts = chartOfAccounts ? chartOfAccounts : [];
                 _.sortBy(this.chartOfAccounts, ['number', 'name']);
             }, error => this.handleError(error));
         if (this.companyId) {
@@ -354,7 +354,7 @@ export class SubCustomersComponent {
         this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
     }
     hideFlyout() {
-        this.titleService.setPageTitle("Customers");
+        this.titleService.setPageTitle("SUB CUSTOMERS");
         this.row = {};
         this.showFlyout = !this.showFlyout;
         this.resetForm();
