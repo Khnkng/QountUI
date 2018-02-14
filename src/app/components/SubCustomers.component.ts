@@ -1,11 +1,11 @@
 
 import {Component, ViewChild} from "@angular/core";
-import {FormGroup, FormBuilder,FormArray} from "@angular/forms";
+import {FormGroup, FormBuilder, FormArray} from "@angular/forms";
 import {Address} from "qCommon/app/directives/address.directive";
 import {PROVINCES} from "qCommon/app/constants/Provinces.constants";
 import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 import {FTable} from "qCommon/app/directives/footable.directive";
-import {Router} from "@angular/router";
+import {Router, ActivatedRoute} from "@angular/router";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
@@ -13,7 +13,7 @@ import {Session} from "qCommon/app/services/Session";
 import {CompanyModel} from "../models/Company.model";
 import {CustomersService} from "qCommon/app/services/Customers.service";
 import {CustomersModel} from "../models/Customers.model";
-import {CustomersForm,ContactLineForm} from "../forms/Customers.form";
+import {CustomersForm, ContactLineForm} from "../forms/Customers.form";
 import {LoadingService} from "qCommon/app/services/LoadingService";
 import {ChartOfAccountsService} from "qCommon/app/services/ChartOfAccounts.service";
 import {YEARS, MONTHS} from "qCommon/app/constants/Date.constants";
@@ -63,18 +63,24 @@ export class SubCustomersComponent {
     customersTableColumns: Array<any> = ['Name', 'EIN', 'Email', 'Phone Number'];
     pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
     showDownloadIcon:string = "hidden";
+    routeSub: any;
+    parentCustomerId: string;
 
-    constructor(private _fb: FormBuilder, private customersService: CustomersService,
-                private _customersForm:CustomersForm,private _contactLineForm:ContactLineForm, private _router: Router, private _toastService: ToastService,
-                private switchBoard: SwitchBoard, private loadingService:LoadingService,private coaService: ChartOfAccountsService,private titleService:pageTitleService,
-                private reportsService: ReportService) {
+  constructor(private _fb: FormBuilder, private customersService: CustomersService, private _customersForm: CustomersForm,
+              private _contactLineForm: ContactLineForm, private _router: Router, private _toastService: ToastService,
+                private switchBoard: SwitchBoard, private loadingService: LoadingService, private coaService: ChartOfAccountsService,
+              private titleService: pageTitleService, private reportsService: ReportService, private _route: ActivatedRoute) {
         this.titleService.setPageTitle("Sub Customers");
 
-        let _form:any = this._customersForm.getForm();
+        let _form: any = this._customersForm.getForm();
         _form['customer_contact_details'] = this.ContactLineArray;
         this.subCustomerForm = this._fb.group(_form);
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteVendor(toast));
         this.companyId = Session.getCurrentCompany();
+        this.routeSub = this._route.params.subscribe(params => {
+          this.parentCustomerId = params['customerId'];
+        });
+
         this.coaService.chartOfAccounts(this.companyId)
             .subscribe(chartOfAccounts => {
                 chartOfAccounts = _.filter(chartOfAccounts, {'inActive': false});
@@ -83,7 +89,7 @@ export class SubCustomersComponent {
             }, error=> this.handleError(error));
         if(this.companyId){
             this.loadingService.triggerLoadingEvent(true);
-            this.customersService.customers(this.companyId).subscribe(customers => {
+            this.customersService.subCustomers(this.companyId, this.parentCustomerId).subscribe(customers => {
                 this.buildTableData(customers);
             }, error => this.handleError(error));
         }else {
