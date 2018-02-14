@@ -453,8 +453,8 @@ export class CustomersComponent {
   }
 
   showSubCustomers() {
-    let link = 'customers/' + this.row.customer_id + '/subCustomers';
-    this._router.navigate([link]);
+    let link = ['customers', this.row.customer_id, 'subCustomers'];
+    this._router.navigate(link);
   }
 
 }
