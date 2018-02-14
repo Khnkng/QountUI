@@ -25,11 +25,11 @@ declare var jQuery:any;
 declare var _:any;
 
 @Component({
-    selector: 'vendors',
-    templateUrl: '../views/customers.html'
+    selector: 'subCustomers',
+    templateUrl: '../views/subCustomers.html'
 })
 
-export class CustomersComponent {
+export class SubCustomersComponent {
     tableData:any = {};
     tableOptions:any = {};
     status:any;
@@ -41,10 +41,10 @@ export class CustomersComponent {
     @ViewChild('addressDir') addressDir: Address;
     @ViewChild('coaComboBoxDir') coaComboBox: ComboBox;
     row:any;
-    customerForm: FormGroup;
+    subCustomerForm: FormGroup;
     countries:Array<any> = PROVINCES.COUNTRIES;
     @ViewChild('fooTableDir') fooTableDir:FTable;
-    hasCustomersList:boolean = false;
+    hasSubCustomersList:boolean = false;
     message:string;
     companyId:string;
     companies:Array<CompanyModel> = [];
@@ -63,17 +63,16 @@ export class CustomersComponent {
     customersTableColumns: Array<any> = ['Name', 'EIN', 'Email', 'Phone Number'];
     pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
     showDownloadIcon:string = "hidden";
-    displaySubCustomer: boolean = false;
 
     constructor(private _fb: FormBuilder, private customersService: CustomersService,
                 private _customersForm:CustomersForm,private _contactLineForm:ContactLineForm, private _router: Router, private _toastService: ToastService,
                 private switchBoard: SwitchBoard, private loadingService:LoadingService,private coaService: ChartOfAccountsService,private titleService:pageTitleService,
                 private reportsService: ReportService) {
-        this.titleService.setPageTitle("Customers");
+        this.titleService.setPageTitle("Sub Customers");
 
         let _form:any = this._customersForm.getForm();
         _form['customer_contact_details'] = this.ContactLineArray;
-        this.customerForm = this._fb.group(_form);
+        this.subCustomerForm = this._fb.group(_form);
         this.confirmSubscription = this.switchBoard.onToastConfirm.subscribe(toast => this.deleteVendor(toast));
         this.companyId = Session.getCurrentCompany();
         this.coaService.chartOfAccounts(this.companyId)
@@ -111,7 +110,7 @@ export class CustomersComponent {
 
     buildTableData(customers) {
         this.customers = customers;
-        this.hasCustomersList = false;
+        this.hasSubCustomersList = false;
         this.tableOptions.search = true;
         this.tableOptions.pageSize = 9;
         this.tableData.rows = [];
@@ -138,10 +137,10 @@ export class CustomersComponent {
             base.tableData.rows.push(row);
         });
         setTimeout(function(){
-            base.hasCustomersList = true;
+            base.hasSubCustomersList = true;
         });
         setTimeout(function() {
-          if(base.hasCustomersList){
+          if(base.hasSubCustomersList){
             base.showDownloadIcon = "visible";
           }
         },650);
@@ -149,7 +148,7 @@ export class CustomersComponent {
     }
 
     showCreateVendor() {
-        this.titleService.setPageTitle("CREATE CUSTOMER");
+        this.titleService.setPageTitle("CREATE SUB CUSTOMER");
         let self = this;
         let defaultCountry  = {name:'United States', code:'US'};
         this.editMode = false;
@@ -173,7 +172,7 @@ export class CustomersComponent {
     }
 
     showVendorProvince(country:any) {
-        let countryControl:any = this.customerForm.controls['customer_country'];
+        let countryControl:any = this.subCustomerForm.controls['customer_country'];
         countryControl.patchValue(country.name);
         this.countryCode = country.code;
         this.showAddress = false;
@@ -201,17 +200,16 @@ export class CustomersComponent {
         setTimeout(()=> this.active1=true, 0);
     }
     showCOA(coa:any) {
-        let data= this._customersForm.getData(this.customerForm);
+        let data= this._customersForm.getData(this.subCustomerForm);
         if(coa && coa.id){
             data.coa = coa.id;
         }else if(!coa||coa=='--None--'){
             data.coa='--None--';
         }
-        this._customersForm.updateForm(this.customerForm, data);
+        this._customersForm.updateForm(this.subCustomerForm, data);
     }
     showEditVendor(row:any) {
-        this.titleService.setPageTitle("UPDATE CUSTOMER");
-        this.displaySubCustomer = true;
+        this.titleService.setPageTitle("UPDATE SUB CUSTOMER");
         this.editMode = true;
         this.showFlyout = true;
         this.row = row;
@@ -256,17 +254,17 @@ export class CustomersComponent {
                 setTimeout(function () {
                     base.vendorCountryComboBox.setValue(country, 'name');
                 },100);
-                let contactLineControl:any = this.customerForm.controls['customer_contact_details'];
+                let contactLineControl:any = this.subCustomerForm.controls['customer_contact_details'];
                 customer.customer_contact_details.forEach(function(contactLine:any){
                     contactLineControl.controls.push(base._fb.group(base._contactLineForm.getForm(contactLine)));
                 });
-                this._customersForm.updateForm(this.customerForm, this.row);
+                this._customersForm.updateForm(this.subCustomerForm, this.row);
             }, error => this.handleError(error));
     }
 
     submit($event) {
         $event && $event.preventDefault();
-        var data = this._customersForm.getData(this.customerForm);
+        var data = this._customersForm.getData(this.subCustomerForm);
         this.companyId = Session.getCurrentCompany();
         if(data.coa=='--None--'||data.coa==''){
             this._toastService.pop(TOAST_TYPE.error, "Please select payment COA");
@@ -277,8 +275,8 @@ export class CustomersComponent {
 
     saveDetails(){
         this.loadingService.triggerLoadingEvent(true);
-        var data = this._customersForm.getData(this.customerForm);
-        data.customer_contact_details=this.getContactData(this.customerForm.controls['customer_contact_details']);
+        var data = this._customersForm.getData(this.subCustomerForm);
+        data.customer_contact_details=this.getContactData(this.subCustomerForm.controls['customer_contact_details']);
 
         if(this.editMode) {
             data.customer_id=this.row.customer_id;
@@ -300,7 +298,7 @@ export class CustomersComponent {
         if(status) {
             this.status = {};
             this.status['success'] = true;
-            this.hasCustomersList=false;
+            this.hasSubCustomersList=false;
             if(this.editMode) {
                 this.resetForm();
                 this.customersService.customers(this.companyId)
@@ -358,7 +356,7 @@ export class CustomersComponent {
     }
 
     getEmailIds(){
-        let data = this._customersForm.getData(this.customerForm);
+        let data = this._customersForm.getData(this.subCustomerForm);
         return data.email_ids || [];
     }
 
@@ -368,9 +366,9 @@ export class CustomersComponent {
         let contactListForm = this._fb.group(_form);
         //this.ContactLineArray.push(contactListForm);
         if(!line){
-            let contactControl:any = this.customerForm.controls['customer_contact_details'];
+            let contactControl:any = this.subCustomerForm.controls['customer_contact_details'];
             contactControl.controls.push(contactListForm);
-            this._customersForm.updateForm(this.customerForm, customer);
+            this._customersForm.updateForm(this.subCustomerForm, customer);
 
         }
     }
@@ -378,7 +376,7 @@ export class CustomersComponent {
     resetForm(){
         let _form = this._customersForm.getForm();
         _form['customer_contact_details'] = new FormArray([]);
-        this.customerForm = this._fb.group(_form);
+        this.subCustomerForm = this._fb.group(_form);
     }
 
     getContactData(customerForm){
@@ -450,11 +448,6 @@ export class CustomersComponent {
         this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
       });
 
-  }
-
-  showSubCustomers() {
-    let link = 'customers/' + this.row.customer_id + '/subCustomers';
-    this._router.navigate([link]);
   }
 
 }
