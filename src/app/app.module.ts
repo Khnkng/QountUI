@@ -55,6 +55,7 @@ import {RulesService} from "qCommon/app/services/Rules.service";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 import {CategorizationComponent} from "./components/Categorization.component";
 import {CustomersComponent} from "./components/Customers.component";
+import {SubCustomersComponent} from "./components/SubCustomers.component";
 import {CustomersForm,ContactLineForm} from "./forms/Customers.form";
 import {DimensionsComponent} from "./components/Dimensions.component";
 import {DimensionForm} from "./forms/Dimension.form";
@@ -259,6 +260,10 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       path: 'customers',
       component: CustomersComponent,
       canActivate: [LoggedInActivator]
+    },    {
+      path: 'customers/:customerId/subCustomers',
+      component: SubCustomersComponent,
+      canActivate: [LoggedInActivator]
     },{
       path: 'users',
       component: UsersComponent,
@@ -393,7 +398,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
     CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent,
     DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent,DocumentsTypeComponent,LateFeesComponent,
-    ShareholdersComponent, BillingComponent],
+    ShareholdersComponent, BillingComponent, SubCustomersComponent],
   exports: [RouterModule],
   bootstrap: [ AppComponent ],
   providers: [APP_BASE, COAForm, MetricsForm, MetricsLineForm, metricPeriodForm, SignUpService, LoginForm, SignUpForm, ForgotPassword,
