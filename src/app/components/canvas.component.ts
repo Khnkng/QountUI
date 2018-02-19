@@ -16,6 +16,7 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {InvoicesService} from "invoicesUI/app/services/Invoices.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {Router} from "@angular/router";
+import {State} from "qCommon/app/models/State";
 
 declare let _:any;
 declare let Highcharts:any;
@@ -91,6 +92,7 @@ export class CanvasComponent {
 
     ngOnDestroy() {
       this.numeralService.switchLocale(this.companyCurrency);
+      this.routeSubscribe.unsubscribe();
     }
 
     getData(){
@@ -1154,7 +1156,14 @@ export class CanvasComponent {
     }
 
     navigateToReceivables(){
+      this.stateService.addState(new State("MAIN_DASHBOARD", this._router.url, null, null, null));
       let link = ['/invoice/receivables'];
+      this._router.navigate(link);
+    }
+
+    navigateToPayables(){
+      this.stateService.addState(new State("MAIN_DASHBOARD", this._router.url, null, null, null));
+      let link = ['/bills/totalpayable'];
       this._router.navigate(link);
     }
 }
