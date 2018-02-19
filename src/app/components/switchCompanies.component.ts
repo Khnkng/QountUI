@@ -37,7 +37,6 @@ export class SwitchCompanyComponent {
   routeSubscribe: any;
   currentEnvironment: any;
   tabDisplay: Array<any> = [{'display': 'none'}, {'display': 'none'}];
-  taxesBaseUIUrl = 'https://dev-taxes.qount.io';
 
   constructor(private _router: Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
               private companiesService: CompaniesService, private loadingService: LoadingService, private userProfileService: UserProfileService,
@@ -215,7 +214,7 @@ export class SwitchCompanyComponent {
           this._router.navigate(link);
         } else {
           document.cookie = "dev_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-          window.location.replace(this.taxesBaseUIUrl);
+          window.location.replace('https://dev-taxes.qount.io');
         }
       } else if (cookieKey === "prod") {
         if (obj.user.default_company.bucket === 'Business') {
