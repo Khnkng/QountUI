@@ -50,7 +50,6 @@ export class BillingComponent {
     this.companyCurrency = Session.getCurrentCompanyCurrency();
     this.billForm = this._fb.group(this.billingForm.getCreditForm());
     this.titleService.setPageTitle("Billing");
-    console.log(Session.getUser());
     const default_company = Session.getUser().default_company;
     this.companyId = Session.getCurrentCompany();
     this.generateYears();
@@ -159,9 +158,17 @@ export class BillingComponent {
             this.editMode = true;
           }else {
             this.editMode = false;
+            this.isCreditCard = res.credit_card_enabled;
+            if (!this.isCreditCard) {
+              this.changePaymentType('bank');
+            }
           }
         }
       }, error =>  this.handleError(error));
+  }
+
+  editAccountDetails() {
+    this.editMode = false;
   }
 
   formatAmount(value){
