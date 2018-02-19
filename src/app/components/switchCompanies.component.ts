@@ -52,24 +52,24 @@ export class SwitchCompanyComponent {
     this.showCompanies(0, 'Business');
     this.titleService.setPageTitle("Switch Company");
     this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
-        let link = ['/dashboard'];
-        this._router.navigate(link);
-      });
+      let link = ['/dashboard'];
+      this._router.navigate(link);
+    });
   }
 
-/*
-  fetchCompanies() {
-    this.companiesService.companies().subscribe(companies => {
-      this.allCompanies = companies;
-      if(this.currentCompanyId){
-        this.currentCompany = _.find(this.allCompanies, {id: this.currentCompanyId});
-      } else if(this.allCompanies.length> 0){
-        this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-      }
-      this.buildTableData(this.allCompanies);
-    }, error => this.handleError(error));
-  }
-*/
+  /*
+   fetchCompanies() {
+   this.companiesService.companies().subscribe(companies => {
+   this.allCompanies = companies;
+   if(this.currentCompanyId){
+   this.currentCompany = _.find(this.allCompanies, {id: this.currentCompanyId});
+   } else if(this.allCompanies.length> 0){
+   this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+   }
+   this.buildTableData(this.allCompanies);
+   }, error => this.handleError(error));
+   }
+   */
 
   ngAfterViewInit() {
 
@@ -83,7 +83,7 @@ export class SwitchCompanyComponent {
     this.loadingService.triggerLoadingEvent(false);
   }
 
-  handleAction($event) {
+  handleAction($event, companyType) {
     let action = $event.action;
     delete $event.action;
     delete $event.actions;
@@ -110,6 +110,7 @@ export class SwitchCompanyComponent {
       {"name": "reportCurrency", "title": "Currency", "visible": false},
       {"name": "fiscalStartDate", "title": "Fiscal Date", "visible": false},
       {"name": "lockDate", "title": "Lock Date", "visible": false},
+      {"name": "bucket", "title": "Bucket", "visible": false, "filterable": false},
       {"name": "actions", "title": "", "type": "html", "filterable": false}
     ];
     this.tableData.rows = [];
@@ -135,6 +136,7 @@ export class SwitchCompanyComponent {
       row.reportCurrency = company.reportCurrency;
       row.lockDate = company.lock_date;
       row.fiscalStartDate = company.fiscalStartDate;
+      row.bucket = company.bucket;
       if (row.id != base.currentCompanyId) {
         row['actions'] = "<a class='action switch-company-label' data-action='switch-company'><span class='label'>Hop</span></a>";
       }
@@ -182,13 +184,11 @@ export class SwitchCompanyComponent {
     this.currentCompany = company;
     this.refreshTable();
     this.setDefaultCompany(company.id);
-    let link = ['/dashboard'];
-    this._router.navigate(link);
   }
 
   updateCookie(company) {
     this.currentEnvironment = environment;
-    let cookieKey = this.currentEnvironment.production ? "prod" : "dev";
+    const cookieKey = this.currentEnvironment.production ? "prod" : "dev";
     let data = this.getCookieData(cookieKey);
     if (data) {
       let obj = JSON.parse(data);
@@ -197,15 +197,35 @@ export class SwitchCompanyComponent {
         obj.user.default_company.fiscalStartDate ? obj.user.default_company.fiscalStartDate = company.fiscalStartDate : "";
         obj.user.defaultCompany = company.id;
         obj.user.default_company.name = company.name;
+        obj.user.default_company.bucket = company.bucket;
         obj.user.default_company.defaultCurrency = company.defaultCurrency;
         obj.user.default_company.reportCurrency = company.reportCurrency;
-        if (cookieKey == "dev") {
-          document.cookie = "dev=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-        }else if (cookieKey == "prod") {
-          document.cookie = "prod=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-        }
+        this.transferCookieAndRedirect(obj);
       }
     }
+  }
+
+  transferCookieAndRedirect(obj) {
+    const cookieKey = this.currentEnvironment.production ? "prod" : "dev";
+      if (cookieKey === "dev") {
+        if (obj.user.default_company.bucket === 'Business') {
+          document.cookie = "dev=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+          const link = ['/dashboard'];
+          this._router.navigate(link);
+        } else {
+          document.cookie = "dev_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+          window.location.replace('https://dev-taxes.qount.io');
+        }
+      } else if (cookieKey === "prod") {
+        if (obj.user.default_company.bucket === 'Business') {
+          document.cookie = "prod=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+          const link = ['/dashboard'];
+          this._router.navigate(link);
+        } else {
+          document.cookie = "prod_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+          window.location.replace("https://taxes.qount.io");
+        }
+      }
   }
 
   getCookieData(cname) {
