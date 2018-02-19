@@ -887,7 +887,7 @@ export class DepositComponent{
         let base = this;
         let result=true;
         if(data.bank_account_id=="--None--"||data.bank_account_id==""){
-            this.toastService.pop(TOAST_TYPE.error, "Please select valid bank account");
+            this.toastService.pop(TOAST_TYPE.error, "Please select valid financial account");
             return false;
         }
         if(data.amount <= 0){
@@ -934,7 +934,7 @@ export class DepositComponent{
     /*mapping changes*/
     showMappingPage(){
       if(!this.bankAccountID){
-        this.toastService.pop(TOAST_TYPE.error, "Please select bank account.");
+        this.toastService.pop(TOAST_TYPE.error, "Please select financial account.");
         return
       }
       this.mappingFlyoutCSS="expanded";
