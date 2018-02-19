@@ -168,6 +168,10 @@ export class BillingComponent {
     return this.numeralService.format('$0,0.00', value);
   }
 
+  getNextCharge(date) {
+    return moment(date).format(this.dateFormat);
+  }
+
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
     this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
