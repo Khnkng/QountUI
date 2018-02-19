@@ -37,6 +37,7 @@ export class SwitchCompanyComponent {
   routeSubscribe: any;
   currentEnvironment: any;
   tabDisplay: Array<any> = [{'display': 'none'}, {'display': 'none'}];
+  taxesBaseUIUrl = 'https://dev-taxes.qount.io';
 
   constructor(private _router: Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
               private companiesService: CompaniesService, private loadingService: LoadingService, private userProfileService: UserProfileService,
@@ -83,12 +84,12 @@ export class SwitchCompanyComponent {
     this.loadingService.triggerLoadingEvent(false);
   }
 
-  handleAction($event) {
+  handleAction($event, companyType) {
     let action = $event.action;
     delete $event.action;
     delete $event.actions;
     if (action == 'switch-company') {
-      this.changeCompany($event);
+      this.changeCompany($event, companyType);
     }else if (action == 'delete') {
 
     }else if (action == 'verify') {
@@ -167,11 +168,11 @@ export class SwitchCompanyComponent {
       .subscribe(test => console.log(test));
   }
 
-  changeCompany(company) {
+  changeCompany(company, companyType) {
     Session.setCurrentCompany(company.id);
     Session.setCurrentCompanyName(company.name);
     Session.setFiscalStartDate(company.fiscalStartDate);
-    this.updateCookie(company);
+    this.updateCookie(company, companyType);
     this.numeralService.switchLocale(company.defaultCurrency);
     Session.setCompanyReportCurrency(company.reportCurrency || "");
     Session.setCurrentCompanyCurrency(company.defaultCurrency);
@@ -186,7 +187,7 @@ export class SwitchCompanyComponent {
     this._router.navigate(link);
   }
 
-  updateCookie(company) {
+  updateCookie(company, companyType) {
     this.currentEnvironment = environment;
     let cookieKey = this.currentEnvironment.production ? "prod" : "dev";
     let data = this.getCookieData(cookieKey);
@@ -197,13 +198,35 @@ export class SwitchCompanyComponent {
         obj.user.default_company.fiscalStartDate ? obj.user.default_company.fiscalStartDate = company.fiscalStartDate : "";
         obj.user.defaultCompany = company.id;
         obj.user.default_company.name = company.name;
+        obj.user.default_company.bucket = companyType;
         obj.user.default_company.defaultCurrency = company.defaultCurrency;
         obj.user.default_company.reportCurrency = company.reportCurrency;
         if (cookieKey == "dev") {
-          document.cookie = "dev=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-        }else if (cookieKey == "prod") {
-          document.cookie = "prod=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+          if (obj.user.default_company.bucket == 'Business') {
+            document.cookie = "dev=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+          } else {
+            document.cookie = "dev_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+            window.location.replace(this.taxesBaseUIUrl);
+          }
+        } else if (cookieKey == "prod") {
+          if (obj.user.default_company.bucket == 'Business') {
+            document.cookie = "prod=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+          } else {
+            document.cookie = "prod_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+            window.location.replace("https://taxes.qount.io");
+          }
         }
+/*
+        else if (cookieKey == "dev_taxes_app") {
+          if (obj.user.default_company.bucket == 'Business') {
+            document.cookie = "dev=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+          } else {
+            document.cookie = "dev_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+            window.location.replace(this.taxesBaseUIUrl);
+          }
+        }
+*/
+
       }
     }
   }
