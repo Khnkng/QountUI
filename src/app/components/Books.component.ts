@@ -106,8 +106,8 @@ export class BooksComponent{
   metrics: any = {};
   routeSubscribe: any = {};
   chartColors:Array<any> = ['#44B6E8','#18457B','#00B1A9','#F06459','#22B473','#384986','#4554A4','#808CC5'];
-  depositsTableColumns: Array<any> = ['Title', 'Date', 'Bank Account Name', 'Amount'];
-  expenseTableColumns: Array<any> = ['Title', 'Expense Date', 'Bank Account', 'Amount'];
+  depositsTableColumns: Array<any> = ['Title', 'Date', 'Financial Account Name', 'Amount'];
+  expenseTableColumns: Array<any> = ['Title', 'Expense Date', 'Financial Account', 'Amount'];
   journalEntriesTableColumns: Array<any> = ['Number', 'Date', 'Category', 'Source'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
   showDownloadIcon:boolean = false;
@@ -431,7 +431,7 @@ export class BooksComponent{
       {"name": "due_date", "title": "Expense Date","type":"text","sortValue": function(value){
         return moment(value,base.dateFormat).valueOf();
       }},
-      {"name": "bank_account_id", "title": "Bank Account"},
+      {"name": "bank_account_id", "title": "Financial Account"},
       {"name": "id", "title": "id", 'visible': false, 'filterable': false},
       {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
       {"name": "cash_only_journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
@@ -510,7 +510,7 @@ export class BooksComponent{
       {"name": "date", "title": "Date","type":"text","sortValue": function(value){
         return moment(value,base.dateFormat).valueOf();
       }},
-      {"name": "bank_account_id", "title": "Bank Account"},
+      {"name": "bank_account_id", "title": "Financial Account"},
       {"name": "id", "title": "id", 'visible': false, 'filterable': false},
       {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
       {"name": "cash_only_journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
@@ -1323,7 +1323,7 @@ export class BooksComponent{
       tempData[i].amount = parseFloat(tempData[i].amount.value).toLocaleString(this.localeFortmat, { style: 'currency', currency: this.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
       tempJsonArray["Title"] = tempData[i].title;
       tempJsonArray["Date"] = tempData[i].date;
-      tempJsonArray["Bank Account Name"] = tempData[i].bank_account_id;
+      tempJsonArray["Financial Account Name"] = tempData[i].bank_account_id;
       tempJsonArray["Amount"] = tempData[i].amount;
 
       newTableData.push(tempJsonArray);
@@ -1341,7 +1341,7 @@ export class BooksComponent{
       tempData[i].amount = parseFloat(tempData[i].amount.value).toLocaleString(this.localeFortmat, { style: 'currency', currency: this.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
       tempJsonArray["Title"] = tempData[i].title;
       tempJsonArray["Expense Date"] = tempData[i].due_date;
-      tempJsonArray["Bank Account"] = tempData[i].bank_account_id;
+      tempJsonArray["Financial Account"] = tempData[i].bank_account_id;
       tempJsonArray["Amount"] = tempData[i].amount;
 
       newTableData.push(tempJsonArray);
