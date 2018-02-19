@@ -16,12 +16,12 @@
 <div class="row collapse tab-content" style="margin: 0 15px;">
 <div *ngIf="tabDisplay[0].display == 'block'" class="column medium-12 qount-flyout SwitchCompany-reveal">
     <div class="column large-12 medium-12 small-12">
-        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCompanyList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event, 'Business')"></foo-table>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCompanyList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
 </div>
 <div *ngIf="tabDisplay[1].display == 'block'" class="column medium-12 qount-flyout SwitchCompany-reveal">
     <div class="column large-12 medium-12 small-12">
-        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCompanyList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event, '1040')"></foo-table>
+        <foo-table #fooTableDir="fooTable" class="bighalf-footable" *ngIf="hasCompanyList" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
 </div>
 </div>
