@@ -110,6 +110,7 @@ export class BooksComponent{
   expenseTableColumns: Array<any> = ['Title', 'Expense Date', 'Financial Account', 'Amount'];
   journalEntriesTableColumns: Array<any> = ['Number', 'Date', 'Category', 'Source'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  depositTypes:any={"expenseRefund":"Expense Refund","other":"Other","invoice":"Invoice","shareholder":"Shareholder"};
   showDownloadIcon:boolean = false;
 
   constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
@@ -507,7 +508,7 @@ export class BooksComponent{
     this.depositsTableData.defSearchString = this.searchString;
     this.depositsTableData.columns = [
       {"name": "title", "title": "Title"},
-      {"name": "date", "title": "Date","type":"text","sortValue": function(value){
+      {"name": "date", "title": "Deposit Date","type":"text","sortValue": function(value){
         return moment(value,base.dateFormat).valueOf();
       }},
       {"name": "bank_account_id", "title": "Financial Account"},
@@ -522,6 +523,7 @@ export class BooksComponent{
       },
         "classes": "currency-align currency-padding"
       },
+      {"name": "deposit_type", "title": "Deposit Type"},
       {"name": "actions", "title": "", "type": "html", "sortable": false, 'filterable': false}];
     this.depositsTableData.rows = [];
     data.forEach(function(expense){
@@ -542,6 +544,8 @@ export class BooksComponent{
           }
         }else if(key == 'date'){
           row[key] = (expense[key]) ? base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat) : expense[key];
+        }else if(key=='deposit_type'){
+          row[key]=base.depositTypes[expense[key]];
         }else{
           row[key] = expense[key];
         }
