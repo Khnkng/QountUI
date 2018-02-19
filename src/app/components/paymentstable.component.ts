@@ -138,6 +138,10 @@ export class paymenttableComponent {
 
     hideFlyout(){
         let link = ['payments/dashboard','dashboard'];
+        let prevState = this.stateService.getPrevState();
+        if(prevState){
+          link = [prevState.url];
+        }
         this._router.navigate(link);
     }
 
