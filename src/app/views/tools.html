@@ -174,6 +174,12 @@
             <div class="clear"></div>
             <div class="thumb-label">Shareholders</div>
           </div>
+          <div class="column tool-grid" (click)="showPage('discounts', $event)">
+            <div class="grid-icon employees"></div>
+            <span class="grid-qount" [hidden]="discountsCount == 0">{{discountsCount}}</span>
+            <div class="clear"></div>
+            <div class="thumb-label">Discounts</div>
+          </div>
         </div>
     </div>
 </div>
