@@ -80,12 +80,7 @@ export class AppComponent  implements OnInit{
       }
     }else {
       if(Session.hasSession()) {
-        const bucketType = Session.getUser().default_company.bucket;
-        if (bucketType === 'Business') {
-          this.hasLoggedIn = true;
-        }else {
-          window.location.replace('https://dev-taxes.qount.io');
-        }
+        this.hasLoggedIn = true;
       }else {
         if(this.currentEnvironment.isLocal){
           let link = ['/login'];
