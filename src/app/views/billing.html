@@ -90,8 +90,11 @@
           </div>
         </div>
         <div class="row">
-          <div class="small-12 medium-4 columns">
+          <div class="small-12 medium-4 columns" *ngIf="!savedCardData.last_four">
             <button class="button create small float-right" [disabled]="!billForm.valid" type="submit" data-close>Pay</button>
+          </div>
+          <div class="small-12 medium-4 columns" *ngIf="savedCardData.last_four">
+            <button class="button create small float-right" [disabled]="!billForm.valid" type="submit" data-close>Update</button>
             <button class="button create small float-right"  style="margin-right: 20px;" type="submit" data-close (click)="cancel()">cancel</button>
           </div>
         </div>

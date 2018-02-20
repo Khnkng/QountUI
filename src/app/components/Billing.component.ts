@@ -113,7 +113,11 @@ export class BillingComponent {
     this.customersService.getCreditCardToken(data, this.publicKey)
       .subscribe(res  => {
         this.payment_spring_token = res.id;
-        this.tokenSubscription(res);
+        if (this.savedCardData['last4']) {
+          this.updateTokenSubscription(res);
+        }else {
+          this.tokenSubscription(res);
+        }
       }, error =>  {
         const err = JSON.parse(error);
         this.loadingService.triggerLoadingEvent(false);
@@ -128,6 +132,31 @@ export class BillingComponent {
       "token": res.id
     };
     this.customersService.chargeToken(obj)
+      .subscribe(res  => {
+        this.savedCardData = res;
+        this.last4 = res.last_four;
+        if (this.last4) {
+          this.editMode = true;
+        }else {
+          this.editMode = false;
+        }
+        this.loadingService.triggerLoadingEvent(false);
+        this._toastService.pop(TOAST_TYPE.success, "Transaction Successful");
+      }, error =>  {
+        const err = JSON.parse(error);
+        this.loadingService.triggerLoadingEvent(false);
+        this._toastService.pop(TOAST_TYPE.error, err.errors[0].message);
+      });
+  }
+
+
+
+  updateTokenSubscription(res) {
+    const obj = {
+      "frequency": this.savedCardData['frequency'],
+      "token": res.id
+    };
+    this.customersService.updateChargeToken(obj)
       .subscribe(res  => {
         this.savedCardData = res;
         this.last4 = res.last_four;
