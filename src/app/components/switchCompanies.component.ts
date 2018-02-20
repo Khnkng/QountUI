@@ -184,6 +184,7 @@ export class SwitchCompanyComponent {
     this.currentCompany = company;
     this.refreshTable();
     this.setDefaultCompany(company.id);
+
   }
 
   updateCookie(company) {
@@ -213,6 +214,7 @@ export class SwitchCompanyComponent {
           const link = ['/dashboard'];
           this._router.navigate(link);
         } else {
+          document.cookie = "dev=;path=/;domain=qount.io";
           document.cookie = "dev_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
           window.location.replace('https://dev-taxes.qount.io');
         }
