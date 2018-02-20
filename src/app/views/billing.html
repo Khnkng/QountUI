@@ -5,7 +5,7 @@
         <div class="input-group paymentDetails">
           <div class="estimateLabel"></div>
           <div class="estimateAmount">
-            <span>{{formatAmount(savedCardData.amount)}}/{{savedCardData.frequency}}</span>
+            <span style="color: #17457B;">{{formatAmount(savedCardData.amount)}}/</span><span style="color: #878787;">{{savedCardData.frequency}}</span>
           </div>
         </div>
       </div>
@@ -107,9 +107,9 @@
         <div class="input-group paymentDetails" style="padding-bottom:37px;">
           <div class="estimateLabel"></div>
           <div class="estimateAmount">
-            <span>{{formatAmount(savedCardData.amount)}}/{{savedCardData.frequency}}</span>
+            <span style="color: #17457B;">{{formatAmount(savedCardData.amount)}}/</span><span style="color: #878787;">{{savedCardData.frequency}}</span>
           </div>
-          <div>
+          <div style="color:#878787">
             <span>Next Charge: </span><span>{{getNextCharge(savedCardData.next_billing)}}</span>
           </div>
         </div>
@@ -125,8 +125,8 @@
               <img height="90" style="position: relative;width: 90px;margin-right:20px;" src="https://qount-oneapp-dev.s3.amazonaws.com/00145ecf-e2ce-4135-975f-b1289ca4cd42?response-content-disposition=attachment%3B%20filename%3D%22Mastercard-Curved.png%22&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Date=20180209T122322Z&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Expires=600&amp;X-Amz-Credential=AKIAJZQMT2MSIGRYL2KA%2F20180209%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Signature=c3feb26fc4e4c2e2a94eafd57b3ac518441867ab8aad86bdc67a75fc122f0c32">
             </div>
             <div class="small-12 medium-8">
-              <div>**** **** **** {{last4}}</div>
-              <div>{{savedCardData.card_owner_name}}</div>
+              <div style="color:#17457B">**** **** **** {{last4}}</div>
+              <div style="color:#878787">{{savedCardData.card_owner_name}}</div>
             </div>
           </div>
         </div>
