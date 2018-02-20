@@ -201,6 +201,7 @@ export class SwitchCompanyComponent {
         obj.user.default_company.defaultCurrency = company.defaultCurrency;
         obj.user.default_company.reportCurrency = company.reportCurrency;
         obj.user.default_company.id = company.id;
+        obj.referer = 'oneApp';
         this.transferCookieAndRedirect(obj);
       }
     }
