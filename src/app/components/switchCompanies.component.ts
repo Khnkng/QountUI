@@ -183,7 +183,6 @@ export class SwitchCompanyComponent {
     this.currentCompanyId = company.id;
     this.currentCompany = company;
     this.refreshTable();
-    this.setDefaultCompany(company.id);
   }
 
   updateCookie(company) {
@@ -202,6 +201,7 @@ export class SwitchCompanyComponent {
         obj.user.default_company.reportCurrency = company.reportCurrency;
         obj.user.default_company.id = company.id;
         obj.referer = 'oneApp';
+        this.setDefaultCompany(company.id);
         this.transferCookieAndRedirect(obj);
       }
     }
@@ -226,6 +226,7 @@ export class SwitchCompanyComponent {
       } else {
         document.cookie = "prod=;path=/;domain=qount.io";
         document.cookie = "prod_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+        Session.destroy();
         window.location.replace("https://taxes.qount.io");
       }
     }
