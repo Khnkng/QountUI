@@ -216,6 +216,7 @@ export class SwitchCompanyComponent {
       } else {
         document.cookie = "dev=;path=/;domain=qount.io";
         document.cookie = "dev_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+        Session.destroy();
         window.location.replace('https://dev-taxes.qount.io');
       }
     } else if (cookieKey === "prod") {
