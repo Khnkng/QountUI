@@ -209,26 +209,30 @@ export class SwitchCompanyComponent {
 
   transferCookieAndRedirect(obj) {
     const cookieKey = this.currentEnvironment.production ? "prod" : "dev";
-      if (cookieKey === "dev") {
-        if (obj.user.default_company.bucket === 'Business') {
-          document.cookie = "dev=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-          const link = ['/dashboard'];
-          this._router.navigate(link);
-        } else {
-          document.cookie = "dev=;path=/;domain=qount.io";
-          document.cookie = "dev_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-          window.location.replace('https://dev-taxes.qount.io');
-        }
-      } else if (cookieKey === "prod") {
-        if (obj.user.default_company.bucket === 'Business') {
-          document.cookie = "prod=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-          const link = ['/dashboard'];
-          this._router.navigate(link);
-        } else {
-          document.cookie = "prod_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-          window.location.replace("https://taxes.qount.io");
-        }
+    if (cookieKey === "dev") {
+      if (obj.user.default_company.bucket === 'Business') {
+        document.cookie = "dev=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+        this.navigatePage();
+      } else {
+        document.cookie = "dev=;path=/;domain=qount.io";
+        document.cookie = "dev_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+        window.location.replace('https://dev-taxes.qount.io');
       }
+    } else if (cookieKey === "prod") {
+      if (obj.user.default_company.bucket === 'Business') {
+        document.cookie = "prod=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+        this.navigatePage();
+      } else {
+        document.cookie = "prod=;path=/;domain=qount.io";
+        document.cookie = "prod_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+        window.location.replace("https://taxes.qount.io");
+      }
+    }
+  }
+
+  navigatePage() {
+    const link = ['/dashboard'];
+    this._router.navigate(link);
   }
 
   getCookieData(cname) {
