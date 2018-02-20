@@ -3,7 +3,6 @@
     <div class="row" *ngIf="hasData">
       <div class="small-12 medium-2 columns">
         <div class="input-group paymentDetails">
-          <div class="estimateLabel"></div>
           <div class="estimateAmount">
             <span style="color: #17457B;">{{formatAmount(savedCardData.amount)}}/</span><span style="color: #878787;">{{savedCardData.frequency}}</span>
           </div>
@@ -104,8 +103,7 @@
   <div *ngIf="editMode">
     <div class="row">
       <div class="small-12 medium-4 columns">
-        <div class="input-group paymentDetails" style="padding-bottom:37px;">
-          <div class="estimateLabel"></div>
+        <div class="input-group paymentDetails" style="padding-bottom:46px;">
           <div class="estimateAmount">
             <span style="color: #17457B;">{{formatAmount(savedCardData.amount)}}/</span><span style="color: #878787;">{{savedCardData.frequency}}</span>
           </div>
