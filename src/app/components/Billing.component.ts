@@ -113,7 +113,7 @@ export class BillingComponent {
     this.customersService.getCreditCardToken(data, this.publicKey)
       .subscribe(res  => {
         this.payment_spring_token = res.id;
-        if (this.savedCardData['last4']) {
+        if (this.savedCardData['last_four']) {
           this.updateTokenSubscription(res);
         }else {
           this.tokenSubscription(res);
@@ -153,7 +153,7 @@ export class BillingComponent {
 
   updateTokenSubscription(res) {
     const obj = {
-      "frequency": this.savedCardData['frequency'],
+      "payment_method": this.isCreditCard ? 'credit_card' : 'bank_account',
       "token": res.id
     };
     this.customersService.updateChargeToken(obj)
