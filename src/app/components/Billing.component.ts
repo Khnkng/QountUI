@@ -171,6 +171,12 @@ export class BillingComponent {
     this.editMode = false;
   }
 
+  cancel() {
+    if (this.savedCardData['last_four']) {
+      this.editMode = true;
+    }
+  }
+
   formatAmount(value){
     return this.numeralService.format('$0,0.00', value);
   }
