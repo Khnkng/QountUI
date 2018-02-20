@@ -106,10 +106,11 @@ export class BooksComponent{
   metrics: any = {};
   routeSubscribe: any = {};
   chartColors:Array<any> = ['#44B6E8','#18457B','#00B1A9','#F06459','#22B473','#384986','#4554A4','#808CC5'];
-  depositsTableColumns: Array<any> = ['Title', 'Date', 'Bank Account Name', 'Amount'];
-  expenseTableColumns: Array<any> = ['Title', 'Expense Date', 'Bank Account', 'Amount'];
+  depositsTableColumns: Array<any> = ['Title', 'Date', 'Financial Account Name', 'Amount'];
+  expenseTableColumns: Array<any> = ['Title', 'Expense Date', 'Financial Account', 'Amount'];
   journalEntriesTableColumns: Array<any> = ['Number', 'Date', 'Category', 'Source'];
   pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
+  depositTypes:any={"expenseRefund":"Expense Refund","other":"Other","invoice":"Invoice","shareholder":"Shareholder"};
   showDownloadIcon:boolean = false;
 
   constructor(private _router:Router,private _route: ActivatedRoute, private journalService: JournalEntriesService,
@@ -431,7 +432,7 @@ export class BooksComponent{
       {"name": "due_date", "title": "Expense Date","type":"text","sortValue": function(value){
         return moment(value,base.dateFormat).valueOf();
       }},
-      {"name": "bank_account_id", "title": "Bank Account"},
+      {"name": "bank_account_id", "title": "Financial Account"},
       {"name": "id", "title": "id", 'visible': false, 'filterable': false},
       {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
       {"name": "cash_only_journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
@@ -507,10 +508,10 @@ export class BooksComponent{
     this.depositsTableData.defSearchString = this.searchString;
     this.depositsTableData.columns = [
       {"name": "title", "title": "Title"},
-      {"name": "date", "title": "Date","type":"text","sortValue": function(value){
+      {"name": "date", "title": "Deposit Date","type":"text","sortValue": function(value){
         return moment(value,base.dateFormat).valueOf();
       }},
-      {"name": "bank_account_id", "title": "Bank Account"},
+      {"name": "bank_account_id", "title": "Financial Account"},
       {"name": "id", "title": "id", 'visible': false, 'filterable': false},
       {"name": "journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
       {"name": "cash_only_journal_id", "title": "Journal ID", 'visible': false, 'filterable': false},
@@ -522,6 +523,7 @@ export class BooksComponent{
       },
         "classes": "currency-align currency-padding"
       },
+      {"name": "deposit_type", "title": "Deposit Type"},
       {"name": "actions", "title": "", "type": "html", "sortable": false, 'filterable': false}];
     this.depositsTableData.rows = [];
     data.forEach(function(expense){
@@ -542,6 +544,8 @@ export class BooksComponent{
           }
         }else if(key == 'date'){
           row[key] = (expense[key]) ? base.dateFormater.formatDate(expense[key],base.serviceDateformat,base.dateFormat) : expense[key];
+        }else if(key=='deposit_type'){
+          row[key]=base.depositTypes[expense[key]];
         }else{
           row[key] = expense[key];
         }
@@ -1323,7 +1327,7 @@ export class BooksComponent{
       tempData[i].amount = parseFloat(tempData[i].amount.value).toLocaleString(this.localeFortmat, { style: 'currency', currency: this.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
       tempJsonArray["Title"] = tempData[i].title;
       tempJsonArray["Date"] = tempData[i].date;
-      tempJsonArray["Bank Account Name"] = tempData[i].bank_account_id;
+      tempJsonArray["Financial Account Name"] = tempData[i].bank_account_id;
       tempJsonArray["Amount"] = tempData[i].amount;
 
       newTableData.push(tempJsonArray);
@@ -1341,7 +1345,7 @@ export class BooksComponent{
       tempData[i].amount = parseFloat(tempData[i].amount.value).toLocaleString(this.localeFortmat, { style: 'currency', currency: this.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 })
       tempJsonArray["Title"] = tempData[i].title;
       tempJsonArray["Expense Date"] = tempData[i].due_date;
-      tempJsonArray["Bank Account"] = tempData[i].bank_account_id;
+      tempJsonArray["Financial Account"] = tempData[i].bank_account_id;
       tempJsonArray["Amount"] = tempData[i].amount;
 
       newTableData.push(tempJsonArray);

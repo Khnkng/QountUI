@@ -15,6 +15,8 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {InvoicesService} from "invoicesUI/app/services/Invoices.service";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
+import {Router} from "@angular/router";
+import {State} from "qCommon/app/models/State";
 
 declare let _:any;
 declare let Highcharts:any;
@@ -58,7 +60,8 @@ export class CanvasComponent {
 
     constructor(private titleService: pageTitleService, private loadingService: LoadingService, private numeralService: NumeralService,
         private reportService: ReportService, private stateService: StateService, private toastService: ToastService,
-        private switchBoard: SwitchBoard, private invoiceService: InvoicesService, private companyService: CompaniesService) {
+        private switchBoard: SwitchBoard, private invoiceService: InvoicesService, private companyService: CompaniesService,
+        private _router: Router) {
         let base = this;
         this.stateService.clearAllStates();
         this.titleService.setPageTitle("Dashboard");
@@ -89,6 +92,7 @@ export class CanvasComponent {
 
     ngOnDestroy() {
       this.numeralService.switchLocale(this.companyCurrency);
+      this.routeSubscribe.unsubscribe();
     }
 
     getData(){
@@ -1149,5 +1153,17 @@ export class CanvasComponent {
             _values.push(base.numeralService.value(value));
         });
         return _values;
+    }
+
+    navigateToReceivables(){
+      this.stateService.addState(new State("MAIN_DASHBOARD", this._router.url, null, null, null));
+      let link = ['/invoice/receivables'];
+      this._router.navigate(link);
+    }
+
+    navigateToPayables(){
+      this.stateService.addState(new State("MAIN_DASHBOARD", this._router.url, null, null, null));
+      let link = ['/bills/totalpayable'];
+      this._router.navigate(link);
     }
 }

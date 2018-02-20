@@ -27,7 +27,7 @@
                       </label>
                     </div>
                     <div class="small-12 medium-3 columns">
-                      <label>Bank Account
+                      <label>Financial Account
                         <select combo-box #accountComboBoxDir="comboBox" data-placeholder="Select Account" [listObject]="accounts" formControlName="bank_account_id" (valueChanged)="setBankAccount($event)">
                           <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
                         </select>
