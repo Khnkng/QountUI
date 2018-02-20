@@ -55,6 +55,7 @@ import {RulesService} from "qCommon/app/services/Rules.service";
 import {ExpensesCodesComponent} from "./components/ExpensesCodes.component";
 import {CategorizationComponent} from "./components/Categorization.component";
 import {CustomersComponent} from "./components/Customers.component";
+import {SubCustomersComponent} from "./components/SubCustomers.component";
 import {CustomersForm,ContactLineForm} from "./forms/Customers.form";
 import {DimensionsComponent} from "./components/Dimensions.component";
 import {DimensionForm} from "./forms/Dimension.form";
@@ -110,6 +111,8 @@ import {BillingService} from "./services/Billing.service";
 import {BillingForm} from "./forms/Billing.form";
 import {ShareholdersComponent} from "./components/Shareholders.component";
 import {ShareholdersForm} from "./forms/Shareholders.form";
+import {DiscountsComponent} from "./components/Discounts.component";
+import {DiscountsForm,DiscountRangeForm} from "./forms/Discounts.form";
 
 const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
 
@@ -259,6 +262,10 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       path: 'customers',
       component: CustomersComponent,
       canActivate: [LoggedInActivator]
+    },    {
+      path: 'customers/:customerId/subCustomers',
+      component: SubCustomersComponent,
+      canActivate: [LoggedInActivator]
     },{
       path: 'users',
       component: UsersComponent,
@@ -382,6 +389,11 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
         path: 'shareholders',
         component: ShareholdersComponent,
         canActivate: [LoggedInActivator]
+    },
+    {
+      path: 'discounts',
+      component: DiscountsComponent,
+      canActivate: [LoggedInActivator]
     }
   ]), PaymentsModule, ReportsModule, InvoicesModule, CollaborationModule
   ],
@@ -393,7 +405,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     ResetPasswordComponent,paymentdashboardComponent,paidtablecomponent, lockComponent, RulesComponent, ExpenseComponent,DepositComponent,EmployeesComponent,DocumentsComponent,
     CategorizationComponent,PaymentsComponent, SearchComponent, SearchResultsComponent, YodleeTokenComponent,ReconcileComponent,
     DocumentComponent,BudgetComponent,PaymentsPlanComponent,RDCreditsComponent,DocumentsTypeComponent,LateFeesComponent,
-    ShareholdersComponent, BillingComponent],
+    ShareholdersComponent, BillingComponent, SubCustomersComponent, DiscountsComponent],
   exports: [RouterModule],
   bootstrap: [ AppComponent ],
   providers: [APP_BASE, COAForm, MetricsForm, MetricsLineForm, metricPeriodForm, SignUpService, LoginForm, SignUpForm, ForgotPassword,
@@ -401,7 +413,7 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
     UsersForm, DocumentService, FinancialAccountForm, LoadingService, LockForm, VerifyForm, ModulesService, RuleForm, RuleActionForm, ExpenseForm,
     ExpenseItemForm, DepositsForm, DepositsLineForm, EmployeesForm, YodleeService, ReconcileForm, ReconcileService, MetricsService,
     BudgetForm, BudgetItemForm, pageTitleService, PaymentsPlan, RDcreditsService, RDcreditsForm, LateFeeForm, ShareholdersForm,
-    BillingService, BillingForm],
+    BillingService, BillingForm, DiscountsForm,DiscountRangeForm],
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ]
 })
 export class AppModule {

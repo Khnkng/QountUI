@@ -38,6 +38,7 @@ export class ToolsComponent {
   budgetsCount:number=0;
   showSocialImpact: boolean = false;
   shareholdersCount: number = 0;
+  discountsCount:number=0;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private badgeService: BadgeService,private titleService:pageTitleService) {
     this.titleService.setPageTitle("TOOLS");
@@ -208,6 +209,11 @@ export class ToolsComponent {
         break;
       case 'shareholders': {
         let link = ['shareholders'];
+        this._router.navigate(link);
+      }
+        break;
+      case 'discounts': {
+        let link = ['discounts'];
         this._router.navigate(link);
       }
         break;
