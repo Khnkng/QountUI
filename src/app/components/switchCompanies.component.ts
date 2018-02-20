@@ -184,7 +184,6 @@ export class SwitchCompanyComponent {
     this.currentCompany = company;
     this.refreshTable();
     this.setDefaultCompany(company.id);
-
   }
 
   updateCookie(company) {
@@ -201,6 +200,7 @@ export class SwitchCompanyComponent {
         obj.user.default_company.bucket = company.bucket;
         obj.user.default_company.defaultCurrency = company.defaultCurrency;
         obj.user.default_company.reportCurrency = company.reportCurrency;
+        obj.user.default_company.id = company.id;
         this.transferCookieAndRedirect(obj);
       }
     }
