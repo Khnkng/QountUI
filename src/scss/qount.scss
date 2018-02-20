@@ -5378,6 +5378,7 @@ tbody tr:nth-child(even){
 }
 
 .addCard {
+  margin-bottom:20px;
   .hollow {
     font-size: 16px !important;
   }
@@ -5390,6 +5391,20 @@ tbody tr:nth-child(even){
     & :hover {
       background-color: #00B1A9 !important;
       color: #ffffff !important;
+    }
+  }
+
+  .paymentDetails {
+    padding: 10px;
+    box-shadow: 0 0px 5px 0 rgba(0, 0, 0, 0.2);
+    margin-top: 5px;
+    .estimateLabel {
+      font-size: 18px;
+      color: #384986;
+      margin-bottom:10px;
+    }
+    .estimateAmount {
+      font-size: 20px;
     }
   }
 }

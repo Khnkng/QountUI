@@ -1,116 +1,156 @@
-<div class="addCard" *ngIf="!editMode && hasData">
-  <div class="row" *ngIf="hasData">
-    <div class="small-12 medium-2 columns">
-      <div class="input-group">
-        <label>
-          <span>{{formatAmount(savedCardData.amount)}}</span>
-          <span>/</span>
-          <span>{{savedCardData.frequency}}</span>
-        </label>
+<div class="addCard">
+  <div *ngIf="!editMode && hasData">
+    <div class="row" *ngIf="hasData">
+      <div class="small-12 medium-2 columns">
+        <div class="input-group paymentDetails">
+          <div class="estimateLabel"></div>
+          <div class="estimateAmount">
+            <span>{{formatAmount(savedCardData.amount)}}/{{savedCardData.frequency}}</span>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="small-12 medium-12 columns">
-      <input type="button" class="button hollow grey" value="Credit Card" style="width: 10.6rem;"  *ngIf="savedCardData.credit_card_enabled" [ngClass]="{'changeStatus' : isCreditCard}" (click)="changePaymentType('credit')" />
-      <input type="button" class="button hollow grey" value="Bank Account" style="margin-left: 0.7rem;width: 10.6rem;" *ngIf="!savedCardData.credit_card_enabled" [ngClass]="{'changeStatus' : !isCreditCard}" (click)="changePaymentType('bank')" />
+    <div class="row">
+      <div class="small-12 medium-12 columns">
+        <input type="button" class="button hollow grey" value="Credit Card" style="width: 10.6rem;"  *ngIf="savedCardData.credit_card_enabled" [ngClass]="{'changeStatus' : isCreditCard}" (click)="changePaymentType('credit')" />
+        <input type="button" class="button hollow grey" value="Bank Account" style="margin-left: 0.7rem;width: 10.6rem;" [ngClass]="{'changeStatus' : !isCreditCard}" (click)="changePaymentType('bank')" />
+      </div>
     </div>
-  </div>
 
-  <form (ngSubmit)="submit($event)" [formGroup]="billForm">
-    <section class="form-section clearfix">
-      <div *ngIf="isCreditCard && !editMode" style="margin-top:20px;">
-        <div class="row" >
-          <div class="small-12 medium-4 columns">
-            <div class="input-group">
-              <i class="icon ion-ios-person-outline input-group-label" style="background: #fff;font-size: 1.3rem;"></i>
-              <input class="input-group-field" id="card_owner_name" type="text" placeholder="Name on Card" formControlName="card_owner_name">
+    <form (ngSubmit)="submit($event)" [formGroup]="billForm">
+      <section class="form-section clearfix">
+        <div *ngIf="isCreditCard && !editMode" style="margin-top:20px;">
+          <div class="row" >
+            <div class="small-12 medium-4 columns">
+              <div class="input-group">
+                <i class="icon ion-ios-person-outline input-group-label" style="background: #fff;font-size: 1.3rem;"></i>
+                <input class="input-group-field" id="card_owner_name" type="text" placeholder="Name on Card" formControlName="card_owner_name">
+              </div>
+            </div>
+          </div>
+          <div class="row" >
+            <div class="small-12 medium-4 columns">
+              <div class="input-group">
+                <i class="icon ion-card input-group-label" style="background: #fff;font-size: 1.3rem;"></i>
+                <input class="input-group-field" id="card_number" type="text" placeholder="Card Number" formControlName="card_number">
+              </div>
+            </div>
+          </div>
+          <div class="row" >
+            <div class="small-12 medium-1 columns" style="padding-left: 15px;padding-right: 0px;margin-right:42px;">
+              <select id="card_exp_month" formControlName="card_exp_month" data-placeholder="exp_month">
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+            <div class="small-12 medium-1 columns" style="padding: 0px;margin-right:42px;">
+              <select data-placeholder="exp_year" formControlName="card_exp_year">
+                <option *ngFor="let year of years" [value]="year.value">{{year.name}}</option>
+              </select>
+            </div>
+            <div class="small-12 medium-1 columns" style="padding: 0px;">
+              <div class="input-group">
+                <i class="icon ion-ios-locked-outline input-group-label" style="background: #fff;"></i>
+                <input class="input-group-field" id="csc" type="text" placeholder="CVV" formControlName="csc">
+              </div>
             </div>
           </div>
         </div>
-        <div class="row" >
-          <div class="small-12 medium-4 columns">
-            <div class="input-group">
-              <i class="icon ion-card input-group-label" style="background: #fff;font-size: 1.3rem;"></i>
-              <input class="input-group-field" id="card_number" type="text" placeholder="Card Number" formControlName="card_number">
+        <div *ngIf="!isCreditCard && !editMode" style="margin-top:20px;margin-left:15px;">
+          <div class="row">
+            <div class="small-12 medium-4" style="padding: 0px"><input type="text" placeholder="First Name*" formControlName="bank_account_holder_first_name"/></div>
+          </div>
+          <div class="row">
+            <div class="small-12 medium-4" style="padding: 0px"><input type="text" placeholder="Last Name*" formControlName="bank_account_holder_last_name" /></div>
+          </div>
+          <div class="row">
+            <div class="small-12 medium-4" style="padding: 0px">
+              <select data-placeholder="Select" id="bank_account_type" formControlName="bank_account_type">
+                <option value="" selected>Selected Account Type</option>
+                <option value="savings">Saving</option>
+                <option value="checking">Checking</option>
+              </select>
             </div>
           </div>
+          <div class="row">
+            <div class="small-12 medium-4" style="padding: 0px"><input type="text" placeholder="Account Number*" formControlName="bank_account_number"/></div>
+          </div>
+          <div class="row">
+            <div class="small-12 medium-4" style="padding: 0px"><input type="text" placeholder="Routing Number*" formControlName="bank_routing_number"/></div>
+          </div>
         </div>
-        <div class="row" >
-          <div class="small-12 medium-1 columns" style="padding-left: 15px;padding-right: 0px;margin-right:42px;">
-            <select id="card_exp_month" formControlName="card_exp_month" data-placeholder="exp_month">
-              <option value="01">01</option>
-              <option value="02">02</option>
-              <option value="03">03</option>
-              <option value="04">04</option>
-              <option value="05">05</option>
-              <option value="06">06</option>
-              <option value="07">07</option>
-              <option value="08">08</option>
-              <option value="09">09</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-            </select>
+        <div class="row">
+          <div class="small-12 medium-4 columns" *ngIf="!savedCardData.last_four">
+            <button class="button create small float-right" [disabled]="!billForm.valid" type="submit" data-close>Pay</button>
           </div>
-          <div class="small-12 medium-1 columns" style="padding: 0px;margin-right:42px;">
-            <select data-placeholder="exp_year" formControlName="card_exp_year">
-              <option *ngFor="let year of years" [value]="year.value">{{year.name}}</option>
-            </select>
+          <div class="small-12 medium-4 columns" *ngIf="savedCardData.last_four">
+            <button class="button create small float-right" [disabled]="!billForm.valid" type="submit" data-close>Update</button>
+            <button class="button create small float-right"  style="margin-right: 20px;" type="submit" data-close (click)="cancel()">cancel</button>
           </div>
-          <div class="small-12 medium-1 columns" style="padding: 0px;">
-            <div class="input-group">
-              <i class="icon ion-ios-locked-outline input-group-label" style="background: #fff;"></i>
-              <input class="input-group-field" id="csc" type="text" placeholder="CVV" formControlName="csc">
+        </div>
+      </section>
+    </form>
+  </div>
+  <div *ngIf="editMode">
+    <div class="row">
+      <div class="small-12 medium-4 columns">
+        <div class="input-group paymentDetails" style="padding-bottom:37px;">
+          <div class="estimateLabel"></div>
+          <div class="estimateAmount">
+            <span>{{formatAmount(savedCardData.amount)}}/{{savedCardData.frequency}}</span>
+          </div>
+          <div>
+            <span>Next Charge: </span><span>{{getNextCharge(savedCardData.next_billing)}}</span>
+          </div>
+        </div>
+      </div>
+      <div class="small-12 medium-4 columns">
+        <div class="paymentDetails">
+          <div class="estimateLabel row">
+            <div class="medium-6">Billing Details</div>
+            <div class="medium-6 text-right" (click)="editAccountDetails()"><i class='icon ion-edit'></i></div>
+          </div>
+          <div class="row">
+            <div class="small-12 medium-4">
+              <img height="90" style="position: relative;width: 90px;margin-right:20px;" src="https://qount-oneapp-dev.s3.amazonaws.com/00145ecf-e2ce-4135-975f-b1289ca4cd42?response-content-disposition=attachment%3B%20filename%3D%22Mastercard-Curved.png%22&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Date=20180209T122322Z&amp;X-Amz-SignedHeaders=host&amp;X-Amz-Expires=600&amp;X-Amz-Credential=AKIAJZQMT2MSIGRYL2KA%2F20180209%2Fus-east-1%2Fs3%2Faws4_request&amp;X-Amz-Signature=c3feb26fc4e4c2e2a94eafd57b3ac518441867ab8aad86bdc67a75fc122f0c32">
+            </div>
+            <div class="small-12 medium-8">
+              <div>**** **** **** {{last4}}</div>
+              <div>{{savedCardData.card_owner_name}}</div>
             </div>
           </div>
         </div>
       </div>
-      <div *ngIf="!isCreditCard && !editMode" style="margin-top:20px;margin-left:15px;">
-        <div class="row">
-          <div class="small-12 medium-4" style="padding: 0px"><input type="text" placeholder="First Name*" formControlName="bank_account_holder_first_name"/></div>
-        </div>
-        <div class="row">
-          <div class="small-12 medium-4" style="padding: 0px"><input type="text" placeholder="Last Name*" formControlName="bank_account_holder_last_name" /></div>
-        </div>
-        <div class="row">
-          <div class="small-12 medium-4" style="padding: 0px">
-            <select data-placeholder="Select" id="bank_account_type" formControlName="bank_account_type">
-              <option value="" selected>Selected Account Type</option>
-              <option value="savings">Saving</option>
-              <option value="checking">Checking</option>
-            </select>
+    </div>
+    <!--<div class="row">
+      <div class="small-12 medium-4 columns">
+        <div class="paymentDetails">
+          <div class="estimateLabel">Billing History</div>
+          <div class="row">
+            <div class="medium-6">6 FEB 2018</div>
+            <div class="medium-6 text-right">$10.66</div>
           </div>
-        </div>
-        <div class="row">
-          <div class="small-12 medium-4" style="padding: 0px"><input type="text" placeholder="Account Number*" formControlName="bank_account_number"/></div>
-        </div>
-        <div class="row">
-          <div class="small-12 medium-4" style="padding: 0px"><input type="text" placeholder="Routing Number*" formControlName="bank_routing_number"/></div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="small-12 medium-4 columns">
-          <button class="button create small float-right" [disabled]="!billForm.valid" type="submit" data-close>Pay</button>
+          <div class="row">
+            <div class="medium-6">6 FEB 2018</div>
+            <div class="medium-6 text-right">$10.66</div>
+          </div>
+          <div class="row">
+            <div class="medium-6">6 FEB 2018</div>
+            <div class="medium-6 text-right">$10.66</div>
+          </div>
+          <div style="clear: both;"></div>
         </div>
       </div>
-    </section>
-  </form>
+    </div>-->
+  </div>
 </div>
-<div *ngIf="editMode">
-  <div class="row">
-    <div class="small-12 medium-2 columns">
-      <div class="input-group">
-        <label>
-          <span>{{formatAmount(savedCardData.amount)}}</span>
-          <span>/</span>
-          <span>{{savedCardData.frequency}}</span>
-        </label>
-      </div>
-      <div><label>Card Number</label></div>
-      <div>**** **** **** {{last4}}</div>
-    </div>
-  </div>
-
-</div>
-
