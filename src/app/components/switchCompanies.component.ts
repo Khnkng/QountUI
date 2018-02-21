@@ -182,7 +182,6 @@ export class SwitchCompanyComponent {
     this.currentCompanyName = company.name;
     this.currentCompanyId = company.id;
     this.currentCompany = company;
-    this.refreshTable();
   }
 
   updateCookie(company) {
@@ -202,6 +201,7 @@ export class SwitchCompanyComponent {
         obj.user.default_company.id = company.id;
         obj.referer = 'oneApp';
         this.setDefaultCompany(company.id);
+        this.refreshTable();
         this.transferCookieAndRedirect(obj);
       }
     }
