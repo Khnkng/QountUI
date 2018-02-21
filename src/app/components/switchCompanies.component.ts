@@ -37,6 +37,9 @@ export class SwitchCompanyComponent {
   routeSubscribe: any;
   currentEnvironment: any;
   tabDisplay: Array<any> = [{'display': 'none'}, {'display': 'none'}];
+  tabsRequired = false;
+  taxCompanies: any;
+  businessCompanies: any;
 
   constructor(private _router: Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
               private companiesService: CompaniesService, private loadingService: LoadingService, private userProfileService: UserProfileService,
@@ -45,11 +48,9 @@ export class SwitchCompanyComponent {
     this.currentCompanyId = Session.getCurrentCompany();
     this.currentCompanyName = Session.getCurrentCompanyName();
     this.compSubscription = this.switchBoard.onCompanyAddOrDelete.subscribe(msg => {
-      // this.fetchCompanies();
-      this.showCompanies(0, 'Business');
+      this.fetchCompanies();
     });
-    // this.fetchCompanies();
-    this.showCompanies(0, 'Business');
+    this.fetchCompanies();
     this.titleService.setPageTitle("Switch Company");
     this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
       let link = ['/dashboard'];
@@ -57,19 +58,28 @@ export class SwitchCompanyComponent {
     });
   }
 
-  /*
-   fetchCompanies() {
-   this.companiesService.companies().subscribe(companies => {
-   this.allCompanies = companies;
-   if(this.currentCompanyId){
-   this.currentCompany = _.find(this.allCompanies, {id: this.currentCompanyId});
-   } else if(this.allCompanies.length> 0){
-   this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-   }
-   this.buildTableData(this.allCompanies);
-   }, error => this.handleError(error));
-   }
-   */
+  fetchCompanies() {
+    this.companiesService.companies().subscribe(companies => {
+      this.taxCompanies = _.filter(companies, {bucket: "1040"});
+      this.businessCompanies = _.filter(companies, {bucket: "Business"});
+      if (this.taxCompanies.length > 0) {
+        this.tabsRequired = true;
+        this.showCompanies(0);
+      } else {
+        this.allCompanies = companies;
+        this.setCurrentCompany();
+        this.buildTableData(this.allCompanies);
+      }
+    }, error => this.handleError(error));
+  }
+
+  setCurrentCompany() {
+    if (this.currentCompanyId) {
+      this.currentCompany = _.find(this.allCompanies, {id: this.currentCompanyId});
+    } else if (this.allCompanies.length > 0) {
+      this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
+    }
+  }
 
   ngAfterViewInit() {
 
@@ -253,24 +263,19 @@ export class SwitchCompanyComponent {
     return "";
   }
 
-  showCompanies(tabNum, companyType) {
+  showCompanies(tabNum) {
     let base = this;
     this.tabDisplay.forEach(function(tab, index){
       base.tabDisplay[index] = {'display': 'none'};
     });
-
-    this.loadingService.triggerLoadingEvent(true);
-    this.companiesService.companiesByType(companyType).subscribe(companies => {
-      this.tabDisplay[tabNum] = {'display': 'block'};
-      this.allCompanies = companies;
-      if (this.currentCompanyId) {
-        this.currentCompany = _.find(this.allCompanies, {id: this.currentCompanyId});
-      } else if (this.allCompanies.length > 0) {
-        this.currentCompany = _.find(this.allCompanies, {id: this.allCompanies[0].id});
-      }
-      this.buildTableData(this.allCompanies);
-      this.loadingService.triggerLoadingEvent(false);
-    }, error => this.handleError(error));
+    this.tabDisplay[tabNum] = {'display': 'block'};
+    if (tabNum === 0) {
+      this.allCompanies = this.businessCompanies;
+    } else if (tabNum === 1) {
+      this.allCompanies = this.taxCompanies;
+    }
+    this.setCurrentCompany();
+    this.buildTableData(this.allCompanies);
   }
 
 }
