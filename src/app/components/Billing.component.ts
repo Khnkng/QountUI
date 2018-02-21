@@ -50,7 +50,6 @@ export class BillingComponent {
     this.companyCurrency = Session.getCurrentCompanyCurrency();
     this.billForm = this._fb.group(this.billingForm.getCreditForm());
     this.titleService.setPageTitle("Billing");
-    console.log(Session.getUser());
     const default_company = Session.getUser().default_company;
     this.companyId = Session.getCurrentCompany();
     this.generateYears();
@@ -114,7 +113,11 @@ export class BillingComponent {
     this.customersService.getCreditCardToken(data, this.publicKey)
       .subscribe(res  => {
         this.payment_spring_token = res.id;
-        this.tokenSubscription(res);
+        if (this.savedCardData['last_four']) {
+          this.updateTokenSubscription(res);
+        }else {
+          this.tokenSubscription(res);
+        }
       }, error =>  {
         const err = JSON.parse(error);
         this.loadingService.triggerLoadingEvent(false);
@@ -146,6 +149,31 @@ export class BillingComponent {
       });
   }
 
+
+
+  updateTokenSubscription(res) {
+    const obj = {
+      "payment_method": this.isCreditCard ? 'credit_card' : 'bank_account',
+      "token": res.id
+    };
+    this.customersService.updateChargeToken(obj)
+      .subscribe(res  => {
+        this.savedCardData = res;
+        this.last4 = res.last_four;
+        if (this.last4) {
+          this.editMode = true;
+        }else {
+          this.editMode = false;
+        }
+        this.loadingService.triggerLoadingEvent(false);
+        this._toastService.pop(TOAST_TYPE.success, "Transaction Successful");
+      }, error =>  {
+        const err = JSON.parse(error);
+        this.loadingService.triggerLoadingEvent(false);
+        this._toastService.pop(TOAST_TYPE.error, err.errors[0].message);
+      });
+  }
+
   getCardDetails() {
     this.loadingService.triggerLoadingEvent(true);
     this.customersService.getBillingSavedCardDetails(this.companyId)
@@ -154,18 +182,36 @@ export class BillingComponent {
         if (res) {
           this.savedCardData = res;
           this.hasData = true;
-          this.last4 = res.last_four;
+          this.last4 = res.last_four || res.bank_account_number_last_4;
           if (this.last4) {
             this.editMode = true;
           }else {
             this.editMode = false;
+            this.isCreditCard = res.credit_card_enabled;
+            if (!this.isCreditCard) {
+              this.changePaymentType('bank');
+            }
           }
         }
       }, error =>  this.handleError(error));
   }
 
+  editAccountDetails() {
+    this.editMode = false;
+  }
+
+  cancel() {
+    if (this.savedCardData['last_four']) {
+      this.editMode = true;
+    }
+  }
+
   formatAmount(value){
     return this.numeralService.format('$0,0.00', value);
+  }
+
+  getNextCharge(date) {
+    return moment(date).format(this.dateFormat);
   }
 
   handleError(error) {
