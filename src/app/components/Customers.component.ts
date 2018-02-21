@@ -135,6 +135,7 @@ export class CustomersComponent {
             {"name": "customer_state", "title": "State","visible": false},
             {"name": "customer_city", "title": "City","visible": false},
             {"name": "customer_zipcode", "title": "Zip code","visible": false},
+            {"name": "parent_id", "title": "Parent Id", "visible": false, "filterable": false},
             {"name": "actions", "title": "", "type": "html", "filterable": false}
         ];
         let base = this;
@@ -220,7 +221,9 @@ export class CustomersComponent {
     }
     showEditVendor(row:any) {
         this.titleService.setPageTitle("UPDATE CUSTOMER");
-        this.displaySubCustomer = true;
+        if (!row.parent_id) {
+          this.displaySubCustomer = true;
+        }
         this.editMode = true;
         this.showFlyout = true;
         this.row = row;
