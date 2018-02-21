@@ -182,7 +182,7 @@ export class BillingComponent {
         if (res) {
           this.savedCardData = res;
           this.hasData = true;
-          this.last4 = res.last_four;
+          this.last4 = res.last_four || res.bank_account_number_last_4;
           if (this.last4) {
             this.editMode = true;
           }else {
