@@ -20,7 +20,7 @@ export class ExpenseForm extends abstractForm{
             "due_date": [''],
             "bank_account_id": ['',Validators.required],
             "id": [''],
-            "type":[''],
+            "type":['ACH'],
             "reference_number":[''],
             "expense_type":[''],
             "mapping_id":[''],
