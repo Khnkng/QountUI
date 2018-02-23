@@ -11,8 +11,8 @@ import {StateService} from "qCommon/app/services/StateService";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 
 
-declare var jQuery:any;
-declare var _:any;
+declare var jQuery: any;
+declare var _: any;
 
 @Component({
   selector: 'side-bar',
@@ -20,52 +20,45 @@ declare var _:any;
 })
 
 export class SideBarComponent {
-  isDashboard:boolean = true;
-  isBooks:boolean = false;
-  isInvoice:boolean = false;
-  isPayments:boolean = false;
-  isExpenses:boolean = false;
-  report:boolean=false;
-  isPayrol:boolean = false;
-  isTaxes:boolean = false;
-  isTools:boolean = false;
-  isReports:boolean=false;
-  isCollaboration:boolean=false;
+  isDashboard: boolean = true;
+  isBooks: boolean = false;
+  isInvoice: boolean = false;
+  isPayments: boolean = false;
+  isExpenses: boolean = false;
+  report: boolean=false;
+  isPayrol: boolean = false;
+  isTaxes: boolean = false;
+  isTools: boolean = false;
+  isReports: boolean = false;
+  isCollaboration: boolean = false;
 
-  allBoards:any;
+  allBoards: any;
   currentBoardName = null;
-  showSwitchCompany:boolean = false;
-  currentCompanyId:string;
-  currentCompanyName:string;
+  showSwitchCompany: boolean = false;
+  currentCompanyId: string;
+  currentCompanyName: string;
 
-  @Input() isExpanded:boolean;
+  @Input() isExpanded: boolean;
 
-  constructor(private switchBoard:SwitchBoard, private _router:Router, private stateService: StateService,private titleService:pageTitleService) {
-    console.info('QountApp sidebar Component Mounted Successfully7');
-    this._router.events.subscribe((event:any) => {
-      if(event.url=='/dashboard') {
+  constructor(private switchBoard: SwitchBoard, private _router: Router, private stateService: StateService, private titleService: pageTitleService) {
+    this._router.events.subscribe((event: any) => {
+      if (event.url === '/dashboard') {
+        this.isDashboard = true;
+        this.setFalseForConst();
        //this.showPage(PAGES.DASHBOARD,'');
       }
     });
   }
 
   logout() {
-    console.log("into logout1");
     Session.destroy();
-    this.switchBoard.onLogOut.next({'loggedOut': true})
+    this.switchBoard.onLogOut.next({'loggedOut': true});
   }
 
-  showPage(page:PAGES, $event) {
+  showPage(page: PAGES, $event) {
     $event && $event.stopImmediatePropagation();
+    this.setFalseForConst();
     this.isDashboard = false;
-    this.isBooks = false;
-    this.isInvoice = false;
-    this.isExpenses = false;
-    this.isReports = false;
-    this.isTaxes = false;
-    this.isTools = false;
-    this.isPayments=false;
-    this.isCollaboration = false;
     this.stateService.clearAllStates();
     let base = this;
     switch (page) {
@@ -106,7 +99,7 @@ export class SideBarComponent {
       }
         break;
       case PAGES.PAYMENTS: {
-        let link = ['payments/dashboard','dashboard'];
+        let link = ['payments/dashboard', 'dashboard'];
         this._router.navigate(link);
         base.isPayments = true;
       }
@@ -119,13 +112,24 @@ export class SideBarComponent {
         break;
     }
   }
-
-  toggleMenu(){
-    this.isExpanded = false;
-    this.switchBoard.onSideBarExpand.next(this.isExpanded)
+  setFalseForConst() {
+    // this.isDashboard = false;
+    this.isBooks = false;
+    this.isInvoice = false;
+    this.isExpenses = false;
+    this.isReports = false;
+    this.isTaxes = false;
+    this.isTools = false;
+    this.isPayments = false;
+    this.isCollaboration = false;
   }
 
-  showError(err){
+  toggleMenu() {
+    this.isExpanded = false;
+    this.switchBoard.onSideBarExpand.next(this.isExpanded);
+  }
+
+  showError(err) {
 
   }
 }
