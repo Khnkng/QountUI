@@ -139,11 +139,14 @@ export class CustomersComponent {
             {"name": "actions", "title": "", "type": "html", "filterable": false}
         ];
         let base = this;
-        this.customers.forEach(function(customers) {
+      const postString = "<a class='action' data-action='collaboration'><span class='comment-badge'><i class='material-icons'>comment</i></span></a>";
+      this.customers.forEach(function(customers) {
             let row:any = {};
             for(let key in base.customers[0]) {
                 row[key] = customers[key];
-                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'><i class='icon ion-trash-b'></i></a>";
+                row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'>" +
+                  "<i class='icon ion-edit'></i></a><a class='action' data-action='delete' style='margin:0px 0px 0px 5px;'>" +
+                  "<i class='icon ion-trash-b'></i></a>" + postString;
             }
             base.tableData.rows.push(row);
         });
@@ -175,10 +178,14 @@ export class CustomersComponent {
         let action = $event.action;
         delete $event.action;
         delete $event.actions;
-        if(action == 'edit') {
+        if (action === 'edit') {
             this.showEditVendor($event);
-        } else if(action == 'delete'){
+        } else if (action === 'delete') {
             this.removeVendor($event);
+        }else if (action === 'collaboration') {
+          this.addCustomerState();
+          const link = ['collaboration', 'customer', $event.customer_id];
+          this._router.navigate(link);
         }
     }
 
@@ -462,6 +469,13 @@ export class CustomersComponent {
         this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
       });
 
+  }
+
+  addCustomerState() {
+    const data = {
+      "searchString": this.searchString
+    };
+    this.stateService.addState(new State('CUSTOMERS', this._router.url, data, null, []));
   }
 
   showSubCustomers() {
