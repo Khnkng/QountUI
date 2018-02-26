@@ -130,7 +130,7 @@ export class ShareholdersComponent {
   }
 
   showCreateShareholder() {
-    this.titleService.setPageTitle("CRETAE SHAREHOLDER");
+    this.titleService.setPageTitle("CREATE SHAREHOLDER");
     this.editMode = false;
     this.shareholdersForm = this._fb.group(this._shareholdersForm.getForm());
     // this.newForm1();
