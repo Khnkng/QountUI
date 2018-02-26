@@ -45,6 +45,24 @@
                         <div class="error" [hidden]="depositForm.controls.deposit_type.untouched || depositForm.controls.deposit_type.valid">Deposit Type is required</div>
                       </label>
                     </div>
+                    <div class="small-12 medium-3 columns">
+                      <label>Reference Number
+                        <input type="text" formControlName="reference_number" placeholder="Reference number" maxlength="30"/>
+                        <div class="error" [hidden]="depositForm.controls.reference_number.untouched || depositForm.controls.reference_number.valid">Reference number is required</div>
+                      </label>
+                    </div>
+
+                    <div class="small-12 medium-2 columns">
+                      <label>Deposit Source
+                        <select formControlName="source" placeholder="Source">
+                          <option [value]="'ACH'">ACH</option>
+                          <option [value]="'Check'">Check</option>
+                          <option [value]="'Wire'">Wire</option>
+                          <option [value]="'Other'">Other</option>
+                        </select>
+                        <div class="error" [hidden]="depositForm.controls.source.untouched || depositForm.controls.source.valid">Deposit Source  is required</div>
+                      </label>
+                    </div>
                   </div>
                   <label class="float-left" style="margin-left: 10px;">
                     <b>Deposit Lines</b>
