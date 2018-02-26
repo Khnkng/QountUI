@@ -787,6 +787,7 @@ export class ExpenseComponent{
       this.entities=this.shareHoldersList;
     }else if (type=='other'){
       this.entities=this.entities.concat(this.vendorList).concat(this.employeesList).concat(this.customersList).concat(this.shareHoldersList);
+      _.sortBy(this.entities, "name");
     }
   }
 
