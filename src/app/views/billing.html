@@ -4,7 +4,7 @@
       <div class="small-12 medium-2 columns">
         <div class="input-group paymentDetails">
           <div class="estimateAmount">
-            <span style="color: #17457B;">{{formatAmount(savedCardData.amount)}}/</span><span style="color: #878787;">{{savedCardData.frequency}}</span>
+            <span style="color: #17457B;">{{formatAmount(savedCardData.amount)}}/{{savedCardData.frequency === 'monthly' ? 'month' : savedCardData.frequency}}</span>
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@
       <div class="small-12 medium-4 columns">
         <div class="input-group paymentDetails" style="padding-bottom:46px;">
           <div class="estimateAmount">
-            <span style="color: #17457B;">{{formatAmount(savedCardData.amount)}}/</span><span style="color: #878787;">{{savedCardData.frequency}}</span>
+            <span style="color: #17457B;">{{formatAmount(savedCardData.amount)}}/{{savedCardData.frequency === 'monthly' ? 'month' : savedCardData.frequency}}</span>
           </div>
           <div style="color:#878787">
             <span>Next Charge: </span><span>{{getNextCharge(savedCardData.next_billing)}}</span>
