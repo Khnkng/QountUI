@@ -306,6 +306,7 @@ export class BudgetComponent{
         .subscribe(newBudget => {
           this.toastService.pop(TOAST_TYPE.success, "Budget created successfully");
           this.showFlyout = false;
+          this.selectedDimensions=[];
           this.loadBudgets();
           this.resetForm();
         }, error => this.handleError(error));
