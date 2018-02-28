@@ -580,7 +580,7 @@ export class BooksComponent{
     this.jeTableData.defSearch = true;
     this.jeTableData.defSearchString = this.searchString;
     this.jeTableData.columns = [
-      {"name": "number", "title": "Number"},
+      {"name": "number", "title": "Number", "type": "html"},
       {"name": "date", "title": "Date","type":"text","sortValue": function(value){
         return moment(value,base.dateFormat).valueOf();
       }},
@@ -611,6 +611,8 @@ export class BooksComponent{
           row['categoryValue'] = base.categoryData[journalEntry[key]];
         }else if(key == 'date'){
           row[key] = (journalEntry[key]) ? base.dateFormater.formatDate(journalEntry[key],base.serviceDateformat,base.dateFormat) : journalEntry[key];
+        } else if (key == 'number') {
+          row[key] = "<a class='actionOnId' data-action='edit'><span class='icon'>"+ journalEntry[key] +"</span></a>";
         }else {
           row[key] = journalEntry[key];
         }
