@@ -446,7 +446,8 @@ export class JournalEntryComponent{
   }
 
   enableLines(){
-    let expItems: any = this.jeForm.controls.journalLines;
+    let jeControls: any = this.jeForm.controls;
+    let expItems: any = jeControls.journalLines;
     let lines = expItems.controls;
     if(lines && lines.length > 0){
       this.editLine(lines[0], 0);
@@ -465,7 +466,8 @@ export class JournalEntryComponent{
       }
     });
     let base = this;
-    let journalLines:any = this.jeForm.controls.journalLines;
+    let jeControls: any = this.jeForm.controls;
+    let journalLines:any = jeControls.journalLines;
     if(key === 'Arrow Down'){
       let nextIndex = this.getNextElement(current_ele,index,'Arrow Down');
       base.editLine(journalLines.controls[nextIndex], nextIndex);

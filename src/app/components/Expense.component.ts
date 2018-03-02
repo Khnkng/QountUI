@@ -355,7 +355,8 @@ export class ExpenseComponent{
   }
 
   enableLines(){
-    let expItems: any = this.expenseForm.controls.expense_items;
+    let expenseItemControls: any = this.expenseForm.controls;
+    let expItems: any = expenseItemControls.expense_items;
     let lines = expItems.controls;
     if(lines && lines.length > 0){
       this.editItem(0, lines[0]);
@@ -375,7 +376,8 @@ export class ExpenseComponent{
       }
     });
     let base = this;
-    let expenseLines:any = this.expenseForm.controls.expense_items;
+    let expenseItemControls: any = this.expenseForm.controls;
+    let expenseLines:any = expenseItemControls.expense_items;
     if(key === 'Arrow Down'){
       let nextIndex = this.getNextElement(current_ele,index,'Arrow Down');
       base.editItem(nextIndex, expenseLines.controls[nextIndex]);

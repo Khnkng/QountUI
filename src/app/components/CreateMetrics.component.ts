@@ -291,7 +291,8 @@ export class CreateMetricComponent{
             }
         });
         let base = this;
-        let metricLines:any = this.metricForm.controls.metricLines;
+        let metricFormControls: any = this.metricForm.controls;
+        let metricLines:any = metricFormControls.metricLines;
         if(key === 'Arrow Down'){
             let nextIndex = this.getNextElement(current_ele,index,'Arrow Down');
             base.editLine(metricLines.controls[nextIndex], nextIndex);
@@ -613,10 +614,9 @@ export class CreateMetricComponent{
         let _lineForm = this._metricLineForm.getForm();
         this.lineForm = this._fb.group(_lineForm);
 
-
-
         this.newForm();
-        this.metricForm.controls.year.setValue(moment(new Date(),this.dateFormat).year());
+        let metricFormControls:any= this.metricForm.controls;
+        metricFormControls.year.setValue(moment(new Date(),this.dateFormat).year());
         this.loadingService.triggerLoadingEvent(true);
         this.metricService.getMetricsList(this.companyId)
             .subscribe(metrics => {
@@ -635,13 +635,14 @@ export class CreateMetricComponent{
             this.loadingService.triggerLoadingEvent(true);
             this.metricService.getLinesList(data, this.companyId)
                 .subscribe(valueMetric => {
+                    let metricFormControls:any = this.metricForm.controls;
                     if (valueMetric.metricLines.length > 0) {
                         this.newValueMetric = false;
-                        this.metricForm.controls.metricLines['controls'] = [];
+                        metricFormControls.metricLines['controls'] = [];
                         this.processValueMetric(valueMetric);
                     } else {
                         this.newValueMetric = true;
-                        this.metricForm.controls.metricLines['controls'] = [];
+                        metricFormControls.metricLines['controls'] = [];
                         this.addDefaultLine(2);
                     }
                     base.loadingService.triggerLoadingEvent(false);
