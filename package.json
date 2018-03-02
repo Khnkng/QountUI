@@ -36,7 +36,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "motion-ui": "^1.2.2",
-    "ng2-file-upload": "^1.0.3",
+    "ng2-file-upload": "^1.2.0",
     "numeral": "^2.0.6",
     "pikaday": "^1.5.1",
     "qCommon": "git+https://Qount:b2da10194989666d043efdd95d7302dd85bc1cd1@github.com/Qount/qCommon.git#angular4",
@@ -50,7 +50,7 @@
     "zone.js": "^0.8.4"
   },
   "devDependencies": {
-    "@angular/cli": "1.2.6",
+    "@angular/cli": "~1.2.6",
     "@angular/compiler-cli": "^4.0.0",
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
@@ -68,6 +68,6 @@
     "protractor": "~5.1.0",
     "ts-node": "~2.0.0",
     "tslint": "~4.5.0",
-    "typescript": "~2.2.0"
+    "typescript": "2.1.6"
   }
 }
