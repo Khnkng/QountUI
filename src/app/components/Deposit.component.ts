@@ -325,7 +325,8 @@ export class DepositComponent{
     }
 
     enableLines(){
-        let payments: any = this.depositForm.controls.payments;
+        let paymentControls: any = this.depositForm.controls;
+        let payments: any = paymentControls.payments;
         let lines = payments.controls;
         if(lines && lines.length > 0){
             this.editItem(0, lines[0]);
@@ -344,7 +345,8 @@ export class DepositComponent{
             }
         });
         let base = this;
-        let depositLines:any = this.depositForm.controls.payments;
+        let paymentControls: any = this.depositForm.controls;
+        let depositLines:any = paymentControls.payments;
         if(key === 'Arrow Down'){
             let nextIndex = this.getNextElement(current_ele,index,'Arrow Down');
             base.editItem(nextIndex, depositLines.controls[nextIndex]);
