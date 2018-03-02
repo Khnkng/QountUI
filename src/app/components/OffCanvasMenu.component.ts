@@ -12,7 +12,8 @@ declare var _:any;
 })
 export class OffCanvasMenuComponent {
     private subscription:any;
-    private isExpanded:boolean=false;
+    isExpanded:boolean=false;
+
     constructor(private switchBoard: SwitchBoard) {
         this.subscription = this.switchBoard.onOffCanvasMenuExpand.subscribe(offCanvasExpand =>{
             this.isExpanded = offCanvasExpand;

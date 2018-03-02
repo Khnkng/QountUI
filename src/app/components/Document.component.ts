@@ -43,6 +43,7 @@ export class DocumentComponent {
         "Other": []
     };
     companyId: string;
+    dateFormat: string;
 
     constructor(private _router:Router,private _route: ActivatedRoute,
                 private toastService: ToastService,private switchBoard:SwitchBoard,
