@@ -85,10 +85,10 @@
                       </tr>
                       </thead>
                       <tbody #list>
-                      <tr *ngIf="depositForm.controls.payments.controls.length == 0 && !addNewItemFlag">
+                      <tr *ngIf="getControls(depositForm.controls.payments).length == 0 && !addNewItemFlag">
                         <td colspan="7" class="text-center">No Deposits items found</td>
                       </tr>
-                      <tr *ngFor="let itemForm of depositForm.controls.payments.controls;let index=index;" [hidden]="itemForm.controls.destroy.value" (click)="editItem(index, itemForm)">
+                      <tr *ngFor="let itemForm of getControls(depositForm.controls.payments);let index=index;" [hidden]="itemForm.controls.destroy.value" (click)="editItem(index, itemForm)">
                         <td class="truncate" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.chart_of_account_id.value)}}</td>
                         <td *ngIf="itemForm.editable" class="combo-box-field">
                           <select id="coa-{{index}}" combo-box #COAComboBoxDir="comboBox" data-placeholder="Select COA" [listObject]="chartOfAccounts" [formControl]="itemForm.controls.chart_of_account_id" (valueChanged)="setCOAForItem($event, itemForm)">

@@ -236,6 +236,10 @@ export class ExpenseComponent{
     this.editItemIndex = index;
   }
 
+  getControls(payments: any){
+    return payments.controls;
+  }
+
   hideFlyout(){
     this.dimensionFlyoutCSS = "collapsed";
     this.itemActive = false;

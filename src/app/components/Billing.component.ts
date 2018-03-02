@@ -185,7 +185,7 @@ export class BillingComponent {
           this.last4 = res.last_four || res.bank_account_number_last_4;
           if (this.last4) {
             this.editMode = true;
-          } else {
+          }else {
             this.editMode = false;
             this.isCreditCard = res.credit_card_enabled;
             if (!this.isCreditCard) {

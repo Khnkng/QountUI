@@ -83,8 +83,8 @@ export class ReconcileService extends  QountServices{
       .catch(this.handleError);
   }
 
-    private handleError (error: Response) {
-        return Observable.throw(error.text());
-    }
+  private handleError (error: Response) {
+    return Observable.throw(error.text());
+  }
 
 }

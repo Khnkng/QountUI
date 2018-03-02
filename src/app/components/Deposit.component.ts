@@ -96,7 +96,7 @@ export class DepositComponent{
     vendorList:Array<any>=[];
     customersList:Array<any>=[];
     shareHoldersList:Array<any>=[];
-
+    addNewItemFlag: boolean = false;
 
     constructor(private _fb: FormBuilder, private _route: ActivatedRoute, private _router: Router, private _depositForm: DepositsForm,
                 private _depositLineForm: DepositsLineForm, private accountsService: FinancialAccountsService, private coaService: ChartOfAccountsService,
@@ -210,6 +210,10 @@ export class DepositComponent{
         this.resetAllLinesFromEditing(itemsControl);
         this.editItemForm = this._fb.group(this._depositLineForm.getForm(data));
         this.editItemIndex = index;
+    }
+
+    getControls(payments: any){
+      return payments.controls;
     }
 
     hideFlyout(){

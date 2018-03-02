@@ -37,6 +37,7 @@ export class SideBarComponent {
   showSwitchCompany: boolean = false;
   currentCompanyId: string;
   currentCompanyName: string;
+  expanded: boolean = false;
 
   @Input() isExpanded: boolean;
 
@@ -55,7 +56,7 @@ export class SideBarComponent {
     this.switchBoard.onLogOut.next({'loggedOut': true});
   }
 
-  showPage(page: PAGES, $event) {
+  showPage(page, $event) {
     $event && $event.stopImmediatePropagation();
     this.setFalseForConst();
     this.isDashboard = false;
