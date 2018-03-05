@@ -58,6 +58,7 @@ export class AppComponent  implements OnInit{
   isLoading:boolean=false;
   pageTitle:string='';
   currentEnvironment:any;
+  cookieObj:any
 
   constructor(_switchBoard:SwitchBoard, private _router:Router, private route: ActivatedRoute, private toastService: ToastService,
               private titleService:pageTitleService, private companyService: CompaniesService,
@@ -69,14 +70,14 @@ export class AppComponent  implements OnInit{
     UrlService.setUrls(this.currentEnvironment);
     let data= this.getCookie(cookieKey);
     if(data){
-      let obj=JSON.parse(data);
-      if (obj && !Session.hasSession()) {
-        this.updateSessionData(obj);
-        if (obj.user.default_company) {
-          this.fetchCompanies(obj.user);
+      this.cookieObj = JSON.parse(data);
+      if (this.cookieObj && !Session.hasSession()) {
+        this.updateSessionData(this.cookieObj);
+        if (this.cookieObj.user.default_company) {
+          this.fetchCompanies(this.cookieObj.user);
         }
-      }else if (obj.referer) {
-        this.updateSessionData(obj);
+      }else if (this.cookieObj.referer) {
+        this.updateSessionData(this.cookieObj);
       }
     }else {
       if(Session.hasSession()) {
@@ -196,7 +197,9 @@ export class AppComponent  implements OnInit{
         this._toastService.pop(TOAST_TYPE.warning, "No companies found. Please contact admin to create companies.");
       }
     }
-    this.gotoDefaultPage();
+    if (!this.cookieObj.link) {
+      this.gotoDefaultPage();
+    }
   }
 
   gotoDefaultPage() {
