@@ -1,14 +1,4 @@
 <div class="payment-details" foundation>
-    <div class="row" >
-        <div class="column small-12 medium-6">
-            <h5>Search Results</h5>
-        </div>
-        <div class="columns small-6 small-offset-6 right">
-            <button class="button small text-button" (click)="goToPreviousPage()">
-                <i class="ion-ios-close-empty"></i>
-            </button>
-        </div>
-    </div>
     <div class="row chart-of-accounts" foundation>
         <div class="column large-12 medium-12 small-12 foo-container">
             <foo-table #fooTableDir="fooTable" class="bighalf-footable search-right" *ngIf="hasResults" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
