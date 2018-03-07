@@ -182,6 +182,7 @@ export class DepositComponent{
         }else {
             let prevState = this.stateService.getPrevState();
             if(prevState){
+                this.stateService.pop();
                 this._router.navigate([prevState.url]);
             }else{
                 let link = ['books', 'deposits'];
@@ -514,7 +515,7 @@ export class DepositComponent{
             this.selectedEntityID= entity.id;
         } else if(!entity || entity=='--None--'){
             let data = this._depositLineForm.getData(itemForm);
-            data.entity_id= null;
+            data.entity_id= '--None--';
             this.selectedEntityID=null;
             this._depositLineForm.updateForm(itemForm, data);
         }
