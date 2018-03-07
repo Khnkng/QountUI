@@ -983,8 +983,8 @@ export class JournalEntryComponent{
   goToPreviousPage(){
     let prevState = this.stateService.getPrevState();
     if(prevState){
+      this.stateService.pop();
       if(prevState.key == 'JOURNAL_ENTRY'){
-        this.stateService.pop();
         this.goToPreviousPage();
       } else{
         this._router.navigate([prevState.url]);

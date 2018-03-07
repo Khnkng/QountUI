@@ -208,6 +208,7 @@ export class ExpenseComponent{
     }else {
       let prevState = this.stateService.getPrevState();
       if(prevState){
+        this.stateService.pop();
         this._router.navigate([prevState.url]);
       }else{
         let link = ['books', 'expenses'];
