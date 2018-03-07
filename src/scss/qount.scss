@@ -5413,3 +5413,7 @@ tbody tr a.actionOnId {
 .text-capitalize {
   text-transform: capitalize;
 }
+
+.dropdown-list div:first-child {
+  padding-bottom:inherit;
+}
