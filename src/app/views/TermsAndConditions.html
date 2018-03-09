@@ -1,17 +1,15 @@
 <div class="tandc">
     <div class="login-form-cotainer row">
-        <div class="column small-12 medium-6 large-5 medium-centered">
-            <div class="form">
-                <div class="heading">Terms And Conditions</div>
-                <div class="row">
-                    <div class="small-12 medium-6 large-centered columns">
-                        <input type="button" class="button small float-left" value="Decline" (click)="decline()"/>
-                    </div>
-                    <div class="small-12 medium-6 large-centered columns">
-                        <input type="button" class="button small float-right" value="Accept" (click)="accept()"/>
-                    </div>
+        <div class="column small-12 medium-6 large-12 medium-centered">
+          <div class="heading"><h4>Terms And Conditions</h4></div>
+                <div class="terms-and-conditions">
+                  <textarea style="min-height: 60vh;border: 0px;padding: 2rem;width: 97%" readonly>{{termsAndConditionsText}}</textarea>
                 </div>
-            </div>
+
+                <div class="row">
+                        <span><input type="button" class="button small float-left" value="Decline" (click)="decline()"/></span>
+                        <span style="margin-left: 10px"><input type="button" class="button small float-right" value="Accept" (click)="accept()"/></span>
+                </div>
         </div>
     </div>
 </div>

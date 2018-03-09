@@ -5417,3 +5417,9 @@ tbody tr a.actionOnId {
 .dropdown-list div:first-child {
   padding-bottom:inherit;
 }
+
+.terms-and-conditions {
+  textarea[readonly] {
+    background-color: #FAFAFA !important;
+  }
+}
