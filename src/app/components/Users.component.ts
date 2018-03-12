@@ -235,6 +235,7 @@ export class UsersComponent {
 
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
+    error = JSON.parse(error);
     let message = error && error.message? error.message: "User Deletion Failed";
     this._toastService.pop(TOAST_TYPE.error, message);
   }
