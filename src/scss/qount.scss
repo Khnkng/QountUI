@@ -5113,6 +5113,10 @@ div.footable-loader {
     position: static;
     bottom: 0;
     right: 0;
+    .new-comment .export-option .task-check input {
+      position: relative;
+      right : 15px;
+    }
   }
 
   .inputContainer {
@@ -5418,4 +5422,10 @@ tbody tr a.actionOnId {
 
 .dropdown-list div:first-child {
   padding-bottom:inherit;
+}
+
+.terms-and-conditions {
+  textarea[readonly] {
+    background-color: #FAFAFA !important;
+  }
 }
