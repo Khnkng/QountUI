@@ -5,7 +5,7 @@
 import {Component, ViewChild} from "@angular/core";
 import {Session} from "qCommon/app/services/Session";
 import {LoadingService} from "qCommon/app/services/LoadingService";
-import {HighChart} from "reportsUI/app/directives/HighChart.directive";
+import {HighChart} from "qCommon/app/directives/HighChart.directive";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {ReportService} from "reportsUI/app/services/Reports.service";
 import {Router,ActivatedRoute} from "@angular/router";
