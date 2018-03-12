@@ -35,7 +35,7 @@
                                             </div>
                                             <div class="small-6 columns">
                                                 <input type="text" formControlName="name" placeholder="Name*"/>
-                                                <div class="error" [hidden]="dimensionForm.controls.name.untouched || dimensionForm.controls.name.valid">Name is required.</div>
+                                                <div class="error" [hidden]="dimensionForm.get('name').untouched || dimensionForm.get('name').valid">Name is required.</div>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -44,7 +44,7 @@
                                             </div>
                                             <div class="small-6 columns">
                                                 <textarea formControlName="desc" rows="3" placeholder="Description"></textarea>
-                                                <div class="error" [hidden]="dimensionForm.controls.desc.untouched || dimensionForm.controls.desc.valid">Description is required.</div>
+                                                <div class="error" [hidden]="dimensionForm.get('desc').untouched || dimensionForm.get('desc').valid">Description is required.</div>
                                             </div>
                                         </div>
                                     </div>

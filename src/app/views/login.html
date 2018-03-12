@@ -17,13 +17,13 @@
           <div class="row">
             <div class="small-12 columns">
               <input formControlName="id" type="text" placeholder="Email *">
-              <div class="error text-center" [hidden]="loginForm.controls.id.untouched || loginForm.controls.id.valid">
+              <div class="error text-center" [hidden]="loginForm.get('id').untouched || loginForm.get('id').valid">
                 <small>Please enter valid email address.</small>
               </div>
             </div>
             <div class="small-12 columns ">
               <input formControlName="password" type="password" placeholder="Password *">
-              <div class="error text-center" [hidden]="loginForm.controls.password.untouched || loginForm.controls.password.valid">
+              <div class="error text-center" [hidden]="loginForm.get('password').untouched || loginForm.get('password').valid">
                 <small>Please enter password.</small>
               </div>
             </div>
@@ -66,7 +66,7 @@
             <input formControlName="id" type="text" placeholder="Email *"
                    pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$">
             <div class="error text-center"
-                 [hidden]="forgotPasswordForm.controls.id.untouched || forgotPasswordForm.controls.id.valid">
+                 [hidden]="forgotPasswordForm.get('id').untouched || forgotPasswordForm.get('id').valid">
               <small>Enter a valid email address.</small>
             </div>
           </div>

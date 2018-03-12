@@ -86,15 +86,15 @@
                 </div>
                 <div class="row" style="margin-top: 1rem">
                   <div class="small-12 medium-8 columns" formArrayName="customer_contact_details">
-                    <div class="row" *ngFor="let contactLine of subCustomerForm.controls.customer_contact_details.controls;let index=index;">
+                    <div class="row" *ngFor="let contactLine of subCustomerForm.get('customer_contact_details').controls;let index=index;">
                       <div class="column medium-3">
                         <label>First Name*
-                          <input type="text" [formControl]="contactLine.controls.first_name"/>
+                          <input type="text" [formControl]="contactLine.get('first_name')"/>
                         </label>
                       </div>
                       <div class="column medium-3">
                         <label>Last Name*
-                          <input type="text" [formControl]="contactLine.controls.last_name"/>
+                          <input type="text" [formControl]="contactLine.get('last_name')"/>
                         </label>
                       </div>
                       <div class="column medium-1">
@@ -102,12 +102,12 @@
                       </div>
                       <div class="column medium-3">
                         <label>Mobile*
-                          <input type="text" [formControl]="contactLine.controls.mobile"/>
+                          <input type="text" [formControl]="contactLine.get('mobile')"/>
                         </label>
                       </div>
                       <div class="column medium-6" style="margin-top: 1rem">
                         <label>Email*
-                          <input type="text" [formControl]="contactLine.controls.email"/>
+                          <input type="text" [formControl]="contactLine.get('email')"/>
                         </label>
                       </div>
                       <div class="column medium-1">
@@ -115,7 +115,7 @@
                       </div>
                       <div class="column medium-3"  style="margin-top: 1rem">
                         <label>Office/Other
-                          <input type="text" [formControl]="contactLine.controls.other"/>
+                          <input type="text" [formControl]="contactLine.get('other')"/>
                         </label>
                       </div>
                     </div>

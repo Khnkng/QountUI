@@ -40,7 +40,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="name" placeholder="Name*">
-                          <div class="error" [hidden]="TaxesForm.controls.name.untouched || TaxesForm.controls.name.valid">Tax Name is required</div>
+                          <div class="error" [hidden]="TaxesForm.get('name').untouched || TaxesForm.get('name').valid">Tax Name is required</div>
                         </div>
                       </div>
                       <div class="row">
@@ -49,7 +49,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="tin" placeholder="Tin*">
-                          <div class="error" [hidden]="TaxesForm.controls.tin.untouched || TaxesForm.controls.tin.valid">Tin is required</div>
+                          <div class="error" [hidden]="TaxesForm.get('tin').untouched || TaxesForm.get('tin').valid">Tin is required</div>
                         </div>
                       </div>
                       <div class="row">
@@ -58,7 +58,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="taxAuthorityName" placeholder="Tax Authority Name*">
-                          <div class="error" [hidden]="TaxesForm.controls.taxAuthorityName.untouched || TaxesForm.controls.taxAuthorityName.valid">TaxAuthority Name is required</div>
+                          <div class="error" [hidden]="TaxesForm.get('taxAuthorityName').untouched || TaxesForm.get('taxAuthorityName').valid">TaxAuthority Name is required</div>
                         </div>
                       </div>
                       <div class="row">
@@ -67,7 +67,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="taxAuthorityId" placeholder="Tax Authority Id*">
-                          <div class="error" [hidden]="TaxesForm.controls.taxAuthorityId.untouched || TaxesForm.controls.taxAuthorityId.valid">TaxAuthorityId is required</div>
+                          <div class="error" [hidden]="TaxesForm.get('taxAuthorityId').untouched || TaxesForm.get('taxAuthorityId').valid">TaxAuthorityId is required</div>
                         </div>
                       </div>
                       <div class="row">
@@ -78,7 +78,7 @@
                           <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="taxLiabilityCoa" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
                             <option *ngFor="let coa of chartOfAccounts" [value]="coa.name">{{coa.number}} - {{coa.name}}</option>
                           </select>
-                          <div class="error" [hidden]="TaxesForm.controls.taxLiabilityCoa.untouched || TaxesForm.controls.taxLiabilityCoa.valid">TaxLiabilityCoa is required</div>
+                          <div class="error" [hidden]="TaxesForm.get('taxLiabilityCoa').untouched || TaxesForm.get('taxLiabilityCoa').valid">TaxLiabilityCoa is required</div>
                         </div>
                       </div>
                       <div class="row">
@@ -87,7 +87,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="description" placeholder="Description*">
-                          <div class="error" [hidden]="TaxesForm.controls.description.untouched || TaxesForm.controls.description.valid">Description is required</div>
+                          <div class="error" [hidden]="TaxesForm.get('description').untouched || TaxesForm.get('description').valid">Description is required</div>
                         </div>
                       </div>
                       <div class="row">
@@ -96,7 +96,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="taxRate" placeholder="Tax Rate*" (change)="ratetax()">
-                          <div class="error" [hidden]="TaxesForm.controls.taxRate.untouched || TaxesForm.controls.taxRate.valid">TaxRate is required</div>
+                          <div class="error" [hidden]="TaxesForm.get('taxRate').untouched || TaxesForm.get('taxRate').valid">TaxRate is required</div>
                         </div>
                       </div>
 
@@ -110,7 +110,7 @@
                         </div>
                         <div class="small-6 columns custom-qount-form-field">
                           <input type="checkbox" formControlName="compoundTax" style="margin-top:6px;" />
-                          <div class="error" [hidden]="TaxesForm.controls.compoundTax.untouched || TaxesForm.controls.compoundTax.valid">CompoundTax is required</div>
+                          <div class="error" [hidden]="TaxesForm.get('compoundTax').untouched || TaxesForm.get('compoundTax').valid">CompoundTax is required</div>
                         </div>
                       </div>
                       <div class="row">
@@ -119,7 +119,7 @@
                         </div>
                         <div class="small-6 columns custom-qount-form-field">
                           <input type="checkbox" formControlName="recoverableTax" style="margin-top:6px;" />
-                          <div class="error" [hidden]="TaxesForm.controls.recoverableTax.untouched || TaxesForm.controls.recoverableTax.valid">RecoverableTax is required</div>
+                          <div class="error" [hidden]="TaxesForm.get('recoverableTax').untouched || TaxesForm.get('recoverableTax').valid">RecoverableTax is required</div>
                         </div>
                       </div>
                       <div class="row">
@@ -128,7 +128,7 @@
                         </div>
                         <div class="small-6 columns custom-qount-form-field">
                           <input type="checkbox" formControlName="visibleOnInvoices" style="margin-top:6px;" />
-                          <div class="error" [hidden]="TaxesForm.controls.visibleOnInvoices.untouched || TaxesForm.controls.visibleOnInvoices.valid">visibleOnInvoices is required</div>
+                          <div class="error" [hidden]="TaxesForm.get('visibleOnInvoices').untouched || TaxesForm.get('visibleOnInvoices').valid">visibleOnInvoices is required</div>
                         </div>
                       </div>
                     </div>

@@ -36,7 +36,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="name" placeholder="Name*"/>
-                          <div class="error" [hidden]="lateFeeForm.controls.name.untouched || lateFeeForm.controls.name.valid">Name is required.</div>
+                          <div class="error" [hidden]="lateFeeForm.get('name').untouched || lateFeeForm.get('name').valid">Name is required.</div>
                         </div>
                       </div>
                       <div class="row">
@@ -55,7 +55,7 @@
                           <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="coa" [listObject]="chartOfAccounts" (valueChanged)="updateChartOfAccount($event)">
                             <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.number}} - {{coa.name}}</option>
                           </select>
-                          <div class="error" [hidden]="lateFeeForm.controls.coa.untouched || lateFeeForm.controls.coa.valid">COA is required</div>
+                          <div class="error" [hidden]="lateFeeForm.get('coa').untouched || lateFeeForm.get('coa').valid">COA is required</div>
                         </div>
                       </div>
                       <div class="row" style="margin-top: 1rem;">
@@ -67,7 +67,7 @@
                             <option value="percentage">Percentage</option>
                             <option value="flat_fee">Flat Fee</option>
                           </select>
-                          <div class="error" [hidden]="lateFeeForm.controls.type.untouched || lateFeeForm.controls.type.valid">Type is required.</div>
+                          <div class="error" [hidden]="lateFeeForm.get('type').untouched || lateFeeForm.get('type').valid">Type is required.</div>
                         </div>
                       </div>
                       <div class="row">
@@ -76,7 +76,7 @@
                         </div>
                         <div class="small-6 columns custom-qount-form-field">
                           <input type="number" formControlName="value" placeholder="Value"/>
-                          <div class="error" [hidden]="lateFeeForm.controls.value.untouched || lateFeeForm.controls.value.valid">Value is required.</div>
+                          <div class="error" [hidden]="lateFeeForm.get('value').untouched || lateFeeForm.get('value').valid">Value is required.</div>
                         </div>
                       </div>
                     </div>

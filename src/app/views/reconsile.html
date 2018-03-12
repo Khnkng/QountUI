@@ -81,7 +81,7 @@
       <div class="small-12 medium-3 columns">
         <label>Reconcile Date
           <input type="text" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setDueDate($event)" formControlName="date" placeholder="Date*">
-          <div class="error" [hidden]="reconcileForm.controls.date.untouched || reconcileForm.controls.date.valid">Date is required</div>
+          <div class="error" [hidden]="reconcileForm.get('date').untouched || reconcileForm.get('date').valid">Date is required</div>
         </label>
       </div>
       <div class="small-12 medium-3 columns">
@@ -89,7 +89,7 @@
           <select combo-box #accountComboBoxDir="comboBox" data-placeholder="Select Account" [listObject]="accounts" formControlName="bankAccountId" (valueChanged)="setBankAccount($event)">
             <option *ngFor="let account of accounts" [value]="account.id">{{account.name}}</option>
           </select>
-          <div class="error" [hidden]="reconcileForm.controls.bankAccountId.untouched || reconcileForm.controls.bankAccountId.valid">Please select bank account</div>
+          <div class="error" [hidden]="reconcileForm.get('bankAccountId').untouched || reconcileForm.get('bankAccountId').valid">Please select bank account</div>
         </label>
       </div>
     </div>
@@ -107,7 +107,7 @@
       <div class="small-12 medium-3 column">
         <label>Statement Ending Balance
           <input type="text" formControlName="statementEndingBalance" placeholder="Statement Ending Balance*" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="false"/>
-          <div class="error" [hidden]="reconcileForm.controls.statementEndingBalance.untouched || reconcileForm.controls.statementEndingBalance.valid">Please Enter Ending Balance</div>
+          <div class="error" [hidden]="reconcileForm.get('statementEndingBalance').untouched || reconcileForm.get('statementEndingBalance').valid">Please Enter Ending Balance</div>
         </label>
       </div>
     </div>

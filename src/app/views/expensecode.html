@@ -31,7 +31,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="name" placeholder="Name*"/>
-                                                    <div class="error" [hidden]="expensesForm.controls.name.untouched || expensesForm.controls.name.valid">Name is required.</div>
+                                                    <div class="error" [hidden]="expensesForm.get('name').untouched || expensesForm.get('name').valid">Name is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -40,7 +40,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <textarea formControlName="desc" rows="3" placeholder="Description"></textarea>
-                                                    <div class="error" [hidden]="expensesForm.controls.desc.untouched || expensesForm.controls.desc.valid">
+                                                    <div class="error" [hidden]="expensesForm.get('desc').untouched || expensesForm.get('desc').valid">
                                                         Description is required.</div>
                                                 </div>
                                             </div>
@@ -52,7 +52,7 @@
                                                     <select combo-box #selectedCOAComboBoxDir="comboBox" data-placeholder="Enter COA*" formControlName="coa_mapping_id" [listObject]="chartOfAccountsArr" (valueChanged)="updateExpenseCOA($event)">
                                                         <option *ngFor="let chartOfAccount of chartOfAccountsArr" [value]="chartOfAccount.name">{{chartOfAccount.number}} - {{chartOfAccount.name}}</option>
                                                     </select>
-                                                    <div class="error" [hidden]="expensesForm.controls.coa_mapping_id.untouched || expensesForm.controls.coa_mapping_id.valid">
+                                                    <div class="error" [hidden]="expensesForm.get('coa_mapping_id').untouched || expensesForm.get('coa_mapping_id').valid">
                                                         COA is required.</div>
                                                 </div>
                                             </div>

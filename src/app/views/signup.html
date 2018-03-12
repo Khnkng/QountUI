@@ -15,29 +15,29 @@
       <div class="row">
         <div class="small-12 medium-6 columns">
           <input type="text" formControlName="firstName" placeholder="First Name*">
-          <div class="error text-center" [hidden]="signUpForm.controls.firstName.untouched || signUpForm.controls.firstName.valid"><small>First Name is required.</small></div>
+          <div class="error text-center" [hidden]="signUpForm.get('firstName').untouched || signUpForm.get('firstName').valid"><small>First Name is required.</small></div>
         </div>
         <div class="small-12 medium-6 columns">
           <input type="text" formControlName="lastName" placeholder="Last Name*" >
-          <div class="small error text-center" [hidden]="signUpForm.controls.lastName.untouched || signUpForm.controls.lastName.valid"><small>Last Name is required.</small></div>
+          <div class="small error text-center" [hidden]="signUpForm.get('lastName').untouched || signUpForm.get('lastName').valid"><small>Last Name is required.</small></div>
         </div>
       </div>
       <div class="row">
         <div class="small-12  columns">
           <input type="text" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" formControlName="email" placeholder="Email *" [disabled]="emailExits">
-          <div class="error text-center" [hidden]="signUpForm.controls.email.untouched || signUpForm.controls.email.valid"><small>Email not valid.</small></div>
+          <div class="error text-center" [hidden]="signUpForm.get('email').untouched || signUpForm.get('email').valid"><small>Email not valid.</small></div>
         </div>
         <div class="small-12  columns">
           <input type="password" formControlName="password" placeholder="Password *">
-          <div class="error text-center" [hidden]="signUpForm.controls.password.untouched || signUpForm.controls.password.valid"><small>Password required.</small></div>
+          <div class="error text-center" [hidden]="signUpForm.get('password').untouched || signUpForm.get('password').valid"><small>Password required.</small></div>
         </div>
         <div class="small-12  columns">
           <input type="password" formControlName="passwordConfirmation" placeholder="Confirm Password *">
-          <div class="error text-center" [hidden]="signUpForm.controls.passwordConfirmation.untouched || checkPasswordsMatch()"><small>Passwords should match.</small></div>
+          <div class="error text-center" [hidden]="signUpForm.get('passwordConfirmation').untouched || checkPasswordsMatch()"><small>Passwords should match.</small></div>
         </div>
         <div class="small-12  columns">
           <input type="text" formControlName="phoneNumber" placeholder="Mobile">
-          <div class="error text-center" [hidden]="signUpForm.controls.phoneNumber.untouched || signUpForm.controls.phoneNumber.valid"><small>Phone Number not valid.</small></div>
+          <div class="error text-center" [hidden]="signUpForm.get('phoneNumber').untouched || signUpForm.get('phoneNumber').valid"><small>Phone Number not valid.</small></div>
         </div>
       </div>
       <div class="row">
@@ -46,7 +46,7 @@
           <div class="input-group">
             <span class="input-group-label"><i class="icon ion-ios-locked"></i></span>
             <input class="input-group-field" [ngClass] = "{'passError' : !checkPasswordsMatch()}" type="password" ngControl="passwordConfirmation" placeholder="Confirm Password *">
-            <div class="error" [hidden]="signUp.form.controls.passwordConfirmation.untouched || checkPasswordsMatch()"><smal>Passwords should match.</smal></div>
+            <div class="error" [hidden]="signUp.form.get('passwordConfirmation').untouched || checkPasswordsMatch()"><smal>Passwords should match.</smal></div>
           </div>
         </div>-->
       </div>
@@ -63,7 +63,7 @@
         </div>
         <div class="small-8 columns" [hidden]="!asCompany">
           <input type="text" formControlName="firm" placeholder="Company*">
-          <div class="error text-center" [hidden]="signUpForm.controls.firm.untouched || signUpForm.controls.firm.valid"><small>Company Name is required.</small></div>
+          <div class="error text-center" [hidden]="signUpForm.get('firm').untouched || signUpForm.get('firm').valid"><small>Company Name is required.</small></div>
         </div>
 
       </div>-->

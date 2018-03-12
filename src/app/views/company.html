@@ -34,7 +34,7 @@
 																[listObject]="countries" (valueChanged)="showProvince($event)">
 															<option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
 														</select>
-														<div class="error" [hidden]="companyForm.controls.country.untouched || companyForm.controls.country.valid"><small>Country is required.</small></div>
+														<div class="error" [hidden]="companyForm.get('country').untouched || companyForm.get('country').valid"><small>Country is required.</small></div>
 													</div>
 												</div>
 												<div class="row">
@@ -43,7 +43,7 @@
 													</div>
 													<div class="small-6 columns">
 														<input type="text" formControlName="name" placeholder="Legal Company Name*">
-														<div class="error" [hidden]="companyForm.controls.name.untouched || companyForm.controls.name.valid"><small>Company Name is required.</small></div>
+														<div class="error" [hidden]="companyForm.get('name').untouched || companyForm.get('name').valid"><small>Company Name is required.</small></div>
 													</div>
 												</div>
 
@@ -53,8 +53,8 @@
 													</div>
 													<div class="small-6 columns">
 														<input class="" type="text" formControlName="einNumber" placeholder="EIN*" pattern="[0-9]{9}$">
-														<div class="error" *ngIf="companyForm.controls.einNumber.touched && companyForm.controls.einNumber.hasError('required')">Company EIN is required.</div>
-														<div class="error" *ngIf="companyForm.controls.einNumber.touched && companyForm.controls.einNumber.hasError('pattern')">EIN should have 9 digits only.</div>
+														<div class="error" *ngIf="companyForm.get('einNumber').touched && companyForm.get('einNumber').hasError('required')">Company EIN is required.</div>
+														<div class="error" *ngIf="companyForm.get('einNumber').touched && companyForm.get('einNumber').hasError('pattern')">EIN should have 9 digits only.</div>
 													</div>
 												</div>
 
@@ -66,7 +66,7 @@
 														<select formControlName="companyType" placeholder="Company type">
 															<option *ngFor="let companyType of companyTypes" value="{{companyType.value}}">{{companyType.name}}</option>
 														</select>
-														<div class="error" [hidden]="companyForm.controls.companyType.untouched || companyForm.controls.companyType.valid"><small>Select Company type</small></div>
+														<div class="error" [hidden]="companyForm.get('companyType').untouched || companyForm.get('companyType').valid"><small>Select Company type</small></div>
 													</div>
 
 												</div>
@@ -74,7 +74,7 @@
                                                   <label>Phone Number
                                                     <div class="">
                                                       <input class="" name="phoneNumber" formControlName="phoneNumber" type="text" placeholder="Phone Number">
-                                                      <div class="error" [hidden]="companyForm.controls.phoneNumber.untouched || companyForm.controls.phoneNumber.valid"><small>Company Phone Number is required.</small></div>
+                                                      <div class="error" [hidden]="companyForm.get('phoneNumber').untouched || companyForm.get('phoneNumber').valid"><small>Company Phone Number is required.</small></div>
                                                     </div>
                                                   </label>
                                                 </div>-->
@@ -85,7 +85,7 @@
 													</div>
 													<div class="small-6 columns">
 														<input class="" name="companyEmail" formControlName="companyEmail" type="text" readonly/>
-														<div class="error" [hidden]="companyForm.controls.companyEmail.untouched || companyForm.controls.companyEmail.valid"><small>companyMail is required.</small></div>
+														<div class="error" [hidden]="companyForm.get('companyEmail').untouched || companyForm.get('companyEmail').valid"><small>companyMail is required.</small></div>
 													</div>
 												</div>
 
@@ -95,7 +95,7 @@
 													</div>
 													<div class="small-6 columns">
 														<input  custom-datepicker (valueChanged)="setDate($event,lockdate)" [mindate]="'past'" [maxdate]="todaysDate" [format]="dateFormat"  type="text" formControlName="fiscalStartDate" name="fiscalStartDate" placeholder="Fiscal Start Date*"/>
-														<div class="error" [hidden]="companyForm.controls.fiscalStartDate.untouched || companyForm.controls.fiscalStartDate.valid"><small>Select Fiscal Start Date</small></div>
+														<div class="error" [hidden]="companyForm.get('fiscalStartDate').untouched || companyForm.get('fiscalStartDate').valid"><small>Select Fiscal Start Date</small></div>
 													</div>
 												</div>
 
@@ -116,7 +116,7 @@
 													</div>
 													<div class="small-6 columns">
 														<input class="" name="email_id" formControlName="email_id" type="text" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
-														<div class="error" *ngIf="companyForm.controls.email_id.touched && companyForm.controls.email_id.hasError('pattern')">Please check email format</div>
+														<div class="error" *ngIf="companyForm.get('email_id').touched && companyForm.get('email_id').hasError('pattern')">Please check email format</div>
 													</div>
 												</div>
 												<div class="row">
@@ -127,7 +127,7 @@
 														<select formControlName="companyClassification" placeholder="Company Classification">
 															<option *ngFor="let companyClassification of companyClassifications" value="{{companyClassification.value}}">{{companyClassification.name}}</option>
 														</select>
-														<div class="error" [hidden]="companyForm.controls.companyClassification.untouched || companyForm.controls.companyClassification.valid"><small>Select Company Classification</small></div>
+														<div class="error" [hidden]="companyForm.get('companyClassification').untouched || companyForm.get('companyClassification').valid"><small>Select Company Classification</small></div>
 													</div>
 												</div>
 												<div class="row">
@@ -136,8 +136,8 @@
 													</div>
 													<div class="small-6 columns">
 														<input class="" type="text" formControlName="taxBracket" placeholder="Tax Bracket" pattern="^[0-9][0-9]?$|^100$">
-														<div class="error" *ngIf="companyForm.controls.taxBracket.touched && companyForm.controls.taxBracket.hasError('required')">Tax Bracket is required.</div>
-														<div class="error" *ngIf="companyForm.controls.taxBracket.touched && companyForm.controls.taxBracket.hasError('pattern')">Tax bracket should be 0 to 100.</div>
+														<div class="error" *ngIf="companyForm.get('taxBracket').touched && companyForm.get('taxBracket').hasError('required')">Tax Bracket is required.</div>
+														<div class="error" *ngIf="companyForm.get('taxBracket').touched && companyForm.get('taxBracket').hasError('pattern')">Tax bracket should be 0 to 100.</div>
 													</div>
 												</div>
 												<div class="row">
@@ -149,7 +149,7 @@
 																[listObject]="currencies" (valueChanged)="selectedededCurrency($event)">
 															<option *ngFor="let currency of currencies" [value]="currency.code">{{currency.code}}</option>
 														</select>
-														<div class="error" [hidden]="companyForm.controls.defaultCurrency.untouched || companyForm.controls.defaultCurrency.valid"><small>Select Currency</small></div>
+														<div class="error" [hidden]="companyForm.get('defaultCurrency').untouched || companyForm.get('defaultCurrency').valid"><small>Select Currency</small></div>
 													</div>
 												</div>
 											</div>
@@ -163,7 +163,7 @@
 													</div>
 													<div class="small-6 columns">
 														<input type="text" formControlName="contact_first_name" placeholder="First Name">
-														<div class="error" [hidden]="companyForm.controls.contact_first_name.untouched || companyForm.controls.contact_first_name.valid"><small>Contact First Name is required.</small></div>
+														<div class="error" [hidden]="companyForm.get('contact_first_name').untouched || companyForm.get('contact_first_name').valid"><small>Contact First Name is required.</small></div>
 													</div>
 
 												</div>
@@ -173,7 +173,7 @@
 													</div>
 													<div class="small-6 columns">
 														<input type="text" formControlName="contact_last_name" placeholder="Last Name">
-														<div class="error" [hidden]="companyForm.controls.contact_last_name.untouched || companyForm.controls.contact_last_name.valid"><small>Contact Last Name is required.</small></div>
+														<div class="error" [hidden]="companyForm.get('contact_last_name').untouched || companyForm.get('contact_last_name').valid"><small>Contact Last Name is required.</small></div>
 													</div>
 												</div>
 												<!--<div class="row">
@@ -182,7 +182,7 @@
 													</div>
 													<div class="small-6 columns">
 														<input custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDOB($event)" type="text" formControlName="contact_date_of_birth" placeholder="Date">
-														<div class="error" [hidden]="companyForm.controls.contact_date_of_birth.untouched || companyForm.controls.contact_date_of_birth.valid"><small>Contact Date of Birth is required.</small></div>
+														<div class="error" [hidden]="companyForm.get('contact_date_of_birth').untouched || companyForm.get('contact_date_of_birth').valid"><small>Contact Date of Birth is required.</small></div>
 													</div>
 												</div>-->
 											</div>
@@ -373,7 +373,7 @@
                     <label>Name
                       <div class="input-group">
                         <input class="input-group-field" type="text" formControlName="name" placeholder="Legal Company Name*">
-                        <div class="error" [hidden]="vendorForm.controls.name.untouched || vendorForm.controls.name.valid"><small>Vendor Name is required.</small></div>
+                        <div class="error" [hidden]="vendorForm.get('name').untouched || vendorForm.get('name').valid"><small>Vendor Name is required.</small></div>
                       </div>
                     </label>
                   </div>
@@ -381,7 +381,7 @@
                     <label>EIN
                       <div class="input-group">
                         <input class="input-group-field" type="text" formControlName="ein" placeholder="EIN*">
-                        <div class="error" [hidden]="vendorForm.controls.ein.untouched || vendorForm.controls.ein.valid"><small>Vendor EIN is required.</small></div>
+                        <div class="error" [hidden]="vendorForm.get('ein').untouched || vendorForm.get('ein').valid"><small>Vendor EIN is required.</small></div>
                       </div>
                     </label>
                   </div>
@@ -391,7 +391,7 @@
                         <select formControlName="currency" placeholder="currency">
                           <option *ngFor="let currency of currencies" value="{{currency}}">{{currency}}</option>
                         </select>
-                        <div class="error" [hidden]="vendorForm.controls.currency.untouched || vendorForm.controls.currency.valid"><smal>Select Currency</smal></div>
+                        <div class="error" [hidden]="vendorForm.get('currency').untouched || vendorForm.get('currency').valid"><smal>Select Currency</smal></div>
                       </div>
                     </label>
                   </div>&ndash;&gt;
@@ -401,7 +401,7 @@
                     <label>Account Number
                       <div class="input-group">
                         <input type="text" class="input-group-field" formControlName="accountNumber" placeholder="Account Number" />
-                        <div class="error" [hidden]="vendorForm.controls.accountNumber.untouched || vendorForm.controls.accountNumber.valid"><small>Vendor Account number is required.</small></div>
+                        <div class="error" [hidden]="vendorForm.get('accountNumber').untouched || vendorForm.get('accountNumber').valid"><small>Vendor Account number is required.</small></div>
                       </div>
                     </label>
                   </div>
@@ -409,8 +409,8 @@
                     <label>Email
                       <div class="input-group">
                         <input class="input-group-field" type="text" formControlName="email" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
-                        <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('required')"><small>Vendor email is required.</small></div>
-                        <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('pattern')"><small>Invalid email format.</small></div>
+                        <div class="error" *ngIf="vendorForm.get('email').touched && vendorForm.get('email').hasError('required')"><small>Vendor email is required.</small></div>
+                        <div class="error" *ngIf="vendorForm.get('email').touched && vendorForm.get('email').hasError('pattern')"><small>Invalid email format.</small></div>
                       </div>
                     </label>
                   </div>
@@ -421,7 +421,7 @@
                     <label>Phone Number
                       <div class="input-group">
                         <input class="input-group-field" type="text" formControlName="phoneNumber" placeholder="Phone Number*">
-                        <div class="error" [hidden]="vendorForm.controls.phoneNumber.untouched || vendorForm.controls.phoneNumber.valid"><small>Phone Number is required.</small></div>
+                        <div class="error" [hidden]="vendorForm.get('phoneNumber').untouched || vendorForm.get('phoneNumber').valid"><small>Phone Number is required.</small></div>
                       </div>
                     </label>
                   </div>
@@ -429,7 +429,7 @@
                     <label>Address
                       <div class="input-group">
                         <input type="text" class="input-group-field" formControlName="address" placeholder="Address*" />
-                        <div class="error" [hidden]="vendorForm.controls.address.untouched || vendorForm.controls.address.valid"><small>Vendor Address is required.</small></div>
+                        <div class="error" [hidden]="vendorForm.get('address').untouched || vendorForm.get('address').valid"><small>Vendor Address is required.</small></div>
                       </div>
                     </label>
                   </div>
@@ -437,7 +437,7 @@
                     <label>City
                       <div class="input-group">
                         <input type="text" class="input-group-field" formControlName="city" placeholder="City"/>
-                        <div class="error" [hidden]="vendorForm.controls.city.untouched || vendorForm.controls.city.valid"><small>City is required.</small></div>
+                        <div class="error" [hidden]="vendorForm.get('city').untouched || vendorForm.get('city').valid"><small>City is required.</small></div>
                       </div>
                     </label>
                   </div>
@@ -445,7 +445,7 @@
                     <label>State
                       <div class="input-group">
                         <input type="text" class="input-group-field" formControlName="state" placeholder="State"/>
-                        <div class="error" [hidden]="vendorForm.controls.state.untouched || vendorForm.controls.state.valid"><small>State is required.</small></div>
+                        <div class="error" [hidden]="vendorForm.get('state').untouched || vendorForm.get('state').valid"><small>State is required.</small></div>
                       </div>
                     </label>
                   </div>
@@ -455,7 +455,7 @@
                         <select combo-box #vendorCountryComboBoxDir="comboBox" title="" data-placeholder="Enter Country" formControlName="country" [listObject]="countries" (valueChanged)="showVendorProvince($event)">
                           <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
                         </select>
-                        <div class="error" [hidden]="vendorForm.controls.country.untouched || vendorForm.controls.country.valid"><small>Country is required.</small></div>
+                        <div class="error" [hidden]="vendorForm.get('country').untouched || vendorForm.get('country').valid"><small>Country is required.</small></div>
                       </div>
                     </label>
                   </div>
@@ -463,7 +463,7 @@
                     <label>Zip Code
                       <div class="input-group">
                         <input type="text" class="input-group-field" formControlName="zipcode" placeholder="State"/>
-                        <div class="error" [hidden]="vendorForm.controls.zipcode.untouched || vendorForm.controls.zipcode.valid"><small>Zip code is required.</small></div>
+                        <div class="error" [hidden]="vendorForm.get('zipcode').untouched || vendorForm.get('zipcode').valid"><small>Zip code is required.</small></div>
                       </div>
                     </label>
                   </div>
@@ -474,14 +474,14 @@
                         <option [value]="'digitalCheque'">Digital Check</option>
                         <option [value]="'mailCheque'">Mail Check</option>
                       </select>
-                      <div class="error" [hidden]="vendorForm.controls.paymentMethod.untouched || vendorForm.controls.paymentMethod.valid"><small>Payment method required.</small></div>
+                      <div class="error" [hidden]="vendorForm.get('paymentMethod').untouched || vendorForm.get('paymentMethod').valid"><small>Payment method required.</small></div>
                     </label>
                   </div>
                   <div class="small-12 medium-6 columns">
                     <label> &nbsp;
                       <div class="input-group">
                         <input type="checkbox" class="input-group-field" formControlName="has1099" /> Eligible 1099
-                        <div class="error" [hidden]="vendorForm.controls.has1099.untouched || vendorForm.controls.has1099.valid"><small>Eligible for 1099 is required.</small></div>
+                        <div class="error" [hidden]="vendorForm.get('has1099').untouched || vendorForm.get('has1099').valid"><small>Eligible for 1099 is required.</small></div>
                       </div>
                     </label>
                   </div>

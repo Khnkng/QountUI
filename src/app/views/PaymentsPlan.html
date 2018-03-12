@@ -43,7 +43,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="name" placeholder="Name*"/>
-                                                    <div class="error" [hidden]="paymentPlanForm.controls.name.untouched || paymentPlanForm.controls.name.valid">Name is required.</div>
+                                                    <div class="error" [hidden]="paymentPlanForm.get('name').untouched || paymentPlanForm.get('name').valid">Name is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -52,7 +52,7 @@
                                                 </div>
                                                 <div class="small-6 columns custom-qount-form-field">
                                                     <input type="text" formControlName="amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
-                                                    <div class="error" [hidden]="paymentPlanForm.controls.amount.untouched || paymentPlanForm.controls.amount.valid">Amount is required.</div>
+                                                    <div class="error" [hidden]="paymentPlanForm.get('amount').untouched || paymentPlanForm.get('amount').valid">Amount is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -67,10 +67,10 @@
                                                         <option [value]="'quarterly'">Quarterly</option>
                                                         <option [value]="'yearly'">Yearly</option>
                                                     </select>
-                                                    <div class="error" [hidden]="paymentPlanForm.controls.frequency.untouched || paymentPlanForm.controls.frequency.valid">Frequency is required.</div>
+                                                    <div class="error" [hidden]="paymentPlanForm.get('frequency').untouched || paymentPlanForm.get('frequency').valid">Frequency is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row" *ngIf="paymentPlanForm.controls.frequency.value=='weekly'">
+                                            <div class="row" *ngIf="paymentPlanForm.get('frequency').value=='weekly'">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Day of week</label>
                                                 </div>
@@ -78,10 +78,10 @@
                                                     <select formControlName="day">
                                                         <option *ngFor="let day of dayOfWeek" value="{{day}}">{{day}}</option>
                                                     </select>
-                                                    <div class="error" [hidden]="paymentPlanForm.controls.day.untouched || paymentPlanForm.controls.day.valid">Day is required.</div>
+                                                    <div class="error" [hidden]="paymentPlanForm.get('day').untouched || paymentPlanForm.get('day').valid">Day is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row" *ngIf="paymentPlanForm.controls.frequency.value=='quarterly'">
+                                            <div class="row" *ngIf="paymentPlanForm.get('frequency').value=='quarterly'">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Month of Quarter</label>
                                                 </div>
@@ -89,10 +89,10 @@
                                                     <select formControlName="month">
                                                         <option *ngFor="let month of monthOfQuarter" value="{{month}}">{{month}}</option>
                                                     </select>
-                                                    <div class="error" [hidden]="paymentPlanForm.controls.day.untouched || paymentPlanForm.controls.day.valid">Quarter is required.</div>
+                                                    <div class="error" [hidden]="paymentPlanForm.get('day').untouched || paymentPlanForm.get('day').valid">Quarter is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row" *ngIf="paymentPlanForm.controls.frequency.value=='yearly'">
+                                            <div class="row" *ngIf="paymentPlanForm.get('frequency').value=='yearly'">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Month of year</label>
                                                 </div>
@@ -100,10 +100,10 @@
                                                     <select formControlName="month">
                                                         <option *ngFor="let month of monthOfYear" value="{{month}}">{{month}}</option>
                                                     </select>
-                                                    <div class="error" [hidden]="paymentPlanForm.controls.day.untouched || paymentPlanForm.controls.day.valid">Year is required.</div>
+                                                    <div class="error" [hidden]="paymentPlanForm.get('day').untouched || paymentPlanForm.get('day').valid">Year is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row" *ngIf="paymentPlanForm.controls.frequency.value=='monthly'||paymentPlanForm.controls.frequency.value=='quarterly'||paymentPlanForm.controls.frequency.value=='yearly'">
+                                            <div class="row" *ngIf="paymentPlanForm.get('frequency').value=='monthly'||paymentPlanForm.get('frequency').value=='quarterly'||paymentPlanForm.get('frequency').value=='yearly'">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Day of month</label>
                                                 </div>
@@ -111,16 +111,16 @@
                                                     <select formControlName="day">
                                                         <option *ngFor="let day of dayOfMonth" value="{{day}}">{{day}}</option>
                                                     </select>
-                                                    <div class="error" [hidden]="paymentPlanForm.controls.day.untouched || paymentPlanForm.controls.day.valid">Year is required.</div>
+                                                    <div class="error" [hidden]="paymentPlanForm.get('day').untouched || paymentPlanForm.get('day').valid">Year is required.</div>
                                                 </div>
                                             </div>
-                                            <div class="row" *ngIf="paymentPlanForm.controls.frequency.value">
+                                            <div class="row" *ngIf="paymentPlanForm.get('frequency').value">
                                                 <div class="small-4 columns">
                                                     <label class="text-right">Plan end date</label>
                                                 </div>
                                                 <div class="small-6 columns custom-qount-form-field">
                                                     <input type="text" formControlName="ends_after" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setPlanEndDate($event)" placeholder="End Date*">
-                                                    <div class="error" [hidden]="paymentPlanForm.controls.day.untouched || paymentPlanForm.controls.day.valid">Year is required.</div>
+                                                    <div class="error" [hidden]="paymentPlanForm.get('day').untouched || paymentPlanForm.get('day').valid">Year is required.</div>
                                                 </div>
                                             </div>
                                         </div>

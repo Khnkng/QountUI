@@ -40,7 +40,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="name" placeholder="Name*"/>
-                                                    <div class="error" [hidden]="metricsForm.controls.name.untouched || metricsForm.controls.name.valid">Name is required.</div>
+                                                    <div class="error" [hidden]="metricsForm.get('name').untouched || metricsForm.get('name').valid">Name is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -56,7 +56,7 @@
                                                     <select formControlName="type" disabled *ngIf="hasParentOrChild">
                                                         <option *ngFor="let category of categoryTypes" [value]="category.value">{{category.name}}</option>
                                                     </select>
-                                                    <div class="error" [hidden]="metricsForm.controls.type.untouched || metricsForm.controls.type.valid">Category type is required.</div>
+                                                    <div class="error" [hidden]="metricsForm.get('type').untouched || metricsForm.get('type').valid">Category type is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -85,7 +85,7 @@
                                                     <select formControlName="subType" disabled *ngIf="hasParentOrChild">
                                                         <option value="{{subtype.value}}" *ngFor="let subtype of displaySubtypes">{{subtype.name}}</option>
                                                     </select>
-                                                    <div class="error" [hidden]="metricsForm.controls.subType.untouched || metricsForm.controls.subType.valid">Sub type is required.</div>
+                                                    <div class="error" [hidden]="metricsForm.get('subType').untouched || metricsForm.get('subType').valid">Sub type is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">

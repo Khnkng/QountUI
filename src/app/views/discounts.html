@@ -56,24 +56,24 @@
                 </div>
                 <div class="row" style="margin-top: 1rem">
                   <div class="small-12 medium-8 columns" formArrayName="discountsRanges">
-                    <div class="row" *ngFor="let contactLine of discountForm.controls.discountsRanges.controls;let index=index;">
+                    <div class="row" *ngFor="let contactLine of discountForm.get('discountsRanges').controls;let index=index;">
                       <div class="column medium-3">
                         <label>From Day*
-                          <select [formControl]="contactLine.controls.fromDay">
+                          <select [formControl]="contactLine.get('fromDay')">
                             <option *ngFor="let day of days" value="{{day}}">{{day}}</option>
                           </select>
                         </label>
                       </div>
                       <div class="column medium-3">
                         <label>To Day*
-                          <select [formControl]="contactLine.controls.toDay">
+                          <select [formControl]="contactLine.get('toDay')">
                             <option *ngFor="let day of days" value="{{day}}">{{day}}</option>
                           </select>
                         </label>
                       </div>
                       <div class="column medium-3">
                         <label>Value*
-                          <input type="text" [formControl]="contactLine.controls.value"/>
+                          <input type="text" [formControl]="contactLine.get('value')"/>
                         </label>
                       </div>
                       <div class="column medium-1">

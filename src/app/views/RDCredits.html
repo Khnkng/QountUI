@@ -61,7 +61,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="name" placeholder="Name*">
-                          <div class="error" [hidden]="rdCreditsForm.controls.name.untouched || rdCreditsForm.controls.name.valid">Name is required.</div>
+                          <div class="error" [hidden]="rdCreditsForm.get('name').untouched || rdCreditsForm.get('name').valid">Name is required.</div>
                         </div>
                       </div>
                       <div class="row">
@@ -78,7 +78,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="amount" placeholder="Amount" numeral [format]="'$0,0.00'" [locale]="companyCurrency"/>
-                          <div class="error" [hidden]="rdCreditsForm.controls.amount.untouched || rdCreditsForm.controls.amount.valid">Amount is required.</div>
+                          <div class="error" [hidden]="rdCreditsForm.get('amount').untouched || rdCreditsForm.get('amount').valid">Amount is required.</div>
                         </div>
                       </div>
 
@@ -90,7 +90,7 @@
                           <select formControlName="year" data-placeholder="Select Year">
                             <option *ngFor="let year of years" [value]="year.value">{{year.name}}</option>
                           </select>
-                          <div class="error" [hidden]="rdCreditsForm.controls.year.untouched || rdCreditsForm.controls.year.valid">Select Year.</div>
+                          <div class="error" [hidden]="rdCreditsForm.get('year').untouched || rdCreditsForm.get('year').valid">Select Year.</div>
                         </div>
                       </div>
                       <div class="row">
@@ -99,7 +99,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="date" custom-datepicker [format]="dateFormat" [mindate]="'past'" (valueChanged)="setDate($event)" placeholder="Date*">
-                          <div class="error" [hidden]="rdCreditsForm.controls.date.untouched || rdCreditsForm.controls.date.valid">Select Date.</div>
+                          <div class="error" [hidden]="rdCreditsForm.get('date').untouched || rdCreditsForm.get('date').valid">Select Date.</div>
                         </div>
                       </div>
 
@@ -132,7 +132,7 @@
                           <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="coaId" [listObject]="chartOfAccounts" (valueChanged)="updateChartOfAccount($event)">
                             <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.number}} - {{coa.name}}</option>
                           </select>
-                          <div class="error" [hidden]="rdCreditsForm.controls.coaId.untouched || rdCreditsForm.controls.coaId.valid">COA is required</div>
+                          <div class="error" [hidden]="rdCreditsForm.get('coaId').untouched || rdCreditsForm.get('coaId').valid">COA is required</div>
                         </div>
                       </div>
 

@@ -1,266 +1,266 @@
 <div class="row" foundation>
-    <div class="columns small-6 small-offset-6 right">
+  <div class="columns small-6 small-offset-6 right">
 
-    </div>
+  </div>
 </div>
 <div class="row chart-of-accounts" foundation>
-    <div class="column large-12 medium-12 small-12 foo-container">
-        <div class="add-share-buttons add-share-adjust text-right" [style.visibility]="showDownloadIcon">
-            <span class="pointer" (click)="showAddBudget()"><i class="icon ion-ios-plus-outline"></i><span>Budget</span></span>
-            <span class="footable-download">
+  <div class="column large-12 medium-12 small-12 foo-container">
+    <div class="add-share-buttons add-share-adjust text-right" [style.visibility]="showDownloadIcon">
+      <span class="pointer" (click)="showAddBudget()"><i class="icon ion-ios-plus-outline"></i><span>Budget</span></span>
+      <span class="footable-download">
               <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
               <div class="dropdown-pane bottom export-dropdown" id="export-dropdown" data-dropdown data-hover="true" data-hover-pane="true" foundation >
                 <div (click)="exportToExcel()" class="export-option pointer">Export To Excel</div>
                 <div (click)="exportToPDF()" class="export-option pointer">Export To PDF</div>
               </div>
             </span>
-        </div>
-        <foo-table #fooTableDir="fooTable" class="bighalf-footable employee_search" *ngIf="hasBudget" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
     </div>
+    <foo-table #fooTableDir="fooTable" class="bighalf-footable employee_search" *ngIf="hasBudget" [data]="tableData" [options]="tableOptions" (onRowAction)="handleAction($event)"></foo-table>
+  </div>
 
-    <div class="create-budget qount-off-canvas-menu">
-        <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
-            <section class="flyout-placeholder">
-                <div class="flyout-body flyout-shadow-effect">
-                    <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="budgetForm">
-                        <section class="form-section clearfix">
-                            <div class="row">
-                                <div class="small-12 medium-12 columns" [hidden]="!showFirstStep">
-                                    <div class="form-section-left expense-row">
-                                        <div class="row">
-                                            <div class="small-12 medium-4 columns">
-                                                <label>Name
-                                                    <input type="text" formControlName="name" placeholder="Name*"/>
-                                                    <div class="error" [hidden]="budgetForm.controls.name.untouched || budgetForm.controls.name.valid">Name is required</div>
-                                                </label>
-                                            </div>
-                                            <div class="small-12 medium-4 columns">
-                                                <label>Description
-                                                    <input type="text" formControlName="description" placeholder="Description"/>
-                                                </label>
-                                            </div>
-                                            <div class="small-12 medium-2 columns" *ngIf="isSingleFisicalYear">
-                                                <label>
-                                                    Year
-                                                    <select formControlName="year">
-                                                        <option *ngFor="let year of years" value="{{year}}">{{year}}</option>
-                                                    </select>
-                                                </label>
-                                            </div>
-                                            <div class="small-12 medium-2 columns" *ngIf="!isSingleFisicalYear">
-                                                <label>
-                                                    Year
-                                                    <select formControlName="year">
-                                                        <option *ngFor="let budgetYear of budgetYears" value="{{budgetYear.year}}">{{budgetYear.displayYear}}</option>
-                                                    </select>
-                                                </label>
-                                            </div>
-                                            <!--<div class="small-12 medium-2 columns">
-                                                <label style="margin-top: 2rem;">Default Budget
-                                                    <input type="checkbox" style="margin-top: 2px;margin-left: 5px;" formControlName="defaultBudget"/>
-                                                </label>
-                                            </div>-->
-                                        </div>
-                                        <div class="row dimension-flyout">
-                                            <div class="small-12 medium-6 columns"*ngIf="showDimensions">
-                                                <label>Dimensions
-                                                    <div class="row dimension-grids" (click)="doNothing($event)">
-                                                        <div class="small-12 medium-4 columns dimension-grid" *ngFor="let dimension of dimensions">
-                                                            <div class="dimension-header">
-                                                                <div>
-                                                                    <span class="float-left">{{dimension.name}}</span>
-                                                <span class="float-right">
+  <div class="create-budget qount-off-canvas-menu">
+    <div class="flyout expanded" [ngClass]="{'expanded':showFlyout}">
+      <section class="flyout-placeholder">
+        <div class="flyout-body flyout-shadow-effect">
+          <form *ngIf="showFlyout" (ngSubmit)="submit($event)" [formGroup]="budgetForm">
+            <section class="form-section clearfix">
+              <div class="row">
+                <div class="small-12 medium-12 columns" [hidden]="!showFirstStep">
+                  <div class="form-section-left expense-row">
+                    <div class="row">
+                      <div class="small-12 medium-4 columns">
+                        <label>Name
+                          <input type="text" formControlName="name" placeholder="Name*"/>
+                          <div class="error" [hidden]="budgetForm.get('name').untouched || budgetForm.get('name').valid">Name is required</div>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-4 columns">
+                        <label>Description
+                          <input type="text" formControlName="description" placeholder="Description"/>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-2 columns" *ngIf="isSingleFisicalYear">
+                        <label>
+                          Year
+                          <select formControlName="year">
+                            <option *ngFor="let year of years" value="{{year}}">{{year}}</option>
+                          </select>
+                        </label>
+                      </div>
+                      <div class="small-12 medium-2 columns" *ngIf="!isSingleFisicalYear">
+                        <label>
+                          Year
+                          <select formControlName="year">
+                            <option *ngFor="let budgetYear of budgetYears" value="{{budgetYear.year}}">{{budgetYear.displayYear}}</option>
+                          </select>
+                        </label>
+                      </div>
+                      <!--<div class="small-12 medium-2 columns">
+                          <label style="margin-top: 2rem;">Default Budget
+                              <input type="checkbox" style="margin-top: 2px;margin-left: 5px;" formControlName="defaultBudget"/>
+                          </label>
+                      </div>-->
+                    </div>
+                    <div class="row dimension-flyout">
+                      <div class="small-12 medium-6 columns"*ngIf="showDimensions">
+                        <label>Dimensions
+                          <div class="row dimension-grids" (click)="doNothing($event)">
+                            <div class="small-12 medium-4 columns dimension-grid" *ngFor="let dimension of dimensions">
+                              <div class="dimension-header">
+                                <div>
+                                  <span class="float-left">{{dimension.name}}</span>
+                                  <span class="float-right">
                                                     <i class="icon ion-checkmark-circled" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"
                                                        (click)="selectDimension($event, dimension.name)"></i>
                                                 </span>
-                                                                </div>
-                                                                <div class="bottom" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"></div>
-                                                            </div>
-                                                            <div class="dimension-values" [ngClass]="{'selected': isDimensionSelected(dimension.name)}">
-                                                                <div class="dimension-value" *ngFor="let value of dimension.values; let index = index;">
-                                                                    <label (click)="selectValue($event, dimension, value)">
-                                                                        <input type="checkbox" [checked]="isValueSelected(dimension, value)"/>{{value}}
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
-                                <div class="small-12 medium-12 columns" [hidden]="!showSecondStep">
-                                    <div class="row">
-                                            <div class="columns">
-                                                <label class="float-right" style="margin-left: 10px;">
-                                                    <b>Gross Profit:</b> {{formattedGrossProfit}}
-                                                </label>
-                                                <label class="float-right">
-                                                    <b>Net Profit:</b> {{formattedNetProfit}}
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div style="margin-top: 12px; overflow-x: auto;" >
-                                            <table class="budget-table coa-list-indent">
-                                                <thead>
-                                                <tr>
-                                                    <th width="14%">COA</th>
-                                                    <ng-template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
-                                                        <th style="text-transform: capitalize;" *ngIf="month!='total'">{{month}}</th>
-                                                        <th style="text-transform: capitalize;" *ngIf="month=='total'">{{month}}</th>
-                                                    </ng-template>
-                                                    <th></th>
-                                                </tr>
-                                                </thead>
-                                                <tbody formArrayName="income">
-                                                <tr *ngIf="budgetForm.controls.income.controls.length == 0">
-                                                    <td colspan="5" class="text-center">Chart of accounts not found</td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="15"><span style="font-weight: bold;color:#5d9cec;margin-left: -6px">Income</span></td>
-                                                </tr>
-                                                <tr *ngFor="let itemForm of budgetForm.controls.income.controls;let index=index;"  (click)="editItem(index, itemForm,'income')">
-                                                    <td class="truncate wrap" [ngClass]="'coa-child-'+coaLevels[itemForm.controls.coaID.value]">{{getCOAName(itemForm.controls.coaID.value)}}</td>
-                                                    <ng-template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
-                                                        <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.controls[month].value?formatAmount(itemForm.controls[month].value):null}}</td>
-                                                        <td *ngIf="itemForm.editable&&month!='total'">
-                                                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm,'income')"/>
-                                                        </td>
-                                                        <td *ngIf="!itemForm.editable&&month=='total'">{{itemForm.controls[month].value?formatAmount(itemForm.controls[month].value):null}}</td>
-                                                        <td *ngIf="itemForm.editable&&month=='total'">
-                                                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm,'income')"/>
-                                                        </td>
-                                                    </ng-template>
-                                                    <td>
+                                <div class="bottom" [ngClass]="{'selected': isDimensionSelected(dimension.name)}"></div>
+                              </div>
+                              <div class="dimension-values" [ngClass]="{'selected': isDimensionSelected(dimension.name)}">
+                                <div class="dimension-value" *ngFor="let value of dimension.values; let index = index;">
+                                  <label (click)="selectValue($event, dimension, value)">
+                                    <input type="checkbox" [checked]="isValueSelected(dimension, value)"/>{{value}}
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="small-12 medium-12 columns" [hidden]="!showSecondStep">
+                  <div class="row">
+                    <div class="columns">
+                      <label class="float-right" style="margin-left: 10px;">
+                        <b>Gross Profit:</b> {{formattedGrossProfit}}
+                      </label>
+                      <label class="float-right">
+                        <b>Net Profit:</b> {{formattedNetProfit}}
+                      </label>
+                    </div>
+                  </div>
+                  <div style="margin-top: 12px; overflow-x: auto;" >
+                    <table class="budget-table coa-list-indent">
+                      <thead>
+                      <tr>
+                        <th width="14%">COA</th>
+                        <ng-template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
+                          <th style="text-transform: capitalize;" *ngIf="month!='total'">{{month}}</th>
+                          <th style="text-transform: capitalize;" *ngIf="month=='total'">{{month}}</th>
+                        </ng-template>
+                        <th></th>
+                      </tr>
+                      </thead>
+                      <tbody formArrayName="income">
+                      <tr *ngIf="budgetForm.get('income').controls.length == 0">
+                        <td colspan="5" class="text-center">Chart of accounts not found</td>
+                      </tr>
+                      <tr>
+                        <td colspan="15"><span style="font-weight: bold;color:#5d9cec;margin-left: -6px">Income</span></td>
+                      </tr>
+                      <tr *ngFor="let itemForm of budgetForm.get('income.controls');let index=index;"  (click)="editItem(index, itemForm,'income')">
+                        <td class="truncate wrap" [ngClass]="'coa-child-'+coaLevels[itemForm.get('coaID').value]">{{getCOAName(itemForm.get('coaID').value)}}</td>
+                        <ng-template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
+                          <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.get('month').value?formatAmount(itemForm.get('month').value):null}}</td>
+                          <td *ngIf="itemForm.editable&&month!='total'">
+                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.get('month')" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm,'income')"/>
+                          </td>
+                          <td *ngIf="!itemForm.editable&&month=='total'">{{itemForm.get('month').value?formatAmount(itemForm.get('month').value):null}}</td>
+                          <td *ngIf="itemForm.editable&&month=='total'">
+                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.get('month')" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm,'income')"/>
+                          </td>
+                        </ng-template>
+                        <td>
                                                     <span (click)="editBudgetCoaLine($event, index,'income')">
                                                         <i class="icon ion-edit"></i>
                                                     </span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="15"><span style="font-weight: bold;color:#5d9cec;margin-left: -6px">Cost of Goods Sold</span></td>
-                                                </tr>
-                                                </tbody>
-                                                <tbody formArrayName="costOfGoodsSold">
-                                                <tr *ngIf="budgetForm.controls.costOfGoodsSold.controls.length == 0">
-                                                    <td colspan="15" class="text-center">Chart of accounts not found</td>
-                                                </tr>
-                                                <tr *ngFor="let itemForm of budgetForm.controls.costOfGoodsSold.controls;let index=index;" (click)="editItem(index, itemForm,'costOfGoodsSold')">
-                                                    <td class="truncate wrap" [ngClass]="'coa-child-'+coaLevels[itemForm.controls.coaID.value]" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.coaID.value)}}</td>
-                                                    <td  *ngIf="itemForm.editable">{{getCOAName(itemForm.controls.coaID.value)}}</td>
-                                                    <ng-template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
-                                                        <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.controls[month].value?formatAmount(itemForm.controls[month].value):null}}</td>
-                                                        <td *ngIf="itemForm.editable&&month!='total'">
-                                                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm,'costOfGoodsSold')"/>
-                                                        </td>
-                                                        <td *ngIf="!itemForm.editable&&month=='total'">{{itemForm.controls[month].value? formatAmount(itemForm.controls[month].value):null}}</td>
-                                                        <td *ngIf="itemForm.editable&&month=='total'">
-                                                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm,'costOfGoodsSold')"/>
-                                                        </td>
-                                                    </ng-template>
-                                                    <td>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="15"><span style="font-weight: bold;color:#5d9cec;margin-left: -6px">Cost of Goods Sold</span></td>
+                      </tr>
+                      </tbody>
+                      <tbody formArrayName="costOfGoodsSold">
+                      <tr *ngIf="budgetForm.get('costOfGoodsSold').controls.length == 0">
+                        <td colspan="15" class="text-center">Chart of accounts not found</td>
+                      </tr>
+                      <tr *ngFor="let itemForm of budgetForm.get('costOfGoodsSold').controls;let index=index;" (click)="editItem(index, itemForm,'costOfGoodsSold')">
+                        <td class="truncate wrap" [ngClass]="'coa-child-'+coaLevels[itemForm.get('coaID').value]" *ngIf="!itemForm.editable">{{getCOAName(itemForm.get('coaID').value)}}</td>
+                        <td  *ngIf="itemForm.editable">{{getCOAName(itemForm.get('coaID').value)}}</td>
+                        <ng-template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
+                          <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.get('month').value?formatAmount(itemForm.get('month').value):null}}</td>
+                          <td *ngIf="itemForm.editable&&month!='total'">
+                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.get('month')" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm,'costOfGoodsSold')"/>
+                          </td>
+                          <td *ngIf="!itemForm.editable&&month=='total'">{{itemForm.get('month').value? formatAmount(itemForm.get('month').value):null}}</td>
+                          <td *ngIf="itemForm.editable&&month=='total'">
+                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.get('month')" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm,'costOfGoodsSold')"/>
+                          </td>
+                        </ng-template>
+                        <td>
                                                     <span (click)="editBudgetCoaLine($event, index,'costOfGoodsSold')">
                                                         <i class="icon ion-edit"></i>
                                                     </span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="15"><span style="font-weight: bold;color:#5d9cec;margin-left: -6px">Expense</span></td>
-                                                </tr>
-                                                </tbody>
-                                                <tbody formArrayName="expenses">
-                                                <tr *ngIf="budgetForm.controls.expenses.controls.length == 0">
-                                                    <td colspan="15" class="text-center">Chart of accounts not found</td>
-                                                </tr>
-                                                <tr *ngFor="let itemForm of budgetForm.controls.expenses.controls;let index=index;" (click)="editItem(index, itemForm,'expenses')">
-                                                    <td class="truncate wrap" [ngClass]="'coa-child-'+coaLevels[itemForm.controls.coaID.value]" *ngIf="!itemForm.editable">{{getCOAName(itemForm.controls.coaID.value)}}</td>
-                                                    <td  *ngIf="itemForm.editable">{{getCOAName(itemForm.controls.coaID.value)}}</td>
-                                                    <ng-template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
-                                                        <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.controls[month].value? formatAmount(itemForm.controls[month].value):null}}</td>
-                                                        <td *ngIf="itemForm.editable&&month!='total'">
-                                                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm,'expenses')"/>
-                                                        </td>
-                                                        <td *ngIf="!itemForm.editable&&month=='total'">{{itemForm.controls[month].value? formatAmount(itemForm.controls[month].value):null}}</td>
-                                                        <td *ngIf="itemForm.editable&&month=='total'">
-                                                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.controls[month]" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm,'expenses')"/>
-                                                        </td>
-                                                    </ng-template>
-                                                    <td>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colspan="15"><span style="font-weight: bold;color:#5d9cec;margin-left: -6px">Expense</span></td>
+                      </tr>
+                      </tbody>
+                      <tbody formArrayName="expenses">
+                      <tr *ngIf="budgetForm.get('expenses').controls.length == 0">
+                        <td colspan="15" class="text-center">Chart of accounts not found</td>
+                      </tr>
+                      <tr *ngFor="let itemForm of budgetForm.get('expenses').controls;let index=index;" (click)="editItem(index, itemForm,'expenses')">
+                        <td class="truncate wrap" [ngClass]="'coa-child-'+coaLevels[itemForm.get('coaID').value]" *ngIf="!itemForm.editable">{{getCOAName(itemForm.get('coaID').value)}}</td>
+                        <td  *ngIf="itemForm.editable">{{getCOAName(itemForm.get('coaID').value)}}</td>
+                        <ng-template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
+                          <td *ngIf="!itemForm.editable&&month!='total'">{{itemForm.get('month').value? formatAmount(itemForm.get('month').value):null}}</td>
+                          <td *ngIf="itemForm.editable&&month!='total'">
+                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.get('month')" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, itemForm,'expenses')"/>
+                          </td>
+                          <td *ngIf="!itemForm.editable&&month=='total'">{{itemForm.get('month').value? formatAmount(itemForm.get('month').value):null}}</td>
+                          <td *ngIf="itemForm.editable&&month=='total'">
+                            <input type="text" placeholder="{{month}}" [formControl]="itemForm.get('month')" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, itemForm,'expenses')"/>
+                          </td>
+                        </ng-template>
+                        <td>
                                                     <span (click)="editBudgetCoaLine($event, index,'expenses')">
                                                         <i class="icon ion-edit"></i>
                                                     </span>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                </div>
-                            </div>
-                            <div class="row" [hidden]="!showFirstStep">
-                                <div class="small-12 medium-12 columns" style="margin-bottom: 2rem;">
-                                    <button class="button small float-right" [disabled]="!budgetForm.valid" (click)="nextStep($event)">Next</button>
-                                </div>
-                            </div>
-                            <div class="row" [hidden]="!showSecondStep">
-                                <div class="small-12 medium-12 columns" style="margin-bottom: 2rem;">
-                                    <button class="button small float-right" (click)="submit($event)">Save</button>
-                                </div>
-                            </div>
-                        </section>
-                    </form>
+                        </td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+              </div>
+              <div class="row" [hidden]="!showFirstStep">
+                <div class="small-12 medium-12 columns" style="margin-bottom: 2rem;">
+                  <button class="button small float-right" [disabled]="!budgetForm.valid" (click)="nextStep($event)">Next</button>
+                </div>
+              </div>
+              <div class="row" [hidden]="!showSecondStep">
+                <div class="small-12 medium-12 columns" style="margin-bottom: 2rem;">
+                  <button class="button small float-right" (click)="submit($event)">Save</button>
+                </div>
+              </div>
             </section>
+          </form>
         </div>
+      </section>
     </div>
+  </div>
 </div>
 
 
 <div class="report-wrapper journal-flyout">
-    <div class="sidenav customization-panel" [ngClass]="dimensionFlyoutCSS" foundation>
-        <div class="row collapse dimension-flyout">
-            <div class="row">
-                <div class="small-12 medium-12 small-centered column">
-                    <h5>Budget Details</h5>
-                </div>
-            </div>
+  <div class="sidenav customization-panel" [ngClass]="dimensionFlyoutCSS" foundation>
+    <div class="row collapse dimension-flyout">
+      <div class="row">
+        <div class="small-12 medium-12 small-centered column">
+          <h5>Budget Details</h5>
         </div>
-        <form *ngIf="itemActive" novalidate [formGroup]="editItemForm">
-            <div class="row collapse dimension-flyout">
-                <div class="row">
-                    <div class="small-12 medium-12 columns">
-                        <div class="row" style="margin-bottom: 10px">
-                            <div class="small-12 medium-6 column">
-                                <label>
-                                    COA:<b>{{getCOAName(editItemForm.controls.coaID.value)}}</b>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <ng-template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
-                                <div class="small-12 medium-2 column" *ngIf="month!='total'">
-                                    <label style="text-transform: capitalize;">{{month}}
-                                        <input type="text" formControlName="{{month}}" placeholder="{{month}}" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, editItemForm)"/>
-                                    </label>
-                                </div>
-                            </ng-template>
-                        </div>
-                        <div class="row">
-                            <div class="small-12 medium-2 column">
-                                <label>Total
-                                    <input type="text" formControlName="total" placeholder="Total" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, editItemForm)"/>
-                                </label>
-                            </div>
-                            <div class="small-12 medium-3 columns" style="margin-top: 1.75rem;">
-                                <input type="button" class="button small" value="Duplicate All" (click)="duplicateAll(editItemForm)"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    <div class="small-12 medium-12 columns" style="padding-right: 2rem;">
-                        <input type="button" class="button small float-right" value="Update" (click)="saveItem()"/>
-                    </div>
-            </div>
-        </form>
+      </div>
     </div>
+    <form *ngIf="itemActive" novalidate [formGroup]="editItemForm">
+      <div class="row collapse dimension-flyout">
+        <div class="row">
+          <div class="small-12 medium-12 columns">
+            <div class="row" style="margin-bottom: 10px">
+              <div class="small-12 medium-6 column">
+                <label>
+                  COA:<b>{{getCOAName(editItemForm.get('coaID').value)}}</b>
+                </label>
+              </div>
+            </div>
+            <div class="row">
+              <ng-template ngFor [ngForOf]="orderedMonths" let-month="$implicit">
+                <div class="small-12 medium-2 column" *ngIf="month!='total'">
+                  <label style="text-transform: capitalize;">{{month}}
+                    <input type="text" formControlName="{{month}}" placeholder="{{month}}" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateTotalAmount($event, editItemForm)"/>
+                  </label>
+                </div>
+              </ng-template>
+            </div>
+            <div class="row">
+              <div class="small-12 medium-2 column">
+                <label>Total
+                  <input type="text" formControlName="total" placeholder="Total" numeral [format]="'$0,0.00'" [locale]="companyCurrency" [unsigned]="true" (keyup)="updateBudgetLineAmount($event, editItemForm)"/>
+                </label>
+              </div>
+              <div class="small-12 medium-3 columns" style="margin-top: 1.75rem;">
+                <input type="button" class="button small" value="Duplicate All" (click)="duplicateAll(editItemForm)"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="small-12 medium-12 columns" style="padding-right: 2rem;">
+          <input type="button" class="button small float-right" value="Update" (click)="saveItem()"/>
+        </div>
+      </div>
+    </form>
+  </div>
 </div>

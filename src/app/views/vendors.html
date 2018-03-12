@@ -41,7 +41,7 @@
                           <select combo-box #vendorCountryComboBoxDir="comboBox" title="" data-placeholder="Enter Country" formControlName="country" [listObject]="countries" (valueChanged)="showVendorProvince($event)">
                             <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
                           </select>
-                          <div class="error" [hidden]="vendorForm.controls.country.untouched || vendorForm.controls.country.valid">Country is required</div>
+                          <div class="error" [hidden]="vendorForm.get('country').untouched || vendorForm.get('country').valid">Country is required</div>
                         </div>
                       </div>
                       <div class="row">
@@ -61,7 +61,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="name" placeholder="Legal Name*">
-                          <div class="error" [hidden]="vendorForm.controls.name.untouched || vendorForm.controls.name.valid">Vendor Name is required</div>
+                          <div class="error" [hidden]="vendorForm.get('name').untouched || vendorForm.get('name').valid">Vendor Name is required</div>
                         </div>
                       </div>
                       <div class="row" *ngIf="isVendorCompany(vendorForm)">
@@ -70,8 +70,8 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="ein" placeholder="EIN*" pattern="[0-9]{9}$">
-                          <div class="error" *ngIf="vendorForm.controls.ein.touched && vendorForm.controls.ein.hasError('required')">Vendor EIN is required</div>
-                          <div class="error" *ngIf="vendorForm.controls.ein.touched && vendorForm.controls.ein.hasError('pattern')">EIN should have 9 digits only</div>
+                          <div class="error" *ngIf="vendorForm.get('ein').touched && vendorForm.get('ein').hasError('required')">Vendor EIN is required</div>
+                          <div class="error" *ngIf="vendorForm.get('ein').touched && vendorForm.get('ein').hasError('pattern')">EIN should have 9 digits only</div>
                         </div>
                       </div>
                       <div class="row" *ngIf="!isVendorCompany(vendorForm)">
@@ -80,8 +80,8 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="ssn" placeholder="SSN*" pattern="[0-9]{9}$">
-                          <div class="error" *ngIf="vendorForm.controls.ssn.touched && vendorForm.controls.ssn.hasError('required')">Vendor SSN is required</div>
-                          <div class="error" *ngIf="vendorForm.controls.ssn.touched && vendorForm.controls.ssn.hasError('pattern')">SSN should have 9 digits only</div>
+                          <div class="error" *ngIf="vendorForm.get('ssn').touched && vendorForm.get('ssn').hasError('required')">Vendor SSN is required</div>
+                          <div class="error" *ngIf="vendorForm.get('ssn').touched && vendorForm.get('ssn').hasError('pattern')">SSN should have 9 digits only</div>
                         </div>
                       </div>
                       <div class="row">
@@ -92,7 +92,7 @@
                           <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="coa" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
                             <option *ngFor="let coa of chartOfAccounts" [value]="coa.name">{{coa.number}} - {{coa.name}}</option>
                           </select>
-                          <div class="error" [hidden]="vendorForm.controls.coa.untouched || vendorForm.controls.coa.valid">COA is required</div>
+                          <div class="error" [hidden]="vendorForm.get('coa').untouched || vendorForm.get('coa').valid">COA is required</div>
                         </div>
                       </div>
                       <div class="row">
@@ -114,7 +114,7 @@
                             <option [value]="'digitalCheque'">Digital Check</option>
                             <option [value]="'mailCheque'">Physical Check</option>
                           </select>
-                          <div class="error" [hidden]="vendorForm.controls.paymentMethod.untouched || vendorForm.controls.paymentMethod.valid">Payment method required</div>
+                          <div class="error" [hidden]="vendorForm.get('paymentMethod').untouched || vendorForm.get('paymentMethod').valid">Payment method required</div>
                         </div>
                       </div>
 
@@ -124,7 +124,7 @@
                         </div>
                         <div class="small-6 columns custom-qount-form-field">
                           <input type="checkbox" formControlName="has1099" /> 1099 Reportable
-                          <div class="error" [hidden]="vendorForm.controls.has1099.untouched || vendorForm.controls.has1099.valid">Eligible for 1099 is required</div>
+                          <div class="error" [hidden]="vendorForm.get('has1099').untouched || vendorForm.get('has1099').valid">Eligible for 1099 is required</div>
                         </div>
                       </div>
                     </div>
@@ -137,7 +137,7 @@
                         <div class="small-6 columns">
                           <input type="text" formControlName="contact_first_name" placeholder="First Name">
 
-                          <div class="error" [hidden]="vendorForm.controls.contact_first_name.untouched || vendorForm.controls.contact_first_name.valid">Contact Name is required</div>
+                          <div class="error" [hidden]="vendorForm.get('contact_first_name').untouched || vendorForm.get('contact_first_name').valid">Contact Name is required</div>
 
                         </div>
                       </div>
@@ -147,7 +147,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="contact_last_name" placeholder="Last Name">
-                          <div class="error" [hidden]="vendorForm.controls.contact_last_name.untouched || vendorForm.controls.contact_last_name.valid">Contact LName is required</div>
+                          <div class="error" [hidden]="vendorForm.get('contact_last_name').untouched || vendorForm.get('contact_last_name').valid">Contact LName is required</div>
                         </div>
                       </div>
                       <Address [code]="countryCode" #addressDir="address"></Address>
@@ -157,8 +157,8 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="email" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
-                          <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('required')">Vendor email is required</div>
-                          <div class="error" *ngIf="vendorForm.controls.email.touched && vendorForm.controls.email.hasError('pattern')">Please check email format</div>
+                          <div class="error" *ngIf="vendorForm.get('email').touched && vendorForm.get('email').hasError('required')">Vendor email is required</div>
+                          <div class="error" *ngIf="vendorForm.get('email').touched && vendorForm.get('email').hasError('pattern')">Please check email format</div>
                         </div>
                       </div>
 
@@ -209,8 +209,8 @@
                         <div class="small-6 columns">
                           <input type="text" formControlName="bank_account_routing_number" placeholder="Routing Number*" pattern="[0-9]{9}$"/>
 
-                          <div class="error" *ngIf="vendorForm.controls.bank_account_routing_number.touched && vendorForm.controls.bank_account_routing_number.hasError('required')">Routing Number  is required</div>
-                          <div class="error" *ngIf="vendorForm.controls.bank_account_routing_number.touched && vendorForm.controls.bank_account_routing_number.hasError('pattern')">Routing Number should have 9 digits only</div>
+                          <div class="error" *ngIf="vendorForm.get('bank_account_routing_number').touched && vendorForm.get('bank_account_routing_number').hasError('required')">Routing Number  is required</div>
+                          <div class="error" *ngIf="vendorForm.get('bank_account_routing_number').touched && vendorForm.get('bank_account_routing_number').hasError('pattern')">Routing Number should have 9 digits only</div>
                         </div>
                       </div>
                       <div class="row" >

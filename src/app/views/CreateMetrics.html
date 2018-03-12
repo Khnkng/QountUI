@@ -13,7 +13,7 @@
                                                 <select formControlName="year" data-placeholder="Select Year" (change)="getValueMetric($event)">
                                                     <option *ngFor="let year of years" [value]="year.value">{{year.name}}</option>
                                                 </select>
-                                                <div class="error" [hidden]="metricForm.controls.year.untouched || metricForm.controls.year.valid"><small>Select Metric Year.</small></div>
+                                                <div class="error" [hidden]="metricForm.get('year').untouched || metricForm.get('year').valid"><small>Select Metric Year.</small></div>
                                             </label>
                                         </div>
                                         <div class="small-12 medium-3 columns">
@@ -32,7 +32,7 @@
                                                     <option value="nov1-nov30">Nov1-Nov30</option>
                                                     <option value="dec1-dec31">Dec1-Dec31</option>
                                                 </select>
-                                                <div class="error" [hidden]="metricForm.controls.month.untouched || metricForm.controls.month.valid"><small>Please select month.</small></div>
+                                                <div class="error" [hidden]="metricForm.get('month').untouched || metricForm.get('month').valid"><small>Please select month.</small></div>
                                             </label>
                                         </div>
                                     </div>
@@ -46,22 +46,22 @@
                                         </tr>
                                         </thead>
                                         <tbody *ngIf="getLineCount() != 0">
-                                        <tr *ngFor="let lineListItem of metricForm.controls.metricLines.controls;let index=index;" [hidden]="lineListItem.controls.destroy.value" (click)="editLine(lineListItem, index)"  (keydown.ArrowDown)="handleKeyEvent( $event,index,'Arrow Down')" (keydown.ArrowUp)="handleKeyEvent( $event,index,'Arrow Up' )">
-                                            <td class="truncate" [hidden]="lineListItem.editable">{{getMetricName(lineListItem.controls.metricID.value)}}</td>
+                                        <tr *ngFor="let lineListItem of metricForm.get('metricLines').controls;let index=index;" [hidden]="lineListItem.get('destroy').value" (click)="editLine(lineListItem, index)"  (keydown.ArrowDown)="handleKeyEvent( $event,index,'Arrow Down')" (keydown.ArrowUp)="handleKeyEvent( $event,index,'Arrow Up' )">
+                                            <td class="truncate" [hidden]="lineListItem.editable">{{getMetricName(lineListItem.get('metricID').value)}}</td>
                                             <td [hidden]="!lineListItem.editable">
                                                 <select id="coa-{{index}}" combo-box #coaComboBoxDir="comboBox" data-placeholder="Select Metric" [listObject]="metrics" (valueChanged)="updateLineMetric($event, index)">
                                                     <option *ngFor="let metric of metrics" [value]="metric.id">{{metric.name}}</option>
                                                 </select>
                                             </td>
                                             <td [hidden]="lineListItem.editable">
-                                                {{lineListItem.controls.value.value?(lineListItem.controls.value.value):null}}
+                                                {{lineListItem.get('value').value?(lineListItem.get('value').value):null}}
                                             </td>
                                             <td [hidden]="!lineListItem.editable">
-                                                <input type="text" [formControl]="lineListItem.controls.value" placeholder="value"/>
+                                                <input type="text" [formControl]="lineListItem.get('value')" placeholder="value"/>
                                             </td>
-                                            <td class="truncate" [hidden]="lineListItem.editable">{{lineListItem.controls.description.value}}</td>
+                                            <td class="truncate" [hidden]="lineListItem.editable">{{lineListItem.get('description').value}}</td>
                                             <td [hidden]="!lineListItem.editable">
-                                                <input type="text" [formControl]="lineListItem.controls.description" placeholder="description"/>
+                                                <input type="text" [formControl]="lineListItem.get('description')" placeholder="description"/>
                                             </td>
                                             <td>
                                                 <i class="icon ion-edit"></i>

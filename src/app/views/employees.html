@@ -37,7 +37,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="first_name" placeholder="FirstName*">
-                                                    <div class="error" [hidden]="employeesForm.controls.first_name.untouched || employeesForm.controls.first_name.valid">Employee Name is required.</div>
+                                                    <div class="error" [hidden]="employeesForm.get('first_name').untouched || employeesForm.get('first_name').valid">Employee Name is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -46,7 +46,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="last_name" placeholder="lastName*">
-                                                    <div class="error" [hidden]="employeesForm.controls.last_name.untouched || employeesForm.controls.last_name.valid">Employee Name is required.</div>
+                                                    <div class="error" [hidden]="employeesForm.get('last_name').untouched || employeesForm.get('last_name').valid">Employee Name is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -55,7 +55,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input  type="text" formControlName="ssn" placeholder="SSN*">
-                                                    <div class="error" [hidden]="employeesForm.controls.ssn.untouched || employeesForm.controls.ssn.valid">Employee SSN is required.</div>
+                                                    <div class="error" [hidden]="employeesForm.get('ssn').untouched || employeesForm.get('ssn').valid">Employee SSN is required.</div>
                                                 </div>
                                             </div>
 
@@ -65,8 +65,8 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="email_id" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
-                                                    <div class="error" *ngIf="employeesForm.controls.email_id.touched && employeesForm.controls.email_id.hasError('required')">Employee email is required</div>
-                                                    <div class="error" *ngIf="employeesForm.controls.email_id.touched && employeesForm.controls.email_id.hasError('pattern')">Please check email format</div>
+                                                    <div class="error" *ngIf="employeesForm.get('email_id').touched && employeesForm.get('email_id').hasError('required')">Employee email is required</div>
+                                                    <div class="error" *ngIf="employeesForm.get('email_id').touched && employeesForm.get('email_id').hasError('pattern')">Please check email format</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -75,7 +75,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="phone_number" placeholder="Phone Number*"/>
-                                                    <div class="error" [hidden]="employeesForm.controls.phone_number.untouched || employeesForm.controls.phone_number.valid">Phone number is required</div>
+                                                    <div class="error" [hidden]="employeesForm.get('phone_number').untouched || employeesForm.get('phone_number').valid">Phone number is required</div>
                                                 </div>
                                             </div>
 
@@ -98,7 +98,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="customer_address" placeholder="Address*" />
-                                                    <div class="error" [hidden]="customerForm.controls.customer_address.untouched || customerForm.controls.customer_address.valid">Customer Address is required</div>
+                                                    <div class="error" [hidden]="customerForm.get('customer_address').untouched || customerForm.get('customer_address.valid">Customer Address is required</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -107,7 +107,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="customer_city" placeholder="City*"/>
-                                                    <div class="error" [hidden]="customerForm.controls.customer_city.untouched || customerForm.controls.customer_city.valid">City is required</div>
+                                                    <div class="error" [hidden]="customerForm.get('customer_city').untouched || customerForm.get('customer_city.valid">City is required</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -116,7 +116,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="customer_state" placeholder="State*"/>
-                                                    <div class="error" [hidden]="customerForm.controls.customer_state.untouched || customerForm.controls.customer_state.valid">State is required</div>
+                                                    <div class="error" [hidden]="customerForm.get('customer_state').untouched || customerForm.get('customer_state.valid">State is required</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -125,7 +125,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="customer_zipcode" placeholder="Zip Code*"/>
-                                                    <div class="error" [hidden]="customerForm.controls.customer_zipcode.untouched || customerForm.controls.customer_zipcode.valid">Pin code is required</div>
+                                                    <div class="error" [hidden]="customerForm.get('customer_zipcode').untouched || customerForm.get('customer_zipcode.valid">Pin code is required</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -134,7 +134,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="phone_number" placeholder="Phone Number*"/>
-                                                    <div class="error" [hidden]="customerForm.controls.phone_number.untouched || customerForm.controls.phone_number.valid">Phone number is required</div>
+                                                    <div class="error" [hidden]="customerForm.get('phone_number').untouched || customerForm.get('phone_number.valid">Phone number is required</div>
                                                 </div>
                                             </div>
                                         </div>-->

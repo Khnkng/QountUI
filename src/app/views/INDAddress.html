@@ -5,7 +5,7 @@
         </div>
         <div class="small-6 columns">
             <input type="text" formControlName="line" placeholder="Address*" />
-            <div class="error" [hidden]="addressForm.controls.line.untouched || addressForm.controls.line.valid">Customer Address is required</div>
+            <div class="error" [hidden]="addressForm.get('line').untouched || addressForm.get('line').valid">Customer Address is required</div>
         </div>
     </div>
     <div class="row">
@@ -14,7 +14,7 @@
         </div>
         <div class="small-6 columns">
             <input type="text" formControlName="city" placeholder="City*"/>
-            <div class="error" [hidden]="addressForm.controls.city.untouched || addressForm.controls.city.valid">City is required</div>
+            <div class="error" [hidden]="addressForm.get('city').untouched || addressForm.get('city').valid">City is required</div>
         </div>
     </div>
     <div class="row">
@@ -25,7 +25,7 @@
             <select combo-box #stateComboBoxDir="comboBox" title="" data-placeholder="Select State" formControlName="state" [listObject]="states" (valueChanged)="setState($event)">
                 <option *ngFor="let state of states" [value]="state.name">{{state.name}}</option>
             </select>
-            <div class="error" [hidden]="addressForm.controls.state.untouched || addressForm.controls.state.valid">State is required</div>
+            <div class="error" [hidden]="addressForm.get('state').untouched || addressForm.get('state').valid">State is required</div>
         </div>
     </div>
     <div class="row" style="margin-top:13px">
@@ -34,7 +34,7 @@
         </div>
         <div class="small-6 columns">
             <input type="text" formControlName="pincode" placeholder="Pin Code*"/>
-            <div class="error" [hidden]="addressForm.controls.pincode.untouched || addressForm.controls.pincode.valid">Pin code is required</div>
+            <div class="error" [hidden]="addressForm.get('pincode').untouched || addressForm.get('pincode').valid">Pin code is required</div>
         </div>
     </div>
     <div class="row">
@@ -43,7 +43,7 @@
         </div>
         <div class="small-6 columns">
             <input type="text" formControlName="phone_number" placeholder="Phone Number*"/>
-            <div class="error" [hidden]="addressForm.controls.phone_number.untouched || addressForm.controls.phone_number.valid">Phone number is required</div>
+            <div class="error" [hidden]="addressForm.get('phone_number').untouched || addressForm.get('phone_number').valid">Phone number is required</div>
         </div>
     </div>
 </div>

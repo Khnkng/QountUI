@@ -20,7 +20,7 @@
                   <label>Name
                     <div>
                       <input type="text" formControlName="name" placeholder="Legal Company Name*">
-                      <div class="error" [hidden]="companyForm.controls.name.untouched || companyForm.controls.name.valid"><small>Company Name is required.</small></div>
+                      <div class="error" [hidden]="companyForm.get('name').untouched || companyForm.get('name').valid"><small>Company Name is required.</small></div>
                     </div>
                   </label>
                 </div>
@@ -28,8 +28,8 @@
                   <label>EIN
                     <div class="">
                       <input class="" type="text" formControlName="einNumber" placeholder="EIN" pattern="[0-9]{9}$">
-                      <div class="error" *ngIf="companyForm.controls.einNumber.touched && companyForm.controls.einNumber.hasError('required')">Company EIN is required.</div>
-                      <div class="error" *ngIf="companyForm.controls.einNumber.touched && companyForm.controls.einNumber.hasError('pattern')">EIN should have 9 digits only.</div>
+                      <div class="error" *ngIf="companyForm.get('einNumber').touched && companyForm.get('einNumber').hasError('required')">Company EIN is required.</div>
+                      <div class="error" *ngIf="companyForm.get('einNumber').touched && companyForm.get('einNumber').hasError('pattern')">EIN should have 9 digits only.</div>
                     </div>
                   </label>
                 </div>
@@ -39,7 +39,7 @@
                       <select formControlName="companyType" placeholder="Company type">
                         <option *ngFor="let companyType of companyTypes" value="{{companyType.value}}">{{companyType.name}}</option>
                       </select>
-                      <div class="error" [hidden]="companyForm.controls.companyType.untouched || companyForm.controls.companyType.valid"><small>Select Company type</small></div>
+                      <div class="error" [hidden]="companyForm.get('companyType').untouched || companyForm.get('companyType').valid"><small>Select Company type</small></div>
                     </div>
                   </label>
                 </div>
@@ -47,7 +47,7 @@
                   <label>Phone Number
                     <div class="">
                       <input class="" name="phoneNumber" formControlName="phoneNumber" type="text" placeholder="Phone Number">
-                      <div class="error" [hidden]="companyForm.controls.phoneNumber.untouched || companyForm.controls.phoneNumber.valid"><small>Company Phone Number is required.</small></div>
+                      <div class="error" [hidden]="companyForm.get('phoneNumber').untouched || companyForm.get('phoneNumber').valid"><small>Company Phone Number is required.</small></div>
                     </div>
                   </label>
                 </div>-->
@@ -59,7 +59,7 @@
                               [listObject]="countries" (valueChanged)="showProvince($event)">
                         <option *ngFor="let country of countries" [value]="country.name">{{country.name}}</option>
                       </select>
-                      <div class="error" [hidden]="companyForm.controls.country.untouched || companyForm.controls.country.valid"><small>Country is required.</small></div>
+                      <div class="error" [hidden]="companyForm.get('country').untouched || companyForm.get('country').valid"><small>Country is required.</small></div>
                     </div>
                   </label>
                 </div>
@@ -75,7 +75,7 @@
                   <label>First Name
                     <div>
                       <input type="text" formControlName="contact_first_name" placeholder="First Name">
-                      <div class="error" [hidden]="companyForm.controls.contact_first_name.untouched || companyForm.controls.contact_first_name.valid"><small>Contact First Name is required.</small></div>
+                      <div class="error" [hidden]="companyForm.get('contact_first_name').untouched || companyForm.get('contact_first_name').valid"><small>Contact First Name is required.</small></div>
                     </div>
                   </label>
                 </div>
@@ -83,7 +83,7 @@
                   <label>Last Name
                     <div>
                       <input type="text" formControlName="contact_last_name" placeholder="Last Name">
-                      <div class="error" [hidden]="companyForm.controls.contact_last_name.untouched || companyForm.controls.contact_last_name.valid"><small>Contact Last Name is required.</small></div>
+                      <div class="error" [hidden]="companyForm.get('contact_last_name').untouched || companyForm.get('contact_last_name').valid"><small>Contact Last Name is required.</small></div>
                     </div>
                   </label>
                 </div>
@@ -91,7 +91,7 @@
                   <label>Date of Birth
                     <div>
                       <input custom-datepicker [format]="'MM/DD/YYYY'" [mindate]="'past'" (valueChanged)="setDOB($event)" type="text" formControlName="contact_date_of_birth" placeholder="Date">
-                      <div class="error" [hidden]="companyForm.controls.contact_date_of_birth.untouched || companyForm.controls.contact_date_of_birth.valid"><small>Date of birth is required.</small></div>
+                      <div class="error" [hidden]="companyForm.get('contact_date_of_birth').untouched || companyForm.get('contact_date_of_birth').valid"><small>Date of birth is required.</small></div>
                     </div>
                   </label>
                 </div>
@@ -117,7 +117,7 @@
                               [listObject]="currencies" (valueChanged)="selectedededCurrency($event)">
                         <option *ngFor="let currency of currencies" [value]="currency.code">{{currency.code}}</option>
                       </select>
-                      <div class="error" [hidden]="companyForm.controls.defaultCurrency.untouched || companyForm.controls.defaultCurrency.valid"><small>Select Currency</small></div>
+                      <div class="error" [hidden]="companyForm.get('defaultCurrency').untouched || companyForm.get('defaultCurrency').valid"><small>Select Currency</small></div>
                     </div>
                   </label>
                 </div>
@@ -127,7 +127,7 @@
                   <label>Fiscal Start Date
                     <div>
                       <input  custom-datepicker (valueChanged)="setDate($event,lockdate)" [mindate]="'past'" [maxdate]="todaysDate" [format]="'MM/DD/YYYY'"  type="text" name="fiscalStartDate" formControlName="fiscalStartDate" placeholder="Fiscal Start Date*"/>
-                      <div class="error" [hidden]="companyForm.controls.fiscalStartDate.untouched || companyForm.controls.fiscalStartDate.valid"><small>Company Fiscal Start Date is required.</small></div>
+                      <div class="error" [hidden]="companyForm.get('fiscalStartDate').untouched || companyForm.get('fiscalStartDate').valid"><small>Company Fiscal Start Date is required.</small></div>
                     </div>
                   </label>
                 </div>
@@ -137,7 +137,7 @@
                       <select formControlName="companyClassification" placeholder="Company Classification">
                         <option *ngFor="let companyClassification of companyClassifications" value="{{companyClassification.value}}">{{companyClassification.name}}</option>
                       </select>
-                      <div class="error" [hidden]="companyForm.controls.companyClassification.untouched || companyForm.controls.companyClassification.valid"><small>Select Classification</small></div>
+                      <div class="error" [hidden]="companyForm.get('companyClassification').untouched || companyForm.get('companyClassification').valid"><small>Select Classification</small></div>
                     </div>
                   </label>
                 </div>
@@ -145,7 +145,7 @@
                   <label>Email
                     <div>
                       <input formControlName="email_id" type="text" placeholder="Email*" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
-                      <div class="error" *ngIf="companyForm.controls.email_id.touched && companyForm.controls.email_id.hasError('pattern')">Please check email format</div>
+                      <div class="error" *ngIf="companyForm.get('email_id').touched && companyForm.get('email_id').hasError('pattern')">Please check email format</div>
                     </div>
                   </label>
                 </div>
@@ -155,8 +155,8 @@
                   <label>Tax Bracket
                     <div>
                       <input class="" type="text" formControlName="taxBracket" placeholder="Tax Bracket" pattern="^[0-9][0-9]?$|^100$">
-                      <div class="error" *ngIf="companyForm.controls.taxBracket.touched && companyForm.controls.taxBracket.hasError('required')">Tax Bracket is required.</div>
-                      <div class="error" *ngIf="companyForm.controls.taxBracket.touched && companyForm.controls.taxBracket.hasError('pattern')">Tax bracket should be 0 to 100.</div>
+                      <div class="error" *ngIf="companyForm.get('taxBracket').touched && companyForm.get('taxBracket').hasError('required')">Tax Bracket is required.</div>
+                      <div class="error" *ngIf="companyForm.get('taxBracket').touched && companyForm.get('taxBracket').hasError('pattern')">Tax bracket should be 0 to 100.</div>
                     </div>
                   </label>
                 </div>

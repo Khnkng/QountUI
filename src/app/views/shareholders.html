@@ -34,7 +34,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="firstName" placeholder="First Name*" />
-                          <div class="error" [hidden]="shareholdersForm.controls.firstName.untouched || shareholdersForm.controls.firstName.valid">First Name is required.</div>
+                          <div class="error" [hidden]="shareholdersForm.get('firstName').untouched || shareholdersForm.get('firstName').valid">First Name is required.</div>
                         </div>
                       </div>
                       <div class="row">
@@ -43,7 +43,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="lastName" placeholder="Last Name*"/>
-                          <div class="error" [hidden]="shareholdersForm.controls.lastName.untouched || shareholdersForm.controls.lastName.valid">Last Name is required.</div>
+                          <div class="error" [hidden]="shareholdersForm.get('lastName').untouched || shareholdersForm.get('lastName').valid">Last Name is required.</div>
                         </div>
                       </div>
                       <div class="row">
@@ -52,7 +52,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="email" placeholder="Email*"/>
-                          <div class="error" [hidden]="shareholdersForm.controls.email.untouched || shareholdersForm.controls.email.valid">Email is required.</div>
+                          <div class="error" [hidden]="shareholdersForm.get('email').untouched || shareholdersForm.get('email').valid">Email is required.</div>
                         </div>
                       </div>
                       <div class="row">
@@ -61,7 +61,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="phoneNumber" placeholder="Phone Number*"/>
-                          <div class="error" [hidden]="shareholdersForm.controls.phoneNumber.untouched || shareholdersForm.controls.phoneNumber.valid">Phone Number is required.</div>
+                          <div class="error" [hidden]="shareholdersForm.get('phoneNumber').untouched || shareholdersForm.get('phoneNumber').valid">Phone Number is required.</div>
                         </div>
                       </div>
                       <div class="row">
@@ -72,7 +72,7 @@
                           <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="COA*" formControlName="coaId" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
                             <option *ngFor="let coa of chartOfAccounts" [value]="coa.name">{{coa.number}} - {{coa.name}}</option>
                           </select>
-                          <div class="error" [hidden]="shareholdersForm.controls.coaId.untouched || shareholdersForm.controls.coaId.valid">COA is required</div>
+                          <div class="error" [hidden]="shareholdersForm.get('coaId').untouched || shareholdersForm.get('coaId').valid">COA is required</div>
                         </div>
                       </div>
                       <div class="row">
@@ -81,9 +81,9 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="ssn" placeholder="SSN" pattern="[0-9]{9}$"/>
-                          <!--<div class="error" [hidden]="shareholdersForm.controls.ssn.untouched || shareholdersForm.controls.ssn.valid">SSN is required.</div>-->
-                          <!--<div class="error" *ngIf="shareholdersForm.controls.ssn.touched && shareholdersForm.controls.ssn.hasError('required')">SSN is required.</div>-->
-                          <div class="error" *ngIf="shareholdersForm.controls.ssn.touched && shareholdersForm.controls.ssn.hasError('pattern')">SSN should have 9 digits only.</div>
+                          <!--<div class="error" [hidden]="shareholdersForm.get('ssn').untouched || shareholdersForm.get('ssn').valid">SSN is required.</div>-->
+                          <!--<div class="error" *ngIf="shareholdersForm.get('ssn.touched && shareholdersForm.get('ssn').hasError('required')">SSN is required.</div>-->
+                          <div class="error" *ngIf="shareholdersForm.get('ssn').touched && shareholdersForm.get('ssn').hasError('pattern')">SSN should have 9 digits only.</div>
                         </div>
                       </div>
                       <div class="row">
@@ -92,7 +92,7 @@
                         </div>
                         <div class="small-6 columns">
                           <input type="text" formControlName="percentage" placeholder="Percentage"/>
-                          <!--<div class="error" [hidden]="shareholdersForm.controls.percentage.untouched || shareholdersForm.controls.percentage.valid">Percentage is required.</div>-->
+                          <!--<div class="error" [hidden]="shareholdersForm.get('percentage').untouched || shareholdersForm.get('percentage').valid">Percentage is required.</div>-->
                         </div>
                       </div>
                     </div>

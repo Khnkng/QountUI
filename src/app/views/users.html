@@ -34,7 +34,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="firstName" placeholder="First Name*" />
-                                                    <div class="error" [hidden]="userForm.controls.firstName.untouched || userForm.controls.firstName.valid">First Name is required.</div>
+                                                    <div class="error" [hidden]="userForm.get('firstName').untouched || userForm.get('firstName').valid">First Name is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -43,7 +43,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="lastName" placeholder="Last Name*"/>
-                                                    <div class="error" [hidden]="userForm.controls.lastName.untouched || userForm.controls.lastName.valid">Last Name is required.</div>
+                                                    <div class="error" [hidden]="userForm.get('lastName').untouched || userForm.get('lastName').valid">Last Name is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -52,7 +52,7 @@
                                                 </div>
                                                 <div class="small-6 columns">
                                                     <input type="text" formControlName="email" placeholder="Email*"/>
-                                                    <div class="error" [hidden]="userForm.controls.email.untouched || userForm.controls.email.valid">Email is required.</div>
+                                                    <div class="error" [hidden]="userForm.get('email').untouched || userForm.get('email').valid">Email is required.</div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -63,7 +63,7 @@
                                                     <select combo-box #userRoleComboBoxDir="comboBox" title="" data-placeholder="Role" formControlName="roleID" [listObject]="roles" (valueChanged)="showVendorProvince($event)">
                                                         <option *ngFor="let role of roles" [value]="role.name">{{role.name}}</option>
                                                     </select>
-                                                    <div class="error" [hidden]="userForm.controls.roleID.untouched || userForm.controls.roleID.valid">Role is required.</div>
+                                                    <div class="error" [hidden]="userForm.get('roleID').untouched || userForm.get('roleID').valid">Role is required.</div>
                                                 </div>
                                             </div>
                                         </div>
