@@ -5112,6 +5112,10 @@ div.footable-loader {
     position: static;
     bottom: 0;
     right: 0;
+    .new-comment .export-option .task-check input {
+      position: relative;
+      right : 15px;
+    }
   }
 
   .inputContainer {
