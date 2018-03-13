@@ -7,12 +7,24 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <script type="text/javascript">
+    function getMessage(){
+        var messages = ['Woot Woot : You are here; the Day just got better.',
+          'Sometimes you get the Bear, and sometimes the Bear gets you',
+          'What a day ! What cannot be accomplished on such a splendid day?',
+          'Ran as fast as you can; i am the Gingerbread man'];
+        var index = Math.floor(Math.random() * (messages.length - 0 + 1)) + 0;
+        document.getElementById('#message').innerHTML = messages[index];
+    }
+  </script>
 </head>
-<body>
+<body onload="getMessage()">
   <qount-app>
     <div class="qount-overlay"></div>
     <div class="qount-loading-wheel">
       <div align="center" class="fond">
+        <div id="message"></div>
         <div class="contener_general">
           <div class="contener_mixte"><div class="ballcolor ball_4">&nbsp;</div></div>
           <div class="contener_mixte"><div class="ballcolor ball_3">&nbsp;</div></div>
