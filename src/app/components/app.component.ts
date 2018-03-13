@@ -39,7 +39,6 @@ export class AppComponent  implements OnInit{
   isLoginPath : boolean;
   toasts: Array<any>;
   toastClass: string;
-  switchBoard:SwitchBoard;
   confirmClass = "";
   isOffCanvasMenuExpanded:boolean=false;
   mainCanvasCss = {
@@ -60,7 +59,7 @@ export class AppComponent  implements OnInit{
   currentEnvironment:any;
   cookieObj:any
 
-  constructor(_switchBoard:SwitchBoard, private _router:Router, private route: ActivatedRoute, private toastService: ToastService,
+  constructor(private switchBoard:SwitchBoard, private _router:Router, private route: ActivatedRoute, private toastService: ToastService,
               private titleService:pageTitleService, private companyService: CompaniesService,
               private loadingService:LoadingService,private loginService: LoginService, private _toastService:ToastService,
               private numeralService: NumeralService) {
@@ -95,7 +94,6 @@ export class AppComponent  implements OnInit{
     window.recivedYodleeToken = function(){
       self.switchBoard.onYodleeTokenRecived.next({});
     };
-    this.switchBoard = _switchBoard;
     this.toasts = [];
     this.toastClass = "";
     this.switchBoard.onNewToast.subscribe(toast => this.addToast(toast));
@@ -113,6 +111,17 @@ export class AppComponent  implements OnInit{
         this.queryParams = params;
 
       });
+
+    if (window.addEventListener) {
+      window.addEventListener("storage", function(){self.switchCompany(self)}, false);
+    } else { // IE
+      window.attachEvent("onstorage", function(){self.switchCompany(self)});
+    }
+  }
+
+  switchCompany(self){
+    self.switchBoard.onSwitchCompany.next({});
+    self.goToDefaultPage();
   }
 
 
