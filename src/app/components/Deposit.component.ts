@@ -283,7 +283,7 @@ export class DepositComponent{
     processDeposits(deposits){
         let base = this;
         this.depositData=deposits;
-        let itemsControl:any = this.depositForm.controls['payments'];
+        let itemsControl:any = this.depositForm.get('payments');
         this.selectedMappingID=deposits.mapping_id;
         deposits.date = this.dateFormater.formatDate(deposits.date,this.serviceDateformat,this.dateFormat);
         this.loadEntities(deposits.deposit_type);
@@ -306,7 +306,7 @@ export class DepositComponent{
     editItem(index, itemForm){
       let base = this;
       let depositData = this._depositForm.getData(this.depositForm);
-      let linesControl:any = this.depositForm.controls['payments'];
+      let linesControl:any = this.depositForm.get('payments');
       itemForm.editable = !itemForm.editable;
       let itemData = this._depositLineForm.getData(itemForm);
       if(!itemData.amount){
@@ -394,7 +394,7 @@ export class DepositComponent{
 
     deleteItem($event,index){
         $event && $event.stopImmediatePropagation();
-        let itemsList:any = this.depositForm.controls['payments'];
+        let itemsList:any = this.depositForm.get('payments');
         let itemControl = itemsList.controls[index];
         itemControl.controls['destroy'].patchValue(true);
         let base=this;
@@ -422,7 +422,7 @@ export class DepositComponent{
     /*saveNewItem(){
      this.addNewItemFlag = !this.addNewItemFlag;
      let tempItemForm = _.cloneDeep(this.newItemForm);
-     let itemsControl:any = this.depositForm.controls['payments'];
+     let itemsControl:any = this.depositForm.get('payments'];
      itemsControl.controls.push(tempItemForm);
      }*/
 
@@ -484,7 +484,7 @@ export class DepositComponent{
 
     updateItem(index, itemForm){
         let data = _.cloneDeep(this._depositLineForm.getData(itemForm));
-        let depositItems:any = this.depositForm.controls['payments'];
+        let depositItems:any = this.depositForm.get('payments');
         let itemControl:any = depositItems.controls[index];
         itemControl.controls['title'].patchValue(data.title);
         itemControl.controls['amount'].patchValue(data.amount);
@@ -596,7 +596,7 @@ export class DepositComponent{
 
     /*This will just update line details in VIEW*/
     updateLineInView(item){
-      let itemsControl:any = this.depositForm.controls['payments'];
+      let itemsControl:any = this.depositForm.get('payments');
       let itemControl = itemsControl.controls[this.editItemIndex];
       this.setValuesToControls(itemControl, item);
     }
@@ -753,7 +753,7 @@ export class DepositComponent{
 
     selectDepositType(type){
         this.loadEntities(type);
-        let depositItems:any = this.depositForm.controls['payments'];
+        let depositItems:any = this.depositForm.get('payments');
         _.each(depositItems.controls, function (expenseItem) {
             expenseItem.controls['entity_id'].patchValue('');
         });
@@ -807,7 +807,7 @@ export class DepositComponent{
     /*view changes*/
 
     addDefaultLine(count){
-        let linesControl: any = this.depositForm.controls['payments'];
+        let linesControl: any = this.depositForm.get('payments');
         for(let i=0; i<count; i++){
             let lineForm = this._fb.group(this._depositLineForm.getForm());
             linesControl.controls.push(lineForm);
@@ -815,7 +815,7 @@ export class DepositComponent{
     }
 
     getLineCount(){
-        let linesControl:any = this.depositForm.controls['payments'];
+        let linesControl:any = this.depositForm.get('payments');
         let activeLines = [];
         _.each(linesControl.controls, function(lineControl){
             if(!lineControl.controls['destroy'].value){
@@ -1019,7 +1019,7 @@ export class DepositComponent{
      saveMappingID(){
        let mappingData=_.map(this.selectedRows, 'id');
        this.isMappingsModified=true;
-       let mappings = this.depositForm.controls['mapping_ids'];
+       let mappings = this.depositForm.get('mapping_ids');
        mappings.patchValue(mappingData);
        let data = this._depositForm.getData(this.depositForm);
        this.mappingFlyoutCSS="collapsed";
@@ -1071,7 +1071,7 @@ export class DepositComponent{
 
     updateLineTotal(){
         let base = this;
-        let deposliLineData:any = this.depositForm.controls['payments'];
+        let deposliLineData:any = this.depositForm.get('payments');
         this.lineTotal = 0;
         _.each(deposliLineData.controls, function(lineForm){
             let line = base._depositLineForm.getData(lineForm);
@@ -1092,7 +1092,7 @@ export class DepositComponent{
 
   showPosts($event, index) {
     $event.preventDefault();
-    let itemsControl:any = this.depositForm.controls['payments'];
+    let itemsControl:any = this.depositForm.get('payments');
     let data = this._depositLineForm.getData(itemsControl.controls[index]);
     const link = ['collaboration', 'depositLine', data.id];
     this._router.navigate(link);

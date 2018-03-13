@@ -219,19 +219,19 @@ export class CreateMetricComponent{
     /*This will just add new line details in VIEW*/
     saveLineInView(line){
         let base = this;
-        let linesControl:any = this.metricForm.controls['metricLines'];
+        let linesControl:any = this.metricForm.get('metricLines');
         let lineListForm = _.cloneDeep(this._fb.group(this._metricLineForm.getForm(line)));
         linesControl.controls.push(lineListForm);
         let journalData = [];
         _.each(linesControl.controls, function(lineForm){
             journalData.push(base._metricLineForm.getData(lineForm));
         });
-        this.metricForm.controls['metricLines'].patchValue(journalData);
+        linesControl.patchValue(journalData);
     }
 
     /*This will just update line details in VIEW*/
     updateLineInView(line){
-        let linesControl:any = this.metricForm.controls['metricLines'];
+        let linesControl:any = this.metricForm.get('metricLines');
         let currentLineControl:any = linesControl.controls[this.editingLineIndex];
         if(currentLineControl.editable){
             currentLineControl.editable = !currentLineControl.editable;
@@ -248,7 +248,7 @@ export class CreateMetricComponent{
     }
 
     getLineCount(){
-        let linesControl:any = this.metricForm.controls['metricLines'];
+        let linesControl:any = this.metricForm.get('metricLines');
         let activeLines = [];
         _.each(linesControl.controls, function(lineControl){
             if(!lineControl.controls['destroy'].value){
@@ -270,7 +270,7 @@ export class CreateMetricComponent{
 
     //When user  clicks on the line, it toggles and show the fields
     editLine(lineListItem, index){
-        let linesControl:any = this.metricForm.controls['metricLines'];
+        let linesControl:any = this.metricForm.get('metricLines');
         let data = this._metricForm.getData(lineListItem);
         //It works. Not sure whether it has better ways to do.
         jQuery('#coa-'+index).siblings().children('input').val(this.getMetricName(data.metricID));
@@ -291,8 +291,7 @@ export class CreateMetricComponent{
             }
         });
         let base = this;
-        let metricFormControls: any = this.metricForm.controls;
-        let metricLines:any = metricFormControls.metricLines;
+        let metricLines: any = this.metricForm.get('metricLines');
         if(key === 'Arrow Down'){
             let nextIndex = this.getNextElement(current_ele,index,'Arrow Down');
             base.editLine(metricLines.controls[nextIndex], nextIndex);
@@ -339,17 +338,17 @@ export class CreateMetricComponent{
 
 
     setReversalDate(date: string){
-        let jeReversalDateControl:any = this.metricForm.controls['reversalDate'];
+        let jeReversalDateControl:any = this.metricForm.get('reversalDate');
         jeReversalDateControl.patchValue(date);
     }
 
     setNextJEDate(date: string){
-        let nextJEDateControl:any = this.metricForm.controls['nextJEDate'];
+        let nextJEDateControl:any = this.metricForm.get('nextJEDate');
         nextJEDateControl.patchValue(date);
     }
 
     setEndDate(date: string){
-        let endDateControl:any = this.metricForm.controls['endDate'];
+        let endDateControl:any = this.metricForm.get('endDate');
         endDateControl.patchValue(date);
     }
 
@@ -361,7 +360,7 @@ export class CreateMetricComponent{
             }
         });
         if(!_.isEmpty(journal)) {
-            let reverseJournalControl:any = this.metricForm.controls['reversedFrom'];
+            let reverseJournalControl:any = this.metricForm.get('reversedFrom');
             reverseJournalControl.patchValue(journal.id);
         }
     }
@@ -397,7 +396,7 @@ export class CreateMetricComponent{
     deleteLine($event, lineIndex){
         let base = this;
         $event && $event.stopImmediatePropagation();
-        let lineList:any = this.metricForm.controls['metricLines'];
+        let lineList:any = this.metricForm.get('metricLines');
         lineList.controls[lineIndex].controls['destroy'].patchValue(true);
         setTimeout(function(){
             base.handleKeyEvent($event,lineIndex,'Arrow Down');
@@ -543,7 +542,7 @@ export class CreateMetricComponent{
     }
 
     updateLineMetric(metric, index){
-        let linesControl:any = this.metricForm.controls['metricLines'];
+        let linesControl:any = this.metricForm.get('metricLines');
         let currentLineForm:any = linesControl.controls[index];
         let currentLineData = this._metricLineForm.getData(currentLineForm);
         if(metric&&metric.id){
@@ -569,7 +568,7 @@ export class CreateMetricComponent{
         valueMetric.metricLines = _.orderBy(valueMetric.metricLines, ['description']);
         let base = this;
         this.valueMetric = valueMetric;
-        let linesControl:any = this.metricForm.controls['metricLines'];
+        let linesControl:any = this.metricForm.get('metricLines');
         _.each(this.valueMetric.metricLines, function(line){
             let lineListForm = base._fb.group(base._metricLineForm.getForm(line));
             linesControl.push(lineListForm);
@@ -594,7 +593,7 @@ export class CreateMetricComponent{
     }
 
     addDefaultLine(count){
-        let linesControl: any = this.metricForm.controls['metricLines'];
+        let linesControl: any = this.metricForm.get('metricLines');
         for(let i=0; i<count; i++){
             let lineForm = this._fb.group(this._metricLineForm.getForm());
             linesControl.controls.push(lineForm);
@@ -615,8 +614,8 @@ export class CreateMetricComponent{
         this.lineForm = this._fb.group(_lineForm);
 
         this.newForm();
-        let metricFormControls:any= this.metricForm.controls;
-        metricFormControls.year.setValue(moment(new Date(),this.dateFormat).year());
+        let yearControl:any= this.metricForm.get('year');
+        yearControl.setValue(moment(new Date(),this.dateFormat).year());
         this.loadingService.triggerLoadingEvent(true);
         this.metricService.getMetricsList(this.companyId)
             .subscribe(metrics => {

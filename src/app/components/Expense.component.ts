@@ -223,7 +223,7 @@ export class ExpenseComponent{
     let base = this;
     this.itemActive = true;
     this.dimensionFlyoutCSS = "expanded";
-    let itemsControl:any = this.expenseForm.controls['expense_items'];
+    let itemsControl:any = this.expenseForm.get('expense_items');
     let data = this._expenseItemForm.getData(itemsControl.controls[index]);
     let coa = _.find(this.chartOfAccounts, {'id': data.chart_of_account_id});
     let entity = _.find(this.entities, {'id': data.entity_id});
@@ -307,7 +307,7 @@ export class ExpenseComponent{
   processExpense(expense){
     let base = this;
     this.expenseData=expense;
-    let itemsControl:any = this.expenseForm.controls['expense_items'];
+    let itemsControl:any = this.expenseForm.get('expense_items');
     this.selectedMappingID=expense.mapping_id;
     expense.due_date = this.dateFormater.formatDate(expense.due_date,this.serviceDateformat,this.dateFormat);
     if(expense.expense_items.length>0&&expense.expense_items[0].entity_id){
@@ -338,7 +338,7 @@ export class ExpenseComponent{
   editItem(index, itemForm){
     let base = this;
     let expenseData = this._expenseForm.getData(this.expenseForm);
-    let linesControl:any = this.expenseForm.controls['expense_items'];
+    let linesControl:any = this.expenseForm.get('expense_items');
     let itemData = this._expenseItemForm.getData(itemForm);
     if(!itemData.amount){
       itemData.amount = expenseData.amount || 0;
@@ -356,8 +356,7 @@ export class ExpenseComponent{
   }
 
   enableLines(){
-    let expenseItemControls: any = this.expenseForm.controls;
-    let expItems: any = expenseItemControls.expense_items;
+    let expItems: any = this.expenseForm.get('expense_items');
     let lines = expItems.controls;
     if(lines && lines.length > 0){
       this.editItem(0, lines[0]);
@@ -377,8 +376,7 @@ export class ExpenseComponent{
       }
     });
     let base = this;
-    let expenseItemControls: any = this.expenseForm.controls;
-    let expenseLines:any = expenseItemControls.expense_items;
+    let expenseLines: any = this.expenseForm.get('expense_items');
     if(key === 'Arrow Down'){
       let nextIndex = this.getNextElement(current_ele,index,'Arrow Down');
       base.editItem(nextIndex, expenseLines.controls[nextIndex]);
@@ -426,7 +424,7 @@ export class ExpenseComponent{
   deleteItem($event,index){
     let base=this;
     $event && $event.stopImmediatePropagation();
-    let itemsList:any = this.expenseForm.controls['expense_items'];
+    let itemsList:any = this.expenseForm.get('expense_items');
     let itemControl = itemsList.controls[index];
     itemControl.controls['destroy'].patchValue(true);
     setTimeout(function(){
@@ -503,7 +501,7 @@ export class ExpenseComponent{
 
   updateItem(index, itemForm){
     let data = _.cloneDeep(this._expenseItemForm.getData(itemForm));
-    let expenseItems:any = this.expenseForm.controls['expense_items'];
+    let expenseItems:any = this.expenseForm.get('expense_items');
     let itemControl:any = expenseItems.controls[index];
     itemControl.controls['title'].patchValue(data.title);
     itemControl.controls['amount'].patchValue(data.amount);
@@ -600,7 +598,7 @@ export class ExpenseComponent{
 
   /*This will just update line details in VIEW*/
   updateLineInView(item){
-    let itemsControl:any = this.expenseForm.controls['expense_items'];
+    let itemsControl:any = this.expenseForm.get('expense_items');
     let itemControl = itemsControl.controls[this.editItemIndex];
     this.setValuesToControls(itemControl, item);
   }
@@ -736,7 +734,7 @@ export class ExpenseComponent{
 
   selectExpenseType(type){
     this.loadEntities(type);
-    let expenseItems:any = this.expenseForm.controls['expense_items'];
+    let expenseItems:any = this.expenseForm.get('expense_items');
     _.each(expenseItems.controls, function (expenseItem) {
       expenseItem.controls['entity_id'].patchValue('');
     });
@@ -801,7 +799,7 @@ export class ExpenseComponent{
   /*view changes*/
 
   addDefaultLine(count){
-    let linesControl: any = this.expenseForm.controls['expense_items'];
+    let linesControl: any = this.expenseForm.get('expense_items');
     for(let i=0; i<count; i++){
       let lineForm = this._fb.group(this._expenseItemForm.getForm());
       linesControl.controls.push(lineForm);
@@ -809,7 +807,7 @@ export class ExpenseComponent{
   }
 
   getLineCount(){
-    let linesControl:any = this.expenseForm.controls['expense_items'];
+    let linesControl:any = this.expenseForm.get('expense_items');
     let activeLines = [];
     _.each(linesControl.controls, function(lineControl){
       if(!lineControl.controls['destroy'].value){
@@ -947,7 +945,7 @@ export class ExpenseComponent{
   saveMappingID(){
     let mappingData=_.map(this.selectedRows, 'groupID');
     this.isMappingsModified=true;
-    let mappings = this.expenseForm.controls['mapping_ids'];
+    let mappings = this.expenseForm.get('mapping_ids');
     mappings.patchValue(mappingData);
 //    let data = this._expenseForm.getData(this.expenseForm);
     this.mappingFlyoutCSS="collapsed";
@@ -1043,7 +1041,7 @@ export class ExpenseComponent{
 
   updateLineTotal(){
     let base = this;
-    let expenseLineData:any = this.expenseForm.controls['expense_items'];
+    let expenseLineData:any = this.expenseForm.get('expense_items');
     this.lineTotal = 0;
     _.each(expenseLineData.controls, function(lineForm){
       let line = base._expenseItemForm.getData(lineForm);
@@ -1064,7 +1062,7 @@ export class ExpenseComponent{
 
   showPosts($event, index) {
     $event.preventDefault();
-    let itemsControl:any = this.expenseForm.controls['expense_items'];
+    let itemsControl:any = this.expenseForm.get('expense_items');
     let data = this._expenseItemForm.getData(itemsControl.controls[index]);
    // const data = this.expenseForm.value;
     const link = ['collaboration', 'expenseLine', data.id];

@@ -184,7 +184,7 @@ export class JournalEntryComponent{
 
   updateLineTotal(){
     let base = this;
-    let journallineData:any = this.jeForm.controls['journalLines'];
+    let journallineData:any = this.jeForm.get('journalLines');
     this.creditTotal = this.debitTotal = 0;
     _.each(journallineData.controls, function(lineForm){
       let line = base._lineListForm.getData(lineForm);
@@ -311,7 +311,7 @@ export class JournalEntryComponent{
     this.resetLineForm();
     this.selectedDimensions = [];
     this.editingLineIndex = index;
-    let itemsControl:any = this.jeForm.controls['journalLines'];
+    let itemsControl:any = this.jeForm.get('journalLines');
     let lineListItem = itemsControl.controls[index];
     let tempLineForm = _.cloneDeep(lineListItem);
     let lineData = this._lineListForm.getData(tempLineForm);
@@ -368,19 +368,19 @@ export class JournalEntryComponent{
   /*This will just add new line details in VIEW*/
   saveLineInView(line){
     let base = this;
-    let linesControl:any = this.jeForm.controls['journalLines'];
+    let linesControl:any = this.jeForm.get('journalLines');
     let lineListForm = _.cloneDeep(this._fb.group(this._lineListForm.getForm(line)));
     linesControl.controls.push(lineListForm);
     let journalData = [];
     _.each(linesControl.controls, function(lineForm){
       journalData.push(base._lineListForm.getData(lineForm));
     });
-    this.jeForm.controls['journalLines'].patchValue(journalData);
+    linesControl.patchValue(journalData);
   }
 
   /*This will just update line details in VIEW*/
   updateLineInView(line){
-    let linesControl:any = this.jeForm.controls['journalLines'];
+    let linesControl:any = this.jeForm.get('journalLines');
     let currentLineControl:any = linesControl.controls[this.editingLineIndex];
     if(currentLineControl.editable){
       currentLineControl.editable = !currentLineControl.editable;
@@ -402,7 +402,7 @@ export class JournalEntryComponent{
   }
 
   getLineCount(){
-    let linesControl:any = this.jeForm.controls['journalLines'];
+    let linesControl:any = this.jeForm.get('journalLines');
     let activeLines = [];
     _.each(linesControl.controls, function(lineControl){
       if(!lineControl.controls['destroy'].value){
@@ -424,7 +424,7 @@ export class JournalEntryComponent{
 
   //When user double clicks on the line, it toggles and show the fields
   editLine(lineListItem, index){
-    let linesControl:any = this.jeForm.controls['journalLines'];
+    let linesControl:any = this.jeForm.get('journalLines');
     let data = this._jeForm.getData(lineListItem);
     //It works. Not sure whether it has better ways to do.
     jQuery('#coa-'+index).siblings().children('input').val(this.getCOAName(data.coa));
@@ -512,22 +512,22 @@ export class JournalEntryComponent{
   }
 
   setJournalDate(date: string){
-    let jeDateControl:any = this.jeForm.controls['date'];
+    let jeDateControl:any = this.jeForm.get('date');
     jeDateControl.patchValue(date);
   }
 
   setReversalDate(date: string){
-    let jeReversalDateControl:any = this.jeForm.controls['reversalDate'];
+    let jeReversalDateControl:any = this.jeForm.get('reversalDate');
     jeReversalDateControl.patchValue(date);
   }
 
   setNextJEDate(date: string){
-    let nextJEDateControl:any = this.jeForm.controls['nextJEDate'];
+    let nextJEDateControl:any = this.jeForm.get('nextJEDate');
     nextJEDateControl.patchValue(date);
   }
 
   setEndDate(date: string){
-    let endDateControl:any = this.jeForm.controls['endDate'];
+    let endDateControl:any = this.jeForm.get('endDate');
     endDateControl.patchValue(date);
   }
 
@@ -553,7 +553,7 @@ export class JournalEntryComponent{
       }
     });
     if(!_.isEmpty(journal)) {
-      let reverseJournalControl:any = this.jeForm.controls['reversedFrom'];
+      let reverseJournalControl:any = this.jeForm.get('reversedFrom');
       reverseJournalControl.patchValue(journal.id);
     }
   }
@@ -589,7 +589,7 @@ export class JournalEntryComponent{
   deleteLine($event, lineIndex){
     let base = this;
     $event && $event.stopImmediatePropagation();
-    let lineList:any = this.jeForm.controls['journalLines'];
+    let lineList:any = this.jeForm.get('journalLines');
     lineList.controls[lineIndex].controls['destroy'].patchValue(true);
     setTimeout(function(){
       base.updateLineTotal();
@@ -799,7 +799,7 @@ export class JournalEntryComponent{
   }
 
   updateLineCOA(chartOfAccount, index){
-    let linesControl:any = this.jeForm.controls['journalLines'];
+    let linesControl:any = this.jeForm.get('journalLines');
     let currentLineForm:any = linesControl.controls[index];
     let currentLineData = this._lineListForm.getData(currentLineForm);
     if(chartOfAccount&&chartOfAccount.id){
@@ -811,7 +811,7 @@ export class JournalEntryComponent{
   }
 
   updateLineEntity(entity, index){
-    let linesControl:any = this.jeForm.controls['journalLines'];
+    let linesControl:any = this.jeForm.get('journalLines');
     let currentLineForm:any = linesControl.controls[index];
     let currentLineData = this._lineListForm.getData(currentLineForm);
     if(entity && entity.id){
@@ -868,7 +868,7 @@ export class JournalEntryComponent{
     }
     this.disableReversalDate = !Boolean(journalEntry.autoReverse);
     this.disableRecurring = !Boolean(journalEntry.recurring);
-    let linesControl:any = this.jeForm.controls['journalLines'];
+    let linesControl:any = this.jeForm.get('journalLines');
     _.each(this.journalEntry.journalLines, function(line){
       if(line.entryType == 'Credit'){
         line.creditAmount = line.amount;
@@ -918,7 +918,7 @@ export class JournalEntryComponent{
   }
 
   addDefaultLine(count){
-    let linesControl: any = this.jeForm.controls['journalLines'];
+    let linesControl: any = this.jeForm.get('journalLines');
     for(let i=0; i<count; i++){
       let lineForm = this._fb.group(this._lineListForm.getForm());
       linesControl.controls.push(lineForm);
