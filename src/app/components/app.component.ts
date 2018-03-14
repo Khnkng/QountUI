@@ -23,6 +23,7 @@ import {UrlService} from "qCommon/app/services/UrlService";
 declare let jQuery:any;
 declare let _:any;
 declare let window:any;
+declare let messageInterval: any;
 
 @Component({
   selector: 'qount-app',
@@ -64,6 +65,7 @@ export class AppComponent  implements OnInit{
               private loadingService:LoadingService,private loginService: LoginService, private _toastService:ToastService,
               private numeralService: NumeralService) {
     let self = this;
+    clearInterval(messageInterval);
     this.currentEnvironment = environment;
     let cookieKey = this.currentEnvironment.production? "prod": "dev";
     UrlService.setUrls(this.currentEnvironment);
