@@ -9,52 +9,27 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
   <script type="text/javascript">
-    function changeMessage(){
-      if(document.getElementById('message1')){
-          var elem = document.getElementById('message1');
-          if(elem.style.display !== 'none'){
-            elem.style.display = "none";
-            document.getElementById('message2').style.display = "block";
-            return;
-          }
-      }
-      if(document.getElementById('message2')){
-        var elem = document.getElementById('message2');
-        if(elem.style.display !== 'none'){
-          elem.style.display = "none";
-          document.getElementById('message3').style.display = "block";
-          return;
-        }
-      }
-      if(document.getElementById('message3')){
-        var elem = document.getElementById('message3');
-        if(elem.style.display !== 'none'){
-          elem.style.display = "none";
-          document.getElementById('message4').style.display = "block";
-          return;
-        }
-      }
-      if(document.getElementById('message4')){
-        var elem = document.getElementById('message4');
-        if(elem.style.display !== 'none'){
-          elem.style.display = "none";
-          document.getElementById('message1').style.display = "block";
-        }
-      }
-    }
     var messageInterval = setInterval(function(){
       changeMessage();
-    }, 3000);
+    }, 500);
+    var messages = ['Woot Woot : You are here; the Day just got better.',
+        'Sometimes you get the Bear, and sometimes the Bear gets you',
+        'What a day ! What cannot be accomplished on such a splendid day?',
+        'Ran as fast as you can; I am the Gingerbread man'];
+    function changeMessage(){
+      if(document.getElementById('message')){
+          var index = Math.floor(Math.random() * messages.length);
+          document.getElementById('message').innerHTML = messages[index];
+          clearInterval(messageInterval);
+      }
+    }
   </script>
 </head>
 <body>
   <qount-app>
     <div class="qount-overlay"></div>
     <div align="center" class="message-wrapper">
-      <div id="message1">Woot Woot : You are here; the Day just got better.</div>
-      <div id="message2" style="display: none;">Sometimes you get the Bear, and sometimes the Bear gets you</div>
-      <div id="message3" style="display: none;">What a day ! What cannot be accomplished on such a splendid day?</div>
-      <div id="message4" style="display: none;">Ran as fast as you can; i am the Gingerbread man</div>
+      <div id="message"></div>
     </div>
     <div class="qount-loading-wheel">
       <div align="center" class="fond">
