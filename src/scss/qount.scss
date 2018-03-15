@@ -5417,3 +5417,16 @@ tbody tr a.actionOnId {
 .dropdown-list div:first-child {
   padding-bottom:inherit;
 }
+
+.preview-dropdown {
+  .dropdown-pane {
+    margin-left: 26px !important;
+    width: 170px !important;
+  }
+  .view-more-actions:before {
+    left:110px;
+  }
+  .view-more-actions:after {
+    left:111px;
+  }
+}
