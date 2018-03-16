@@ -317,6 +317,12 @@ const APP_BASE = {provide: APP_BASE_HREF, useValue: '/'};
       canActivate: [LoggedInActivator]
     },
     {
+      path: 'search-results',
+      component: SearchResultsComponent,
+      canActivate: [LoggedInActivator]
+    }
+    ,
+    {
       path: 'payments',
       component: PaymentsComponent,
       canActivate: [LoggedInActivator]

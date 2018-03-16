@@ -2,7 +2,7 @@
  * Created by seshu on 26-02-2016.
  */
 
-import {Component, Output, EventEmitter, OnInit} from "@angular/core";
+import {Component, Output, EventEmitter, OnInit, ViewChild} from "@angular/core";
 import {Router, NavigationEnd} from "@angular/router";
 import {Session} from "qCommon/app/services/Session";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
@@ -16,6 +16,7 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {StateService} from "qCommon/app/services/StateService";
 import {State} from "qCommon/app/models/State";
 import {DimensionService} from "qCommon/app/services/DimensionService.service";
+import {ComboBox} from "qCommon/app/directives/comboBox.directive";
 
 declare let jQuery:any;
 declare let _:any;
@@ -59,6 +60,15 @@ export class SearchComponent{
     dimensionValues:Array<any> = [];
     selectedValues:Array<any> = [];
     selectedValue:string;
+    @ViewChild("coaComboBoxDir") coaComboBox: ComboBox;
+    @ViewChild("vendorComboBoxDir") vendorComboBox: ComboBox;
+    @ViewChild("customerComboBoxDir") customerComboBox: ComboBox;
+    showCriteria:boolean;
+    bill:boolean;
+    payment:boolean;
+    deposit:boolean;
+    expense:boolean;
+    invoice:boolean;
 
     constructor(private _router: Router, private coaService: ChartOfAccountsService, private companyService: CompaniesService,
                 private customersService: CustomersService, private loadingService: LoadingService, private toastService: ToastService,
@@ -66,37 +76,110 @@ export class SearchComponent{
         this.companyCurrency=Session.getCurrentCompanyCurrency();
         this.companyId=Session.getCurrentCompany();
         this.titleService.setPageTitle("Search");
-        this.coaService.chartOfAccounts(this.companyId)
-            .subscribe(chartOfAccounts => {
-                this.chartOfAccounts = chartOfAccounts;
-            }, error => {
-            });
-        this.companyService.vendors(this.companyId)
-            .subscribe(vendors => {
-                this.vendors = vendors;
-            }, error => {
-            });
-        this.customersService.customers(this.companyId)
-            .subscribe(customers => {
-                this.customers = customers;
-            }, error => {
-            });
-        this.dimensionService.dimensions(this.companyId)
-            .subscribe(dimensions => {
-               this.dimensions = dimensions;
-            });
         this.amountCondition = 'greaterthan';
         this.textCondition  ='beginsWith';
         this.dateCondition = 'equals';
         this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => {
-            if(this.showtable == true){
-                this.stateService.pop();
-                this.showtable = false;
-                this.titleService.setPageTitle("Search");
-            } else {
-                this.showPreviousPage();
-            }
+          this.showPreviousPage();
         });
+      let state = this.stateService.getPrevState();
+      if(state && state.key == 'search_results'){
+        let data=state.data;
+        if(data){
+          this.setSearchData(data);
+        }
+        this.stateService.pop();
+      }else {
+        this.showCriteria=true;
+        this.loadData();
+      }
+      let base=this;
+    }
+
+    setSearchData(data){
+      let base=this;
+      this.chartOfAccounts=data.servicesData['coas'];
+      this.vendors=data.servicesData['vendors'];
+      this.customers=data.servicesData['customers'];
+      this.dimensions=data.servicesData['dimensions'];
+      this.source=data['source'];
+      /*if(this.source.length>0){
+        _.each(this.source, function(component){
+          base.isCompSelected(component);
+        });
+      }*/
+      if(data.criteria.vendor){
+        this.vendor=data.criteria.vendor;
+        this.setVendorName();
+      }
+      if(data.criteria.chartOfAccount){
+         this.chartOfAccount=data.criteria.chartOfAccount;
+          this.setCOAName();
+      }
+      if(data.criteria.customer){
+        this.customer=data.criteria.customer;
+        this.setCustomerName();
+      }
+      if(data.criteria['amount']){
+        this.amountCondition=data.criteria['amount'].condition;
+        if(this.amountCondition == 'between'){
+          this.lowerLimit=data.criteria['amount'].value[0];
+          this.upperLimit=data.criteria['amount'].value[1];
+        }else{
+          this.amount=data.criteria['amount'].value;
+        }
+      }
+      if(data.criteria['date']){
+        this.amountCondition=data.criteria['date'].condition;
+        if(this.dateCondition == 'between'){
+          this.beginDate=data.criteria['date'].value[0];
+          this.endDate=data.criteria['date'].value[1];
+        }else{
+          this.date=data.criteria['date'].value;
+        }
+      }
+      if(data.criteria['text']){
+        this.textCondition=data.criteria['text'].condition;
+        this.text=data.criteria['text'].value;
+      }
+      if(data.criteria['dimensions']&&data.criteria['dimensions'].length>0){
+          this.getDimensionsFromSearchData(data.criteria['dimensions']);
+      }
+      this.showCriteria=true;
+      this.setSource();
+    }
+
+    setCustomerName(){
+      let base=this;
+      let customer = _.find(this.customers, {'customer_id': this.customer});
+      setTimeout(function(){
+        base.customerComboBox.setValue(customer, 'customer_name');
+      });
+    }
+
+    setSource(){
+      let base=this;
+      if(this.source.length>0){
+       _.each(this.source, function(component){
+       base[component]=true;
+       });
+       }
+    }
+
+    setVendorName(){
+      let base=this;
+      let vendor = _.find(this.vendors, {'id': this.vendor});
+      setTimeout(function(){
+        base.vendorComboBox.setValue(vendor, 'name');
+      });
+    }
+
+    setCOAName(){
+      let base=this;
+      let coa = _.find(this.chartOfAccounts, {'id': this.chartOfAccount});
+      setTimeout(function(){
+        base.coaComboBox.setValue(coa, 'name');
+      });
     }
 
     setDimension(dimension){
@@ -109,6 +192,28 @@ export class SearchComponent{
         return dimension? _.cloneDeep(dimension.values): [];
     }
 
+    loadData(){
+      this.coaService.chartOfAccounts(this.companyId)
+        .subscribe(chartOfAccounts => {
+          this.chartOfAccounts = chartOfAccounts;
+        }, error => {
+        });
+      this.companyService.vendors(this.companyId)
+        .subscribe(vendors => {
+          this.vendors = vendors;
+        }, error => {
+        });
+      this.customersService.customers(this.companyId)
+        .subscribe(customers => {
+          this.customers = customers;
+        }, error => {
+        });
+      this.dimensionService.dimensions(this.companyId)
+        .subscribe(dimensions => {
+          this.dimensions = dimensions;
+        });
+    }
+
     setDimensionValue(value){
         let base = this;
         let index = -1;
@@ -118,10 +223,12 @@ export class SearchComponent{
             }
         });
         if(index == -1){
+          if(value){
             this.selectedValues.push({
-                "dimension": this.selectedDimension,
-                "value": value
+              "dimension": this.selectedDimension,
+              "value": value
             });
+          }
         }
     }
 
@@ -139,11 +246,11 @@ export class SearchComponent{
             jQuery(document).foundation();
         });
 
-        let criteria = sessionStorage.getItem("searchcriteria");
+        /*let criteria = sessionStorage.getItem("searchcriteria");
         if(criteria){
             this.getSearchResults(JSON.parse(criteria));
             this.stateService.pop();
-        }
+        }*/
     }
 
     ngOnDestroy(){
@@ -256,13 +363,44 @@ export class SearchComponent{
         return result;
     }
 
+    getDimensionsFromSearchData(selectedDimensions){
+      let base=this;
+      this.selectedValues=[];
+      _.each(selectedDimensions, function(selectedDimension){
+        let dimensionValues=selectedDimension.values;
+        let dimensionName=selectedDimension.name;
+        _.each(dimensionValues, function(dimension){
+          let selectedDimension={
+            name:dimensionName,
+            value:dimension,
+            dimension:dimensionName
+          };
+          base.selectedValues.push(selectedDimension);
+        })
+      });
+      this.setDimensionNameAndValues();
+    }
+
+    setDimensionNameAndValues(){
+      let base=this;
+      if(this.selectedValues.length>0){
+        this.selectedDimension=this.selectedValues[0].name;
+        this.dimensionValues=this.getDimensionValues(this.selectedDimension);
+        setTimeout(function(){
+          base.selectedValue=base.selectedValues[0].value;
+        });
+      }
+
+    }
+
     doSearch(){
         if(!this.validate()){
             return;
         }
         let data:any = {
             source: this.source,
-            criteria: {}
+            criteria: {},
+            servicesData:{}
         };
         if(this.vendor){
             data.criteria.vendor = this.vendor;
@@ -294,27 +432,42 @@ export class SearchComponent{
         if(this.selectedValues && this.selectedValues.length != 0){
             data.criteria['dimensions'] = this.generateDimensionsObject();
         }
+        this.addServicesData(data);
         sessionStorage.setItem("searchcriteria", JSON.stringify(data));
-        this.getSearchResults(data);
+        this.addSearchState(data);
+        this.navigateToSearchResults();
+       // this.getSearchResults(data);
     }
-    getSearchResults(data){
+
+    addServicesData(data){
+      data.servicesData['coas']=this.chartOfAccounts;
+      data.servicesData['vendors']=this.vendors;
+      data.servicesData['customers']=this.customers;
+      data.servicesData['dimensions']=this.dimensions;
+    }
+    /*getSearchResults(data){
         this.loadingService.triggerLoadingEvent(true);
         this.companyService.doSearch(data, this.companyId)
             .subscribe(results => {
                 this.showtable = true;
                 this.addSearchState(data);
                 this.titleService.setPageTitle("Search Results");
-                this.buildResultsTableData(results);
+               // this.buildResultsTableData(results);
+                this.navigateToSearchResults();
             }, error => {
                 this.showtable = true;
 
                 this.loadingService.triggerLoadingEvent(false);
                 console.log(error);
             })
-    }
+    }*/
 
     addSearchState(data){
         this.stateService.addState(new State('search_results', this._router.url, data, null));
+    }
+
+    navigateToSearchResults(){
+      this._router.navigate(['search-results']);
     }
 
     handleAction($event){
