@@ -209,7 +209,8 @@ export class AppComponent  implements OnInit{
         this._toastService.pop(TOAST_TYPE.warning, "No companies found. Please contact admin to create companies.");
       }
     }
-    if (!this.cookieObj.link) {
+    const referrer  = window.location.href;
+    if (referrer.indexOf('posts') === -1) {
       this.gotoDefaultPage();
     }
   }
