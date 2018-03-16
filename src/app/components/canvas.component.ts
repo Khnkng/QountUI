@@ -62,32 +62,40 @@ export class CanvasComponent {
         private reportService: ReportService, private stateService: StateService, private toastService: ToastService,
         private switchBoard: SwitchBoard, private invoiceService: InvoicesService, private companyService: CompaniesService,
         private _router: Router) {
-        let base = this;
+
         this.stateService.clearAllStates();
         this.titleService.setPageTitle("Dashboard");
-        this.currentCompanyId = Session.getCurrentCompany();
-        this.companyCurrency = Session.getCurrentCompanyCurrency();
-        this.reportCurrency = Session.getCompanyReportCurrency()? Session.getCompanyReportCurrency(): this.companyCurrency;
-        this.numeralService.switchLocale(this.reportCurrency);
-        this.currentFiscalStart = moment().subtract(11, 'months').startOf('month').format("MM/DD/YYYY");
-        this.asOfDate = moment().format('MM/DD/YYYY');
-        this.reportRequest = {
-            "basis":"accrual",
-            "companyID": this.currentCompanyId,
-            "companyCurrency": this.companyCurrency,
-            "asOfDate": this.asOfDate,
-            "startDate": this.currentFiscalStart
-        };
-        this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
-            if(this.showDetailedChart){
-                this.showDetailedChart = !this.showDetailedChart;
-                this.detailedReportChartOptions.legend = {enabled: false};
-                this.detailedReportChartOptions.yAxis.title = {text: null,style: {fontSize:'15px'}};
-            }
+        this.switchBoard.onSwitchCompany.subscribe(data => {
+          this.refreshCompany();
         });
-        setTimeout(function(){
-            base.getData();
+        this.routeSubscribe = this.switchBoard.onClickPrev.subscribe(title => {
+          if(this.showDetailedChart){
+            this.showDetailedChart = !this.showDetailedChart;
+            this.detailedReportChartOptions.legend = {enabled: false};
+            this.detailedReportChartOptions.yAxis.title = {text: null,style: {fontSize:'15px'}};
+          }
         });
+        this.refreshCompany();
+    }
+
+    refreshCompany(){
+      let base = this;
+      this.currentCompanyId = Session.getCurrentCompany();
+      this.companyCurrency = Session.getCurrentCompanyCurrency();
+      this.reportCurrency = Session.getCompanyReportCurrency()? Session.getCompanyReportCurrency(): this.companyCurrency;
+      this.numeralService.switchLocale(this.reportCurrency);
+      this.currentFiscalStart = moment().subtract(11, 'months').startOf('month').format("MM/DD/YYYY");
+      this.asOfDate = moment().format('MM/DD/YYYY');
+      this.reportRequest = {
+        "basis":"accrual",
+        "companyID": this.currentCompanyId,
+        "companyCurrency": this.companyCurrency,
+        "asOfDate": this.asOfDate,
+        "startDate": this.currentFiscalStart
+      };
+      setTimeout(function(){
+        base.getData();
+      });
     }
 
     ngOnDestroy() {

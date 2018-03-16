@@ -17,6 +17,7 @@ import {environment} from "../../environments/environment";
 declare let _: any;
 declare let jQuery: any;
 declare let moment: any;
+declare let BroadcastChannel: any;
 
 @Component({
   selector: 'switch-company',
@@ -189,6 +190,8 @@ export class SwitchCompanyComponent {
     Session.setCurrentCompanyCurrency(company.defaultCurrency);
     Session.setLockDate(company.lockDate);
     this.switchBoard.onSwitchCompany.next({});
+    let ch1 = new BroadcastChannel('refresh-company');
+    ch1.postMessage(company);
     this.currentCompanyName = company.name;
     this.currentCompanyId = company.id;
     this.currentCompany = company;

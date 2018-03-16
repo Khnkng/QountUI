@@ -23,6 +23,7 @@ import {UrlService} from "qCommon/app/services/UrlService";
 declare let jQuery:any;
 declare let _:any;
 declare let window:any;
+declare let BroadcastChannel: any;
 
 @Component({
   selector: 'qount-app',
@@ -112,16 +113,18 @@ export class AppComponent  implements OnInit{
 
       });
 
-    if (window.addEventListener) {
-      window.addEventListener("storage", function(){self.switchCompany(self)}, false);
-    } else { // IE
-      window.attachEvent("onstorage", function(){self.switchCompany(self)});
-    }
+    let ch2 = new BroadcastChannel('refresh-company');
+    ch2.addEventListener('message', function (e) {
+      self.switchCompany(self);
+    });
   }
 
   switchCompany(self){
-    self.switchBoard.onSwitchCompany.next({});
-    self.goToDefaultPage();
+    if(this._router.url == '/dashboard'){
+      this.switchBoard.onSwitchCompany.next();
+    } else{
+      self.goToDefaultPage();
+    }
   }
 
 
