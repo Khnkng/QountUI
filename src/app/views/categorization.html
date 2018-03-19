@@ -3,7 +3,7 @@
         <section class="flyout-placeholder categorize-flyout flyout-table-alignment">
             <div class="row">
                 <div class="column large-12 medium-12 small-12 foo-container">
-                  <div class="add-share-buttons text-right">
+                  <div class="add-share-buttons text-right" *ngIf="showDownloadIcon">
                     <span class="pointer"><i class="icon ion-clipboard"></i></span>
                     <span class="footable-download">
                       <i class="icon ion-ios-cloud-download-outline" data-toggle="export-dropdown"></i>
