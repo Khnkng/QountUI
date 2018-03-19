@@ -5483,11 +5483,22 @@ tbody tr a.actionOnId {
   .dropdown-pane {
     margin-left: 26px !important;
     width: 170px !important;
+    top: 60px !important;
   }
   .view-more-actions:before {
     left:110px;
   }
   .view-more-actions:after {
     left:111px;
+  }
+}
+
+.preview-action-icons i {
+  cursor:pointer;
+  line-height: 36px;
+  position: absolute;
+  color: #878787;
+  &:hover {
+    color: #384986;
   }
 }
