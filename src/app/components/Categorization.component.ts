@@ -18,9 +18,9 @@ import {ReportService} from "reportsUI/app/services/Reports.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
-declare let _:any;
-declare let jQuery:any;
-declare let moment:any;
+declare let _: any;
+declare let jQuery: any;
+declare let moment: any;
 
 @Component({
     selector: 'categorize',
@@ -28,19 +28,20 @@ declare let moment:any;
 })
 
 export class CategorizationComponent{
-    companyId:string;
-    accounts:Array<any> = [];
-    entries:Array<any> = [];
-    companyCurrency:string;
-    tableData:any = {};
-    hasEntries:boolean = false;
-    tableOptions:any = {search:false, pageSize:12};
-    localeFortmat:string='en-US';
-    routeSubscribe:any;
+    companyId: string;
+    accounts: Array<any> = [];
+    entries: Array<any> = [];
+    companyCurrency: string;
+    tableData: any = {};
+    hasEntries: boolean = false;
+    tableOptions: any = {search:false, pageSize:12};
+    localeFortmat: string = 'en-US';
+    routeSubscribe: any;
     pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
     categorizeTableColumns: Array<any> = ['Type', 'Title', 'Date', 'Amount', 'Bank Account'];
     dateFormat: string;
     serviceDateformat: string;
+    showDownloadIcon = false;
 
     constructor(private toastService: ToastService, private _router: Router, private _route: ActivatedRoute,
                 private loadingService: LoadingService, private expenseService: ExpenseService, private accountsService: FinancialAccountsService,
@@ -53,70 +54,70 @@ export class CategorizationComponent{
         this.serviceDateformat = dateFormater.getServiceDateformat();
         this.loadingService.triggerLoadingEvent(true);
         this.accountsService.financialAccounts(this.companyId)
-            .subscribe(accounts =>{
+            .subscribe(accounts => {
                 this.accounts = accounts.accounts;
                 this.fetchUncategorizedEntries();
-            }, error=>{
+            }, error => {
                 this.loadingService.triggerLoadingEvent(false);
             });
         this.routeSubscribe  = _switchBoard.onClickPrev.subscribe(title => this.showPreviousPage());
     }
 
-    showPreviousPage(){
+    showPreviousPage() {
         let prevState = this.stateService.getPrevState();
-        if(prevState){
+        if (prevState) {
             this._router.navigate([prevState.url]);
         }
     }
 
-    ngOnInit(){
+    ngOnInit() {
 
     }
 
-    ngOnDestroy(){
+    ngOnDestroy() {
         this.routeSubscribe.unsubscribe();
     }
 
-    fetchUncategorizedEntries(){
+    fetchUncategorizedEntries() {
         let base = this;
         this.expenseService.uncategorizedEntries(this.companyId)
-            .subscribe(entries =>{
+            .subscribe(entries => {
                 this.loadingService.triggerLoadingEvent(false);
                 _.each(entries.Deposits, function(entry){
-                    entry.type='Deposit';
+                    entry.type = 'Deposit';
                     base.entries.push(entry);
                 });
                 _.each(entries.Expenses, function(entry){
-                    entry.type='Expense';
+                    entry.type = 'Expense';
                     base.entries.push(entry);
                 });
                 this.buildTableData();
-            }, error =>{
+            }, error => {
                 this.loadingService.triggerLoadingEvent(false);
             });
     }
 
-    getBankAccountName(accountId){
+    getBankAccountName(accountId) {
         let account = _.find(this.accounts, {'id': accountId});
-        return account? account.name: "";
+        return account ? account.name : "";
     }
 
-    redirectToEntryPage($event){
-        if($event.type == 'Expense'){
+    redirectToEntryPage($event) {
+        if ($event.type === 'Expense') {
             let link = ['/expense', $event.id];
             this._router.navigate(link);
         }
-        if($event.type == 'Deposit'){
+        if ($event.type === 'Deposit') {
             let link = ['/deposit', $event.id];
             this._router.navigate(link);
         }
     }
 
-    handleAction($event){
+    handleAction($event) {
         let action = $event.action;
         delete $event.action;
         delete $event.actions;
-        if(action == 'edit') {
+        if (action === 'edit') {
             this.redirectToEntryPage($event);
             this.addCategorizationState();
         }
@@ -152,13 +153,16 @@ export class CategorizationComponent{
             row['actions'] = "<a class='action' data-action='edit' style='margin:0px 0px 0px 5px;'><i class='icon ion-edit'></i></a>";
             base.tableData.rows.push(row);
         });
-        if(this.tableData.rows.length > 0){
+        if (this.tableData.rows.length > 0) {
             this.hasEntries = true;
+            setTimeout(function() {
+              base.showDownloadIcon = true;
+            }, 500);
         }
     }
 
-    addCategorizationState(){
-        this.stateService.addState(new State('CATEGORIZATION', this._router.url, null,null));
+    addCategorizationState() {
+        this.stateService.addState(new State('CATEGORIZATION', this._router.url, null, null));
     }
 
     exportToExcel() {
