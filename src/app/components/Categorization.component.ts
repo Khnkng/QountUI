@@ -16,6 +16,7 @@ import {StateService} from "qCommon/app/services/StateService";
 import {State} from "qCommon/app/models/State";
 import {ReportService} from "reportsUI/app/services/Reports.service";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
+import {DateFormater} from "qCommon/app/services/DateFormatter.service";
 
 declare let _:any;
 declare let jQuery:any;
@@ -37,15 +38,19 @@ export class CategorizationComponent{
     localeFortmat:string='en-US';
     routeSubscribe:any;
     pdfTableData: any = {"tableHeader": {"values": []}, "tableRows" : {"rows": []} };
-    categorizeTableColumns: Array<any> = ['Type', 'Title', 'Amount', 'Bank Account'];
+    categorizeTableColumns: Array<any> = ['Type', 'Title', 'Date', 'Amount', 'Bank Account'];
+    dateFormat: string;
+    serviceDateformat: string;
 
     constructor(private toastService: ToastService, private _router: Router, private _route: ActivatedRoute,
                 private loadingService: LoadingService, private expenseService: ExpenseService, private accountsService: FinancialAccountsService,
                 private numeralService: NumeralService, _switchBoard: SwitchBoard, private titleService: pageTitleService,
-                private stateService: StateService, private reportsService: ReportService) {
+                private stateService: StateService, private reportsService: ReportService, private dateFormater: DateFormater) {
         this.titleService.setPageTitle("Categorization");
         this.companyId = Session.getCurrentCompany();
         this.companyCurrency = Session.getCurrentCompanyCurrency();
+        this.dateFormat = dateFormater.getFormat();
+        this.serviceDateformat = dateFormater.getServiceDateformat();
         this.loadingService.triggerLoadingEvent(true);
         this.accountsService.financialAccounts(this.companyId)
             .subscribe(accounts =>{
@@ -117,11 +122,12 @@ export class CategorizationComponent{
         }
     }
 
-    buildTableData(){
+    buildTableData() {
         let base = this;
         this.tableData.columns = [
             {"name": "type", "title": "Type"},
             {"name": "title", "title": "Title"},
+            {"name": "date", "title": "Date"},
             {"name": "amount", "title": "Amount", "sortValue": function(value){
                 return base.numeralService.value(value);
             }},
@@ -130,14 +136,16 @@ export class CategorizationComponent{
             {"name": "actions", "title": "", "type": "html", "sortable": false}];
         this.tableData.rows = [];
         _.each(this.entries, function(entry){
-            let row:any = {};
+            let row: any = {};
             _.each(Object.keys(entry), function(key){
-                if(key == 'bank_account_id'){
+                if (key === 'bank_account_id') {
                     row[key] = base.getBankAccountName(entry[key]);
-                } else if(key == 'amount'){
+                } else if (key === 'amount') {
                     let amount = parseFloat(entry[key]);
                     row[key] = amount.toLocaleString(base.localeFortmat, { style: 'currency', currency: base.companyCurrency, minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                } else{
+                } else if (key === 'date') {
+                    row[key] = base.convertDateIntoLocaleFormat(entry[key]);
+                } else {
                     row[key] = entry[key];
                 }
             });
@@ -186,6 +194,7 @@ export class CategorizationComponent{
         tempJsonArray = {};
         tempJsonArray["Type"] = tempData[i].type;
         tempJsonArray["Title"] = tempData[i].title;
+        tempJsonArray["Date"] = tempData[i].date;
         tempJsonArray["Amount"] = tempData[i].amount;
         tempJsonArray["Bank Account"] = tempData[i].bank_account_id;
 
@@ -209,6 +218,10 @@ export class CategorizationComponent{
           this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
         });
 
+    }
+
+    convertDateIntoLocaleFormat(input) {
+      return input ? this.dateFormater.formatDate(input, this.serviceDateformat, this.dateFormat) : input;
     }
 
 }
