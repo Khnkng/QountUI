@@ -86,6 +86,14 @@
   }
 }
 
+audio::-webkit-media-controls-volume-slider {
+  display:none;
+}
+
+audio::-webkit-media-controls-mute-button {
+  display:none;
+}
+
 .highcharts-data-label text{
   color:#878787 !important;
   fill:#878787 !important;
@@ -4109,6 +4117,59 @@ dropdown-content.dropdown-content:before {
   padding: 0 !important;
 }
 
+.export-audio{
+  width: inherit !important;
+  height: auto !important;
+  margin-left: inherit !important;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+  padding: 0 !important;
+}
+
+
+.export-audio div {
+  padding: 0.5rem 1rem;
+  color:#878787 !important;
+}
+
+.export-audio div:last-child {
+  padding-top:inherit;
+}
+
+.export-audio div:hover {
+  color:#384986 !important;
+}
+
+.export-audio:after {
+  position: absolute;
+  top: -6px;
+  left: 6px;
+  display: inline-block;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #ffffff;
+  border-left: 6px solid transparent;
+  content: '';
+}
+
+.export-audio:before {
+  position: absolute;
+  top: -7px;
+  left: 5px;
+  display: inline-block;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #ccc;
+  border-left: 7px solid transparent;
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  content: '';
+}
+
+.export-audio-download{
+  color: #878787 !important;
+}
+
+.export-audio-download:hover{
+  color: #384986 !important;
+}
+
 .export-dropdown div {
   padding: 0.5rem 1rem;
   color:#878787 !important;
@@ -5412,4 +5473,21 @@ tbody tr a.actionOnId {
 
 .text-capitalize {
   text-transform: capitalize;
+}
+
+.dropdown-list div:first-child {
+  padding-bottom:inherit;
+}
+
+.preview-dropdown {
+  .dropdown-pane {
+    margin-left: 26px !important;
+    width: 170px !important;
+  }
+  .view-more-actions:before {
+    left:110px;
+  }
+  .view-more-actions:after {
+    left:111px;
+  }
 }

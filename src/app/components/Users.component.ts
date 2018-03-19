@@ -235,7 +235,9 @@ export class UsersComponent {
 
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
-    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Item code?");
+    error = JSON.parse(error);
+    let message = error && error.message? error.message: "User Deletion Failed";
+    this._toastService.pop(TOAST_TYPE.error, message);
   }
 
   hideFlyout(){
@@ -249,7 +251,7 @@ export class UsersComponent {
     let newTableData: Array<any> = [];
     let tempJsonArray: any;
 
-    for( var i in  tempData) {
+    for(let i in  tempData) {
       tempJsonArray = {};
       tempJsonArray["First Name"] = tempData[i].firstName;
       tempJsonArray["Last Name"] = tempData[i].lastName;
