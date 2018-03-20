@@ -71,18 +71,13 @@ export class AppComponent  implements OnInit{
     let data= this.getCookie(cookieKey);
     if(data){
       this.cookieObj = JSON.parse(data);
-      if(this.cookieObj && !Session.hasSession()) {
+      if (this.cookieObj && !Session.hasSession()) {
         this.updateSessionData(this.cookieObj);
         if (this.cookieObj.user.default_company) {
           this.fetchCompanies(this.cookieObj.user);
         }
-      } else if(this.cookieObj.link) {
+      } else if (this.cookieObj.referer) {
         this.updateSessionData(this.cookieObj);
-        if(this.cookieObj.link.indexOf('post') !== -1){
-          let postId = this.cookieObj.link.match(new RegExp('/posts/' + "(.*)"))[1];
-          let link = ['collaboration', postId];
-          this._router.navigate(link);
-        }
       }
       let channel = new BroadcastChannel('refresh-company');
       channel.postMessage(this.cookieObj.user.default_company);
