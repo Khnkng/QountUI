@@ -76,11 +76,10 @@ export class AppComponent  implements OnInit{
         if (this.cookieObj.user.default_company) {
           this.fetchCompanies(this.cookieObj.user);
         }
-      } else if(this.cookieObj.referer) {
+      } else if(this.cookieObj.link) {
         this.updateSessionData(this.cookieObj);
-        let url = window.location.href;
-        if(url.indexOf('post') !== -1){
-          let postId = url.match(new RegExp('/posts/' + "(.*)"))[1];
+        if(this.cookieObj.link.indexOf('post') !== -1){
+          let postId = this.cookieObj.link.match(new RegExp('/posts/' + "(.*)"))[1];
           let link = ['collaboration', postId];
           this._router.navigate(link);
         }
