@@ -80,7 +80,7 @@ export class AppComponent  implements OnInit{
         this.updateSessionData(this.cookieObj);
       } else if(this.cookieObj.link) {
         this.updateSessionData(this.cookieObj);
-        this._router.navigate([this.cookieObj.link]);
+        //this._router.navigate([this.cookieObj.link]);
       }
       let channel = new BroadcastChannel('refresh-company');
       channel.postMessage(this.cookieObj.user.default_company);
