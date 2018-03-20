@@ -211,8 +211,11 @@ export class AppComponent  implements OnInit{
     }
     const referrer  = window.location.href;
     if (referrer.indexOf('collaboration') === -1) {
-      debugger;
       this.gotoDefaultPage();
+    } else if(referrer.indexOf('post') !== -1){
+      let postId = referrer.match(new RegExp('/posts/' + "(.*)"))[1];
+      let link = ['collaboration', postId];
+      this._router.navigate(link);
     }
   }
 
