@@ -15,6 +15,7 @@ import {LoadingService} from "qCommon/app/services/LoadingService";
 declare var _:any;
 declare var jQuery:any;
 declare var moment:any;
+declare let BroadcastChannel: any;
 
 @Component({
     selector: 'current-company',
@@ -30,6 +31,7 @@ export class CurrentCompanyComponent{
 
     constructor(private _router:Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
                 private loadingService: LoadingService) {
+        let base = this;
         this.loadingService.triggerLoadingEvent(true);
         this.currentCompanyId = Session.getCurrentCompany();
         this.currentCompanyName = Session.getCurrentCompanyName();
@@ -41,6 +43,11 @@ export class CurrentCompanyComponent{
             this.currentCompanyName = Session.getCurrentCompanyName();
         });
         this.loadingService.triggerLoadingEvent(false);
+
+        let ch2 = new BroadcastChannel('refresh-company');
+        ch2.addEventListener('message', function (e) {
+            base.currentCompanyName = Session.getCurrentCompanyName();
+        });
     }
 
     switchCompany = function(){
