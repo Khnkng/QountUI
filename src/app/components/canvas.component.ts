@@ -65,7 +65,7 @@ export class CanvasComponent {
 
         this.stateService.clearAllStates();
         this.titleService.setPageTitle("Dashboard");
-        this.switchBoard.onSwitchCompany.subscribe(data => {
+        this.switchBoard.reInitialize.subscribe(data => {
           this.refreshCompany();
         });
         this.routeSubscribe = this.switchBoard.onClickPrev.subscribe(title => {

@@ -71,14 +71,22 @@ export class AppComponent  implements OnInit{
     let data= this.getCookie(cookieKey);
     if(data){
       this.cookieObj = JSON.parse(data);
-      if (this.cookieObj && !Session.hasSession()) {
+      if(this.cookieObj && !Session.hasSession()) {
         this.updateSessionData(this.cookieObj);
         if (this.cookieObj.user.default_company) {
           this.fetchCompanies(this.cookieObj.user);
         }
-      }else if (this.cookieObj.referer) {
+      } else if(this.cookieObj.referer) {
         this.updateSessionData(this.cookieObj);
+        let url = window.location.href;
+        if(url.indexOf('post') !== -1){
+          let postId = url.match(new RegExp('/posts/' + "(.*)"))[1];
+          let link = ['collaboration', postId];
+          this._router.navigate(link);
+        }
       }
+      let channel = new BroadcastChannel('refresh-company');
+      channel.postMessage(this.cookieObj.user.default_company);
     }else {
       if(Session.hasSession()) {
         this.hasLoggedIn = true;
@@ -110,7 +118,6 @@ export class AppComponent  implements OnInit{
       .queryParams
       .subscribe(params => {
         this.queryParams = params;
-
       });
 
     let ch2 = new BroadcastChannel('refresh-company');
@@ -121,7 +128,7 @@ export class AppComponent  implements OnInit{
 
   switchCompany(self){
     if(this._router.url == '/dashboard'){
-      this.switchBoard.onSwitchCompany.next();
+      this.switchBoard.reInitialize.next();
     } else{
       self.goToDefaultPage();
     }
@@ -212,15 +219,11 @@ export class AppComponent  implements OnInit{
     const referrer  = window.location.href;
     if (referrer.indexOf('collaboration') === -1) {
       this.gotoDefaultPage();
-    } else if(referrer.indexOf('post') !== -1){
-      let postId = referrer.match(new RegExp('/posts/' + "(.*)"))[1];
-      let link = ['collaboration', postId];
-      this._router.navigate(link);
     }
   }
 
   gotoDefaultPage() {
-    let  link ='dashboard';
+    let link ='dashboard';
     if(Session.get('user').tempPassword){
       link= 'activate';
     } else{
