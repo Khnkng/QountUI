@@ -211,6 +211,7 @@ export class AppComponent  implements OnInit{
     }
     const referrer  = window.location.href;
     if (referrer.indexOf('collaboration') === -1) {
+      debugger;
       this.gotoDefaultPage();
     }
   }
