@@ -1,4 +1,4 @@
-FROM httpd:2.4
+FROM httpd:latest
 COPY ./qount-half-ui-httpd.conf /usr/local/apache2/conf/httpd.conf
 COPY ./dist/ /usr/local/apache2/htdocs/
 COPY ./certs/ /usr/local/apache2/conf/
