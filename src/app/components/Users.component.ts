@@ -127,7 +127,7 @@ export class UsersComponent {
   }
 
   showCreateUser() {
-    this.titleService.setPageTitle("CRETAE USER");
+    this.titleService.setPageTitle("CREATE USER");
     this.editMode = false;
     this.userForm = this._fb.group(this._usersForm.getForm());
     this.newForm1();
