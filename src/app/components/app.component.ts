@@ -10,7 +10,6 @@ import {SwitchBoard} from "qCommon/app/services/SwitchBoard";
 import {Session} from "qCommon/app/services/Session";
 import {TOAST_TYPE} from "qCommon/app/constants/Qount.constants";
 import "rxjs/add/operator/filter";
-import {SocketService} from "qCommon/app/services/Socket.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {CompaniesService} from "qCommon/app/services/Companies.service";
 import {LoadingService} from "qCommon/app/services/LoadingService";
@@ -19,11 +18,13 @@ import {ToastService} from "qCommon/app/services/Toast.service";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {environment} from "../../environments/environment";
 import {UrlService} from "qCommon/app/services/UrlService";
+import {UUID} from "angular2-uuid/index";
 
 declare let jQuery:any;
 declare let _:any;
 declare let window:any;
 declare let BroadcastChannel: any;
+declare let moduleId: any;
 
 @Component({
   selector: 'qount-app',
@@ -58,13 +59,14 @@ export class AppComponent  implements OnInit{
   isLoading:boolean=false;
   pageTitle:string='';
   currentEnvironment:any;
-  cookieObj:any
+  cookieObj:any;
 
   constructor(private switchBoard:SwitchBoard, private _router:Router, private route: ActivatedRoute, private toastService: ToastService,
               private titleService:pageTitleService, private companyService: CompaniesService,
               private loadingService:LoadingService,private loginService: LoginService, private _toastService:ToastService,
               private numeralService: NumeralService) {
     let self = this;
+    moduleId = UUID.UUID();
     this.currentEnvironment = environment;
     let cookieKey = this.currentEnvironment.production? "prod": "dev";
     UrlService.setUrls(this.currentEnvironment);
@@ -119,7 +121,9 @@ export class AppComponent  implements OnInit{
 
     let ch2 = new BroadcastChannel('refresh-company');
     ch2.addEventListener('message', function (e) {
-      self.switchCompany(self);
+      if(e && e.data != moduleId){
+        self.switchCompany(self);
+      }
     });
   }
 
