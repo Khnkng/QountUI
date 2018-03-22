@@ -90,7 +90,7 @@
                         </div>
                         <div class="small-6 columns custom-qount-form-field">
                           <select combo-box #coaComboBoxDir="comboBox" title="" data-placeholder="Enter COA" formControlName="coa" [listObject]="chartOfAccounts" (valueChanged)="showCOA($event)">
-                            <option *ngFor="let coa of chartOfAccounts" [value]="coa.name">{{coa.number}} - {{coa.name}}</option>
+                            <option *ngFor="let coa of chartOfAccounts" [value]="coa.id">{{coa.number}} - {{coa.name}}</option>
                           </select>
                           <div class="error" [hidden]="vendorForm.get('coa').untouched || vendorForm.get('coa').valid">COA is required</div>
                         </div>
