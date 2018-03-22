@@ -18,6 +18,7 @@ declare let _: any;
 declare let jQuery: any;
 declare let moment: any;
 declare let BroadcastChannel: any;
+declare let moduleId: any;
 
 @Component({
   selector: 'switch-company',
@@ -191,7 +192,7 @@ export class SwitchCompanyComponent {
     Session.setLockDate(company.lockDate);
     this.switchBoard.onSwitchCompany.next({});
     let ch1 = new BroadcastChannel('refresh-company');
-    ch1.postMessage(company);
+    ch1.postMessage(moduleId);
     this.currentCompanyName = company.name;
     this.currentCompanyId = company.id;
     this.currentCompany = company;
