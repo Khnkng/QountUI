@@ -85,7 +85,7 @@ export class AppComponent  implements OnInit{
         //this._router.navigate([this.cookieObj.link]);
       }
       let channel = new BroadcastChannel('refresh-company');
-      channel.postMessage(moduleId);
+      channel.postMessage("");
     }else {
       if(Session.hasSession()) {
         this.hasLoggedIn = true;
