@@ -98,7 +98,7 @@ export class ItemCodesComponent{
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
     this.row = {};
-    this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+    this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
   }
 
   filterChartOfAccounts(chartOfAccounts){
@@ -167,7 +167,7 @@ export class ItemCodesComponent{
     this.codeService.removeItemCode(this.itemCodeId)
         .subscribe(coa => {
          // this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.success, "Item code deleted successfully");
+          this.toastService.pop(TOAST_TYPE.success, "Item Code Deleted Successfully");
           //this.itemCodes.splice(_.findIndex(this.itemCodes, {id: this.itemCodeId}, 1));
           this.codeService.itemCodes(this.currentCompany.id)
               .subscribe(itemCodes => this.buildTableData(itemCodes), error=> this.handleError(error));
@@ -175,7 +175,7 @@ export class ItemCodesComponent{
   }
   removeItemCode(row: any){
      this.itemCodeId = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   newForm(){
@@ -231,7 +231,7 @@ export class ItemCodesComponent{
     }
 
     if(!data.payment_coa_mapping && !data.invoice_coa_mapping){
-      this.toastService.pop(TOAST_TYPE.error, "Please select payment COA or invoice COA");
+      this.toastService.pop(TOAST_TYPE.error, "Please Select Payment COA or Invoice COA");
       return;
     }
     this.loadingService.triggerLoadingEvent(true);
@@ -242,10 +242,11 @@ export class ItemCodesComponent{
           .subscribe(itemCode => {
             //base.loadingService.triggerLoadingEvent(false);
             base.row = {};
-            base.toastService.pop(TOAST_TYPE.success, "ItemCode updated successfully");
+            base.toastService.pop(TOAST_TYPE.success, "ItemCode Updated Successfully");
             let index = _.findIndex(base.itemCodes, {id: data.id});
             base.itemCodes[index] = itemCode;
             base.buildTableData(base.itemCodes);
+            this.titleService.setPageTitle("Item Codes");
             this.showFlyout = false;
           }, error => this.handleError(error));
     } else{
@@ -253,6 +254,7 @@ export class ItemCodesComponent{
       this.codeService.addItemCode(data)
           .subscribe(newItemcode => {
             //this.loadingService.triggerLoadingEvent(false);
+            this.titleService.setPageTitle("Item Codes");
             this.handleItemCode(newItemcode);
             this.showFlyout = false;
           }, error => this.handleError(error));
@@ -262,7 +264,7 @@ export class ItemCodesComponent{
   }
 
   handleItemCode(newItemCode){
-    this.toastService.pop(TOAST_TYPE.success, "ItemCode created successfully");
+    this.toastService.pop(TOAST_TYPE.success, "ItemCode Created Successfully");
     this.itemCodes.push(newItemCode);
     this.buildTableData(this.itemCodes);
   }
@@ -364,7 +366,7 @@ export class ItemCodesComponent{
         link['download'] = "ItemCodes.xls";
         link.click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -381,7 +383,7 @@ export class ItemCodesComponent{
         link[0].download = "ItemCodes.pdf";
         link[0].click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

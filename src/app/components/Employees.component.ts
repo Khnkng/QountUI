@@ -67,7 +67,7 @@ export class EmployeesComponent {
         this.buildTableData(employees);
       }, error => this.handleError(error));
     }else {
-      this._toastService.pop(TOAST_TYPE.error, "Please add company first");
+      this._toastService.pop(TOAST_TYPE.error, "Please Add Company First");
     }
     this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
       if(this.showFlyout){
@@ -149,8 +149,8 @@ export class EmployeesComponent {
     this.loadingService.triggerLoadingEvent(true);
     this.employeeService.removeEmployee(this.employeeId, this.companyId)
       .subscribe(success  => {
-        this.loadingService.triggerLoadingEvent(false);
-        this._toastService.pop(TOAST_TYPE.success, "Customer deleted successfully");
+        //this.loadingService.triggerLoadingEvent(false);
+        this._toastService.pop(TOAST_TYPE.success, "Employee Deleted Successfully");
         this.employeeService.employees(this.companyId)
           .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
       }, error =>  this.handleError(error));
@@ -159,7 +159,7 @@ export class EmployeesComponent {
   removeEmployee(row:any) {
     let employee:EmployeesModel = row;
     this.employeeId=employee.id;
-    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this._toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   active1:boolean=true;
@@ -169,10 +169,11 @@ export class EmployeesComponent {
   }
 
   showEditEmployee(row:any) {
+    this.loadingService.triggerLoadingEvent(true);
     this.titleService.setPageTitle("UPDATE EMPLOYEE");
     this.editMode = true;
     this.showFlyout = true;
-    this.row = row;
+    //this.row = row;
     this.employeeService.employee(row.id, this.companyId)
       .subscribe(employee => {
         this.row = employee;
@@ -180,10 +181,9 @@ export class EmployeesComponent {
         email_id.patchValue(employee.email_id);
         let phone_number:any = this.employeesForm.controls['phone_number'];
         phone_number.patchValue(employee.phone_number);
-
         var base=this;
-
         this._employeesForm.updateForm(this.employeesForm, row);
+        this.loadingService.triggerLoadingEvent(false);
       }, error => this.handleError(error));
   }
 
@@ -201,6 +201,7 @@ export class EmployeesComponent {
         .subscribe(success  => {
           this.loadingService.triggerLoadingEvent(false);
           this.showMessage(true, success);
+          this.titleService.setPageTitle("Employees");
         }, error =>  this.showMessage(false, error));
       this.showFlyout = false;
     } else {
@@ -208,7 +209,7 @@ export class EmployeesComponent {
         .subscribe(success  => {
           this.loadingService.triggerLoadingEvent(false);
           this.showMessage(true, success);
-
+          this.titleService.setPageTitle("Employees");
         }, error =>  this.showMessage(false, error));
       this.showFlyout = false;
     }
@@ -225,18 +226,18 @@ export class EmployeesComponent {
         this.employeeService.employees(this.companyId)
           .subscribe(employees  => this.buildTableData(employees), error =>  this.handleError(error));
         this.newForm1();
-        this._toastService.pop(TOAST_TYPE.success, "Employee updated successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Employee Updated Successfully.");
       } else {
         this.newForm1();
         this.employeeService.employees(this.companyId)
           .subscribe(employees  => this.buildTableData(employees), error =>  this.handleError(error));
-        this._toastService.pop(TOAST_TYPE.success, "Employee created successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Employee Created Successfully.");
       }
       this.newCustomer();
     } else {
       this.status = {};
       this.status['error'] = true;
-      this._toastService.pop(TOAST_TYPE.error, "Failed to update the Employee");
+      this._toastService.pop(TOAST_TYPE.error, "Failed To Update The Employee");
       this.message = obj;
     }
   }
@@ -260,7 +261,7 @@ export class EmployeesComponent {
 
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
-    this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+    this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
   }
   hideFlyout(){
     this.titleService.setPageTitle("Employees");
@@ -307,7 +308,7 @@ export class EmployeesComponent {
         link['download'] = "Employees.xls";
         link.click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -324,7 +325,7 @@ export class EmployeesComponent {
         link[0].download = "Employees.pdf";
         link[0].click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

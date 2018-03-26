@@ -93,10 +93,10 @@ export class FinancialAccountsComponent{
             this.getFinancialAccounts(this.currentCompany);
           }, error =>{
             this.loadingService.triggerLoadingEvent(false);
-            this.toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
+            this.toastService.pop(TOAST_TYPE.error, "Failed To Load Chart Of Accounts");
           });
     } else{
-      this.toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
+      this.toastService.pop(TOAST_TYPE.warning, "No Default Company set. Please Hop To A Company");
     }
 
     this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
@@ -116,7 +116,7 @@ export class FinancialAccountsComponent{
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
     this.row = {};
-    this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+    this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
   }
 
   setBalanceDate(date){
@@ -159,7 +159,7 @@ export class FinancialAccountsComponent{
           },0);
         }, error => {
           this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.error, "Failed to load financial account details");
+          this.toastService.pop(TOAST_TYPE.error, "Failed To Load Financial Account Details");
         });
   }
 
@@ -170,10 +170,10 @@ export class FinancialAccountsComponent{
         .subscribe(response => {
           this.getFinancialAccounts(this.currentCompany);
           this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.success, "Deleted Account successfully");
+          this.toastService.pop(TOAST_TYPE.success, "Financial Account Deleted Successfully");
         }, error =>{
           this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.error, "Failed to delete account.");
+          this.toastService.pop(TOAST_TYPE.error, "Failed To Delete Financial Account");
         })
   }
 
@@ -232,11 +232,11 @@ export class FinancialAccountsComponent{
     data.starting_balance_date = this.dateFormater.formatDate(data.starting_balance_date,this.dateFormat,this.serviceDateformat);
     this.loadingService.triggerLoadingEvent(true);
     if(data.chart_of_account_id=='--None--'||data.chart_of_account_id==''){
-      this.toastService.pop(TOAST_TYPE.warning, "Please select Chart of Account");
+      this.toastService.pop(TOAST_TYPE.warning, "Please Select Chart Of Account");
       this.loadingService.triggerLoadingEvent(false);
       return;
     }if(data.transit_chart_of_account_id=='--None--'||data.transit_chart_of_account_id==''){
-      this.toastService.pop(TOAST_TYPE.warning, "Please select Transit COA");
+      this.toastService.pop(TOAST_TYPE.warning, "Please Select Transit COA");
       this.loadingService.triggerLoadingEvent(false);
       return;
     }
@@ -246,13 +246,14 @@ export class FinancialAccountsComponent{
           .subscribe(response => {
 
             this.currentAccountId = response.id;
-            this.toastService.pop(TOAST_TYPE.success, "Updated Financial account successfully");
+            this.toastService.pop(TOAST_TYPE.success, "Financial Account Updated Successfully");
             this.getFinancialAccounts(this.currentCompany);
             this.accountSubmitted = true;
             this.showFlyout = false;
             if(this.showYodleeWidget) {
               this.launchYodleeWidget();
             }
+            this.titleService.setPageTitle("Financial Accounts");
           }, error =>{
             this.loadingService.triggerLoadingEvent(false);
             this.handleCreateError(JSON.parse(error));
@@ -262,13 +263,14 @@ export class FinancialAccountsComponent{
       this.financialAccountsService.addAccount(data, this.currentCompany)
           .subscribe(response => {
             this.currentAccountId = response.id;
-            this.toastService.pop(TOAST_TYPE.success, "Financial account created successfully");
+            this.toastService.pop(TOAST_TYPE.success, "Financial Account Created Successfully");
             this.getFinancialAccounts(this.currentCompany);
             this.accountSubmitted = true;
             this.showFlyout = false;
             if(this.showYodleeWidget) {
               this.launchYodleeWidget();
             }
+            this.titleService.setPageTitle("Financial Accounts");
           }, error => {
             this.loadingService.triggerLoadingEvent(false);
             this.handleCreateError(JSON.parse(error));
@@ -283,7 +285,7 @@ export class FinancialAccountsComponent{
 
 
   handleAccount(newAccount){
-    this.toastService.pop(TOAST_TYPE.success, "Financial Account created successfully");
+    this.toastService.pop(TOAST_TYPE.success, "Financial Account Created Successfully");
     this.accounts.push(newAccount);
     this.buildTableData(this.accounts);
   }
@@ -425,7 +427,7 @@ export class FinancialAccountsComponent{
       this.loadingService.triggerLoadingEvent(true);
       jQuery('#yodleewgt').foundation('close');
       this.yodleeService.submitStatus(Session.getCurrentCompany(), this.currentAccountId, status[0]).subscribe(resp=> {
-        this.toastService.pop(TOAST_TYPE.success, "Account linked successfully");
+        this.toastService.pop(TOAST_TYPE.success, "Account Linked Successfully");
         this.getFinancialAccounts(this.currentCompany);
         this.loadingService.triggerLoadingEvent(false);
       });
@@ -438,7 +440,7 @@ export class FinancialAccountsComponent{
     this.yodleeService.unlink(Session.getCurrentCompany(), this.selectedAccount.id, this.selectedAccount.yodlee_provider_id).subscribe(resp=> {
       this.selectedAccount.yodlee_provider_id = null;
       this.loadingService.triggerLoadingEvent(false);
-      this.toastService.pop(TOAST_TYPE.success, "Account unlinked successfully");
+      this.toastService.pop(TOAST_TYPE.success, "Account Unlinked Successfully");
     });
   }
 
@@ -500,7 +502,7 @@ export class FinancialAccountsComponent{
         link['download'] = "FinanceAccounts.xls";
         link.click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -517,7 +519,7 @@ export class FinancialAccountsComponent{
         link[0].download = "FinanceAccounts.pdf";
         link[0].click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

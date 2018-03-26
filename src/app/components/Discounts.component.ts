@@ -130,7 +130,7 @@ export class DiscountsComponent {
     this.discountsService.removeDiscount(this.discountId, this.companyId)
       .subscribe(success  => {
         this.loadingService.triggerLoadingEvent(false);
-        this._toastService.pop(TOAST_TYPE.success, "Discount deleted successfully");
+        this._toastService.pop(TOAST_TYPE.success, "Discount Deleted Successfully");
         this.discountsService.discounts(this.companyId)
           .subscribe(discounts  => this.buildTableData(discounts), error =>  this.handleError(error));
       }, error =>  this.handleError(error));
@@ -138,7 +138,7 @@ export class DiscountsComponent {
   removeDiscount(row:any) {
     let discount:any = row;
     this.discountId=discount.id;
-    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this._toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   active1:boolean=true;
@@ -176,12 +176,14 @@ export class DiscountsComponent {
       this.discountsService.updateDiscount(data, this.companyId)
         .subscribe(success  => {
           this.showMessage(true, success);
+          this.titleService.setPageTitle("Discounts");
         }, error =>  this.showMessage(false, error));
       this.showFlyout = false;
     } else {
       this.discountsService.addDiscount(data, this.companyId)
         .subscribe(success  => {
           this.showMessage(true, success);
+          this.titleService.setPageTitle("Discounts");
         }, error =>  this.showMessage(false, error));
       this.showFlyout = false;
     }
@@ -197,20 +199,20 @@ export class DiscountsComponent {
         this.discountsService.discounts(this.companyId)
           .subscribe(discounts  => this.buildTableData(discounts), error =>  this.handleError(error));
         this.newForm1();
-        this._toastService.pop(TOAST_TYPE.success, "Discount updated successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Discount Updated Successfully.");
       } else {
         this.newForm1();
         this.resetForm();
         this.discountsService.discounts(this.companyId)
           .subscribe(discounts  => this.buildTableData(discounts), error =>  this.handleError(error));
-        this._toastService.pop(TOAST_TYPE.success, "Discount created successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Discount Created Successfully.");
       }
     } else {
       this.loadingService.triggerLoadingEvent(false);
       this.resetForm();
       this.status = {};
       this.status['error'] = true;
-      this._toastService.pop(TOAST_TYPE.error, "Failed to update the discount");
+      this._toastService.pop(TOAST_TYPE.error, "Failed To Update The Discount");
       this.message = obj;
     }
   }
@@ -218,7 +220,7 @@ export class DiscountsComponent {
 
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
-    this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+    this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
   }
   hideFlyout(){
     this.titleService.setPageTitle("Discounts");

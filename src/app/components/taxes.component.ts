@@ -198,7 +198,7 @@ export class TaxesComponent {
         this.loadingService.triggerLoadingEvent(true);
         this.companyService.removeTax(this.taxId, this.companyId)
             .subscribe(success  => {
-                this._toastService.pop(TOAST_TYPE.success, "Tax deleted successfully");
+                this._toastService.pop(TOAST_TYPE.success, "Tax Deleted Successfully");
                 this.companyService.getTaxofCompany(this.companyId)
                     .subscribe(taxesList  => {
                         this.buildTableData(taxesList);
@@ -213,7 +213,7 @@ export class TaxesComponent {
     removeTax(row:any) {
         let vendor:VendorModel = row;
         this.taxId=row.id;
-        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+        this._toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
     }
 
     active1:boolean=true;
@@ -240,7 +240,7 @@ export class TaxesComponent {
         let data = this._taxesForm.getData(this.TaxesForm);
         this.companyId = Session.getCurrentCompany();
         if(data.taxLiabilityCoa=='--None--'||_.isEmpty(data.taxLiabilityCoa)){
-            this._toastService.pop(TOAST_TYPE.error, "Please select Tax Liability COA");
+            this._toastService.pop(TOAST_TYPE.error, "Please Select Tax Liability COA");
             return;
         }
         this.loadingService.triggerLoadingEvent(true);
@@ -253,6 +253,7 @@ export class TaxesComponent {
             this.companyService.updateTax(<VendorModel>data, this.companyId, this.companyId, null)
                 .subscribe(success  => {
                     this.showMessage(true, success);
+                    this.titleService.setPageTitle("Taxes");
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
         } else{
@@ -267,6 +268,7 @@ export class TaxesComponent {
             this.companyService.addTax(<VendorModel>data, this.companyId, this.companyId)
                 .subscribe(success  => {
                     this.showMessage(true, success);
+                    this.titleService.setPageTitle("Taxes");
                     this.showFlyout = false;
                 }, error =>  this.showMessage(false, error));
 
@@ -318,7 +320,7 @@ export class TaxesComponent {
                         this.taxesList=taxesList;
                     }, error =>  this.handleError(error));
                 this.TaxesForm.reset();
-                this._toastService.pop(TOAST_TYPE.success, "Tax updated successfully.");
+                this._toastService.pop(TOAST_TYPE.success, "Tax Updated Successfully.");
             } else {
                 this.companyService.getTaxofCompany(this.companyId)
                     .subscribe(taxesList  => {
@@ -326,7 +328,7 @@ export class TaxesComponent {
                     }, error =>  this.handleError(error));
 
                 this.TaxesForm.reset();
-                this._toastService.pop(TOAST_TYPE.success, "Tax created successfully.");
+                this._toastService.pop(TOAST_TYPE.success, "Tax Created Successfully.");
             }
         } else {
             this.status = {};
@@ -337,17 +339,17 @@ export class TaxesComponent {
                 if(resp.message){
                     this._toastService.pop(TOAST_TYPE.error, resp.message);
                 } else{
-                    this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+                    this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
                 }
             }catch(err){
-                this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+                this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
             }
         }
     }
 
     handleError(error) {
         this.loadingService.triggerLoadingEvent(false);
-        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
     }
 
     ratetax(){
@@ -435,7 +437,7 @@ export class TaxesComponent {
         link['download'] = "Taxes.xls";
         link.click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -452,7 +454,7 @@ export class TaxesComponent {
         link[0].download = "Taxes.pdf";
         link[0].click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }
