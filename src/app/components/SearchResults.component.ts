@@ -52,7 +52,7 @@ export class SearchResultsComponent implements OnInit{
                   this.buildResultsTableData();
                 }, error =>{
                     this.loadingService.triggerLoadingEvent(false);
-                    this.toastService.pop(TOAST_TYPE.error, 'Could not perform search.');
+                    this.toastService.pop(TOAST_TYPE.error, 'Could Not Perform Search.');
                 });
         }
       this.routeSubscribe = _switchBoard.onClickPrev.subscribe(title => {

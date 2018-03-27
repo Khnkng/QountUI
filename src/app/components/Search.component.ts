@@ -327,11 +327,11 @@ export class SearchComponent{
 
     validate(){
         if(this.amountCondition != 'between' && isNaN(this.amount)){
-            this.toastService.pop(TOAST_TYPE.error, "Please enter numbers in the amount");
+            this.toastService.pop(TOAST_TYPE.error, "Please Enter Numbers In The Amount");
             return false;
         }
         if(this.amountCondition == 'between' && (isNaN(this.lowerLimit) || isNaN(this.upperLimit))){
-            this.toastService.pop(TOAST_TYPE.error, "Please enter numbers in the amount fields");
+            this.toastService.pop(TOAST_TYPE.error, "Please Enter Numbers In The Amount Fields");
             return false;
         }
         return true;
