@@ -186,18 +186,20 @@ export class ModulesComponent {
         if(this.isCreate){
             this.modulesService.saveModules(data,this.companyId).subscribe(modules => {
                 if(modules){
-                    this._toastService.pop(TOAST_TYPE.success, "Modules saved successfully");
+                    this._toastService.pop(TOAST_TYPE.success, "Modules Saved Successfully");
+                    this.titleService.setPageTitle("Modules");
                 }
             }, error => {
-                this._toastService.pop(TOAST_TYPE.error, "Failed to add module");
+                this._toastService.pop(TOAST_TYPE.error, "Failed To Save Module");
             });
         }else {
             this.modulesService.updateModules(data,this.companyId).subscribe(modules => {
                 if(modules){
-                    this._toastService.pop(TOAST_TYPE.success, "Modules saved successfully");
+                    this._toastService.pop(TOAST_TYPE.success, "Modules Saved Successfully");
+                    this.titleService.setPageTitle("Modules");
                 }
             }, error => {
-                this._toastService.pop(TOAST_TYPE.error, "Failed to add module");
+                this._toastService.pop(TOAST_TYPE.error, "Failed To Save Module");
             });
         }
 

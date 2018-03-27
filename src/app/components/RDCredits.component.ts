@@ -70,10 +70,10 @@ export class RDCreditsComponent {
           base.getAllCredits();
         }, error =>{
           this.loadingService.triggerLoadingEvent(false);
-          this._toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
+          this._toastService.pop(TOAST_TYPE.error, "Failed To Load Chart Of Accounts");
         });
     } else{
-      this._toastService.pop(TOAST_TYPE.warning, "No default company set. Please Hop to a company.");
+      this._toastService.pop(TOAST_TYPE.warning, "No Default Company Set. Please Hop To A Company.");
     }
 
     this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
@@ -181,7 +181,7 @@ export class RDCreditsComponent {
     this.loadingService.triggerLoadingEvent(true);
     this.rdCreditsService.removeCredit(credits, this.companyId)
       .subscribe(success  => {
-        this._toastService.pop(TOAST_TYPE.success, "Credit deleted successfully");
+        this._toastService.pop(TOAST_TYPE.success, "Credit Deleted Successfully");
         this.serviceCallForCredits();
       }, error =>  this.handleError(error));
   }
@@ -220,17 +220,17 @@ export class RDCreditsComponent {
       if(this.editMode) {
         this.serviceCallForCredits();
         this.newForm1();
-        this._toastService.pop(TOAST_TYPE.success, "Credit updated successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Credit Updated Successfully.");
       } else {
         this.newForm1();
         this.serviceCallForCredits();
-        this._toastService.pop(TOAST_TYPE.success, "Credit created successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Credit Created Successfully.");
       }
       this.newCustomer();
     } else {
       this.status = {};
       this.status['error'] = true;
-      this._toastService.pop(TOAST_TYPE.error, "Failed to update the Credit");
+      this._toastService.pop(TOAST_TYPE.error, "Failed To Update The Credit");
       this.message = obj;
       this.loadingService.triggerLoadingEvent(false);
     }
@@ -249,7 +249,7 @@ export class RDCreditsComponent {
 
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
-    this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+    this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
   }
 
   hideFlyout(){

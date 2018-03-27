@@ -86,6 +86,7 @@ export class RulesComponent {
                 private _actionForm: RuleActionForm,private loadingService:LoadingService,private dateFormater: DateFormater,
                 private reportsService: ReportService) {
         this.titleService.setPageTitle("Rules");
+        this.loadingService.triggerLoadingEvent(true);
         this.companyId = Session.getCurrentCompany();
         this.dateFormat = dateFormater.getFormat();
         this.serviceDateformat = dateFormater.getServiceDateformat();
@@ -166,7 +167,8 @@ export class RulesComponent {
         this.confirmSubscription.unsubscribe();
     }
     handleError(error) {
-        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+        this.loadingService.triggerLoadingEvent(false);
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
     }
 
     expesevalue(){
@@ -191,9 +193,10 @@ export class RulesComponent {
         }
     }
     RuleDelete(toast){
+        this.loadingService.triggerLoadingEvent(true);
         this.ruleservice.removeRule(this.ruleToDelete, this.companyId)
             .subscribe(success  => {
-                this._toastService.pop(TOAST_TYPE.success, "Rule deleted successfully");
+                this._toastService.pop(TOAST_TYPE.success, "Rule Deleted Successfully");
                 this.ruleservice.getRulesofCompany(this.companyId)
                     .subscribe(RulesList  => {
                         this.buildTableData(RulesList);
@@ -231,7 +234,7 @@ export class RulesComponent {
 
                     }, error =>  this.handleError(error));
 
-                this._toastService.pop(TOAST_TYPE.success, "Rule updated successfully.");
+                this._toastService.pop(TOAST_TYPE.success, "Rule Updated Successfully.");
             } else {
                 this.ruleservice.getRulesofCompany(this.companyId)
                     .subscribe(RulesList  => {
@@ -241,7 +244,7 @@ export class RulesComponent {
                         this.showFlyout = false;
                     }, error =>  this.handleError(error));
                 // this.TaxesForm.reset();
-                this._toastService.pop(TOAST_TYPE.success, "Rule created successfully.");
+                this._toastService.pop(TOAST_TYPE.success, "Rule Created Successfully.");
             }
         } else {
             this.status = {};
@@ -251,10 +254,10 @@ export class RulesComponent {
                 if(resp.message){
                     this._toastService.pop(TOAST_TYPE.error, resp.message);
                 } else{
-                    this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+                    this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
                 }
             }catch(err){
-                this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+                this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
             }
         }
     }
@@ -414,7 +417,7 @@ export class RulesComponent {
     }
     removeRule(row:any){
         this.ruleToDelete = row.id;
-        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+        this._toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
     }
     deleteAction(index){
         let indexValue=this.actions.controls.splice(index,1);
@@ -441,6 +444,7 @@ export class RulesComponent {
     }
 
     showEditRule(row:any) {
+      this.loadingService.triggerLoadingEvent(true);
         this.titleService.setPageTitle("UPDATE RULE");
         let base=this;
         this.showFlyout = true;
@@ -456,6 +460,11 @@ export class RulesComponent {
             let _form = this._ruleForm.getForm();
             _form['actions'] = this.actions;
             this.ruleForm = this._fb.group(_form);
+            setTimeout(function(){
+              base.loadingService.triggerLoadingEvent(false);
+            },500)
+        },err=>{
+          this.loadingService.triggerLoadingEvent(false);
         });
         // this.getRowDetails(row.id);
 
@@ -709,12 +718,14 @@ cleanData(data){
             data.id = this.row.id;
             console.log("data",data);
             this.cleanData(data);
+          this.loadingService.triggerLoadingEvent(true);
             this.ruleservice.updateRule(data, this.companyId)
                 .subscribe(success  => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                     this.selectedDimensions==[];
                     this.showFlyout = false;
+                    this.titleService.setPageTitle("Rules");
+                    this.loadingService.triggerLoadingEvent(false);
                 }, error =>  this.showMessage(false, error));
         } else{
             if(data.attributeName==null || data.comparisionType==null || data.comparisionValue==null || data.logicalOperator==null || data.attributeName1 || data.comparisionType1==null || data.comparisionValue1==null
@@ -792,12 +803,14 @@ cleanData(data){
             var conditionrow5=data.conditions.push(condition5);
 
             this.cleanData(data);
+            this.loadingService.triggerLoadingEvent(true);
             this.ruleservice.addRule(<VendorModel>data, this.companyId)
                 .subscribe(success  => {
-                    this.loadingService.triggerLoadingEvent(false);
                     this.showMessage(true, success);
                     this.selectedDimensions==[];
                     this.showFlyout = false;
+                    this.titleService.setPageTitle("Rules");
+                    this.loadingService.triggerLoadingEvent(false);
                 }, error =>  this.showMessage(false, error));
         }
     }
@@ -898,7 +911,7 @@ cleanData(data){
         link['download'] = "Rules.xls";
         link.click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -915,7 +928,7 @@ cleanData(data){
         link[0].download = "Rules.pdf";
         link[0].click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

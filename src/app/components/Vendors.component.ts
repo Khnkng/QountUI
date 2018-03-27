@@ -249,7 +249,7 @@ export class VendorComponent {
           this.companyService.vendors(this.companyId)
               .subscribe(vendors  => {
                 this.buildTableData(vendors);
-                this._toastService.pop(TOAST_TYPE.success, "Vendor deleted successfully");
+                this._toastService.pop(TOAST_TYPE.success, "Vendor Deleted Successfully");
               }, error =>  this.handleError1(error));
         }, error =>  this.handleError(error));
 
@@ -260,7 +260,7 @@ export class VendorComponent {
   vendorDelete(row:any) {
     let vendor:VendorModel = row;
     this.vendorId=row.id;
-    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this._toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
 
@@ -287,7 +287,7 @@ export class VendorComponent {
     data.addresses=[addressData];
 
     if(data.coa=='--None--'||data.coa==''){
-      this._toastService.pop(TOAST_TYPE.error, "Please select COA");
+      this._toastService.pop(TOAST_TYPE.error, "Please Select COA");
       return;
     }/*if(addressData.state=='--None--'||addressData.state==''){
       this._toastService.pop(TOAST_TYPE.error, "Please select state");
@@ -358,12 +358,12 @@ export class VendorComponent {
         this.companyService.vendors(this.companyId)
             .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
         this.newForm1();
-        this._toastService.pop(TOAST_TYPE.success, "Vendor updated successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Vendor Updated Successfully.");
       } else {
         this.newForm1();
         this.companyService.vendors(this.companyId)
             .subscribe(vendors  => this.buildTableData(vendors), error =>  this.handleError(error));
-        this._toastService.pop(TOAST_TYPE.success, "Vendor created successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Vendor Created Successfully.");
       }
     } else {
       this.loadingService.triggerLoadingEvent(false);
@@ -376,17 +376,17 @@ export class VendorComponent {
         if(resp.message){
           this._toastService.pop(TOAST_TYPE.error, resp.message);
         } else{
-          this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+          this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
         }
       }catch(err){
-        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
       }
     }
   }
 
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
-    this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+    this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
   }
 
   setVendorType(vendorType, vendor?){
@@ -489,12 +489,12 @@ export class VendorComponent {
     this.usersService.addUser(<UsersModel>userObj, this.companyId)
         .subscribe(success  => {
           this.loadingService.triggerLoadingEvent(false);
-          this._toastService.pop(TOAST_TYPE.success, "vendor invited successfully.");
+          this._toastService.pop(TOAST_TYPE.success, "Vendor Invited Successfully");
           this.mailID=null;
           this.showMailFlyout = false;
         }, error =>  {
           this.loadingService.triggerLoadingEvent(false);
-          this._toastService.pop(TOAST_TYPE.error, "failed to invite vendor.");
+          this._toastService.pop(TOAST_TYPE.error, "Failed To Invite Vendor");
           this.showMailFlyout = false;
         });
   }
@@ -543,7 +543,7 @@ export class VendorComponent {
         link['download'] = "Vendors.xls";
         link.click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -560,7 +560,7 @@ export class VendorComponent {
         link[0].download = "Vendors.pdf";
         link[0].click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }
