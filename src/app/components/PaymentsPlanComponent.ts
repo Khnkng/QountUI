@@ -84,7 +84,7 @@ export class PaymentsPlanComponent{
     handleError(error){
         this.loadingService.triggerLoadingEvent(false);
         this.row = {};
-        this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+        this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
     }
 
     showPaymentPlan() {
@@ -111,14 +111,14 @@ export class PaymentsPlanComponent{
         this.loadingService.triggerLoadingEvent(true);
         this.codeService.removePaymentPlan(this.paymentPlanId,this.companyID)
             .subscribe(coa => {
-                this.toastService.pop(TOAST_TYPE.success, "Payment plan deleted successfully");
+                this.toastService.pop(TOAST_TYPE.success, "Payment Plan Deleted Successfully");
                 this.codeService.paymentPlans(this.companyID)
                     .subscribe(paymentPlans => this.buildTableData(paymentPlans), error=> this.handleError(error));
             }, error => this.handleError(error));
     }
     removePaymentPlan(row: any){
         this.paymentPlanId = row.id;
-        this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+        this.toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
     }
 
     newForm(){
@@ -147,10 +147,10 @@ export class PaymentsPlanComponent{
         let data = this._paymentPlanForm.getData(this.paymentPlanForm);
 
     if(data.frequency!='daily'&&!data.day){
-            this.toastService.pop(TOAST_TYPE.error, "Please select day");
+            this.toastService.pop(TOAST_TYPE.error, "Please Select Day");
             return
         }else if((data.frequency=='quarterly'||data.frequency=='yearly')&&!data.month){
-            this.toastService.pop(TOAST_TYPE.error, "Please select month");
+            this.toastService.pop(TOAST_TYPE.error, "Please Select Month");
             return
         }
         data.amount=data.amount+"";
@@ -169,23 +169,25 @@ export class PaymentsPlanComponent{
             this.codeService.updatePaymentPlan(data,this.companyID)
                 .subscribe(itemCode => {
                     base.row = {};
-                    base.toastService.pop(TOAST_TYPE.success, "Payment plan updated successfully");
+                    base.toastService.pop(TOAST_TYPE.success, "Payment Plan Updated Successfully");
                     let index = _.findIndex(base.paymentPlans, {id: data.id});
                     base.paymentPlans[index] = itemCode;
                     base.buildTableData(base.paymentPlans);
                     this.showFlyout = false;
+                    this.titleService.setPageTitle("Payments Plan");
                 }, error => this.handleError(error));
         } else{
             this.codeService.addPaymentPlan(data,this.companyID)
                 .subscribe(newItemcode => {
                     this.handleItemCode(newItemcode);
                     this.showFlyout = false;
+                    this.titleService.setPageTitle("Payments Plan");
                 }, error => this.handleError(error));
         }
     }
 
     handleItemCode(newItemCode){
-        this.toastService.pop(TOAST_TYPE.success, "Payment plan created successfully");
+        this.toastService.pop(TOAST_TYPE.success, "Payment Plan Created Successfully");
         this.paymentPlans.push(newItemCode);
         this.buildTableData(this.paymentPlans);
     }
@@ -275,7 +277,7 @@ export class PaymentsPlanComponent{
         link['download'] = "PaymentsPlan.xls";
         link.click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -292,7 +294,7 @@ export class PaymentsPlanComponent{
         link[0].download = "PaymentsPlan.pdf";
         link[0].click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

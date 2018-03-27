@@ -68,7 +68,7 @@ export class LateFeesComponent{
         this.chartOfAccounts = revenueCOA;
       }, error =>{
         this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.error, "Failed to load chart of accounts");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Load Chart Of Accounts");
       });
   }
 
@@ -84,7 +84,7 @@ export class LateFeesComponent{
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
     //this.row = {};
-    this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+    this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
   }
 
   isValid(lateFeeForm){
@@ -127,7 +127,7 @@ export class LateFeesComponent{
     this.lateFeesService.removeLateFee(this.companyId, this.lateFeeId)
       .subscribe(coa => {
         // this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.success, "Late Fee deleted successfully");
+        this.toastService.pop(TOAST_TYPE.success, "Late Fee Deleted Successfully");
         //this.itemCodes.splice(_.findIndex(this.itemCodes, {id: this.itemCodeId}, 1));
         this.lateFeesService.lateFees(this.companyId)
           .subscribe(lateFees => this.buildTableData(lateFees), error=> this.handleError(error));
@@ -136,12 +136,12 @@ export class LateFeesComponent{
         if(error&&JSON.parse(error))
           this.toastService.pop(TOAST_TYPE.error, JSON.parse(error).message);
         else
-          this.toastService.pop(TOAST_TYPE.success, "Failed to delete the late fee");
+          this.toastService.pop(TOAST_TYPE.success, "Failed To Delete The Late Fee");
       });
   }
   removeLateFee(row: any){
     this.lateFeeId = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   newForm(){
@@ -169,7 +169,7 @@ export class LateFeesComponent{
     $event && $event.preventDefault();
     let data = this._lateFeeForm.getData(this.lateFeeForm);
     if(data.coa=='--None--'||data.coa==''){
-      this.toastService.pop(TOAST_TYPE.warning, "Please select Chart of Account");
+      this.toastService.pop(TOAST_TYPE.warning, "Please Select Chart Of Account");
       return;
     }
     this.loadingService.triggerLoadingEvent(true);
@@ -179,17 +179,18 @@ export class LateFeesComponent{
         .subscribe(lateFee => {
           //base.loadingService.triggerLoadingEvent(false);
           base.row = {};
-          base.toastService.pop(TOAST_TYPE.success, "Late Fee updated successfully");
+          base.toastService.pop(TOAST_TYPE.success, "Late Fee Updated Successfully");
           let index = _.findIndex(base.lateFees, {id: data.id});
           base.lateFees[index] = lateFee;
           base.buildTableData(base.lateFees);
           this.showFlyout = false;
+          this.titleService.setPageTitle("Late Fees");
         }, error => {
             this.loadingService.triggerLoadingEvent(false);
           if(error&&JSON.parse(error))
             this.toastService.pop(TOAST_TYPE.error, JSON.parse(error).message);
           else
-          this.toastService.pop(TOAST_TYPE.success, "Failed to update the late fee");
+          this.toastService.pop(TOAST_TYPE.success, "Failed To Update The Late Fee");
         });
     } else{
       this.lateFeesService.addlateFee(this.companyId, data)
@@ -197,13 +198,14 @@ export class LateFeesComponent{
           //this.loadingService.triggerLoadingEvent(false);
           this.handleLateFee(newLateFee);
           this.showFlyout = false;
+          this.titleService.setPageTitle("Late Fees");
         }, error => this.handleError(error));
     }
     //this.buildTableData(this.itemCodes);
   }
 
   handleLateFee(newLateFee){
-    this.toastService.pop(TOAST_TYPE.success, "LateFee created successfully");
+    this.toastService.pop(TOAST_TYPE.success, "LateFee Created Successfully");
     this.lateFees.push(newLateFee);
     this.buildTableData(this.lateFees);
   }

@@ -87,7 +87,7 @@ export class DimensionsComponent{
   handleError(error){
     this.row = {};
     this.loadingService.triggerLoadingEvent(false);
-    this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+    this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
   }
 
   showAddDimension() {
@@ -146,14 +146,14 @@ export class DimensionsComponent{
     this.dimensionService.removeDimension(this.dimensionName, this.currentCompany.id)
         .subscribe(coa => {
          // this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.success, "Dimension deleted successfully");
+          this.toastService.pop(TOAST_TYPE.success, "Dimension Deleted Successfully");
           this.dimensions.splice(_.findIndex(this.dimensions, {name: this.dimensionName}), 1);
           this.buildTableData(this.dimensions);
         }, error => this.handleError(error));
   }
   removeDimension(row: any){
      this.dimensionName = row.name;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   newForm(){
@@ -200,7 +200,7 @@ export class DimensionsComponent{
     } else{
       if(values.length == 0){
         this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.error, "Dimension should have atleast one value");
+        this.toastService.pop(TOAST_TYPE.error, "Dimension Should Have Minimum One Value");
         return false;
       } else{
         data.values = values;
@@ -213,9 +213,10 @@ export class DimensionsComponent{
             base.row = {};
             this.showFlyout = false;
            // base.loadingService.triggerLoadingEvent(false);
-            base.toastService.pop(TOAST_TYPE.success, "Dimension updated successfully");
+            base.toastService.pop(TOAST_TYPE.success, "Dimension Updated Successfully");
             let index = _.findIndex(base.dimensions, {name: dimension.name});
             base.dimensions[index] = dimension;
+            this.titleService.setPageTitle("Dimensions");
             base.buildTableData(base.dimensions);
           }, error => this.handleError(error));
     } else{
@@ -223,6 +224,7 @@ export class DimensionsComponent{
           .subscribe(newDimension => {
            // this.loadingService.triggerLoadingEvent(false);
             this.showFlyout = false;
+            this.titleService.setPageTitle("Dimensions");
             this.handleDimension(newDimension);
           }, error => this.handleError(error));
     }
@@ -237,7 +239,7 @@ export class DimensionsComponent{
   }
 
   handleDimension(newDimension){
-    this.toastService.pop(TOAST_TYPE.success, "Dimension created successfully");
+    this.toastService.pop(TOAST_TYPE.success, "Dimension Created Successfully");
     this.dimensions.push(newDimension);
     this.buildTableData(this.dimensions);
   }
@@ -315,7 +317,7 @@ export class DimensionsComponent{
         link['download'] = "Dimensions.xls";
         link.click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -332,7 +334,7 @@ export class DimensionsComponent{
         link[0].download = "Dimensions.pdf";
         link[0].click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

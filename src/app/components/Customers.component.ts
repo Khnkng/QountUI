@@ -92,7 +92,7 @@ export class CustomersComponent {
             }, error => this.handleError(error));
         }else {
             this.loadingService.triggerLoadingEvent(false);
-            this._toastService.pop(TOAST_TYPE.error, "Please add company first");
+            this._toastService.pop(TOAST_TYPE.error, "Please Add Company First");
         }
         this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
             if(this.showFlyout){
@@ -201,7 +201,7 @@ export class CustomersComponent {
         this.customersService.removeCustomer(this.customerId, this.companyId)
             .subscribe(success  => {
                 this.loadingService.triggerLoadingEvent(false);
-                this._toastService.pop(TOAST_TYPE.success, "Customer deleted successfully");
+                this._toastService.pop(TOAST_TYPE.success, "Customer Deleted Successfully");
                 this.customersService.customers(this.companyId)
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
             }, error =>  this.handleError(error));
@@ -209,7 +209,7 @@ export class CustomersComponent {
     removeVendor(row:any) {
         let customer:CustomersModel = row;
         this.customerId=customer.customer_id;
-        this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+        this._toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
     }
 
     active1:boolean=true;
@@ -239,21 +239,6 @@ export class CustomersComponent {
             .subscribe(customer => {
                 this.row = customer;
                 this.loadingService.triggerLoadingEvent(false);
-                /*this.row.email_ids=customer.email_ids
-                 let email_id:any = this.customerForm.controls['email_ids'];
-                 email_id.patchValue(customer.email_ids);
-                 let customer_address:any = this.customerForm.controls['customer_address'];
-                 customer_address.patchValue(customer.customer_address);
-                 let customer_city:any = this.customerForm.controls['customer_city'];
-                 customer_city.patchValue(customer.customer_city);
-                 let customer_state:any = this.customerForm.controls['customer_state'];
-                 customer_state.patchValue(customer.customer_state);
-                 let customer_zipcode:any = this.customerForm.controls['customer_zipcode'];
-                 customer_zipcode.patchValue(customer.customer_zipcode);
-                 let phone_number:any = this.customerForm.controls['phone_number'];
-                 phone_number.patchValue(customer.phone_number);
-                 let term:any = this.customerForm.controls['term'];
-                 term.patchValue(customer.term);*/
                 let coa = _.find(this.chartOfAccounts, function(_coa) {
                     return _coa.id == customer.coa;
                 });
@@ -288,7 +273,7 @@ export class CustomersComponent {
         var data = this._customersForm.getData(this.customerForm);
         this.companyId = Session.getCurrentCompany();
         if(data.coa=='--None--'||data.coa==''){
-            this._toastService.pop(TOAST_TYPE.error, "Please select payment COA");
+            this._toastService.pop(TOAST_TYPE.error, "Please Select Payment COA");
             return;
         }
         this.saveDetails();
@@ -304,12 +289,14 @@ export class CustomersComponent {
             this.customersService.updateCustomer(data, this.companyId)
                 .subscribe(success  => {
                     this.showMessage(true, success);
+                    this.titleService.setPageTitle("Customers");
                 }, error =>  this.showMessage(false, error));
             this.showFlyout = false;
         } else {
             this.customersService.addCustomer(data, this.companyId)
                 .subscribe(success  => {
                     this.showMessage(true, success);
+                  this.titleService.setPageTitle("Customers");
                 }, error =>  this.showMessage(false, error));
             this.showFlyout = false;
         }
@@ -325,13 +312,13 @@ export class CustomersComponent {
                 this.customersService.customers(this.companyId)
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
                 this.newForm1();
-                this._toastService.pop(TOAST_TYPE.success, "Customer updated successfully.");
+                this._toastService.pop(TOAST_TYPE.success, "Customer Updated Successfully.");
             } else {
                 this.newForm1();
                 this.resetForm();
                 this.customersService.customers(this.companyId)
                     .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
-                this._toastService.pop(TOAST_TYPE.success, "Customer created successfully.");
+                this._toastService.pop(TOAST_TYPE.success, "Customer Created Successfully.");
             }
             this.newCustomer();
         } else {
@@ -339,7 +326,7 @@ export class CustomersComponent {
             this.resetForm();
             this.status = {};
             this.status['error'] = true;
-            this._toastService.pop(TOAST_TYPE.error, "Failed to update the customer");
+            this._toastService.pop(TOAST_TYPE.error, "Failed To Update The Customer");
             this.message = obj;
         }
     }
@@ -367,7 +354,7 @@ export class CustomersComponent {
 
     handleError(error) {
         this.loadingService.triggerLoadingEvent(false);
-        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
     }
     hideFlyout(){
         this.titleService.setPageTitle("Customers");
@@ -449,7 +436,7 @@ export class CustomersComponent {
         link['download'] = "Customers.xls";
         link.click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -466,7 +453,7 @@ export class CustomersComponent {
         link[0].download = "Customers.pdf";
         link[0].click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }
