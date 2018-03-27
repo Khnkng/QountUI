@@ -372,7 +372,7 @@ export class BooksComponent{
 
   removeJournalEntry(row:any){
     this.journalToDelete = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
   removeJournal(toast){
     let base = this;
@@ -380,13 +380,13 @@ export class BooksComponent{
     this.journalService.removeJournalEntry(this.journalToDelete, this.currentCompanyId)
       .subscribe(response => {
         this.loadingService.triggerLoadingEvent(false);
-        base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry successfully");
+        base.toastService.pop(TOAST_TYPE.success, "Deleted Journal Entry Successfully");
         this.hasJournalEntries = false;
         this.selectTab(3,"");
         this.getBookBadges();
       }, error => {
         this.loadingService.triggerLoadingEvent(false);
-        base.toastService.pop(TOAST_TYPE.error, "Failed to delete Journal Entry");
+        base.toastService.pop(TOAST_TYPE.error, "Failed To Delete Journal Entry");
       });
   }
 
@@ -397,7 +397,7 @@ export class BooksComponent{
 
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
-    this.toastService.pop(TOAST_TYPE.error, "Could not perform action.")
+    this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation")
   }
 
   handleBadges(length, selectedTab){
@@ -733,7 +733,7 @@ export class BooksComponent{
     this.loadingService.triggerLoadingEvent(true);
     this.depositService.removeDeposit(this.DepositToDelete, this.currentCompanyId)
       .subscribe(response=> {
-        this.toastService.pop(TOAST_TYPE.success, "Deleted deposit successfully");
+        this.toastService.pop(TOAST_TYPE.success, " Deposit Deleted successfully");
         // this.fetchDeposits();
         this.hasDeposits = false;
         this.selectTab(1,"");
@@ -743,22 +743,22 @@ export class BooksComponent{
         if(error&&JSON.parse(error))
           this.toastService.pop(TOAST_TYPE.error, JSON.parse(error).message);
         else
-        this.toastService.pop(TOAST_TYPE.error, "Failed to delete deposit");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Delete Deposit");
       });
   }
   removeDeposit(row:any){
     this.DepositToDelete = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
   removeExpense(row:any){
     this.ruleToDelete = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
   removeExp(toast){
     this.loadingService.triggerLoadingEvent(true);
     this.expenseService.removeExpense(this.ruleToDelete, this.currentCompanyId)
       .subscribe(response=> {
-        this.toastService.pop(TOAST_TYPE.success, "Deleted expense successfully");
+        this.toastService.pop(TOAST_TYPE.success, "Expense Deleted Successfully");
         // this.fetchExpenses();
         this.hasExpenses = false;
         this.selectTab(2,"");
@@ -768,7 +768,7 @@ export class BooksComponent{
         if(error&&JSON.parse(error))
           this.toastService.pop(TOAST_TYPE.error, JSON.parse(error).message);
         else
-          this.toastService.pop(TOAST_TYPE.error, "Failed to delete expense");
+          this.toastService.pop(TOAST_TYPE.error, "Failed To Delete Expense");
       });
   }
 
@@ -873,7 +873,7 @@ export class BooksComponent{
         this.deleteDeposit();
       }
     }else {
-      this.toastService.pop(TOAST_TYPE.error, "Please set company lock date");
+      this.toastService.pop(TOAST_TYPE.error, "Please Set Company Lock Date");
     }
   }
 
@@ -887,7 +887,7 @@ export class BooksComponent{
         this.closePasswordConfirmation();
         this.deleteDeposit();
       }else {
-        this.toastService.pop(TOAST_TYPE.error, "Invalid key");
+        this.toastService.pop(TOAST_TYPE.error, "Invalid Key");
       }
     },fail=>{
 
@@ -959,7 +959,7 @@ export class BooksComponent{
       this.loadingService.triggerLoadingEvent(false);
     }, error => {
       this.loadingService.triggerLoadingEvent(false);
-      this.toastService.pop(TOAST_TYPE.error, "Failed to get box data");
+      this.toastService.pop(TOAST_TYPE.error, "Failed To Get Box Data");
     });
   }
 
@@ -1401,7 +1401,7 @@ export class BooksComponent{
         link['download'] = tabId+".xls";
         link.click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -1426,7 +1426,7 @@ export class BooksComponent{
         link[0].download = tabId+".pdf";
         link[0].click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

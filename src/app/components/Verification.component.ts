@@ -105,7 +105,7 @@ export class VerificationComponent {
 
     }
     handleError(error) {
-        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
     }
     isValid(VerifyForm){
         if((VerifyForm.value.amount1) && (VerifyForm.value.amount2)){
@@ -117,7 +117,7 @@ export class VerificationComponent {
         if(status) {
             this.status = {};
             this.status['success'] = true;
-            this._toastService.pop(TOAST_TYPE.success, "Verification created successfully.");
+            this._toastService.pop(TOAST_TYPE.success, "Verification Created Successfully.");
             let link = ['financialAccounts'];
             this._router.navigate(link);
 

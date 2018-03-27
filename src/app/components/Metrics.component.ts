@@ -105,7 +105,7 @@ export class MetricsComponent{
   }
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
-    this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+    this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
   }
 
   getCategoryName(value){
@@ -129,7 +129,7 @@ export class MetricsComponent{
   populateSubtypes($event){
     let data = this._metricsForm.getData(this.metricsForm);
     if(this.editMode && data.parentID){
-      this.toastService.pop(TOAST_TYPE.error, "Type cannot be changed for a child");
+      this.toastService.pop(TOAST_TYPE.error, "Type Cannot Be Changed For A Child");
       $event && $event.preventDefault();
       return false;
     }
@@ -246,20 +246,20 @@ export class MetricsComponent{
     this.metricService.removeMetric(this.metricId, this.companyId)
       .subscribe(metric => {
         this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.success, "Metrics deleted successfully");
+        this.toastService.pop(TOAST_TYPE.success, "Metrics Deleted Successfully");
         this.fetchMetricsData();
       }, error => {
         this.loadingService.triggerLoadingEvent(false);
         if(error.message){
           this.toastService.pop(TOAST_TYPE.error, error.message);
         } else{
-          this.toastService.pop(TOAST_TYPE.error, "Failed to delete Metrics");
+          this.toastService.pop(TOAST_TYPE.error, "Failed To Delete Metrics");
         }
       });
   }
   removeMetric(row: any){
     this.metricId = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   newForm(){
@@ -309,7 +309,7 @@ export class MetricsComponent{
         .subscribe(metric => {
           base.hideFlyout();
           this.loadingService.triggerLoadingEvent(false);
-          base.toastService.pop(TOAST_TYPE.success, "Metric updated successfully");
+          base.toastService.pop(TOAST_TYPE.success, "Metric Updated Successfully");
           this.fetchMetricsData();
         }, error => this.handleMetricsError(error));
     } else{
@@ -317,7 +317,7 @@ export class MetricsComponent{
         .subscribe(newMetric => {
           base.hideFlyout();
           this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.success, "New Metric Created successfully");
+          this.toastService.pop(TOAST_TYPE.success, "New Metric Created Successfully");
           this.fetchMetricsData();
         }, error => this.handleMetricsError(error));
     }
@@ -329,7 +329,7 @@ export class MetricsComponent{
     if(error && error.message){
       this.toastService.pop(TOAST_TYPE.error, error.message);
     } else{
-      this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+      this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
     }
   }
 
@@ -498,7 +498,7 @@ export class MetricsComponent{
         link['download'] = "Vendors.xls";
         link.click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -515,7 +515,7 @@ export class MetricsComponent{
         link[0].download = "Vendors.pdf";
         link[0].click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

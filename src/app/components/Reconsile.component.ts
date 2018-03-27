@@ -329,7 +329,7 @@ export class ReconcileComponent{
         this.reconType = 'edit';
         this.titleService.setPageTitle("Reconcile | "+ this.selectedBankName);
       }, error =>  {
-        base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile details");
+        base.toastService.pop(TOAST_TYPE.error, "Failed To Load Reconcile Details");
         this.loadingService.triggerLoadingEvent(false);
       });
   }
@@ -378,7 +378,7 @@ export class ReconcileComponent{
           },1000);
           this.loadingService.triggerLoadingEvent(false);
         }, error =>  {
-          base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile details");
+          base.toastService.pop(TOAST_TYPE.error, "Failed To Load Reconcile Details");
           this.loadingService.triggerLoadingEvent(false);
         });
     }else{
@@ -419,7 +419,7 @@ export class ReconcileComponent{
 
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
-    this.toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+    this.toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
   }
 
   submit($event){
@@ -438,7 +438,7 @@ export class ReconcileComponent{
         this.getStartingBalance();
         this.titleService.setPageTitle("Reconcile | "+  this.selectedBankName);
       }, error =>  {
-        base.toastService.pop(TOAST_TYPE.error, "Failed to load reconcile data");
+        base.toastService.pop(TOAST_TYPE.error, "Failed To Load Reconcile Data");
         this.loadingService.triggerLoadingEvent(false);
       });
   }
@@ -482,7 +482,7 @@ export class ReconcileComponent{
         this.loadingService.triggerLoadingEvent(false);
       }, error =>  {
         base.reconcileForm.reset();
-        base.toastService.pop(TOAST_TYPE.error, "Failed to get starting balance");
+        base.toastService.pop(TOAST_TYPE.error, "Failed To Get Starting Balance");
         this.loadingService.triggerLoadingEvent(false);
       });
   }
@@ -672,13 +672,13 @@ export class ReconcileComponent{
       selected["status"] = status;
       this.reconcileService.createReconcile(selected,base.selectedBank)
         .subscribe(response => {
-          base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successfull");
+          base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successful");
           //this.updateStartingBalance();
           this.resetReconcileForm();
           this.getAccounts();
           this.fetchReconActivityData();
         }, error => {
-          base.toastService.pop(TOAST_TYPE.error, "Failed to reconcile data");
+          base.toastService.pop(TOAST_TYPE.error, "Failed To Reconcile Data");
           this.loadingService.triggerLoadingEvent(false);
         });
     }else{
@@ -692,12 +692,12 @@ export class ReconcileComponent{
     const data = {status: 'completed'};
     this.reconcileService.changeStatus(this.reconcileData.id, data)
       .subscribe(response => {
-        base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successfull");
+        base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successful");
         this.resetReconcileForm();
         this.getAccounts();
         this.fetchReconActivityData();
       }, error => {
-        base.toastService.pop(TOAST_TYPE.error, "Failed to reconcile data");
+        base.toastService.pop(TOAST_TYPE.error, "Failed To Reconcile Data");
         this.loadingService.triggerLoadingEvent(false);
       });
   }
@@ -709,11 +709,11 @@ export class ReconcileComponent{
     data["last_recon_date"] = this.reconcileDate;
     this.reconcileService.updateStartingBalance(data,this.selectedBank)
       .subscribe(response  => {
-        base.toastService.pop(TOAST_TYPE.success, "Updated last reconcile data");
+        base.toastService.pop(TOAST_TYPE.success, "Updated Last Reconcile Data");
         this.loadingService.triggerLoadingEvent(false);
       }, error =>  {
         this.loadingService.triggerLoadingEvent(false);
-        base.toastService.pop(TOAST_TYPE.error, "Failed to update reconcile date");
+        base.toastService.pop(TOAST_TYPE.error, "Failed To Update Reconcile Date");
       });
   }
 
@@ -909,7 +909,7 @@ export class ReconcileComponent{
         link[0].download= "reconActivity.pdf";
         link[0].click();
       }, error => {
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export report into PDF");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
   }
 

@@ -196,7 +196,7 @@ export class lockComponent {
   removeLock(row:any){
     let vendor:VendorModel = row;
     this.lockId=row.id;
-    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this._toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   deleteLock(toast){
@@ -340,7 +340,7 @@ export class lockComponent {
             this.lockList=lockList;
           }, error =>  this.handleError(error));
         this.LockForm.reset();
-        this._toastService.pop(TOAST_TYPE.success, "Lock updated successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Lock Updated Successfully.");
       } else {
         this.companyService.getLockofCompany(this.companyId)
           .subscribe(lockList  => {
@@ -350,7 +350,7 @@ export class lockComponent {
           }, error =>  this.handleError(error));
 
         this.LockForm.reset();
-        this._toastService.pop(TOAST_TYPE.success, "Lock created successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Lock Created Successfully.");
       }
     } else {
       this.status = {};
@@ -360,10 +360,10 @@ export class lockComponent {
         if(resp.message){
           this._toastService.pop(TOAST_TYPE.error, resp.message);
         } else{
-          this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+          this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
         }
       }catch(err){
-        this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
       }
     }
   }
@@ -405,7 +405,7 @@ export class lockComponent {
         link['download'] = "Lock.xls";
         link.click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -422,7 +422,7 @@ export class lockComponent {
         link[0].download = "Lock.pdf";
         link[0].click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

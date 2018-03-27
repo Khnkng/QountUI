@@ -361,7 +361,7 @@ export class CanvasComponent {
             this.loadingService.triggerLoadingEvent(false);
         }, error => {
             this.loadingService.triggerLoadingEvent(false);
-            this.toastService.pop(TOAST_TYPE.error, "Failed to get box data");
+            this.toastService.pop(TOAST_TYPE.error, "Failed To Get Box Data");
         });
     }
 

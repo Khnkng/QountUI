@@ -49,7 +49,7 @@ export class ChangePasswordComponent {
                     }
                 }
             }, error => {
-                this._toastService.pop(TOAST_TYPE.error, "Failed to update password");
+                this._toastService.pop(TOAST_TYPE.error, "Failed To Update Password");
             });
         }
     }

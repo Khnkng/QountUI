@@ -46,11 +46,11 @@ export class ResetPasswordComponent {
             };
             this.loginService.resetPassword(data).subscribe(res => {
                 if(res){
-                    this._toastService.pop(TOAST_TYPE.error, "Password reset was successful");
+                    this._toastService.pop(TOAST_TYPE.error, "Password Reset was Successful");
                     this._router.navigate(['login']);
                 }
             }, error => {
-                this._toastService.pop(TOAST_TYPE.error, "Failed to reset password");
+                this._toastService.pop(TOAST_TYPE.error, "Failed To Reset Password");
             });
         }
     }
