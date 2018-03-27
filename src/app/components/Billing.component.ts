@@ -100,7 +100,7 @@ export class BillingComponent {
           this.getCardTokenDetails();
         }else {
           this.loadingService.triggerLoadingEvent(false);
-          this._toastService.pop(TOAST_TYPE.error, "Add company to payment spring");
+          this._toastService.pop(TOAST_TYPE.error, "Add Company To Payment Spring");
         }
       }, error =>  this.handleError(error));
   }
@@ -216,7 +216,7 @@ export class BillingComponent {
 
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
-    this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+    this._toastService.pop(TOAST_TYPE.error, "Failed To Perform Operation");
   }
 
 

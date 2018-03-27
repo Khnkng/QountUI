@@ -272,7 +272,7 @@ export class paymenttableComponent {
           link['download'] = "PaymentsDetails.xls";
           link.click();
         }, error =>{
-          this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+          this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
         });
       // jQuery('#example-dropdown').foundation('close');
 
@@ -289,7 +289,7 @@ export class paymenttableComponent {
           link[0].download = "PaymentsDetails.pdf";
           link[0].click();
         }, error =>{
-          this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+          this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
         });
 
     }

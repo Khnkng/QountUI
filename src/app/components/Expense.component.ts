@@ -140,7 +140,7 @@ export class ExpenseComponent{
 
   showMappingPage(){
     if(!this.bankAccountID){
-      this.toastService.pop(TOAST_TYPE.error, "Please select financial account.");
+      this.toastService.pop(TOAST_TYPE.error, "Please Select Financial Account");
       return
     }
     this.mappingFlyoutCSS="expanded";
@@ -647,7 +647,7 @@ export class ExpenseComponent{
       this.loadingService.triggerLoadingEvent(true);
       this.expenseService.addExpense(data, this.currentCompanyId)
         .subscribe(response=>{
-          this.toastService.pop(TOAST_TYPE.success, "Expense Added successfully");
+          this.toastService.pop(TOAST_TYPE.success, "Expense Added Successfully");
           this.loadingService.triggerLoadingEvent(false);
           this.showExpensesPage(data.bank_account_id);
         }, error => {
@@ -678,7 +678,7 @@ export class ExpenseComponent{
       .subscribe(response =>{
         this.loadingService.triggerLoadingEvent(false);
         this.setUpdatedFlagInStates();
-        this.toastService.pop(TOAST_TYPE.success, "Expense Updated successfully");
+        this.toastService.pop(TOAST_TYPE.success, "Expense Updated Successfully");
         this.showExpensesPage();
       }, error => {
         this.loadingService.triggerLoadingEvent(false);
@@ -862,7 +862,7 @@ export class ExpenseComponent{
         .subscribe(expense => {
           this.processExpense(expense.expenses);
         }, error =>{
-          this.toastService.pop(TOAST_TYPE.error, "Failed to load expense details");
+          this.toastService.pop(TOAST_TYPE.error, "Failed To Load Expense Details");
           this.loadingService.triggerLoadingEvent(false);
         })
     } else{
@@ -961,11 +961,11 @@ export class ExpenseComponent{
     let base = this;
     let result=true;
     if(data.bank_account_id=="--None--"||data.bank_account_id==""){
-      this.toastService.pop(TOAST_TYPE.error, "Please select valid financial account");
+      this.toastService.pop(TOAST_TYPE.error, "Please Select Valid Financial Account");
       return false;
     }
     if(data.amount <= 0){
-      this.toastService.pop(TOAST_TYPE.error, "Expense amount must be greater than zero.");
+      this.toastService.pop(TOAST_TYPE.error, "Expense Amount Must Be Greater Than Zero.");
       return false;
     }
     let itemTotal = _.sumBy(data.expense_items, function(expense){
@@ -973,7 +973,7 @@ export class ExpenseComponent{
     });
     itemTotal = this.roundOffValue(itemTotal);
     if(itemTotal != data.amount){
-      this.toastService.pop(TOAST_TYPE.error, "Expense amount and Item total did not match.");
+      this.toastService.pop(TOAST_TYPE.error, "Expense Amount And Item Total Did Not Match.");
       return false;
     }
     return result;
@@ -1003,7 +1003,7 @@ export class ExpenseComponent{
         this.updateExpenseDetails();
       }
     }else {
-      this.toastService.pop(TOAST_TYPE.error, "Please set company lock date");
+      this.toastService.pop(TOAST_TYPE.error, "Please Set Company Lock Date");
     }
   }
 
@@ -1018,7 +1018,7 @@ export class ExpenseComponent{
         this.loadingService.triggerLoadingEvent(true);
         this.updateExpenseDetails();
       }else {
-        this.toastService.pop(TOAST_TYPE.error, "Invalid key");
+        this.toastService.pop(TOAST_TYPE.error, "Invalid Key");
       }
     },fail=>{
 

@@ -113,7 +113,7 @@ export class ChartOfAccountsComponent{
   }
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
-    this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+    this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
   }
 
   getCategoryName(value){
@@ -142,7 +142,7 @@ export class ChartOfAccountsComponent{
   populateSubtypes($event){
     let data = this._coaForm.getData(this.coaForm);
     if(this.editMode && data.parentID){
-      this.toastService.pop(TOAST_TYPE.error, "Type cannot be changed for a child");
+      this.toastService.pop(TOAST_TYPE.error, "Type Cannot Be Changed For A Child");
       $event && $event.preventDefault();
       return false;
     }
@@ -257,20 +257,20 @@ export class ChartOfAccountsComponent{
     this.coaService.removeCOA(this.coaId, this.currentCompany.id)
         .subscribe(coa => {
           this.loadingService.triggerLoadingEvent(false);
-          this.toastService.pop(TOAST_TYPE.success, "Chart of Account deleted successfully");
+          this.toastService.pop(TOAST_TYPE.success, "Chart Of Account Deleted Successfully");
           this.fetchChartOfAccountData();
         }, error => {
           this.loadingService.triggerLoadingEvent(false);
           if(error.message){
             this.toastService.pop(TOAST_TYPE.error, error.message);
           } else{
-            this.toastService.pop(TOAST_TYPE.error, "Failed to delete Chart of account");
+            this.toastService.pop(TOAST_TYPE.error, "Failed To Delete Chart Of Account");
           }
         });
   }
   removeCOA(row: any){
     this.coaId = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   newForm(){
@@ -321,7 +321,7 @@ export class ChartOfAccountsComponent{
           .subscribe(coa => {
             base.hideFlyout();
             this.loadingService.triggerLoadingEvent(false);
-            base.toastService.pop(TOAST_TYPE.success, "Chart of Account updated successfully");
+            base.toastService.pop(TOAST_TYPE.success, "Chart Of Account Updated Successfully");
             this.fetchChartOfAccountData();
           }, error => this.handleCOAError(error));
     } else{
@@ -329,7 +329,7 @@ export class ChartOfAccountsComponent{
           .subscribe(newCOA => {
             base.hideFlyout();
             this.loadingService.triggerLoadingEvent(false);
-            this.toastService.pop(TOAST_TYPE.success, "Chart of account created successfully");
+            this.toastService.pop(TOAST_TYPE.success, "Chart Of Account Created Successfully");
             this.fetchChartOfAccountData();
           }, error => this.handleCOAError(error));
     }
@@ -341,7 +341,7 @@ export class ChartOfAccountsComponent{
     if(error && error.message){
       this.toastService.pop(TOAST_TYPE.error, error.message);
     } else{
-      this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+      this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
     }
   }
 
@@ -557,7 +557,7 @@ export class ChartOfAccountsComponent{
         link['download'] = "ChartOfAccounts.xls";
         link.click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -574,7 +574,7 @@ export class ChartOfAccountsComponent{
         link[0].download = "ChartOfAccounts.pdf";
         link[0].click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

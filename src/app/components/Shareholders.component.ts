@@ -152,7 +152,7 @@ export class ShareholdersComponent {
     this.loadingService.triggerLoadingEvent(true);
     this.shareholdersService.removeShareholder(this.userId)
       .subscribe(success  => {
-        this._toastService.pop(TOAST_TYPE.success, "Shareholder deleted successfully");
+        this._toastService.pop(TOAST_TYPE.success, "Shareholder Deleted Successfully");
         this.shareholdersService.shareholders()
           .subscribe(shareholders  => {
             this.shareholders = shareholders;
@@ -164,7 +164,7 @@ export class ShareholdersComponent {
     // let user:UsersModel = row;
     let id = row.id;
     this.userId = id;
-    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this._toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   showEditShareholder(row: any) {
@@ -217,7 +217,7 @@ export class ShareholdersComponent {
             this.buildTableData();
           }, error =>  this.handleError(error));
         // this.newForm1();
-        this._toastService.pop(TOAST_TYPE.success, "Shareholder updated successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Shareholder Updated Successfully.");
       } else {
         // this.newForm1();
         this.shareholdersService.shareholders()
@@ -226,20 +226,20 @@ export class ShareholdersComponent {
             this.shareholders = shareholders;
             this.buildTableData();
           }, error =>  this.handleError(error));
-        this._toastService.pop(TOAST_TYPE.success, "Shareholder created successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Shareholder Created Successfully.");
       }
     } else {
       this.loadingService.triggerLoadingEvent(false);
       this.status = {};
       this.status['error'] = true;
-      this._toastService.pop(TOAST_TYPE.error, "Failed to update the Shareholder");
+      this._toastService.pop(TOAST_TYPE.error, "Failed To Update The Shareholder");
       this.message = obj;
     }
   }
 
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
-    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete Item code?");
+    this._toastService.pop(TOAST_TYPE.confirm, "Failed To Perform Operation");
   }
 
   hideFlyout() {
@@ -287,7 +287,7 @@ export class ShareholdersComponent {
         link['download'] = "Shareholders.xls";
         link.click();
       }, error => {
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
   }
 
@@ -302,7 +302,7 @@ export class ShareholdersComponent {
         link[0].download = "Shareholders.pdf";
         link[0].click();
       }, error => {
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

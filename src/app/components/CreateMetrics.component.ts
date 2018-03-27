@@ -470,12 +470,12 @@ export class CreateMetricComponent{
         _.each(lines, function(line){
             if(!line.destroy){
                 if(!line.value){
-                    base.toastService.pop(TOAST_TYPE.error, "value is not entered for line");
+                    base.toastService.pop(TOAST_TYPE.error, "Value Is Not Entered For Line");
                     result = true;
                     return false;
                 }
                 if(!line.metricID){
-                    base.toastService.pop(TOAST_TYPE.error, "Metric is not selected for line");
+                    base.toastService.pop(TOAST_TYPE.error, "Metric Is Not Selected For Line");
                     result = true;
                     return false;
                 }
@@ -512,7 +512,7 @@ export class CreateMetricComponent{
 
     handleError(error){
         this.loadingService.triggerLoadingEvent(false);
-        this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+        this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
     }
 
     filterChartOfAccounts(category){
