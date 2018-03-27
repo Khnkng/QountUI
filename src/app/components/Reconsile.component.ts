@@ -672,7 +672,7 @@ export class ReconcileComponent{
       selected["status"] = status;
       this.reconcileService.createReconcile(selected,base.selectedBank)
         .subscribe(response => {
-          base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successful");
+          base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successfully");
           //this.updateStartingBalance();
           this.resetReconcileForm();
           this.getAccounts();
@@ -692,7 +692,7 @@ export class ReconcileComponent{
     const data = {status: 'completed'};
     this.reconcileService.changeStatus(this.reconcileData.id, data)
       .subscribe(response => {
-        base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successful");
+        base.toastService.pop(TOAST_TYPE.success, "Reconcilation Successfully");
         this.resetReconcileForm();
         this.getAccounts();
         this.fetchReconActivityData();
