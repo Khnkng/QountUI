@@ -755,10 +755,6 @@ export class CanvasComponent {
         report.metricsType = "cashBurn";
         this.reportService.generateMetricReport(report, this.currentCompanyId).subscribe(metricData => {
             this.hasCashBurnData = true;
-            let categories = [];
-            _.each(metricData.CashFlowMOM, function(value,key){
-                categories.push(key);
-            });
             this.cashBurnDataOptions = {
                 colors: this.chartColors,
                 chart: {
@@ -787,7 +783,7 @@ export class CanvasComponent {
                     enabled: false
                 },
                 xAxis: [{
-                    categories: categories,
+                    categories: metricData.categories,
                     crosshair: true,
                     labels: {
                         style: {
@@ -859,7 +855,7 @@ export class CanvasComponent {
                     name: 'Cash Burn',
                     type: 'line',
                     yAxis: 1,
-                    data: this.getDataArray(metricData["CashFlowMOM"], categories),
+                    data: this.getDataArray(metricData["CashFlowMOM"], metricData.categories),
                     tooltip: {
                         valueDecimals: 2
                     }
