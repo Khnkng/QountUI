@@ -127,7 +127,7 @@ export class UsersComponent {
   }
 
   showCreateUser() {
-    this.titleService.setPageTitle("CRETAE USER");
+    this.titleService.setPageTitle("CREATE USER");
     this.editMode = false;
     this.userForm = this._fb.group(this._usersForm.getForm());
     this.newForm1();
@@ -153,7 +153,7 @@ export class UsersComponent {
     this.loadingService.triggerLoadingEvent(true);
     this.usersService.removeUser(this.userId, this.companyId)
       .subscribe(success  => {
-        this._toastService.pop(TOAST_TYPE.success, "User deleted successfully");
+        this._toastService.pop(TOAST_TYPE.success, "User Deleted Successfully");
         this.usersService.users(this.companyId)
           .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
       }, error =>  this.handleError(error));
@@ -162,7 +162,7 @@ export class UsersComponent {
     let user:UsersModel = row;
     this.userId=user.id;
 
-    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this._toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   active1:boolean=true;
@@ -197,11 +197,15 @@ export class UsersComponent {
     if(this.editMode) {
       data.id=this.row.id;
       this.usersService.updateUser(<UsersModel>data, this.companyId)
-        .subscribe(success  => this.showMessage(true, success), error =>  this.showMessage(false, error));
+        .subscribe(success  =>{
+          this.titleService.setPageTitle("Users");
+          this.showMessage(true, success);
+        }, error =>  this.showMessage(false, error));
       //   jQuery(this.createUser.nativeElement).foundation('close');
     } else {
       this.usersService.addUser(<UsersModel>data, this.companyId)
         .subscribe(success  => {
+          this.titleService.setPageTitle("Users");
           this.showMessage(true, success);
         }, error =>  this.showMessage(false, error));
     }
@@ -217,18 +221,18 @@ export class UsersComponent {
         this.usersService.users(this.companyId)
           .subscribe(users  => this.buildTableData(users), error =>  this.handleError(error));
         this.newForm1();
-        this._toastService.pop(TOAST_TYPE.success, "User updated successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "User Updated Successfully.");
       } else {
         this.newForm1();
         this.usersService.users(this.companyId)
           .subscribe(users  => this.buildTableData(users), error =>  this.handleError(error));
-        this._toastService.pop(TOAST_TYPE.success, "user created successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "User Created Successfully.");
       }
     } else {
       this.loadingService.triggerLoadingEvent(false);
       this.status = {};
       this.status['error'] = true;
-      this._toastService.pop(TOAST_TYPE.error, "Failed to update the user");
+      this._toastService.pop(TOAST_TYPE.error, "Failed To Update The User");
       this.message = obj;
     }
   }
@@ -284,7 +288,7 @@ export class UsersComponent {
         link['download'] = "Users.xls";
         link.click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -301,7 +305,7 @@ export class UsersComponent {
         link[0].download = "Users.pdf";
         link[0].click();
       }, error =>{
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

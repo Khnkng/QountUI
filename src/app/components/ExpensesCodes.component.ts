@@ -95,7 +95,7 @@ export class ExpensesCodesComponent {
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
     this.row = {};
-    this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+    this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
   }
 
   filterChartOfAccounts(chartOfAccounts){
@@ -139,12 +139,12 @@ export class ExpensesCodesComponent {
           //   this.loadingService.triggerLoadingEvent(false);
           this.expensesSerice.getAllExpenses(this.currentCompany.id)
               .subscribe(expenseCodes => this.buildTableData(expenseCodes), error=> this.handleError(error));
-          this.toastService.pop(TOAST_TYPE.success, "Account code deleted successfully");
+          this.toastService.pop(TOAST_TYPE.success, "Account Code Deleted Successfully");
         }, error => this.handleError(error));
   }
   removeExpense(row: any){
     this.itemCodeId = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   newForm(){
@@ -183,7 +183,7 @@ export class ExpensesCodesComponent {
     let data = this._expensesForm.getData(this.expensesForm);
 
     if(data.coa_mapping_id=='--None--'||data.coa_mapping_id==''){
-      this.toastService.pop(TOAST_TYPE.error, "Please select Expense COA");
+      this.toastService.pop(TOAST_TYPE.error, "Please Select Expense COA");
       return;
     }
 
@@ -195,17 +195,19 @@ export class ExpensesCodesComponent {
           .subscribe(itemCode => {
             base.loadingService.triggerLoadingEvent(false);
             base.row = {};
-            base.toastService.pop(TOAST_TYPE.success, "Expense updated successfully");
+            base.toastService.pop(TOAST_TYPE.success, "Expense Updated Successfully");
             let index = _.findIndex(base.expenses, {id: data.id});
             base.expenses[index] = itemCode;
             base.buildTableData(base.expenses);
             this.showFlyout = false;
+            this.titleService.setPageTitle("Account Codes");
           }, error => this.handleError(error));
     } else{
       //data.companyID = this.currentCompany.id;
       this.expensesSerice.addExpense(data,this.currentCompany.id)
           .subscribe(newItemcode => {
             // this.loadingService.triggerLoadingEvent(false);
+            this.titleService.setPageTitle("Account Codes");
             this.handleExpense(newItemcode);
             this.showFlyout = false;
           }, error => this.handleError(error));
@@ -214,7 +216,7 @@ export class ExpensesCodesComponent {
   }
 
   handleExpense(expense){
-    this.toastService.pop(TOAST_TYPE.success, "Expense created successfully");
+    this.toastService.pop(TOAST_TYPE.success, "Expense Created Successfully");
     this.expenses.push(expense);
     this.buildTableData(this.expenses);
   }
@@ -317,7 +319,7 @@ export class ExpensesCodesComponent {
         link['download'] = "ExpenseCodes.xls";
         link.click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -334,7 +336,7 @@ export class ExpensesCodesComponent {
         link[0].download = "ExpenseCodes.pdf";
         link[0].click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

@@ -656,7 +656,7 @@ export class DepositComponent{
             this.loadingService.triggerLoadingEvent(true);
             this.depositService.addDeposit(data, this.currentCompanyId)
                 .subscribe(response=>{
-                    this.toastService.pop(TOAST_TYPE.success, "Deposit Added successfully");
+                    this.toastService.pop(TOAST_TYPE.success, "Deposit Added Successfully");
                     this.loadingService.triggerLoadingEvent(false);
                     this.showDepositsPage(data.bank_account_id);
                 }, error => {
@@ -685,7 +685,7 @@ export class DepositComponent{
         this.loadingService.triggerLoadingEvent(true);
         this.depositService.updateDeposit(this.tempData, this.currentCompanyId)
             .subscribe(response =>{
-                this.toastService.pop(TOAST_TYPE.success, "Deposit Edited successfully");
+                this.toastService.pop(TOAST_TYPE.success, "Deposit Updated Successfully");
                 this.setUpdatedFlagInStates();
                 this.loadingService.triggerLoadingEvent(false);
                 this.showDepositsPage();
@@ -871,7 +871,7 @@ export class DepositComponent{
                     this.processDeposits(deposit.deposit);
                 }, error =>{
                     this.loadingService.triggerLoadingEvent(false);
-                    this.toastService.pop(TOAST_TYPE.error, "Failed to load deposit details");
+                    this.toastService.pop(TOAST_TYPE.error, "Failed To Load Deposit Details");
                 })
         } else{
             this.titleService.setPageTitle("CREATE DEPOSIT");
@@ -895,11 +895,11 @@ export class DepositComponent{
         let base = this;
         let result=true;
         if(data.bank_account_id=="--None--"||data.bank_account_id==""){
-            this.toastService.pop(TOAST_TYPE.error, "Please select valid financial account");
+            this.toastService.pop(TOAST_TYPE.error, "Please Select Valid Financial Account");
             return false;
         }
         if(data.amount <= 0){
-            this.toastService.pop(TOAST_TYPE.error, "Deposit amount must be greater than zero.");
+            this.toastService.pop(TOAST_TYPE.error, "Deposit Amount Must Be Greater Than Zero.");
             return false;
         }
         let itemTotal = _.sumBy(data.payments, function(payment){
@@ -907,7 +907,7 @@ export class DepositComponent{
         });
         itemTotal = this.roundOffValue(itemTotal);
         if(itemTotal != data.amount){
-            this.toastService.pop(TOAST_TYPE.error, "Deposit amount and Item total did not match.");
+            this.toastService.pop(TOAST_TYPE.error, "Deposit Amount And Item Total Did Not Match.");
             return false;
         }
         /*_.each(data.payments, function(line){
@@ -942,7 +942,7 @@ export class DepositComponent{
     /*mapping changes*/
     showMappingPage(){
       if(!this.bankAccountID){
-        this.toastService.pop(TOAST_TYPE.error, "Please select financial account.");
+        this.toastService.pop(TOAST_TYPE.error, "Please Select Financial Account.");
         return
       }
       this.mappingFlyoutCSS="expanded";
@@ -1033,7 +1033,7 @@ export class DepositComponent{
                 this.updateDepositDetails();
             }
         }else {
-            this.toastService.pop(TOAST_TYPE.error, "Please set company lock date");
+            this.toastService.pop(TOAST_TYPE.error, "Please Set Company Lock Date");
         }
     }
 
@@ -1048,7 +1048,7 @@ export class DepositComponent{
                 this.loadingService.triggerLoadingEvent(true);
                 this.updateDepositDetails();
             }else {
-                this.toastService.pop(TOAST_TYPE.error, "Invalid key");
+                this.toastService.pop(TOAST_TYPE.error, "Invalid Key");
             }
         },fail=>{
 

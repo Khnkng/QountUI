@@ -357,7 +357,7 @@ export class JournalEntryComponent{
     dimensions.patchValue(this.selectedDimensions);
     let lineData = this._lineListForm.getData(this.lineForm);
     if(lineData.coa=='--None--'||lineData.coa==''){
-      this.toastService.pop(TOAST_TYPE.error, "Please select Chart of Account");
+      this.toastService.pop(TOAST_TYPE.error, "Please Select Chart Of Account");
       return;
     }
     base.updateLineInView(lineData);
@@ -680,17 +680,17 @@ export class JournalEntryComponent{
     _.each(lines, function(line){
       if(!line.destroy){
         if(line.creditAmount && line.debitAmount){
-          base.toastService.pop(TOAST_TYPE.error, "One of the lines have both Credit and Debit amount");
+          base.toastService.pop(TOAST_TYPE.error, "One Of The Lines Have Both Credit And Debit Amount");
           result = true;
           return false;
         }
         if(!line.coa){
-          base.toastService.pop(TOAST_TYPE.error, "Chat of Account is not selected for line");
+          base.toastService.pop(TOAST_TYPE.error, "Chat Of Account Is Not Selected For Line");
           result = true;
           return false;
         }
         if(line.debitAmount == 0 && line.creditAmount == 0){
-          base.toastService.pop(TOAST_TYPE.error, "Line should have either Credit or Debit amount");
+          base.toastService.pop(TOAST_TYPE.error, "Line Should Have Either Credit OR Debit Amount");
           result = true;
           return false;
         }
@@ -699,7 +699,7 @@ export class JournalEntryComponent{
     if(!result){
       this.updateLineTotal();
       if(this.creditTotal.toFixed(2) != this.debitTotal.toFixed(2)){
-        this.toastService.pop(TOAST_TYPE.error, "Credit and debit totals doesn't match");
+        this.toastService.pop(TOAST_TYPE.error, "Credit And Debit Totals Doesn't Match");
         result = true;
       }
     }
@@ -769,7 +769,7 @@ export class JournalEntryComponent{
 
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
-    this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+    this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
   }
 
   filterChartOfAccounts(category){

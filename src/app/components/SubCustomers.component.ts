@@ -97,7 +97,7 @@ export class SubCustomersComponent {
       }, error => this.handleError(error));
     }else {
       this.loadingService.triggerLoadingEvent(false);
-      this._toastService.pop(TOAST_TYPE.error, "Please add company first");
+      this._toastService.pop(TOAST_TYPE.error, "Please Add Company First");
     }
     this.routeSubscribe = switchBoard.onClickPrev.subscribe(title => {
       if (this.showFlyout) {
@@ -207,7 +207,7 @@ export class SubCustomersComponent {
     this.customersService.removeSubCustomer(this.customerId, this.companyId, this.parentCustomerId)
       .subscribe(success  => {
         this.loadingService.triggerLoadingEvent(false);
-        this._toastService.pop(TOAST_TYPE.success, "Customer deleted successfully");
+        this._toastService.pop(TOAST_TYPE.success, "Customer Deleted Successfully");
         this.customersService.subCustomers(this.companyId, this.parentCustomerId)
           .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
       }, error =>  this.handleError(error));
@@ -216,7 +216,7 @@ export class SubCustomersComponent {
   removeVendor(row: any) {
     let customer: CustomersModel = row;
     this.customerId = customer.customer_id;
-    this._toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this._toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   active1: boolean = true;
@@ -279,7 +279,7 @@ export class SubCustomersComponent {
     var data = this._customersForm.getData(this.subCustomerForm);
     this.companyId = Session.getCurrentCompany();
     if (data.coa == '--None--' || data.coa == '') {
-      this._toastService.pop(TOAST_TYPE.error, "Please select payment COA");
+      this._toastService.pop(TOAST_TYPE.error, "Please Select Payment COA");
       return;
     }
     this.saveDetails();
@@ -316,13 +316,13 @@ export class SubCustomersComponent {
         this.customersService.subCustomers(this.companyId, this.parentCustomerId)
           .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
         this.newForm1();
-        this._toastService.pop(TOAST_TYPE.success, "Customer updated successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Customer Updated Successfully.");
       } else {
         this.newForm1();
         this.resetForm();
         this.customersService.subCustomers(this.companyId, this.parentCustomerId)
           .subscribe(customers  => this.buildTableData(customers), error =>  this.handleError(error));
-        this._toastService.pop(TOAST_TYPE.success, "Customer created successfully.");
+        this._toastService.pop(TOAST_TYPE.success, "Customer Created Successfully.");
       }
       this.newCustomer();
     } else {
@@ -330,7 +330,7 @@ export class SubCustomersComponent {
       this.resetForm();
       this.status = {};
       this.status['error'] = true;
-      this._toastService.pop(TOAST_TYPE.error, "Failed to update the customer");
+      this._toastService.pop(TOAST_TYPE.error, "Failed To Update The Customer");
       this.message = obj;
     }
   }
@@ -357,7 +357,7 @@ export class SubCustomersComponent {
 
   handleError(error) {
     this.loadingService.triggerLoadingEvent(false);
-    this._toastService.pop(TOAST_TYPE.error, "Failed to perform operation");
+    this._toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
   }
   hideFlyout() {
     this.titleService.setPageTitle("SUB CUSTOMERS");
@@ -436,7 +436,7 @@ export class SubCustomersComponent {
         link['download'] = "Customers.xls";
         link.click();
       }, error => {
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
   }
 
@@ -451,7 +451,7 @@ export class SubCustomersComponent {
         link[0].download = "Customers.pdf";
         link[0].click();
       }, error => {
-        this._toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this._toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
   }
 

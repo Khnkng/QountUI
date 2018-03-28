@@ -144,7 +144,7 @@ export class BudgetComponent{
 
   handleError(error){
     this.loadingService.triggerLoadingEvent(false);
-    this.toastService.pop(TOAST_TYPE.error, "Could not perform operation");
+    this.toastService.pop(TOAST_TYPE.error, "Could Not Perform Operation");
   }
 
   filterChartOfAccounts(chartOfAccounts){
@@ -237,7 +237,7 @@ export class BudgetComponent{
     let base=this;
     this.budgetService.removeBudget(this.budgetId,this.currentCompany)
       .subscribe(budget => {
-        this.toastService.pop(TOAST_TYPE.success, "Budget deleted successfully");
+        this.toastService.pop(TOAST_TYPE.success, "Budget Deleted Successfully");
         _.remove(this.budgetList, function(budget) {
           return budget.id == base.budgetId;
         });
@@ -246,7 +246,7 @@ export class BudgetComponent{
   }
   removeBudget(row: any){
     this.budgetId = row.id;
-    this.toastService.pop(TOAST_TYPE.confirm, "Are you sure you want to delete?");
+    this.toastService.pop(TOAST_TYPE.confirm, "Are You Sure You Want To Delete?");
   }
 
   newForm(){
@@ -296,19 +296,21 @@ export class BudgetComponent{
     if(this.editMode){
       this.budgetService.updateBudget(data,this.currentCompany)
         .subscribe(budget => {
-          base.toastService.pop(TOAST_TYPE.success, "Budget updated successfully");
+          base.toastService.pop(TOAST_TYPE.success, "Budget Updated Successfully");
           this.loadBudgets();
           this.showFlyout = false;
           this.resetForm();
+          this.titleService.setPageTitle("Budget");
         }, error => this.handleError(error));
     } else{
       this.budgetService.addBudget(data,this.currentCompany)
         .subscribe(newBudget => {
-          this.toastService.pop(TOAST_TYPE.success, "Budget created successfully");
+          this.toastService.pop(TOAST_TYPE.success, "Budget Created Successfully");
           this.showFlyout = false;
           this.selectedDimensions=[];
           this.loadBudgets();
           this.resetForm();
+          this.titleService.setPageTitle("Budget");
         }, error => this.handleError(error));
     }
   }
@@ -570,7 +572,7 @@ export class BudgetComponent{
       }
       this.updateTotalAmount(null,form,this.selectedGroup);
     }else {
-      this.toastService.pop(TOAST_TYPE.error, "Please fill Jan month for duplication");
+      this.toastService.pop(TOAST_TYPE.error, "Please Fill Jan Month For Duplication");
     }
   }
 
@@ -671,9 +673,9 @@ export class BudgetComponent{
       this.showSecondStep = true;
     }else {
       if(this.selectedDimensions.length>0){
-              this.toastService.pop(TOAST_TYPE.error, "Duplicate budget exists with these dimensions");
+              this.toastService.pop(TOAST_TYPE.error, "Duplicate Budget Exists With These Dimensions");
             }else {
-              this.toastService.pop(TOAST_TYPE.error, "Duplicate budget exists");
+              this.toastService.pop(TOAST_TYPE.error, "Duplicate Budget Exists");
         }
     }
   }
@@ -776,7 +778,7 @@ export class BudgetComponent{
         link['download'] = "Budget.xls";
         link.click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into Excel");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into Excel");
       });
     // jQuery('#example-dropdown').foundation('close');
 
@@ -793,7 +795,7 @@ export class BudgetComponent{
         link[0].download = "Budget.pdf";
         link[0].click();
       }, error =>{
-        this.toastService.pop(TOAST_TYPE.error, "Failed to Export table into PDF");
+        this.toastService.pop(TOAST_TYPE.error, "Failed To Export Table Into PDF");
       });
 
   }

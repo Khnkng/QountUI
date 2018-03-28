@@ -74,7 +74,7 @@ export class AppComponent  implements OnInit{
       if (this.cookieObj && !Session.hasSession()) {
         this.updateSessionData(this.cookieObj);
         if (this.cookieObj.user.default_company) {
-          this.fetchCompanies(this.cookieObj.user);
+          this.fetchCompanies();
         }
       } else if (this.cookieObj.referer) {
         this.updateSessionData(this.cookieObj);
@@ -185,11 +185,18 @@ export class AppComponent  implements OnInit{
     Session.setTTL(data.ttl);
   }
 
-  fetchCompanies(user){
-    let base=this;
-    setTimeout(function(){
-      base.companyService.companies().subscribe(companies => base.setComapnies(companies), error => base.handleError(error));
-    },200);
+  fetchCompanies(){
+    let user:any = Session.getUser();
+    let defaultCompany:any = user.default_company;
+    if(!_.isEmpty(defaultCompany)){
+      if(Session.hasSession()) {
+        this.hasLoggedIn = true;
+      }
+    }
+    const referrer  = window.location.href;
+    if (referrer.indexOf('collaboration') === -1) {
+      this.gotoDefaultPage();
+    }
   }
 
   setComapnies(companies){
