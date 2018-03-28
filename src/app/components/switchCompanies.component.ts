@@ -13,6 +13,7 @@ import {UserProfileService} from "qCommon/app/services/UserProfile.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {environment} from "../../environments/environment";
+import {UrlService} from "qCommon/app/services/UrlService";
 
 declare let _: any;
 declare let jQuery: any;
@@ -44,7 +45,7 @@ export class SwitchCompanyComponent {
 
   constructor(private _router: Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
               private companiesService: CompaniesService, private loadingService: LoadingService, private userProfileService: UserProfileService,
-              private titleService: pageTitleService, private numeralService: NumeralService) {
+              private titleService: pageTitleService, private numeralService: NumeralService, private urlService: UrlService) {
     this.loadingService.triggerLoadingEvent(true);
     this.currentCompanyId = Session.getCurrentCompany();
     this.currentCompanyName = Session.getCurrentCompanyName();
@@ -226,26 +227,13 @@ export class SwitchCompanyComponent {
 
   transferCookieAndRedirect(obj) {
     const cookieKey = this.currentEnvironment.production ? "prod" : "dev";
-    if (cookieKey === "dev") {
-      if (obj.user.default_company.bucket === 'Business') {
-        document.cookie = "dev=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-        this.navigatePage();
-      } else {
-        document.cookie = "dev=;path=/;domain=qount.io";
-        document.cookie = "dev_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-        Session.destroy();
-        window.location.replace('https://dev-taxes.qount.io');
-      }
-    } else if (cookieKey === "prod") {
-      if (obj.user.default_company.bucket === 'Business') {
-        document.cookie = "prod=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-        this.navigatePage();
-      } else {
-        document.cookie = "prod=;path=/;domain=qount.io";
-        document.cookie = "prod_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-        Session.destroy();
-        window.location.replace("https://taxes.qount.io");
-      }
+    if (obj.user.default_company.bucket === 'Business') {
+      document.cookie = cookieKey"=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+      this.navigatePage();
+    } else {
+      document.cookie = cookieKey+"_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+      Session.destroy();
+      window.location.replace(this.urlService.getBaseUrl('TAXES'));
     }
   }
 
