@@ -78,6 +78,9 @@ export class AppComponent  implements OnInit{
         }
       } else if (this.cookieObj.referer) {
         this.updateSessionData(this.cookieObj);
+        if (this.cookieObj.user.default_company) {
+          this.fetchCompanies();
+        }
       } else if(this.cookieObj.link) {
         this.updateSessionData(this.cookieObj);
         //this._router.navigate([this.cookieObj.link]);

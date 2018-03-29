@@ -13,6 +13,7 @@ import {UserProfileService} from "qCommon/app/services/UserProfile.service";
 import {pageTitleService} from "qCommon/app/services/PageTitle";
 import {NumeralService} from "qCommon/app/services/Numeral.service";
 import {environment} from "../../environments/environment";
+import {UrlService} from "qCommon/app/services/UrlService";
 
 declare let _: any;
 declare let jQuery: any;
@@ -177,14 +178,17 @@ export class SwitchCompanyComponent {
       "defaultCompany": companyId
     };
     this.userProfileService.updateUserProfile(data)
-      .subscribe(test => console.log(test));
+      .subscribe(response => {
+        Session.put("user", response.user);
+        this.updateCookie(response.user.default_company);
+      });
   }
 
   changeCompany(company) {
     Session.setCurrentCompany(company.id);
     Session.setCurrentCompanyName(company.name);
     Session.setFiscalStartDate(company.fiscalStartDate);
-    this.updateCookie(company);
+    this.setDefaultCompany(company.id);
     this.numeralService.switchLocale(company.defaultCurrency);
     Session.setCompanyReportCurrency(company.reportCurrency || "");
     Session.setCurrentCompanyCurrency(company.defaultCurrency);
@@ -198,23 +202,19 @@ export class SwitchCompanyComponent {
   }
 
   updateCookie(company) {
+    console.log("Company data = ", company);
     this.currentEnvironment = environment;
     const cookieKey = this.currentEnvironment.production ? "prod" : "dev";
     let data = this.getCookieData(cookieKey);
     if (data) {
       let obj = JSON.parse(data);
       if (obj) {
-        obj.user['default_company']['lock_date'] = company.lockDate;
-        obj.user.default_company.fiscalStartDate ? obj.user.default_company.fiscalStartDate = company.fiscalStartDate : "";
         obj.user.defaultCompany = company.id;
-        obj.user.default_company.name = company.name;
-        obj.user.default_company.bucket = company.bucket;
-        obj.user.default_company.defaultCurrency = company.defaultCurrency;
-        obj.user.default_company.reportCurrency = company.reportCurrency;
-        obj.user.default_company.id = company.id;
+        obj.user.default_company = company;
+        obj.user['default_company']['lock_date'] = company.lockDate ? company.lockDate : '';
+        obj.user.default_company.fiscalStartDate ? obj.user.default_company.fiscalStartDate = company.fiscalStartDate : "";
         obj.referer = 'oneApp';
-        this.setDefaultCompany(company.id);
-        this.refreshTable();
+        // this.refreshTable();
         this.transferCookieAndRedirect(obj);
       }
     }
@@ -222,32 +222,29 @@ export class SwitchCompanyComponent {
 
   transferCookieAndRedirect(obj) {
     const cookieKey = this.currentEnvironment.production ? "prod" : "dev";
-    if (cookieKey === "dev") {
-      if (obj.user.default_company.bucket === 'Business') {
-        document.cookie = "dev=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-        this.navigatePage();
-      } else {
-        document.cookie = "dev=;path=/;domain=qount.io";
-        document.cookie = "dev_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-        Session.destroy();
-        window.location.replace('https://dev-taxes.qount.io');
-      }
-    } else if (cookieKey === "prod") {
-      if (obj.user.default_company.bucket === 'Business') {
-        document.cookie = "prod=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-        this.navigatePage();
-      } else {
-        document.cookie = "prod=;path=/;domain=qount.io";
-        document.cookie = "prod_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
-        Session.destroy();
-        window.location.replace("https://taxes.qount.io");
-      }
+    if (obj.user.default_company.bucket === 'Business') {
+      document.cookie = cookieKey + "=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+      this.navigatePage();
+    } else {
+      document.cookie = cookieKey + "_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+      Session.destroy();
+      window.location.replace(UrlService.getBaseUrl('TAXES'));
     }
   }
 
   navigatePage() {
-    const link = ['/dashboard'];
-    this._router.navigate(link);
+    let link = 'dashboard';
+    if (Session.get('user').tempPassword) {
+      link = 'activate';
+    } else {
+      let defaultCompany: any = Session.getUser().default_company;
+      if (!_.isEmpty(defaultCompany) && (defaultCompany.roles.indexOf('Owner') != -1 || defaultCompany.roles.indexOf('Yoda') != -1)) {
+        if (!defaultCompany.tcAccepted) {
+          link = 'termsAndConditions';
+        }
+      }
+    }
+    this._router.navigate([link]);
   }
 
   getCookieData(cname) {

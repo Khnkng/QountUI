@@ -10,5 +10,6 @@ export const environment = {
   DOCUMENT_SERVICE_URL: "https://services.qount.io/DocumentServices",
   DOCHUB_SERVICE_URL: 'https://services.qount.io/DocumentServices',
   ACTIVATION_LINK: "https://oneapp.qount.io/login",
-  WELCOME_URL: "https://welcome.qount.io/oneapp/login"
+  WELCOME_URL: "https://welcome.qount.io/oneapp/login",
+  TAXES_URL: "https://taxes.qount.io"
 };
