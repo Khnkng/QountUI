@@ -46,7 +46,7 @@ export class SwitchCompanyComponent {
 
   constructor(private _router: Router, private _route: ActivatedRoute, private toastService: ToastService, private switchBoard: SwitchBoard,
               private companiesService: CompaniesService, private loadingService: LoadingService, private userProfileService: UserProfileService,
-              private titleService: pageTitleService, private numeralService: NumeralService, private urlService: UrlService) {
+              private titleService: pageTitleService, private numeralService: NumeralService) {
     this.loadingService.triggerLoadingEvent(true);
     this.currentCompanyId = Session.getCurrentCompany();
     this.currentCompanyName = Session.getCurrentCompanyName();
@@ -229,12 +229,12 @@ export class SwitchCompanyComponent {
   transferCookieAndRedirect(obj) {
     const cookieKey = this.currentEnvironment.production ? "prod" : "dev";
     if (obj.user.default_company.bucket === 'Business') {
-      document.cookie = cookieKey"=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+      document.cookie = cookieKey + "=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
       this.navigatePage();
     } else {
-      document.cookie = cookieKey+"_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
+      document.cookie = cookieKey + "_taxes_app=" + JSON.stringify(obj) + ";path=/;domain=qount.io";
       Session.destroy();
-      window.location.replace(this.urlService.getBaseUrl('TAXES'));
+      window.location.replace(UrlService.getBaseUrl('TAXES'));
     }
   }
 
