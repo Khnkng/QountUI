@@ -210,15 +210,10 @@ export class SwitchCompanyComponent {
     if (data) {
       let obj = JSON.parse(data);
       if (obj) {
+        obj.user.defaultCompany = company.id;
+        obj.user.default_company = company;
         obj.user['default_company']['lock_date'] = company.lockDate ? company.lockDate : '';
         obj.user.default_company.fiscalStartDate ? obj.user.default_company.fiscalStartDate = company.fiscalStartDate : "";
-        obj.user.defaultCompany = company.id;
-        obj.user.default_company.name = company.name;
-        obj.user.default_company.bucket = company.bucket;
-        obj.user.default_company.defaultCurrency = company.defaultCurrency ? company.defaultCurrency : '';
-        obj.user.default_company.reportCurrency = company.reportCurrency ? company.reportCurrency : '';
-        obj.user.default_company.id = company.id;
-        obj.user.default_company.tcAccepted = company.tcAccepted;
         obj.referer = 'oneApp';
         this.refreshTable();
         this.transferCookieAndRedirect(obj);
