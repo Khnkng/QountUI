@@ -215,7 +215,7 @@ export class SwitchCompanyComponent {
         obj.user['default_company']['lock_date'] = company.lockDate ? company.lockDate : '';
         obj.user.default_company.fiscalStartDate ? obj.user.default_company.fiscalStartDate = company.fiscalStartDate : "";
         obj.referer = 'oneApp';
-        this.refreshTable();
+        // this.refreshTable();
         this.transferCookieAndRedirect(obj);
       }
     }
