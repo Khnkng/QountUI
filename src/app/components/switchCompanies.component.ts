@@ -211,7 +211,7 @@ export class SwitchCompanyComponent {
       if (obj) {
         obj.user.defaultCompany = company.id;
         obj.user.default_company = company;
-        obj.user['default_company']['lock_date'] = company.lockDate ? company.lockDate : '';
+        obj.user['default_company']['lock_date'] = company.lock_date ? company.lock_date : '';
         obj.user.default_company.fiscalStartDate ? obj.user.default_company.fiscalStartDate = company.fiscalStartDate : "";
         obj.referer = 'oneApp';
         // this.refreshTable();
