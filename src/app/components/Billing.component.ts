@@ -129,7 +129,8 @@ export class BillingComponent {
     const obj = {
       "amount": this.savedCardData['amount'],
       "frequency": this.savedCardData['frequency'],
-      "token": res.id
+      "token": res.id,
+      "charge_bank_account":res.token_type && res.token_type==="bank_account"
     };
     this.customersService.chargeToken(obj)
       .subscribe(res  => {
